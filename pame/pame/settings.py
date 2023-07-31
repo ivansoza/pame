@@ -57,6 +57,11 @@ INSTALLED_APPS = [
     'vigilancia'
 ]
 
+JAZZMIN_SETTINGS = {
+    
+
+
+}
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
