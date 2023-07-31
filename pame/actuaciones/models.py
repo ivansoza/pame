@@ -1,6 +1,3 @@
 from django.db import models
 
-# Create your models here.
-
-#hola a tooosgk
-#mññlmñlm
+# Create your models here.j
