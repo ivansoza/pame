@@ -1,0 +1,48 @@
+
+.custom-navbar {
+    background-color: #12221E;
+}
+
+.custom-navbar .nav-link,
+  .custom-navbar .nav-link i {
+    color: #ffffff; /* Color blanco para los enlaces del navbar y los iconos */
+    transition: color 0.3s ease; /* Transición suave de color al pasar el mouse */
+
+  }
+
+  .custom-navbar .nav-link i:hover{
+    color: #D1C1A0; /* Color blanco para los enlaces del navbar y los iconos */
+  }
+
+  /* Estilo para el badge de notificaciones en el navbar */
+  .custom-navbar .navbar-badge {
+    background-color: #FF5733; /* Color de fondo para el badge */
+    color: #ffffff; /* Color de texto para el badge */
+    transition: color 0.3s ease; /* Transición suave de color al pasar el mouse */
+
+  }
+  .custom-navbar .navbar-badge:hover {
+    background-color: #FF5733; /* Color de fondo para el badge */
+    color: #D1C1A0; /* Color de texto para el badge */
+  }
+
+
+
+
+
+
+
+
+  .custom-navbar .navbar-nav .nav-link {
+    color: #ffffff; /* Color blanco para los enlaces del navbar */
+    transition: color 0.3s ease; /* Transición suave de color al pasar el mouse */
+
+  }
+  .custom-navbar .navbar-nav .nav-link:hover {
+    color: #D1C1A0; /* Color de enlace al pasar el mouse */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Agregar sombra al pasar el mouse */
+  }
+
+  .custom-sidebar {
+    background-color: #1B312B;
+}
