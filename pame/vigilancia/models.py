@@ -2,23 +2,24 @@ from django.db import models
 
 # Create your models here.
 
-OPCION_GENERO_CHOICES =[
-    [0,'Hombre'],
-    [1,'Mujer'],
-    [2,'No Binario'],
-]
+class Nacionalidad(models.Model):
+    nombre = models.CharField('Nacionalidad')
+    Abreviatura = models.CharField(verbose_name='Abreviatura')
+
+class Genero(models.Model):
+    genero = models.CharField(verbose_name='Genero')
 
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro')
     horaRegistro = models.DateTimeField(verbose_name='Hora de Registro')
-    numeroExtranjero = models.IntegerField(verbose_name='Numero')
-    nombreExtranjero = models.CharField(max_length= 50, verbose_name='Nombre')
-    apellidoPaternoExtranjero = models.CharField(max_length=50, verbose_name='Apellido Paterno')
-    apellidoMaternoExtranjero = models.CharField(max_length=50, verbose_name='Apellido Materno')
-    firmaExtranjero = models.BinaryField(verbose_name='Firma')
-    huellaExtranjero = models.BinaryField(verbose_name='Huella')
-    nacionalidad = models.CharField(max_length=50, verbose_name='Nacionalidad')
-    genero = models.IntegerField(choices=OPCION_GENERO_CHOICES, verbose_name='Genero')
+    numeroE = models.IntegerField(verbose_name='Numero')
+    nombreE = models.CharField(max_length= 50, verbose_name='Nombre')
+    apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno')
+    apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno')
+    firmaE = models.BinaryField(verbose_name='Firma')
+    huellaE = models.BinaryField(verbose_name='Huella')
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
+    genero = models.ForeignKey(Genero, on_delete=models.CASCADE, verbose_name='Genero')
     fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
     documentoIdentidad = models.BinaryField(verbose_name='Documento Identidad')
     fotografiaExtranjero = models.BinaryField(verbose_name='fotografia')
