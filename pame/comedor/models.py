@@ -4,9 +4,9 @@ from vigilancia.models import Extranjero
 # Create your models here.
 
 class TipoDieta(models.Model):
-    nombre = models.CharField(verbose_name='Nombre de Dieta')
+    nombre = models.CharField(max_length=200,verbose_name='Nombre de Dieta')
     caracteristicas = models.TextField(verbose_name='Caracteristicas de la Dieta')
-    region = models.CharField(verbose_name='Región de donde proviene')
+    region = models.CharField(max_length=200,verbose_name='Región de donde proviene')
 
     def __str__(self) -> str:
         return '__all__'

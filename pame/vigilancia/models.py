@@ -3,11 +3,17 @@ from django.db import models
 # Create your models here.
 
 class Nacionalidad(models.Model):
-    nombre = models.CharField('Nacionalidad')
-    Abreviatura = models.CharField(verbose_name='Abreviatura')
+    nombre = models.CharField(max_length=200,verbose_name='Nacionalidad')
+    Abreviatura = models.CharField(max_length=200,verbose_name='Abreviatura')
+   
+    def __str__(self) -> str:
+        return '__all__'
 
 class Genero(models.Model):
-    genero = models.CharField(verbose_name='Genero')
+    genero = models.CharField(max_length=100,verbose_name='Genero')
+    
+    def __str__(self) -> str:
+        return '__all__'
 
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro')
