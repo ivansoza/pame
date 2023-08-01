@@ -1,9 +1,22 @@
 {% extends 'base.html' %}
 
-
-
 {% block contenido %}
 
 
- estas dentro del menu 
+<ul>
+    <li>    <a href="{% url 'homeAcuerdoInicio' %}">Acuerdo Inicio</a> </li>
+    <li>    <a href="{% url 'homeActuaciones' %}">Actuaciones</a> </li>
+    <li>    <a href="{% url 'homeAmparo' %}">Amparo</a> </li>
+    <li>    <a href="{% url 'homeCertificadoMedico' %}">Certificado Medico</a> </li>
+    <li>    <a href="{% url 'homeComedor' %}">Comedor</a> </li>
+    <li>    <a href="{% url 'homeComparecencia' %}">Comparecencia</a> </li>
+    <li>    <a href="{% url 'homeConsulado' %}">Consulado</a> </li>
+    <li>    <a href="{% url 'homeConsultaMedica' %}">ConsultaMedica</a> </li>
+    <li>    <a href="{% url 'homeFarmacia' %}">Farmacia</a> </li>
+    <li>    <a href="{% url 'homeLLamadasTelefonicas' %}">LLamadas Telefonicas</a> </li>
+    <li>    <a href="{% url 'homePertenencias' %}">Pertenencias</a> </li>
+
+</ul>
+
+
 {% endblock contenido %}
