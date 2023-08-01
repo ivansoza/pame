@@ -19,8 +19,11 @@ from django.urls import path, include
 
 from catalogos import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("",views.home, name="index"),
+    path("", include('generales.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+
     path("catalogos/",include("catalogos.urls")),
 ]

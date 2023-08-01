@@ -53,10 +53,13 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
+        <a href=" {% url 'home' %} " class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
+        <a href=" {% url 'menu' %} " class="nav-link">Menu</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href=" {% url 'addResponsable' %} " class="nav-link">Añadir Responsable</a>
       </li>
     </ul>
 
@@ -175,7 +178,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+        <a class="nav-link"   href=" {% url 'exit' %}" role="button">
           Cerrar sesion
         </a>
       </li>

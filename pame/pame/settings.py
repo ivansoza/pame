@@ -171,3 +171,8 @@ JAZZMIN_SETTINGS = {
 
 
 }
+
+
+
+LOGIN_REDIRECT_URL = 'menu'
+LOGOUT_REDIRECT_URL = "home"
