@@ -32,6 +32,7 @@ class Extranjero(models.Model):
     viajaSolo = models.BooleanField(verbose_name='¿Viaja solo?')
 
     def __str__(self) -> str:
+
         return '__all__'
     
 class OficioPuestaDisposicionINM(models.Model):
@@ -41,7 +42,7 @@ class OficioPuestaDisposicionINM(models.Model):
     cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
     puntoRevision = models.CharField(max_length=100, verbose_name='Punto de Revisión')
     oficioPuesta = models.BinaryField(verbose_name='Oficio Puesta')
-    oficioComision = models.BinaryField(verbose_name='Ofisio Comisión')
+    oficioComision = models.BinaryField(verbose_name='Oficio Comisión')
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
 
     def __str__(self) -> str:
