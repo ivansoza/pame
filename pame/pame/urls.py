@@ -26,4 +26,17 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
 
     path("catalogos/",include("catalogos.urls")),
+    path("acuerdo-inicio/", include("acuerdoInicio.urls")),
+    path("actuaciones/", include("actuaciones.urls")),
+    path("amparo/", include("amparo.urls")),
+    # path("certificado-medico/", include("certificadoMedicos.urls")),
+    # path("comedor/", include("comedor.urls")),
+    # path("comparecencia/", include("comparecencia.urls")),
+    # path("consulado/", include("consulado.urls")),
+    # path("consulta-medica/", include("consultaMedica.urls")),
+    # path("farmacia/", include("farmacia.urls")),
+    # path("llamadas-telefonicas/", include("llamadasTelefonicas.urls")),
+    # path("pertenencias/", include("pertenencias.urls")),
+
+
 ]
