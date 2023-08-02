@@ -1,10 +1,18 @@
 {% extends 'baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
 
 
 {% block dashboard %}Formulario por Accion Migratoria{% endblock dashboard %}
 
 
 {% block contenido %}
+<h1>Ingresar Datos</h1>
+<form method="post">
+  {% csrf_token %}
+  {% crispy form %}
+  <button type="submit">Guardar</button>
+</form>
 {% endblock contenido %}
 
 

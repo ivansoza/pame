@@ -22,13 +22,13 @@ class Extranjero(models.Model):
     nombreE = models.CharField(max_length= 50, verbose_name='Nombre')
     apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno')
     apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno')
-    firmaE = models.BinaryField(verbose_name='Firma')
-    huellaE = models.BinaryField(verbose_name='Huella')
+    firmaE = models.FileField(verbose_name='Firma')
+    huellaE = models.FileField(verbose_name='Huella')
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
     genero = models.ForeignKey(Genero, on_delete=models.CASCADE, verbose_name='Genero')
     fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
-    documentoIdentidad = models.BinaryField(verbose_name='Documento Identidad')
-    fotografiaExtranjero = models.BinaryField(verbose_name='fotografia')
+    documentoIdentidad = models.FileField(verbose_name='Documento Identidad')
+    fotografiaExtranjero = models.FileField(verbose_name='fotografia')
     viajaSolo = models.BooleanField(verbose_name='¿Viaja solo?')
 
     def __str__(self) -> str:
@@ -41,8 +41,8 @@ class OficioPuestaDisposicionINM(models.Model):
     nombreAutoridadSigna = models.CharField(max_length=100, verbose_name='Nombre de la Autoridad Asignada')
     cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
     puntoRevision = models.CharField(max_length=100, verbose_name='Punto de Revisión')
-    oficioPuesta = models.BinaryField(verbose_name='Oficio Puesta')
-    oficioComision = models.BinaryField(verbose_name='Oficio Comisión')
+    oficioPuesta = models.FileField(verbose_name='Oficio Puesta')
+    oficioComision = models.FileField(verbose_name='Oficio Comisión')
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
 
     def __str__(self) -> str:
@@ -57,8 +57,8 @@ class OficioPuestaDisposicionAC(models.Model):
     nombreAutoridadSigna = models.CharField(max_length=100, verbose_name='Nombre de la Autoridad Asignada' )
     cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
     entidadFederativa = models.CharField(max_length=100, verbose_name='Entidad Federativa')
-    oficioPuesta =models.BinaryField(verbose_name='Oficio Puesta')
-    certificadoMedico = models.BinaryField(verbose_name='Certificado Medico')
+    oficioPuesta =models.FileField(verbose_name='Oficio Puesta')
+    certificadoMedico = models.FileField(verbose_name='Certificado Medico')
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
 
     def __str__(self) -> str:
