@@ -1,0 +1,45 @@
+# Ignorar archivos generados automáticamente
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+
+# Ignorar el directorio donde se instalan las dependencias
+env/
+venv/
+.env
+entvirt/
+
+# Ignorar archivos y carpetas generados por IDEs y editores de texto
+.idea/
+.vscode/
+*.sublime*
+*.swp
+*.swo
+*.bak
+*.pyc
+
+# Ignorar archivos de configuración local
+#*.sqlite3
+#local_settings.py
+
+# Ignorar archivos de log
+*.log
+
+# Ignorar archivos compilados o generados por static file preprocessors
+#staticfiles/
+#static_collected/
+
+# Ignorar archivos generados por el comando "collectstatic"
+#collectedstatic/
+
+# Ignorar el archivo de migraciones no aplicadas
+#**/migrations/*.py
+#**/migrations/*.pyc
+#**/migrations/__pycache__/
+
+# Ignorar el archivo de migraciones aplicadas
+#*.migration
+
+# Ignorar archivos de caché
+*.cache
