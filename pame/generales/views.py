@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 # Create your views here.
 
 
@@ -16,3 +17,22 @@ def menu(request):
 def exit(request):
     logout(request)
     return redirect('home')
+
+
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.groups.filter(name='MedicoResponsable').exists():
+            return reverse_lazy('homeConsultaMedica')
+        elif user.groups.filter(name='MedicoGeneral').exists():
+            return reverse_lazy('homeConsultaMedica')
+        elif user.groups.filter(name='CocinaResponsable').exists():
+            return reverse_lazy('homeComedor')
+        elif user.groups.filter(name='CocinaGeneral').exists():
+            return reverse_lazy('homeComedor')
+        else:
+            return reverse_lazy('menu')
+
+
