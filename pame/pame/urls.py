@@ -22,7 +22,7 @@ from catalogos import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("generales/", include('generales.urls')),
+    path("", include('generales.urls')),
 
     path("catalogos/",include("catalogos.urls")),
     path("acuerdo-inicio/", include("acuerdoInicio.urls")),
