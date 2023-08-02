@@ -3,6 +3,14 @@
     background-color: #12221E;
 }
 
+
+/* styles.css */
+
+/* Estilo para el enlace activo en el menú lateral */
+
+.nav-sidebar .nav-pills .nav-link.active {
+  color: #63192B;
+}
 .custom-navbar .nav-link,
   .custom-navbar .nav-link i {
     color: #ffffff; /* Color blanco para los enlaces del navbar y los iconos */
@@ -46,3 +54,5 @@
   .custom-sidebar {
     background-color: #1B312B;
 }
+
+
