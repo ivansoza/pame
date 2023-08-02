@@ -32,6 +32,8 @@ class CustomLoginView(LoginView):
             return reverse_lazy('homeComedor')
         elif user.groups.filter(name='CocinaGeneral').exists():
             return reverse_lazy('homeComedor')
+        elif user.groups.filter(name='SeguridadResponsable').exists():
+            return reverse_lazy('homeComedor')
         else:
             return reverse_lazy('menu')
 

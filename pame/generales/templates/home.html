@@ -2,33 +2,38 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Small Business - Start Bootstrap Template</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static 'css/menus.css' %}" rel="stylesheet" />
-    </head>
-    <body>
-        <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container px-5">
-                <a class="navbar-brand" href="#!">Start Bootstrap</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Responsable</a></li>
-                        <li class="nav-item"><a class="nav-link" href=" {% url 'login' %}">Iniciar Sesion</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>login</title>
+  <link rel="stylesheet" href=" {% static 'css/styleLogin.css' %}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src=" {% static 'img/gobierno.png' %}" alt="logo del gobierno" class="logo-img">
+  </div>
+  <nav>
+    <a  class="nav-link" style="color: white;">Sistema electronico de tramites migratorios</a>
+  </nav>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#">Tramites</a></li>
+    <li><a href="#">Ingresos</a></li>
+    <li><a href="#">Personas</a></li>
+    <li><a href="{% url 'login' %} ">Login</a></li>
+  </ul>
+  <div class="hide">
+    <i class="fa fa-bars" aria-hidden="true"></i> Menu
+  </div>
+</nav>
+
+
         <!-- Page Content-->
         <div class="container px-4 px-lg-5">
             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
