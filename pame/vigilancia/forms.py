@@ -121,7 +121,7 @@ class OficioPuestaDisposicionACform(forms.ModelForm):
     )
 
     oficioPuesta = forms.CharField(
-        label='No. Oficio Puesta'
+        label='No. Oficio Puesta',
         validators=[RegexValidator(
             r'^[1-9]\d*$', message='Solo sepermiten numeros' 
         )],
@@ -129,11 +129,11 @@ class OficioPuestaDisposicionACform(forms.ModelForm):
     )
 
     certificadoMedico = forms.CharField(
-        label='Certificado Medico'
+        label='Certificado Medico',
     )
 
     delExtranjero = forms.CharField(
-        label='Numero del extranjero'
+        label='Numero del extranjero',
     )
 
     class Meta:
@@ -180,7 +180,7 @@ class ExtranjeroForm(forms.ModelForm):
         input_type = 'time'
 
     horaRegistro = forms.TimeField(
-        label='Hora de Registro', input_formats=['%I:%M %p']
+        label='Hora de Registro', input_formats=['%I:%M %p'],
         #Los segundos incrementan de 1 minuto
         widget=TimePickerWidget(attrs={'step': '60'})
     )
@@ -195,7 +195,7 @@ class ExtranjeroForm(forms.ModelForm):
     )
 
     nombreE = forms.CharField(
-        label='Nombre'
+        label='Nombre',
         validators=[RegexValidator(
             r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
             message='Solo se permiten letras'
@@ -204,7 +204,7 @@ class ExtranjeroForm(forms.ModelForm):
     )
 
     apellidoPaternoE = forms.CharField(
-        label='Apellido Paterno'
+        label='Apellido Paterno',
         validators=[RegexValidator(
             r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
             mesagge='Solo se permiten letras'
@@ -213,7 +213,7 @@ class ExtranjeroForm(forms.ModelForm):
     )
 
     apellidoE = forms.CharField(
-        label='Apellido Materno'
+        label='Apellido Materno',
         validators=[RegexValidator(
             r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
             mesagge='Solo se permiten letras'
@@ -222,22 +222,22 @@ class ExtranjeroForm(forms.ModelForm):
     )
 
     firmaE = forms.ImageField(
-        label='Firma'
+        label='Firma',
         widget=forms.ClearableFileInput(attrs={'multiple': True})
     )
 
     huellaE = forms.ImageField(
-        label='Huella'
+        label='Huella',
         widget=forms.ClearableFileInput(attrs={'multiple':True})
     )
 
     nacionalidad = forms.CharField(
-        label='Nacionalidad'
+        label='Nacionalidad',
         widget=forms.TextInput(attrs={'placeholder':'Selecciona la Nacionalidad'})
     )
 
     genero = forms.CharField(
-        label='Nacionalidad'
+        label='Nacionalidad',
         widget=forms.TextInput(attrs={'placeholder':'Selecciona el Genero'})
     )
     
@@ -247,12 +247,12 @@ class ExtranjeroForm(forms.ModelForm):
     )
 
     documentoIdentidad = forms.ImageField(
-        label='Documento de Identidad'
+        label='Documento de Identidad',
         widget=forms.ClearableFileInput(attrs={'multiple': True})
     )
 
     fotografiaExtranjero = forms.ImageField(
-        label='Documento de Identidad'
+        label='Documento de Identidad',
         widget=forms.ClearableFileInput(attrs={'multiple': True})
     )
 
