@@ -228,7 +228,7 @@ class ExtranjeroForm(forms.ModelForm):
 
     huellaE = forms.ImageField(
         label='Huella',
-        widget=forms.ClearableFileInput(attrs={'multiple':True})
+        widget=forms.ClearableFileInput(attrs={'multiple': True})
     )
 
     nacionalidad = forms.CharField(
