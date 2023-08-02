@@ -8,6 +8,7 @@ __pycache__
 env/
 venv/
 .env
+entvirt/
 
 # Ignorar archivos y carpetas generados por IDEs y editores de texto
 .idea/
