@@ -1,8 +1,11 @@
+from django.forms.models import BaseModelForm
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from .forms import OficioPuestaDisposicionINMform
 from .models import OficioPuestaDisposicionINM
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect
 # Create your views here.
 
 
@@ -27,3 +30,10 @@ class Puesta(CreateView):
     model = OficioPuestaDisposicionINM
     form_class = OficioPuestaDisposicionINMform
     template_name = 'addAccionMigratoria.html'
+    success_url = '/'
+
+    def form_valid(self, form ):
+        messages.success(self.request, "Registro Exitoso")
+        return super().form_valid(form)
+    
+
