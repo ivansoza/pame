@@ -36,6 +36,19 @@
 
   <script src="https://kit.fontawesome.com/78350df3d2.js" crossorigin="anonymous"></script>
 
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href=" {% static 'bootstrap/css/bootstrap.min.css' %} ">
+  <!-- CSS personalizado --> 
+  <link rel="stylesheet" href="main.css">  
+    
+    
+  <!--datables CSS básico-->
+  <link rel="stylesheet" type="text/css" href=" {% static 'datatables/datatables.min.css' %} "/>
+  <!--datables estilo bootstrap 4 CSS-->  
+  <link rel="stylesheet"  type="text/css" href=" {% static 'datatables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css' %} ">    
+    
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -397,5 +410,17 @@
 <script src="{% static 'js/demo.js' %}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{% static 'js/dashboard.js' %}"></script>
+
+
+<!-- jQuery, Popper.js, Bootstrap JS -->
+<script src=" {% static 'jquery/jquery-3.3.1.min.js' %} "></script>
+<script src=" {% static 'popper/popper.min.js' %} "></script>
+<script src=" {% static 'bootstrap/js/bootstrap.min.js' %} "></script>
+  
+<!-- datatables JS -->
+<script type="text/javascript" src=" {% static 'datatables/datatables.min.js' %} "></script>    
+ 
+<script type="text/javascript" src=" {% static 'js/fernando.js' %}"></script>  
+
 </body>
 </html>
