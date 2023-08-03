@@ -29,9 +29,9 @@ class CustomLoginView(LoginView):
         elif user.groups.filter(name='MedicoGeneral').exists():
             return reverse_lazy('homeMedicoGeneral')
         elif user.groups.filter(name='CocinaResponsable').exists():
-            return reverse_lazy('homeComedor')
+            return reverse_lazy('homeCocinaResponsable')
         elif user.groups.filter(name='CocinaGeneral').exists():
-            return reverse_lazy('homeComedor')
+            return reverse_lazy('homeCocinaGeneral')
         elif user.groups.filter(name='SeguridadResponsable').exists():
             return reverse_lazy('homeSeguridadResponsable')
         elif user.groups.filter(name='SeguridadGeneral').exists():
