@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'administrador/base.html' %}
 {% block titulo %}Pame - Menu {% endblock titulo %}
 {% block dashboard %}Menu Principal{% endblock dashboard %}
 
@@ -8,6 +8,7 @@
 
 
 <ul>
+    
     <li>    <a href="{% url 'homeAcuerdoInicio' %}">Acuerdo Inicio</a> </li>
     <li>    <a href="{% url 'homeActuaciones' %}">Actuaciones</a> </li>
     <li>    <a href="{% url 'homeAmparo' %}">Amparo</a> </li>

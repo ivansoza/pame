@@ -25,16 +25,20 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         user = self.request.user
         if user.groups.filter(name='MedicoResponsable').exists():
-            return reverse_lazy('homeConsultaMedica')
+            return reverse_lazy('homeMedicoResponsable')
         elif user.groups.filter(name='MedicoGeneral').exists():
-            return reverse_lazy('homeConsultaMedica')
+            return reverse_lazy('homeMedicoGeneral')
         elif user.groups.filter(name='CocinaResponsable').exists():
             return reverse_lazy('homeComedor')
         elif user.groups.filter(name='CocinaGeneral').exists():
             return reverse_lazy('homeComedor')
         elif user.groups.filter(name='SeguridadResponsable').exists():
+            return reverse_lazy('homeSeguridadResponsable')
+        elif user.groups.filter(name='SeguridadGeneral').exists():
             return reverse_lazy('homeSeguridadGeneral')
-        else:
+        elif user.groups.filter(name='admin').exists():
             return reverse_lazy('menu')
+        else:
+            return reverse_lazy('home')
 
 

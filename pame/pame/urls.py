@@ -37,6 +37,8 @@ urlpatterns = [
     path("llamadas-telefonicames/", include("llamadasTelefonicas.urls")),
     path("pertenencias/", include("pertenencias.urls")),
     path("seguridad/", include("vigilancia.urls")),
+    path("salud/", include("salud.urls")),
+
 
 
 ]

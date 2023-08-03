@@ -10,7 +10,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 
 def homeSeguridadGeneral(request):
-    return render (request, "homeSeguridadGeneral.html")
+    return render (request, "home/homeSeguridadGeneral.html")
+
+
+def homeSeguridadResponsable(request):
+    return render (request, "home/homeSeguridadResponsable.html")
 
 
 def addAutoridadCompetente(request):

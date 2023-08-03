@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'llamadasTelefonicas',
     'pertenencias',
     'usuarios',
-    'vigilancia'
+    'vigilancia',
+    'salud',
 ]
 
 
