@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 
 def homeCocinaGeneral (request):
-    return render(request, "homeCocinaGeneral.html")
+    return render(request, "home/homeCocinaGeneral.html")
 
 def homeCocinaResponsable (request):
-    return render(request, "homeCocinaResponsable.html")
+    return render(request, "home/homeCocinaResponsable.html")
