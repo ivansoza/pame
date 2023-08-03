@@ -1,9 +1,9 @@
 from django.urls import path, include
 
-from .views import homeComedor
+from .views import homeCocinaGeneral, homeCocinaResponsable
 
 urlpatterns = [
-    path('homeComedor/', homeComedor, name="homeComedor"),
+    path('cocina-responsable/', homeCocinaGeneral, name="homeCocinaGeneral"),
 
     
 ]
