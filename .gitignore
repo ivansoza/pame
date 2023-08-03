@@ -34,9 +34,9 @@ entvirt/
 #collectedstatic/
 
 # Ignorar el archivo de migraciones no aplicadas
-#**/migrations/*.py
-#**/migrations/*.pyc
-#**/migrations/__pycache__/
+**/migrations/*.py
+**/migrations/*.pyc
+**/migrations/__pycache__/
 
 # Ignorar el archivo de migraciones aplicadas
 #*.migration
