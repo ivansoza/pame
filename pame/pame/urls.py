@@ -38,6 +38,8 @@ urlpatterns = [
     path("pertenencias/", include("pertenencias.urls")),
     path("seguridad/", include("vigilancia.urls")),
     path("salud/", include("salud.urls")),
+    path("juridico/", include("juridico.urls")),
+
 
 
 
