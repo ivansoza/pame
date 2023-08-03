@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import TestigoUno, TestigoDos, Traductor
 
-# Register your models here.
+admin.site.register(TestigoUno)
+admin.site.register(TestigoDos)
+admin.site.register(Traductor)

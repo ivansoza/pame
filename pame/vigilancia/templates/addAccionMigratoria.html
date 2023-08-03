@@ -1,0 +1,58 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+
+
+{% block dashboard %}Formulario por Accion Migratoria{% endblock dashboard %}
+
+
+{% block contenido %}
+
+
+
+
+<div class="container mt-3" style="width: 95%; font-size: 14px;">
+  <form method="POST" class="card p-3 mt-5" autocomplete="off" action="">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.numeroOficio|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.fechaOficio|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.nombreAutoridadSigna|as_crispy_field}}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.cargoAutoridadSigna|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.puntoRevision|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.oficioPuesta|as_crispy_field}}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.oficioComision|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{form.delExtranjero|as_crispy_field}}
+      </div>
+   
+    </div>
+      <button type="submit" class="btn btn-primary mt-5">Guardar</button>
+  </form>
+
+  
+</div>
+
+{% endblock contenido %}
+
+

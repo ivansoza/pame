@@ -19,8 +19,28 @@ from django.urls import path, include
 
 from catalogos import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("",views.home, name="index"),
+    path("", include('generales.urls')),
+
     path("catalogos/",include("catalogos.urls")),
+    path("acuerdo-inicio/", include("acuerdoInicio.urls")),
+    path("actuaciones/", include("actuaciones.urls")),
+    path("amparo/", include("amparo.urls")),
+    path("certificado-medico/", include("certificadoMedico.urls")),
+    path("comedor/", include("comedor.urls")),
+    path("comparecencia/", include("comparecencia.urls")),
+    path("consulado/", include("consulado.urls")),
+    path("consulta-medica/", include("consultaMedica.urls")),
+    path("farmacia/", include("farmacia.urls")),
+    path("llamadas-telefonicames/", include("llamadasTelefonicas.urls")),
+    path("pertenencias/", include("pertenencias.urls")),
+    path("seguridad/", include("vigilancia.urls")),
+    path("salud/", include("salud.urls")),
+    path("juridico/", include("juridico.urls")),
+
+
+
+
 ]

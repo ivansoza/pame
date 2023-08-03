@@ -1,0 +1,30 @@
+{% extends 'administrador/base.html' %}
+{% block titulo %}Pame - Menu {% endblock titulo %}
+{% block dashboard %}Menu Principal{% endblock dashboard %}
+
+{% block seccion %}Menu Principal{% endblock seccion %}
+
+{% block contenido %}
+
+
+<ul>
+    
+    <li>    <a href="{% url 'homeAcuerdoInicio' %}">Acuerdo Inicio</a> </li>
+    <li>    <a href="{% url 'homeActuaciones' %}">Actuaciones</a> </li>
+    <li>    <a href="{% url 'homeAmparo' %}">Amparo</a> </li>
+    <li>    <a href="{% url 'homeCertificadoMedico' %}">Certificado Medico</a> </li>
+    <li>    <a href="{% url 'homeComedor' %}">Comedor</a> </li>
+    <li>    <a href="{% url 'homeComparecencia' %}">Comparecencia</a> </li>
+    <li>    <a href="{% url 'homeConsulado' %}">Consulado</a> </li>
+    <li>    <a href="{% url 'homeConsultaMedica' %}">ConsultaMedica</a> </li>
+    <li>    <a href="{% url 'homeFarmacia' %}">Farmacia</a> </li>
+    <li>    <a href="{% url 'homeLLamadasTelefonicas' %}">LLamadas Telefonicas</a> </li>
+    <li>    <a href="{% url 'homePertenencias' %}">Pertenencias</a> </li>
+    <li>    <a href="{% url 'homeSeguridadGeneral' %}">SeguridadGeneral</a> </li>
+
+
+
+</ul>
+
+
+{% endblock contenido %}

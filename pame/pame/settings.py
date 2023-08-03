@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-50)&z+hib^$mh!wl%w=u$=95!1=5%6ttd3%s=73x4luay*d2v7
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL = '/'
 
 # Application definition
 
@@ -54,14 +54,13 @@ INSTALLED_APPS = [
     'llamadasTelefonicas',
     'pertenencias',
     'usuarios',
-    'vigilancia'
+    'vigilancia',
+    'salud',
+    'juridico',
+    
 ]
 
-JAZZMIN_SETTINGS = {
-    
 
-
-}
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -146,12 +145,37 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+
 STATICFILES_DIRS=[
     os.path.join(os.path.join(BASE_DIR,"static"))
 ]
+
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+JAZZMIN_SETTINGS = {
+  # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "PAME",
+
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "PAME",
+    "site_brand": "PAME",
+
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    "site_logo": "books/img/logo.png",
+
+    "welcome_sign": "Bienvenido al Sistema PAME",
+
+
+}
+
+
+
+LOGIN_REDIRECT_URL = 'menu'
+LOGOUT_REDIRECT_URL = "home"
