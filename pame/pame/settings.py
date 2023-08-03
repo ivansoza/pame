@@ -31,7 +31,7 @@ LOGIN_REDIRECT_URL = '/'
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    #'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,6 +78,7 @@ MIDDLEWARE = [
 
 
 ROOT_URLCONF = 'pame.urls'
+AUTH_USER_MODEL = 'usuarios.Usuario'
 import os 
 TEMPLATES = [
     {

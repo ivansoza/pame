@@ -46,7 +46,7 @@ class Estacion(models.Model):
     capacidad = models.IntegerField( null=False)
     
     def __str__(self) -> str:
-        return self.identificador, self.nombre, self.estado,self.responsable, self.tipo, self.estatus, self.capacidad 
+        return self.nombre
     
 class User(models.Model):
     identificador = models.CharField(max_length=10, null=False)
