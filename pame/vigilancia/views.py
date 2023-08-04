@@ -1,13 +1,14 @@
 from django.forms.models import BaseModelForm
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
-from .forms import OficioPuestaDisposicionINMform, ExtranjeroForm
-from .models import OficioPuestaDisposicionINM, Extranjero
+from .forms import OficioPuestaDisposicionINMform, ExtranjeroForm, OficioPuestaDisposicionACform
+from .models import OficioPuestaDisposicionINM, Extranjero, OficioPuestaDisposicionAC
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView
+
 
 # Create your views here.
 
@@ -43,6 +44,19 @@ class Puesta(TemplateView):
         context['form2'] = ExtranjeroForm()
         return context
 
+class PuestaAutoridadCompetente(CreateView):
+    model = OficioPuestaDisposicionAC
+    fields = '__all__'
+    model2 = Extranjero
+    fields2 = '__all__'
+    template_name = 'addAutoridadCompetente.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form4'] = OficioPuestaDisposicionACform()
+        context['form2'] = ExtranjeroForm()
+        return context
 
 # Primera vista funcional 
 # class Puesta(CreateView):
