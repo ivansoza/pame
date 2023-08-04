@@ -8,7 +8,7 @@
   <title>login</title>
   <link rel="stylesheet" href=" {% static 'css/styleLogin.css' %}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  
+  <link rel="stylesheet" type="text/css" href="{% static 'sweetalert2.min.css' %}">
 </head>
 <body>
 
@@ -19,8 +19,8 @@
   <nav>
     <a href="{% url 'home' %}" class="nav-link" style="color: white; font-size: 20px">P A M E</a>
   </nav>
+  
 </header>
-
   <div class="wrapper">
     <div class="form-box login" style="text-align: center; display: flex; justify-content:center ;">
       <div class="hijo1">
@@ -31,7 +31,7 @@
         <form action="" method="post">
           {% csrf_token %}
           <div class="input-box">
-            <span class="icon"><ion-icon name="mail-open"></ion-icon></span>
+            <span class="icon"><i class="fa fa-user" aria-hidden="true"></i></span>
             <input type="text" name="username" class="form-control" >
             <label>Nombre Usuario</label>
           </div>
@@ -45,8 +45,9 @@
           </div>
           <br>
           <div class="remember-forgot" >
-            
-            <a href="#">Ingresar con huella<span class="icon"><ion-icon name="finger-print"></ion-icon></span>
+            <a href="#" style="color: black;">Ingresar con huella<span class="icon" ><ion-icon name="finger-print"></ion-icon></span>
+              |
+            <a href="{% url 'password_reset' %}">Recuper Contraseña<span class="icon">
             </div>
           </form>
         </div>
@@ -55,12 +56,23 @@
   
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-
   <script>
     $(".hide").on('click', function() {
       $("nav ul").toggle('slow');
     })
   </script>
-
+  {% if mostrarAlerta  %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Swal.fire({
+        title: '¡Credenciales Invalidas!',
+        text: '¡Asegurece de que su usuario y contaseña sean correctos!',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      });
+    });
+  </script>
+  {% endif %}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

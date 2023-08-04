@@ -3,12 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
+from django.contrib import messages
 # Create your views here.
-
+from .models import ImagenCarrousel
 
 
 def home(request):
-    return render(request,'home.html')
+    carrousels = ImagenCarrousel.objects.all()
+    context = {"carrousels":carrousels}
+    return render(request,'home.html', context)
 
 def menu(request):
     return render(request, 'menu.html')
@@ -21,6 +24,10 @@ def exit(request):
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
+
+    def form_invalid(self, form):
+         mostrarAlerta = True
+         return render(self.request, 'registration/login.html', {'mostrarAlerta': mostrarAlerta})
 
     def get_success_url(self):
         user = self.request.user
@@ -36,7 +43,7 @@ class CustomLoginView(LoginView):
             return reverse_lazy('homeSeguridadResponsable')
         elif user.groups.filter(name='SeguridadGeneral').exists():
             return reverse_lazy('homeSeguridadGeneral')
-        elif user.groups.filter(name='admin').exists():
+        elif user.groups.filter(name='Administradores').exists():
             return reverse_lazy('menu')
         elif user.groups.filter(name='JuridicoGeneral').exists():
             return reverse_lazy('homeJuridicoGeneral')
