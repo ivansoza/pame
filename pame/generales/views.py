@@ -4,11 +4,13 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 # Create your views here.
-
+from .models import ImagenCarrousel
 
 
 def home(request):
-    return render(request,'home.html')
+    carrousels = ImagenCarrousel.objects.all()
+    context = {"carrousels":carrousels}
+    return render(request,'home.html', context)
 
 def menu(request):
     return render(request, 'menu.html')
