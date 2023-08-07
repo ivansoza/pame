@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views import View
 
 # Create your views here.
 
@@ -8,3 +9,5 @@ def homeCocinaGeneral (request):
 
 def homeCocinaResponsable (request):
     return render(request, "home/homeCocinaResponsable.html")
+
+
