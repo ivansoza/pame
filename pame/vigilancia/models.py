@@ -56,8 +56,8 @@ class OficioPuestaDisposicionAC(models.Model):
     entidadFederativa = models.CharField(max_length=100, verbose_name='Entidad Federativa')
     municipio = models.CharField(max_length=50, verbose_name='Municipio ', blank=True)
     localidad = models.CharField(max_length=50, verbose_name='Localidad ', blank=True)
-    certificadoMedico = models.FileField(verbose_name='Certificado Medico')
-    oficioPuesta =models.FileField(verbose_name='Oficio Puesta')
+    certificadoMedico = models.FileField(verbose_name='Certificado Medico', blank=True)
+    oficioPuesta =models.FileField(verbose_name='Oficio Puesta',blank=True)
     oficioComision = models.FileField(verbose_name='Oficio Comisión', blank=True)
     def __str__(self) -> str:
         return '__all__'
