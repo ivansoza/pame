@@ -1,4 +1,4 @@
-{% extends 'comedor/baseCocinaGeneral.html' %}
+{% extends 'administrador/base.html' %}
 
 {% block titulo %}General{% endblock titulo %}
 
@@ -8,5 +8,12 @@
 {% block contenido %}
 
 <h1>Estas en el menu de cocina general <h1>
+
+    {% if user.comedor.view_comedor %}
+    
+    ola
+    {% endif %}
+
+    {{perms.salud.view_expedientemedico}}
 
 {% endblock contenido %}

@@ -6,7 +6,7 @@ class OficioPuestaDisposicionINMform(forms.ModelForm):
     class Meta:
         model = OficioPuestaDisposicionINM
         fields = ['numeroOficio', 'fechaOficio', 'nombreAutoridadSigna', 'cargoAutoridadSigna',
-                  'puntoRevision', 'oficioPuesta', 'oficioComision']
+                  'puntoRevision', 'oficioPuesta', 'oficioComision', 'estacion']
         labels = {
             'numeroOficio':'Numero de Oficio',
             'fechaOficio':'Fecha',
@@ -15,6 +15,7 @@ class OficioPuestaDisposicionINMform(forms.ModelForm):
             'puntoRevision':'Punto de Revision',
             'oficioPuesta':'Oficio Puesta a Disposicion',
             'oficioComision':'Oficio Comision',
+            'estacion':'Estacion Migratoria',
         }
         widgets = {
             'numeroOficio': forms.TextInput(
@@ -46,7 +47,8 @@ class OficioPuestaDisposicionINMform(forms.ModelForm):
                 attrs={
                     'placeholder':'Ingresa el Numero de Comision'
                 }
-            )
+            ),
+            
         }
 
     def clean_numeroOficio(self):
@@ -236,7 +238,7 @@ class ExtranjeroForm(forms.ModelForm):
     )
 
     genero = forms.CharField(
-        label='Nacionalidad',
+        label='Genero',
         widget=forms.TextInput(attrs={'placeholder':'Selecciona el Genero'})
     )
     
