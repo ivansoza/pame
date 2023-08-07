@@ -15,36 +15,39 @@
   <form method="POST" class="card p-3 mt-5" autocomplete="off" action="">
     {% csrf_token %}
     <div class="row">
-      <div class="col-sm-12 col-md-4 col-lg-4">
+      <div class="col-sm-6 col-md-3 col-lg-3">
         {{form1.numeroOficio|as_crispy_field}}
       </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
+      <div class="col-sm-6 col-md-3 col-lg-3">
         {{form1.fechaOficio|as_crispy_field}}
       </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
-        {{form1.nombreAutoridadSigna|as_crispy_field}}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-12 col-md-4 col-lg-4">
-        {{form1.cargoAutoridadSigna|as_crispy_field}}
-      </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
+      <div class="col-sm-6 col-md-3 col-lg-3">
         {{form1.puntoRevision|as_crispy_field}}
       </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
-        {{form1.oficioPuesta|as_crispy_field}}
+      <div class="col-sm-6 col-md-3 col-lg-3">
+        {{form1.estacion|as_crispy_field}}
       </div>
     </div>
 
     <div class="row">
-      <div class="col-sm-12 col-md-4 col-lg-4">
+      <div class="col-sm-12 col-md-6 col-lg-6">
+        {{form1.nombreAutoridadSigna|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6">
+        {{form1.cargoAutoridadSigna|as_crispy_field}}
+      </div>
+
+    
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-6">
+        {{form1.oficioPuesta|as_crispy_field}}
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-6">
         {{form1.oficioComision|as_crispy_field}}
       </div>
-      <div class="col-sm-12 col-md-4 col-lg-4">
-        {{form1.delExtranjero|as_crispy_field}}
-      </div>
+      
    
     </div>
       <button type="submit" class="btn btn-primary mt-5">Guardar</button>
@@ -89,41 +92,49 @@
                                   </div>
                                   <div class="col-sm-12 col-md-4 col-lg-4">
                                     <div class="form-group">
-                                      {{form2.fechaRegistro|as_crispy_field}}
+                                      {{form2.horaRegistro|as_crispy_field}}
                                     </div>
                                   </div>
                                   <div class="col-sm-12 col-md-4 col-lg-4">
                                     <div class="form-group">
-                                      {{form2.fechaRegistro|as_crispy_field}}
+                                      {{form2.numeroE|as_crispy_field}}
                                     </div>
                                   </div>
                               </div>
+                              
                               <div class="row">
-                                  <div class="col-lg-4">
+                                  <div class="col-lg-3">
                                     <div class="form-group">
                                       {{form2.nombreE|as_crispy_field}}
                                     </div>
                                   </div>
-                                  <div class="col-lg-4">
+                                  <div class="col-lg-3">
                                     <div class="form-group">
                                       {{form2.apellidoPaternoE|as_crispy_field}}
                                     </div>
                                   </div>
-                                  <div class="col-lg-4">
+                                  <div class="col-lg-3">
                                     <div class="form-group">
                                       {{form2.apellidoMaternoE|as_crispy_field}}
                                     </div>
                                   </div>
-                              </div>   
-                              <div class="row">
-                                  <div class="col-lg-4">
+                                  <div class="col-lg-3">
                                     <div class="form-group">
                                       {{form2.nacionalidad|as_crispy_field}}
                                     </div>
+                              </div>   
+
+                              <div class="row">
+                                 
                                   </div>
                                   <div class="col-lg-4">
                                     <div class="form-group">
                                       {{form2.genero|as_crispy_field}}
+                                    </div>
+                                  </div>
+                                  <div class="col-lg-4">
+                                    <div class="form-group">
+                                      {{form2.documentoIdentidad|as_crispy_field}}
                                     </div>
                                   </div>
                                   <div class="col-lg-4">
@@ -135,25 +146,14 @@
                               <div class="row">
                                   <div class="col-lg-4">
                                     <div class="form-group">
-                                      {{form2.documentoIdentidad|as_crispy_field}}
-                                    </div>
-                                  </div>
-                                  <div class="col-lg-4">
-                                    <div class="form-group">
-                                      {{form2.fotografiaExtranjero|as_crispy_field}}
-                                    </div>
-                                  </div>
-                                  <div class="col-lg-4">
-                                    <div class="form-group">
                                       {{form2.viajaSolo|as_crispy_field}}
                                     </div>
                                   </div>
                               </div>                       
                     </div>
-
-
+                    
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#miModal">
-            Abrir Modal
+            Guardar
         </button>
                      <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#miModalDatosBio">Añadir Datos Biometricos</button>

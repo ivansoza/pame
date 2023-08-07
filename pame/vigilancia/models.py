@@ -1,5 +1,5 @@
 from django.db import models
-
+from catalogos.models import Estacion
 # Create your models here.
 
 class Nacionalidad(models.Model):
@@ -20,15 +20,12 @@ class Extranjero(models.Model):
     horaRegistro = models.DateTimeField(verbose_name='Hora de Registro')
     numeroE = models.IntegerField(verbose_name='Numero')
     nombreE = models.CharField(max_length= 50, verbose_name='Nombre')
-    apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno')
-    apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno')
-    firmaE = models.FileField(verbose_name='Firma')
-    huellaE = models.FileField(verbose_name='Huella')
+    apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno', blank=True)
+    apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno', blank=True)
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
     genero = models.ForeignKey(Genero, on_delete=models.CASCADE, verbose_name='Genero')
-    fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
     documentoIdentidad = models.FileField(verbose_name='Documento Identidad')
-    fotografiaExtranjero = models.FileField(verbose_name='fotografia')
+    fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
     viajaSolo = models.BooleanField(verbose_name='¿Viaja solo?')
 
     def __str__(self) -> str:
@@ -38,13 +35,12 @@ class Extranjero(models.Model):
 class OficioPuestaDisposicionINM(models.Model):
     numeroOficio = models.IntegerField(verbose_name='Numero Oficial')
     fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
+    puntoRevision = models.CharField(max_length=100, verbose_name='Punto de Revisión')
+    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estacion Migratoria', blank=True, null=True)
     nombreAutoridadSigna = models.CharField(max_length=100, verbose_name='Nombre de la Autoridad Asignada')
     cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
-    puntoRevision = models.CharField(max_length=100, verbose_name='Punto de Revisión')
     oficioPuesta = models.FileField(verbose_name='Oficio Puesta')
     oficioComision = models.FileField(verbose_name='Oficio Comisión')
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
-
     def __str__(self) -> str:
         return '__all__'
     
@@ -52,22 +48,35 @@ class OficioPuestaDisposicionINM(models.Model):
 class OficioPuestaDisposicionAC(models.Model):
     numeroOficio = models.IntegerField(verbose_name='Numero Oficio')
     fechaOficio = models.DateField(verbose_name='Fecha Oficio')
-    dependencia = models.CharField(max_length=100, verbose_name='Dependencia')
     numeroCarpeta = models.CharField(max_length=30, verbose_name='Numero de Carpeta')
+    estacion = models.ForeignKey(Estacion, verbose_name="Estacion Migratoria", on_delete=models.CASCADE, blank=True, null=True)
+    dependencia = models.CharField(max_length=100, verbose_name='Dependencia')
     nombreAutoridadSigna = models.CharField(max_length=100, verbose_name='Nombre de la Autoridad Asignada' )
     cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
     entidadFederativa = models.CharField(max_length=100, verbose_name='Entidad Federativa')
-    oficioPuesta =models.FileField(verbose_name='Oficio Puesta')
+    municipio = models.CharField(max_length=50, verbose_name='Municipio ', blank=True)
+    localidad = models.CharField(max_length=50, verbose_name='Localidad ', blank=True)
     certificadoMedico = models.FileField(verbose_name='Certificado Medico')
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
-
+    oficioPuesta =models.FileField(verbose_name='Oficio Puesta')
+    oficioComision = models.FileField(verbose_name='Oficio Comisión', blank=True)
     def __str__(self) -> str:
         return '__all__'
 
+OPCION_RELACION_CHOICES=[
+    [0,'ESPOSO(A)'],
+    [1,'HIJO(A)'],
+    [2,'MADRE'],
+    [3,'PADRE'],
+    [4,'OTRO'],
+]
+
 class Acompanante(models.Model):
-    delExtranjero = models.IntegerField(verbose_name='Numero del Acompañante')
-    delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
-    relacion = models.CharField(max_length=30,verbose_name='Relación')
+    delAcompañante = models.IntegerField(verbose_name='Numero del Acompañante', blank=True, null=True)
+    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
+    nombreE = models.CharField(max_length= 50, verbose_name='Nombre', blank=True)
+    apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno', blank=True)
+    apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno', blank=True)
+    relacion = models.IntegerField(choices=OPCION_RELACION_CHOICES, verbose_name='Relación')
 
     def __str__(self) -> str:
         return '__all__'
