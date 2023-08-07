@@ -6,7 +6,7 @@ class OficioPuestaDisposicionINMform(forms.ModelForm):
     class Meta:
         model = OficioPuestaDisposicionINM
         fields = ['numeroOficio', 'fechaOficio', 'nombreAutoridadSigna', 'cargoAutoridadSigna',
-                  'puntoRevision', 'oficioPuesta', 'oficioComision', 'delExtranjero']
+                  'puntoRevision', 'oficioPuesta', 'oficioComision']
         labels = {
             'numeroOficio':'Numero de Oficio',
             'fechaOficio':'Fecha',
@@ -15,7 +15,6 @@ class OficioPuestaDisposicionINMform(forms.ModelForm):
             'puntoRevision':'Punto de Revision',
             'oficioPuesta':'Oficio Puesta a Disposicion',
             'oficioComision':'Oficio Comision',
-            'delExtranjero':'Numero del Extranjero',
         }
         widgets = {
             'numeroOficio': forms.TextInput(
