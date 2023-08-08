@@ -70,6 +70,24 @@ class OficioPuestaDisposicionINMform(forms.ModelForm):
         return data
     
 class OficioPuestaDisposicionACform(forms.ModelForm):
+    class Meta:
+        model = OficioPuestaDisposicionAC
+        fields = [
+            'numeroOficio',
+            'fechaOficio',
+            'dependencia',
+            'numeroCarpeta',
+            'nombreAutoridadSigna',
+            'cargoAutoridadSigna',
+            'entidadFederativa',
+            'oficioPuesta',
+            'certificadoMedico',
+            'estacion',
+            'municipio',
+            'localidad',
+            'oficioComision',
+        ]
+        
     numerooficio = forms.CharField(
         label= 'Numero de Oficio',
         validators= [RegexValidator(
@@ -121,36 +139,17 @@ class OficioPuestaDisposicionACform(forms.ModelForm):
         label='Entidad Federativa',
     )
 
-    oficioPuesta = forms.CharField(
-        label='No. Oficio Puesta',
-        validators=[RegexValidator(
-            r'^[1-9]\d*$', message='Solo sepermiten numeros' 
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Ej: 12345'})
+    oficioPuesta = forms.FileInput(
+        
     )
 
-    certificadoMedico = forms.CharField(
-        label='Certificado Medico',
+    certificadoMedico = forms.FileInput(
+      
     )
 
-    delExtranjero = forms.CharField(
-        label='Numero del extranjero',
-    )
+   
 
-    class Meta:
-        model = OficioPuestaDisposicionAC
-        fields = [
-            'numeroOficio',
-            'fechaOficio',
-            'dependencia',
-            'numeroCarpeta',
-            'nombreAutoridadSigna',
-            'cargoAutoridadSigna',
-            'entidadFederativa',
-            'oficioPuesta',
-            'certificadoMedico',
-            'delExtranjero'
-        ]
+    
 
 class ExtranjeroForm(forms.ModelForm):
     class Meta:
@@ -260,3 +259,8 @@ class ExtranjeroForm(forms.ModelForm):
     viajaSolo = forms.BooleanField(
         label='Viaja Solo'
     )
+
+class PruebaForm(forms.ModelForm):
+    class Meta:
+        model = OficioPuestaDisposicionAC
+        fields = '__all__'

@@ -1,7 +1,7 @@
 {% extends 'administrador/base.html' %}
 {% load static %}
 {% block titulo %}Pame - Menu {% endblock titulo %}
-{% block dashboard %}Menu Principal{% endblock dashboard %}
+{% block dashboard %}{% endblock dashboard %}
 
 
 
@@ -9,6 +9,7 @@
 
 {% block contenido %}
 
+<<<<<<< HEAD
 <ul>
     
     <li>    <a href="{% url 'homeAcuerdoInicio' %}">Acuerdo Inicio</a> </li>
@@ -29,13 +30,38 @@
     <div class="container">
         <div class="card">
             <img src="1.jpg">
+=======
+
+    <h1 class="title" style="text-align: center;"> Accesos Rapidos</h1>
+
+  
+
+        
+        <div class="container" >
+            <div class="card">
+                <img src="{% static 'img/gh.jpg' %}" style="object-fit: cover; width: 80%; height: 80%; display: block; margin: 0 auto; width: 50%;">
+                <h4><a href="{% url 'homeSeguridadGeneral' %}" style="font-size: 20PX;">SeguridadGeneral</a> </h4>
+            </div>
+            
+            <div class="card">
+                <img src="1.jpg">
+                <h4> gobierno de mexico</h4>
+                <p>cartel de santa</p>
+                <p>aleman</p>
+                <p>corridos</p>
+                <a href="#">ingresar</a>
+            </div>
+            
+            <div class="card">
+                <img src="1.jpg">
+>>>>>>> origin/jose
             <h4> gobierno de mexico</h4>
             <p>cartel de santa</p>
             <p>aleman</p>
             <p>corridos</p>
             <a href="#">ingresar</a>
         </div>
-
+        
         <div class="card">
             <img src="1.jpg">
             <h4> gobierno de mexico</h4>
@@ -45,6 +71,7 @@
             <a href="#">ingresar</a>
         </div>
 
+
         <div class="card">
             <img src="1.jpg">
             <h4> gobierno de mexico</h4>
@@ -53,7 +80,33 @@
             <p>corridos</p>
             <a href="#">ingresar</a>
         </div>
-
+        
+        <div class="card">
+            <img src="1.jpg">
+            <h4> gobierno de mexico</h4>
+            <p>cartel de santa</p>
+            <p>aleman</p>
+            <p>corridos</p>
+            <a href="#">ingresar</a>
+        </div>
+        
+        <div class="card">
+            <img src="1.jpg">
+            <h4> gobierno de mexico</h4>
+            <p>cartel de santa</p>
+            <p>aleman</p>
+            <p>corridos</p>
+            <a href="#">ingresar</a>
+        </div>
+        
+        <div class="card">
+            <img src="1.jpg">
+            <h4> gobierno de mexico</h4>
+            <p>cartel de santa</p>
+            <p>aleman</p>
+            <p>corridos</p>
+            <a href="#">ingresar</a>
+        </div>
         <div class="card">
             <img src="1.jpg">
             <h4> gobierno de mexico</h4>
@@ -63,46 +116,9 @@
             <a href="#">ingresar</a>
         </div>
     </div>
-    <div class="container">
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
 
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-    </div>
-
-
-</ul>
+    
+    
 
 
 {% endblock contenido %}
