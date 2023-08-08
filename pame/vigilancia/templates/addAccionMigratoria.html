@@ -1,16 +1,12 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 
-
-
-{% block dashboard %}Formulario por Accion Migratoria{% endblock dashboard %}
+{% block titulo %}PAME | Acción Migratoria {% endblock titulo %}
+{% block dashboard %}Acción Migratoria{% endblock dashboard %}
+{% block seccion  %}Acción Migratoria {% endblock seccion  %}
 
 
 {% block contenido %}
-
-
-
-
 <div class="container mt-3" style="width: 95%; font-size: 14px;">
   <form method="POST" class="card p-3 mt-5" autocomplete="off" action="">
     {% csrf_token %}
@@ -57,7 +53,6 @@
 </div>
 
 
-{% block Formulario %}
 
 <div class="container">
   <div class="row">
@@ -291,7 +286,6 @@
 
 
  
-{% endblock Formulario %}
   
 
 {% endblock contenido %}
