@@ -202,6 +202,7 @@
         </div>
         <div class="info">
           <a href="#" class="d-block"> {{user.username}}<sup>{{ user.groups.first.name }}</sup></a>
+          
         </div>
       </div>
 
@@ -224,7 +225,6 @@
           </li>
           <li class="nav-item">
 
-            {% if perms.salud.view_expedientemedico %}
             
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
@@ -234,7 +234,6 @@
                 <span class="badge badge-info right"></span>
               </p>
             </a>
-            {% endif %}
        
 
             
@@ -254,7 +253,6 @@
             </ul>
           </li>
           <li class="nav-item">
-            {% if perms.comedor.view_comedor %}
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
@@ -263,7 +261,6 @@
               </p>
             </a>
             
-            {% endif %}
 
 
 
@@ -285,7 +282,6 @@
             </ul>
           </li>
           <li class="nav-item">
-            {% if perms.vigilancia.view_oficiopuestadisposicioninm %}
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tree"></i>
               <p>
@@ -293,7 +289,6 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
-            {% endif %}
             
             <ul class="nav nav-treeview">
 
@@ -420,17 +415,15 @@
           </li>
           <li class="nav-item">
 
-            {% if perms.acuerdoInicio.view_testigouno %}
 
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-edit"></i>
               <p>
-                Juridico
+                Jurídico
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
 
-            {%endif%}
             <ul class="nav nav-treeview">
              
               <li class="nav-item">
