@@ -180,6 +180,35 @@ JAZZMIN_SETTINGS = {
 
     "changeform_format": "single",
 
+    'icons':{
+        "comedor.TipoDieta": 'fas fa-carrot',
+        "comedor.Dietas": 'fas fa-leaf',
+        "comedor.Comedor": 'fas fa-chair',
+        "comedor.BoxLunch": 'fas fa-box-open',
+
+        'auth.user': "fas fa-user",
+        'auth.group': "fas fa-users",
+        "acuerdoinicio.TestigoUno": 'fas fa-eye',
+        "acuerdoinicio.TestigoDos": 'fas fa-eye',
+        "acuerdoinicio.Traductor": 'fas fa-language',
+        "catalogos.Tipos": 'fas fa-tags',
+        "catalogos.Estatus": 'fas fa-check',
+        "catalogos.Estado": 'fas fa-flag',
+        "catalogos.Responsable": 'fas fa-user',
+        "catalogos.Estacion": 'fas fa-subway',
+        "comparecencia.comparecencia": 'fas fa-gavel',
+        "generales.ImagenCarrousel": 'fas fa-image',
+        "pertenencias.Inventario": 'fas fa-archive',
+        "pertenencias.Pertenencias": 'fas fa-briefcase',
+        "pertenencias.Valores": 'fas fa-coins',
+        "salud.ExpedienteMedico": 'fas fa-notes-medical',
+        "usuarios.Usuario": 'fas fa-user',
+
+
+
+
+    }
+
 }
 
 

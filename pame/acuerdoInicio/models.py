@@ -12,6 +12,9 @@ class TestigoUno (models.Model):
 
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Testigos Uno"
 
 class TestigoDos (models.Model):
     nombreTestigoDos = models.CharField(max_length=50, verbose_name='Nombre del Segundo testigo')
@@ -24,6 +27,9 @@ class TestigoDos (models.Model):
     def __str__(self) -> str:
         return '__all__'
     
+    class Meta:
+        verbose_name_plural = "Testigos Dos"
+
 class Traductor (models.Model):
     nombreTraductor = models.CharField(max_length=50, verbose_name='Nombre(s)')
     apellidoPaternoTraductor = models.CharField(max_length=50, verbose_name='Apellido Paterno')
@@ -32,3 +38,6 @@ class Traductor (models.Model):
 
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Traductores"
