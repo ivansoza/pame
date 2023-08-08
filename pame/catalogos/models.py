@@ -8,11 +8,17 @@ class Tipos(models.Model):
     def __str__(self) -> str:
         return self.tipo
     
+    class Meta:
+        verbose_name_plural = "Tipos"
+    
 class Estatus(models.Model):
     tipoEstatus = models.CharField(max_length=20, null=False)
 
     def __str__(self) -> str:
         return self.tipoEstatus
+    
+    class Meta:
+        verbose_name_plural = "Estatus"
     
 class Estado(models.Model):
     estado = models.CharField(max_length=50, null=False)
@@ -29,6 +35,7 @@ class Responsable(models.Model):
 
     def __str__(self) -> str:
         return self.nombre
+    
 
 class Estacion(models.Model):
     identificador = models.CharField(max_length=10, null=False)
@@ -48,6 +55,9 @@ class Estacion(models.Model):
     def __str__(self) -> str:
         return self.nombre
     
+    class Meta:
+        verbose_name_plural = "Estaciones"
+    
 class User(models.Model):
     identificador = models.CharField(max_length=10, null=False)
     nombre = models.CharField(max_length=50, null=False)
@@ -59,6 +69,9 @@ class User(models.Model):
 
     def __str__(self) -> str:
         return self.identificador, self.nombre
+    
+    class Meta:
+        verbose_name_plural = "Usuarios"
     
 # genero=[
 
@@ -87,3 +100,6 @@ class Extranjeros(models.Model):
 
     def __str__(self) -> str:
         return self.identificador, self.nombre, self.nacionalidad   
+    
+    class Meta:
+        verbose_name_plural = "Extranjeros"
