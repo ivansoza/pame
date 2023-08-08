@@ -1,0 +1,26 @@
+{% load static %}
+
+{% if user.groups.first %}
+    {% if user.groups.first.name == 'Administradores' %}
+        <a href="{% url 'menu' %}" class="brand-link">
+    {% elif user.groups.first.name == 'CocinaGeneral' %}
+        <a href="{% url 'homeCocinaGeneral' %}" class="brand-link">
+    {% elif user.groups.first.name == 'CocinaResponsable' %}
+        <a href="{% url 'homeCocinaResponsable' %}" class="brand-link">
+    {% elif user.groups.first.name == 'JuridicoGeneral' %}
+        <a href="{% url 'homeJuridicoGeneral' %}" class="brand-link">
+    {% elif user.groups.first.name == 'JuridicoResponsable' %}
+        <a href="{% url 'homeJuridicoResponsable' %}" class="brand-link">
+    {% elif user.groups.first.name == 'MedicoGeneral' %}
+        <a href="{% url 'homeMedicoGeneral' %}" class="brand-link">
+    {% elif user.groups.first.name == 'MedicoResponsable' %}
+        <a href="{% url 'homeMedicoResponsable' %}" class="brand-link">
+    {% elif user.groups.first.name == 'SeguridadGeneral' %}
+        <a href="{% url 'homeSeguridadGeneral' %}" class="brand-link">
+    {% elif user.groups.first.name == 'SeguridadResponsable' %}
+        <a href="{% url 'homeSeguridadResponsable' %}" class="brand-link">
+    {% endif %}
+        <img src="{% static 'img/logo160x1601.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">PAME</span>
+    </a>
+{% endif %}
