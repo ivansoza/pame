@@ -34,6 +34,10 @@
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
   <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.12124466">
 
+    <!-- datatables -->
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+
   <script src="https://kit.fontawesome.com/78350df3d2.js" crossorigin="anonymous"></script>
 
   <!-- Bootstrap CSS -->
@@ -66,10 +70,10 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href=" {% url 'home' %} " class="nav-link">Home</a>
+        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href=" {% url 'menu' %} " class="nav-link">Menu</a>
+        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Menu</a>
       </li>
      
     </ul>
@@ -200,10 +204,9 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4 custom-sidebar">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="{% static 'img/logo160x1601.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">PAME </span>
-    </a>
+
+{% include "includes/user_menu.html" %}
+    
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -444,6 +447,24 @@
 <script type="text/javascript" src=" {% static 'datatables/datatables.min.js' %} "></script>    
  
 <script type="text/javascript" src=" {% static 'js/fernando.js' %}"></script>  
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+    
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+          $('#miTabla').DataTable({
+              dom: 'Bfrtip', // Habilita los botones de exportación
+              buttons: ['copy', 'csv', 'excel', 'pdf', 'print'], // Botones de exportación disponibles
+          });
+      });
+  </script>
 
 </body>
 </html>

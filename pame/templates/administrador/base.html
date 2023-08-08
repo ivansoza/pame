@@ -5,12 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>
+   
     {% block titulo %}
     
     {% endblock titulo %}
 
     
     </title>
+    <link rel='stylesheet' href="{% static 'css/styloscard.css' %}">
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -35,6 +37,7 @@
   <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.12124466">
 
   <script src="https://kit.fontawesome.com/78350df3d2.js" crossorigin="anonymous"></script>
+  <!-- Bootstrap CSS -->
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -53,10 +56,10 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href=" {% url 'home' %} " class="nav-link">Home</a>
+        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href=" {% url 'menu' %} " class="nav-link">Menu</a>
+        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Menu</a>
       </li>
      
     </ul>
@@ -187,10 +190,8 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4 custom-sidebar">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="{% static 'img/logo160x1601.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">PAME</span>
-    </a>
+    {% include "includes/user_menu.html" %}
+
 
     <!-- Sidebar -->
     <div class="sidebar">
@@ -213,7 +214,7 @@
            
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link active">
+            <a href="{% url 'menu' %}" class="nav-link active">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Menu
@@ -222,6 +223,9 @@
             </a>
           </li>
           <li class="nav-item">
+
+            {% if perms.salud.view_expedientemedico %}
+            
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
@@ -230,9 +234,13 @@
                 <span class="badge badge-info right"></span>
               </p>
             </a>
+            {% endif %}
+       
+
+            
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="pages/layout/top-nav.html" class="nav-link">
+                <a href="{% url 'homeConsultaMedica' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Home</p>
                 </a>
@@ -282,6 +290,7 @@
             </ul>
           </li>
           <li class="nav-item">
+            {% if perms.comedor.view_comedor %}
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
@@ -289,6 +298,12 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            
+            {% endif %}
+
+
+
+           
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href=" {% url 'homeCocinaGeneral' %} " class="nav-link">
@@ -317,79 +332,203 @@
             </ul>
           </li>
           <li class="nav-item">
+            {% if perms.vigilancia.view_oficiopuestadisposicioninm %}
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tree"></i>
               <p>
-                Seguridad Responsable
+                Seguridad 
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+            {% endif %}
+            
             <ul class="nav nav-treeview">
+
               <li class="nav-item">
-                <a href="pages/UI/general.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>General</p>
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-tree"></i>
+                  <p>
+                    Seguridad General
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
                 </a>
+                
+                <ul class="nav nav-treeview">
+
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon fas fa-tree"></i>
+                      <p>
+                        Puestas
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{% url 'addAccionMigratoria' %}" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Acción Migratoria</p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="{% url 'addAutoridadCompetente' %}" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p> Autoridad Competente</p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="{% url 'addTraslado' %} " class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Traslado de otra estación </p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="{% url 'addHospedaje' %}" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Hospedaje de otra estación</p>
+                        </a>
+                      </li>
+                    
+                    </ul>
+
+                  
+                  </li>
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 1</p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 2</p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 3</p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 4</p>
+                    </a>
+                  </li>
+                
+                </ul>
+
               </li>
+
+
               <li class="nav-item">
-                <a href="pages/UI/icons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Icons</p>
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-tree"></i>
+                  <p>
+                    Seguridad Responsable
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
                 </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 1</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 2</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="pages/UI/general.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Ejemplo 3</p>
+                    </a>
+                  </li>
+                </ul>
+
+
+
+
               </li>
-              <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Buttons</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/sliders.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Sliders</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/modals.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Modals & Alerts</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/navbar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Navbar & Tabs</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/timeline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Timeline</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/UI/ribbons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ribbons</p>
-                </a>
-              </li>
+              
             </ul>
           </li>
           <li class="nav-item">
+
+            {% if perms.acuerdoInicio.view_testigouno %}
+
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-edit"></i>
               <p>
-                Seguridad General
+                Juridico
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+
+            {%endif%}
             <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon far fa-circle nav-icon"></i>
+                  <p>
+                    campo 1
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href=" {% url 'homeSeguridadGeneral' %}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Home</p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href=" {% url 'homeSeguridadGeneral' %}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Home</p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href=" {% url 'homeSeguridadGeneral' %}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Home</p>
+                    </a>
+                  </li>
+
+                </ul>
+
+
+
+              </li>
+
+
+
               <li class="nav-item">
                 <a href=" {% url 'homeSeguridadGeneral' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Home</p>
                 </a>
               </li>
+
+
+
+
               <li class="nav-item">
                 <a href="pages/forms/advanced.html" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -410,65 +549,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                Juridico Responsable
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/tables/simple.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Simple Tables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/data.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>DataTables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/jsgrid.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>jsGrid</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
-              <p>
-                Juridico General
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/tables/simple.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Simple Tables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/data.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>DataTables</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/tables/jsgrid.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>jsGrid</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+          
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -499,11 +580,12 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+
+
         
-{% block contenido %}
+      {% block contenido %}
 
-
-{% endblock contenido %}
+      {% endblock contenido %}
 
 
 

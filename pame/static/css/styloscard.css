@@ -1,0 +1,75 @@
+html,body{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    width: 100%;
+    height: 100%;
+    font-family: sans-serif;
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+}
+
+.title{
+    text-align: center;
+    font-size: 40px;
+    color: gold;
+    margin-top: 100px;
+    font-weight: 100;
+}
+.container{
+
+    width: 1900px;
+    height: 430px;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    max-width: 900px;
+    min-width: none;
+    max-height: 300px;
+    min-height: none;
+}
+
+.container .card{
+    width: 200px;
+    height: 250px;
+    border-radius: 8px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin: 10px;
+    text-align: center;
+    transition: all 0.25s;
+}
+
+.container .card:hover{
+    transform: translateY(-15px);
+    box-shadow: 0 12px 16px rgba(0, 0, 0, 0.2);
+}
+
+.container .card img{
+    margin-top: 5%;
+    width: 40px;
+    height: 30px;
+}
+
+.container .card h4{
+    font-size: 12px;
+}
+
+.container .card p{
+    padding: 0 1rem;
+    font-size: 10px;
+    font-weight: 200;
+}
+
+.container .card a{
+    font-weight: 50;
+    text-decoration: none;
+    color: green;
+}
+@media only screen and (max-width: 600px){
+    .container{
+        grid-template-columns: auto;
+    }
+}
