@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Puesta, PuestaAutoridadCompetente
+from .views import Puesta, PuestaAutoridadCompetente, OficioAC
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable
 
 urlpatterns = [
@@ -9,8 +9,8 @@ urlpatterns = [
     #path('accion-migratoria/',puesta, name="addAccionMigratoria"),
     path('hospedaje/',addHospedaje, name="addHospedaje"),
     path('traslado/',addTraslado, name="addTraslado"),
-    path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")
-
+    path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria"),
+    path('crear/', OficioAC.as_view(), name="crear"),
 
 
     

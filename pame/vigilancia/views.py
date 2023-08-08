@@ -1,9 +1,11 @@
 from django.forms.models import BaseModelForm
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic.edit import CreateView
-from .forms import OficioPuestaDisposicionINMform, ExtranjeroForm, OficioPuestaDisposicionACform
-from .models import OficioPuestaDisposicionINM, Extranjero, OficioPuestaDisposicionAC
+from .forms import OficioPuestaDisposicionINMform, ExtranjeroForm, OficioPuestaDisposicionACform, pruebaForm, extranjeroFormSet
+from .models import OficioPuestaDisposicionINM, ExtranjeroAC, OficioPuestaDisposicionAC
 from django.urls import reverse_lazy
+from django.db import transaction 
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
@@ -47,7 +49,7 @@ class Puesta(TemplateView):
 class PuestaAutoridadCompetente(CreateView):
     model = OficioPuestaDisposicionAC
     fields = '__all__'
-    model2 = Extranjero
+    model2 = ExtranjeroAC
     fields2 = '__all__'
     template_name = 'addAutoridadCompetente.html'
 
@@ -57,6 +59,33 @@ class PuestaAutoridadCompetente(CreateView):
         context['form4'] = OficioPuestaDisposicionACform()
         context['form2'] = ExtranjeroForm()
         return context
+    
+
+class OficioAC(CreateView):
+    model = OficioPuestaDisposicionAC
+    form_class = pruebaForm
+    template_name = 'crear.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = extranjeroFormSet(self.request.POST, instance=self.object)
+        else:
+            context['formset'] = extranjeroFormSet(instance=self.object)
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        with transaction.atomic():
+            self.object = form.save()
+            if formset.is_valid():
+                formset.instance = self.object
+                formset.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('list')
 
 # Primera vista funcional 
 # class Puesta(CreateView):

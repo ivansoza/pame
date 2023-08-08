@@ -1,5 +1,4 @@
 from django.db import models
-from vigilancia.models import Extranjero
 
 # Create your models here.
 OPCION_ESTADOCIVIL_CHOICES=[

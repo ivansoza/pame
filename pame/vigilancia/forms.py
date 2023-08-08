@@ -1,6 +1,7 @@
 from django import forms
-from .models import OficioPuestaDisposicionINM, OficioPuestaDisposicionAC, Extranjero
+from .models import OficioPuestaDisposicionINM, OficioPuestaDisposicionAC, ExtranjeroAC
 from django.core.validators import RegexValidator
+from django.forms import inlineformset_factory
 
 class OficioPuestaDisposicionINMform(forms.ModelForm):
     class Meta:
@@ -153,7 +154,7 @@ class OficioPuestaDisposicionACform(forms.ModelForm):
 
 class ExtranjeroForm(forms.ModelForm):
     class Meta:
-        model = Extranjero
+        model = ExtranjeroAC
         fields = [
             'fechaRegistro',
             'horaRegistro',
@@ -260,7 +261,9 @@ class ExtranjeroForm(forms.ModelForm):
         label='Viaja Solo'
     )
 
-class PruebaForm(forms.ModelForm):
+class pruebaForm(forms.ModelForm):
     class Meta:
         model = OficioPuestaDisposicionAC
         fields = '__all__'
+
+extranjeroFormSet = inlineformset_factory(OficioPuestaDisposicionAC, ExtranjeroAC, fields='__all__')

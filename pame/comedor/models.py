@@ -1,6 +1,6 @@
 from django.db import models
 # Create your models here.
-from vigilancia.models import Extranjero
+
 # Create your models here.
 
 class TipoDieta(models.Model):
@@ -13,7 +13,7 @@ class TipoDieta(models.Model):
     
 class Dietas(models.Model):
     tipoDieta = models.ForeignKey(TipoDieta, on_delete=models.CASCADE, verbose_name='Tipo de Dieta')
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
+    
     
     def __str__(self) -> str:
         return '__all__'
@@ -29,7 +29,7 @@ class Comedor(models.Model):
     cena = models.BooleanField(verbose_name='Cena')
     firmaExtranjero = models.BinaryField(verbose_name='Firma del Extranjero')
     huellaExtranjero = models.BinaryField(verbose_name='Huella del Extranjero')
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
+   
 
     def __str__(self) -> str:
         return '__all__'
@@ -40,7 +40,7 @@ class BoxLunch(models.Model):
     horaEvento = models.DateTimeField(verbose_name='Fecha Evento')
     firmaResponsable = models.BinaryField(verbose_name='Firma del Responsable')
     huellaResponsable=models.BinaryField(verbose_name='Huella del Responsable')
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
+    
 
     def __str__(self) -> str:
         return '__all__'
