@@ -20,6 +20,8 @@ class Pertenencias(models.Model):
     def __str__(self) -> str:
         return '__all__'
     
+    class Meta:
+        verbose_name_plural = "Pertenencias"
 class Valores(models.Model):
     descripcion = models.DateField(max_length=100, verbose_name='Descripcion')
     cantidad = models.FloatField(verbose_name='Cantidad')
@@ -28,3 +30,6 @@ class Valores(models.Model):
 
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Valores"

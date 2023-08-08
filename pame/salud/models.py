@@ -10,3 +10,7 @@ class ExpedienteMedico(models.Model):
     diagnostico = models.TextField()
     tratamiento = models.TextField()
     observaciones = models.TextField()
+
+
+    class Meta:
+        verbose_name_plural = "Expedientes Medicos"
