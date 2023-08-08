@@ -1,0 +1,23 @@
+
+{% if user.groups.first %}
+    {% if user.groups.first.name == 'Administradores' %}
+        {% url 'menu' %}
+    {% elif user.groups.first.name == 'CocinaGeneral' %}
+        {% url 'homeCocinaGeneral' %}
+    {% elif user.groups.first.name == 'CocinaResponsable' %}
+        {% url 'homeCocinaResponsable' %}
+    {% elif user.groups.first.name == 'JuridicoGeneral' %}
+        {% url 'homeJuridicoGeneral' %}
+    {% elif user.groups.first.name == 'JuridicoResponsable' %}
+        {% url 'homeJuridicoResponsable' %}
+    {% elif user.groups.first.name == 'MedicoGeneral' %}
+        {% url 'homeMedicoGeneral' %}
+    {% elif user.groups.first.name == 'MedicoResponsable' %}
+      {% url 'homeMedicoResponsable' %}
+    {% elif user.groups.first.name == 'SeguridadGeneral' %}
+       {% url 'homeSeguridadGeneral' %}
+    {% elif user.groups.first.name == 'SeguridadResponsable' %}
+       {% url 'homeSeguridadResponsable' %}
+    {% endif %}
+       
+{% endif %}
