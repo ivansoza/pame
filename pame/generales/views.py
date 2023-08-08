@@ -49,8 +49,6 @@ class CustomLoginView(LoginView):
             return reverse_lazy('homeJuridicoGeneral')
         elif user.groups.filter(name='JuridicoResponsable').exists():
             return reverse_lazy('homeJuridicoResponsable')
-        elif user.groups.filter(name='admin').exists():
-            return reverse_lazy('menu')
         else:
             return reverse_lazy('home')
 
