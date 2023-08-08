@@ -1,7 +1,8 @@
+
 {% extends 'administrador/base.html' %}
 {% load static %}
 {% block titulo %}Pame - Menu {% endblock titulo %}
-{% block dashboard %}Menu Principal{% endblock dashboard %}
+{% block dashboard %}{% endblock dashboard %}
 
 
 
@@ -11,98 +12,69 @@
 
 <ul>
     
+    <h1 class="title" style="text-align: center;"> Accesos Rápidos</h1>
+
+  
+
+        
+        <div class="container" >
+            <div class="card">
+                <h4><a href="{% url 'homeSeguridadGeneral' %}" style="font-size: x-large ;">Seguridad General</a> </h4>
+                <img src="{% static 'img/gh.jpg' %}" style="object-fit: cover; width: 80%; height: 80%; display: block; margin: 0 auto; width: 50%;">
+            </div>
+
+            
+            <div class="card">
+                <a href="#" style="font-size: x-large;">Directivos</a>
+                <img src="{% static 'img/ceo.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
+            </div>
+            
+            <div class="card">
+                <a href="#" style="font-size: x-large;">Jurídico General</a>
+                <img src="{% static 'img/gjuridico.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
+                <a href="{% url 'homeAmparo' %}" style="font-size: large;">Amparo</a>
+
+            </div>
+        
+        <div class="card">
+            <a href="#" style="font-size: x-large;">Jurídico Responsable</a>
+            <img src="{% static 'img/jr.png' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
+        </div>
+
+
+        <div class="card">
+            <a href="#" style="font-size: x-large;">Médico</a>
+            <img src="{% static 'img/medico.jpg' %}" style="object-fit: cover; width: 200%; height: 40%; display: block; margin: 0 auto; width: 30%;">
+            <a href="{% url 'homeCertificadoMedico' %}" style="font-size: large;">Certificado Médico</a>
+            <a href="{% url 'homeConsultaMedica' %}" style="font-size: large;">Consulta Médica</a>
+            <a href="{% url 'homeFarmacia' %}" style="font-size: large;">Farmacia</a>
+        </div>
+        
+        <div class="card">
+            <a href="#" style="font-size: x-large;">Administradores</a>
+            <img src="{% static 'img/administrador.png' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
+        </div>
+        
+        <div class="card">
+            <a href="#" style="font-size: x-large;">Seguridad Responsable</a>
+            <img src="{% static 'img/seguridadmi.jpg' %}" style="object-fit: cover; width: 300%; height: 65%; display: block; margin: 0 auto; width: 30%;">
+        </div>
+        <div class="card">
+            <a href="#" style="font-size: x-large;">Comedor</a>
+            <img src="{% static 'img/cocina.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
+            <a href=""  style="font-size: large;" >Comedor</a>
+
+        </div>
+    </div>
+
+<<<<<<< HEAD
     <li>    <a href="{% url 'homeAcuerdoInicio' %}">Acuerdo Inicio</a> </li>
     <li>    <a href="{% url 'homeActuaciones' %}">Actuaciones</a> </li>
-    <li>    <a href="{% url 'homeAmparo' %}">Amparo</a> </li>
-    <li>    <a href="{% url 'homeCertificadoMedico' %}">Certificado Medico</a> </li>
-    <li>    <a href="">Comedor</a> </li>
     <li>    <a href="{% url 'homeComparecencia' %}">Comparecencia</a> </li>
     <li>    <a href="{% url 'homeConsulado' %}">Consulado</a> </li>
-    <li>    <a href="{% url 'homeConsultaMedica' %}">ConsultaMedica</a> </li>
-    <li>    <a href="{% url 'homeFarmacia' %}">Farmacia</a> </li>
     <li>    <a href="{% url 'homeLLamadasTelefonicas' %}">LLamadas Telefonicas</a> </li>
     <li>    <a href="{% url 'homePertenencias' %}">Pertenencias</a> </li>
-    <li>    <a href="{% url 'homeSeguridadGeneral' %}">SeguridadGeneral</a> </li>
-  
-    <h1 class="title"> tarjetas</h1>
-
-    <div class="container">
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-    </div>
-    <div class="container">
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-
-        <div class="card">
-            <img src="1.jpg">
-            <h4> gobierno de mexico</h4>
-            <p>cartel de santa</p>
-            <p>aleman</p>
-            <p>corridos</p>
-            <a href="#">ingresar</a>
-        </div>
-    </div>
-
-
-</ul>
-
-
 {% endblock contenido %}
+=======
+{% endblock contenido %}
+>>>>>>> origin/master

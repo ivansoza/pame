@@ -11,6 +11,9 @@ class TipoDieta(models.Model):
     def __str__(self) -> str:
         return '__all__'
     
+    class Meta:
+        verbose_name_plural = "Tipos de Dietas"
+    
 class Dietas(models.Model):
     tipoDieta = models.ForeignKey(TipoDieta, on_delete=models.CASCADE, verbose_name='Tipo de Dieta')
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
@@ -18,6 +21,8 @@ class Dietas(models.Model):
     def __str__(self) -> str:
         return '__all__'
     
+    class Meta:
+        verbose_name_plural = "Dietas"
 
 
 
@@ -34,6 +39,9 @@ class Comedor(models.Model):
     def __str__(self) -> str:
         return '__all__'
     
+    class Meta:
+        verbose_name_plural = "Comedores"
+    
 
 class BoxLunch(models.Model):
     fechaEvento = models.DateField(verbose_name='Fecha Evento')
@@ -44,4 +52,7 @@ class BoxLunch(models.Model):
 
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Box Lunches"
     

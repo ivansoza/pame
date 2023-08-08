@@ -8,18 +8,21 @@
 
 {% block contenido %}
 <div class="container mt-3" style="width: 95%; font-size: 14px;">
-    <form method="POST" class="card p-3 mt-5" autocomplete="off" action="">
+    <form method="post" class="card p-3 mt-5" autocomplete="off" action="">
       {% csrf_token %}
       <div class="row">
-        <div class="col-sm-12 col-md-4 col-lg-4">
+        <div class="col-sm-12 col-md-3 col-lg-3">
           {{form4.numeroOficio|as_crispy_field}}
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
+        <div class="col-sm-12 col-md-3 col-lg-3">
           {{form4.fechaOficio|as_crispy_field}}
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
+        <div class="col-sm-12 col-md-3 col-lg-3">
             {{form4.numeroCarpeta|as_crispy_field}}
-          </div>
+        </div>
+        <div class="col-sm-12 col-md-3 col-lg-3">
+          {{form4.estacion|as_crispy_field}}
+      </div>
       </div>
   
       <div class="row">
@@ -33,17 +36,29 @@
           {{form4.cargoAutoridadSigna|as_crispy_field}}
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            {{form4.entidadFederativa|as_crispy_field}}
+          </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+          {{form4.municipio|as_crispy_field}}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+          {{form4.localidad|as_crispy_field}}
+        </div>
+      </div>
   
       <div class="row">
         <div class="col-sm-12 col-md-4 col-lg-4">
-            {{form4.delExtranjero|as_crispy_field}}
+            {{form4.certificadoMedico|as_crispy_field}}
         </div>
         
         <div class="col-sm-12 col-md-4 col-lg-4">
-            {{form4.certificadoMedico|as_crispy_field}}
+            {{form4.oficioPuesta|as_crispy_field}}
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
-          {{form4.oficioPuesta|as_crispy_field}}
+          {{form4.oficioComision|as_crispy_field}}
         </div>
      
       </div>
@@ -63,7 +78,7 @@
         </div>    {% endcomment %}
         
    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#miModal">
-             Añadir Extrangero
+             Añadir Extranjero
           </button> 
     </div>    
   </div>    
@@ -77,78 +92,76 @@
               <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                       <div class="modal-header">
-                          <h5 class="modal-title">Añadir Extrangero</h5>
+                          <h5 class="modal-title">Añadir Extranjero</h5>
                           <button type="button" class="close" data-dismiss="modal">&times;</button>
                       </div>
                       <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-sm-12 col-md-4 col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.fechaRegistro|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.fechaRegistro|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.fechaRegistro|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.nombreE|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.apellidoPaternoE|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.apellidoMaternoE|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                </div>   
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.nacionalidad|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.genero|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.fechaNacimiento|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.documentoIdentidad|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.fotografiaExtranjero|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                      <div class="form-group">
-                                        {{form2.viajaSolo|as_crispy_field}}
-                                      </div>
-                                    </div>
-                                </div>                       
+                        <div class="row">
+                          <div class="col-sm-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                              {{form2.fechaRegistro|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                              {{form2.horaRegistro|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                              {{form2.numeroE|as_crispy_field}}
+                            </div>
+                          </div>
+                      </div>
+                      
+                      <div class="row">
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              {{form2.nombreE|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              {{form2.apellidoPaternoE|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              {{form2.apellidoMaternoE|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-3">
+                            <div class="form-group">
+                              {{form2.nacionalidad|as_crispy_field}}
+                            </div>
+                      </div>   
+
+                      <div class="row">
+                         
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="form-group">
+                              {{form2.genero|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="form-group">
+                              {{form2.documentoIdentidad|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-4">
+                            <div class="form-group">
+                              {{form2.fechaNacimiento|as_crispy_field}}
+                            </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-lg-4">
+                            <div class="form-group">
+                              {{form2.viajaSolo|as_crispy_field}}
+                            </div>
+                          </div>
+                      </div>       
                       </div>
   
   

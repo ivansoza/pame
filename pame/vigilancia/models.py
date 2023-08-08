@@ -8,12 +8,16 @@ class Nacionalidad(models.Model):
    
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Nacionalidades"
 
 class Genero(models.Model):
     genero = models.CharField(max_length=100,verbose_name='Genero')
     
     def __str__(self) -> str:
         return '__all__'
+    
 
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro')
@@ -32,6 +36,8 @@ class Extranjero(models.Model):
 
         return '__all__'
     
+    
+    
 class OficioPuestaDisposicionINM(models.Model):
     numeroOficio = models.IntegerField(verbose_name='Numero Oficial')
     fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
@@ -43,6 +49,9 @@ class OficioPuestaDisposicionINM(models.Model):
     oficioComision = models.FileField(verbose_name='Oficio Comisión')
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Oficinas Puesta Disposición por INM"
     
      
 class OficioPuestaDisposicionAC(models.Model):
@@ -56,12 +65,14 @@ class OficioPuestaDisposicionAC(models.Model):
     entidadFederativa = models.CharField(max_length=100, verbose_name='Entidad Federativa')
     municipio = models.CharField(max_length=50, verbose_name='Municipio ', blank=True)
     localidad = models.CharField(max_length=50, verbose_name='Localidad ', blank=True)
-    certificadoMedico = models.FileField(verbose_name='Certificado Medico')
-    oficioPuesta =models.FileField(verbose_name='Oficio Puesta')
+    certificadoMedico = models.FileField(verbose_name='Certificado Medico', blank=True)
+    oficioPuesta =models.FileField(verbose_name='Oficio Puesta',blank=True)
     oficioComision = models.FileField(verbose_name='Oficio Comisión', blank=True)
     def __str__(self) -> str:
         return '__all__'
 
+class Meta:
+        verbose_name_plural = "Oficinas Puesta Disposición por AC"
 OPCION_RELACION_CHOICES=[
     [0,'ESPOSO(A)'],
     [1,'HIJO(A)'],
@@ -80,4 +91,7 @@ class Acompanante(models.Model):
 
     def __str__(self) -> str:
         return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "Acompañantes"
     

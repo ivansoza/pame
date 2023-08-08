@@ -14,6 +14,9 @@ class ImagenCarrousel(models.Model):
     def __str__(self):
         return self.titulo
     
+    class Meta:
+        verbose_name_plural = "Imágenes de Carrousel "
+    
 
 @receiver(pre_save, sender=ImagenCarrousel)
 def eliminar_imagen_anterior(sender, instance, **kwargs):

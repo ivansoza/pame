@@ -70,10 +70,10 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Home</a>
+        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Inicio</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Menu</a>
+        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Menú</a>
       </li>
      
     </ul>
@@ -233,7 +233,7 @@
             <a href="pages/widgets.html" class="nav-link active">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Menu
+                Menú
                 <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
@@ -263,16 +263,39 @@
               <li class="nav-item">
                 <a href="{% url 'addTraslado' %} " class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Traslado de otra estación</p>
+                  <p>Voluntad propia</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'addHospedaje' %}" class="nav-link">
+                <a href="{% url 'addTraslado' %} " class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Hospedaje de otra estación</p>
+                  <p>Hospedaje</p>
                 </a>
               </li>
-             
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Traslado</p>
+                  <i class="right fas fa-angle-left"></i>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="pages/charts/flot.html" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Traslado Temporal</p>
+                    </a>
+                  </li>
+                    <li class="nav-item">
+                      <a href="pages/charts/flot.html" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Trasladar</p>
+                      </a>
+                    </li>
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
             </ul>
           </li>
           <li class="nav-item">
@@ -335,7 +358,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Inicio</a></li>
               <li class="breadcrumb-item active">{% block seccion %}{% endblock seccion %}</li>
             </ol>
           </div><!-- /.col -->
