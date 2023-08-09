@@ -2,8 +2,7 @@ from typing import Any, Dict
 from django.forms.models import BaseModelForm
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
-from .forms import OficioPuestaDisposicionINMform, ExtranjeroForm, OficioPuestaDisposicionACform
-from .models import OficioPuestaDisposicionINM, Extranjero, OficioPuestaDisposicionAC
+from .models import Extranjero
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -34,6 +33,11 @@ def addHospedaje(request):
 def addTraslado(request):
     return render(request, "addTraslado.html")
 
+<<<<<<< HEAD
+
+
+
+=======
 class Puesta(CreateView):
     model = OficioPuestaDisposicionINM
     form_class = OficioPuestaDisposicionINMform
@@ -148,3 +152,4 @@ class PuestaAutoridadCompetente(CreateView):
     #     else:
     #         return self.form_invalid(form)
 
+>>>>>>> origin/master
