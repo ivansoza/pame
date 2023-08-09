@@ -1,3 +1,4 @@
+
 {% extends 'administrador/base.html' %}
 {% load static %}
 {% block titulo %}Pame - Menu {% endblock titulo %}
@@ -11,14 +12,14 @@
 
 <ul>
     
-    <h1 class="title" style="text-align: center;"> Accesos Rapidos</h1>
+    <h1 class="title" style="text-align: center;"> Accesos Rápidos</h1>
 
   
 
         
         <div class="container" >
             <div class="card">
-                <h4><a href="{% url 'homeSeguridadGeneral' %}" style="font-size: x-large ;">SeguridadGeneral</a> </h4>
+                <h4><a href="{% url 'homeSeguridadGeneral' %}" style="font-size: x-large ;">Seguridad General</a> </h4>
                 <img src="{% static 'img/gh.jpg' %}" style="object-fit: cover; width: 80%; height: 80%; display: block; margin: 0 auto; width: 50%;">
             </div>
 
@@ -29,23 +30,23 @@
             </div>
             
             <div class="card">
-                <a href="#" style="font-size: x-large;">Juridico General</a>
+                <a href="#" style="font-size: x-large;">Jurídico General</a>
                 <img src="{% static 'img/gjuridico.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
                 <a href="{% url 'homeAmparo' %}" style="font-size: large;">Amparo</a>
 
             </div>
         
         <div class="card">
-            <a href="#" style="font-size: x-large;">Juridico Responsable</a>
+            <a href="#" style="font-size: x-large;">Jurídico Responsable</a>
             <img src="{% static 'img/jr.png' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
         </div>
 
 
         <div class="card">
-            <a href="#" style="font-size: x-large;">Medico</a>
+            <a href="#" style="font-size: x-large;">Médico</a>
             <img src="{% static 'img/medico.jpg' %}" style="object-fit: cover; width: 200%; height: 40%; display: block; margin: 0 auto; width: 30%;">
-            <a href="{% url 'homeCertificadoMedico' %}" style="font-size: large;">Certificado Medico</a>
-            <a href="{% url 'homeConsultaMedica' %}" style="font-size: large;">Consulta Medica</a>
+            <a href="{% url 'homeCertificadoMedico' %}" style="font-size: large;">Certificado Médico</a>
+            <a href="{% url 'homeConsultaMedica' %}" style="font-size: large;">Consulta Médica</a>
             <a href="{% url 'homeFarmacia' %}" style="font-size: large;">Farmacia</a>
         </div>
         
@@ -66,4 +67,14 @@
         </div>
     </div>
 
+<<<<<<< HEAD
+    <li>    <a href="{% url 'homeAcuerdoInicio' %}">Acuerdo Inicio</a> </li>
+    <li>    <a href="{% url 'homeActuaciones' %}">Actuaciones</a> </li>
+    <li>    <a href="{% url 'homeComparecencia' %}">Comparecencia</a> </li>
+    <li>    <a href="{% url 'homeConsulado' %}">Consulado</a> </li>
+    <li>    <a href="{% url 'homeLLamadasTelefonicas' %}">LLamadas Telefonicas</a> </li>
+    <li>    <a href="{% url 'homePertenencias' %}">Pertenencias</a> </li>
 {% endblock contenido %}
+=======
+{% endblock contenido %}
+>>>>>>> origin/master
