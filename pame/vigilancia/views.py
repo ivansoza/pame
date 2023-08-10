@@ -1,8 +1,9 @@
 from django.shortcuts import render
+
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
-from .forms import puestDisposicionINMForm, extranjeroFormsInm
+
 
 
 
@@ -32,10 +33,6 @@ def addHospedaje(request):
 
 def addTraslado(request):
     return render(request, "addTraslado.html")
-
-
-def homePuestaAC (request):
-    return render(request, "home/puestas/homePuestaAC.html")
 
 def homePuestaINM (request):
     return render(request, "home/puestas/homePuestaINM.html")

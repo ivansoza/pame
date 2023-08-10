@@ -1,5 +1,4 @@
 from django import forms
-
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM
 
 class puestDisposicionINMForm(forms.ModelForm):
@@ -31,3 +30,4 @@ class extranjeroFormsAC(forms.ModelForm):
           super()._init_(*args, **kwargs)
            # Excluye el campo que deseas excluir
           del self.fields['deLaPuestaINM']
+
