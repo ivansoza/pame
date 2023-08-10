@@ -1,7 +1,12 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-
-
+{% load static %}
 {% block titulo %}PAME - Seguridad General{% endblock titulo %}
+
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/cards/style.css' %}?v1.1 ">
+{% endblock link %}
+
+
 
 {% block dashboard %}Seguridad General{% endblock dashboard %}
 
@@ -10,6 +15,49 @@
 
 {% block contenido  %}
 <h1>Estas en el menu de Seguridad General</h1>
+
+<div class="container mt-10">
+    <div class="row">
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-star"></i></div>
+          <p>PUESTA POR ACCIÓN MIGRATORIA</p>
+
+          <button class="card-button">Ejemplo 1</button>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-heart"></i></div>
+          <p>Hola</p>
+
+          <button class="card-button">Ejemplo 2</button>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-rocket"></i></div>
+          <p>Hola</p>
+
+          <button class="card-button">Ejemplo 3</button>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-fire"></i></div>
+          <p>Hola</p>
+          <button class="card-button">Ejemplo 4</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-fire"></i></div>
+          <p>Hola</p>
+          <button class="card-button">Ejemplo 4</button>
+        </div>
+      </div>
+  </div>
 
 
 {% endblock contenido  %}
