@@ -67,6 +67,6 @@ class createExtranjeroINM(CreateView):
         context['puesta_id'] = self.kwargs['puesta_id']
         return context
 
-    def get_success_url(self):
-        return f'/ruta-exitosa/{self.kwargs["puesta_id"]}/'
+    # def get_success_url(self):
+    #     return f'//{self.kwargs["puesta_id"]}/'
     
