@@ -1,6 +1,6 @@
 from django.urls import path, include
 #from .views import Puesta, PuestaAutoridadCompetente
-from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable
+from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable, homePuestaAC,homePuestaINM, homePuestaVP
 
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
@@ -9,6 +9,12 @@ urlpatterns = [
     #path('accion-migratoria/',puesta, name="addAccionMigratoria"),
     path('hospedaje/',addHospedaje, name="addHospedaje"),
     path('traslado/',addTraslado, name="addTraslado"),
+    path('seguridad/puesta-ac/', homePuestaAC, name='homePuestaAC'),
+    path('seguridad/puesta-inm/', homePuestaINM, name='homePuestaINM'),
+    path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
+
+    
+    
     #path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")
 
 

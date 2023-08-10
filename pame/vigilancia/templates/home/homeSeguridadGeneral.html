@@ -11,6 +11,12 @@
 {% block contenido  %}
 <h1>Estas en el menu de Seguridad General</h1>
 
+<ul>
+    <li><a href=" {% url 'homePuestaAC' %} ">Puesta AC </a></li>
+    <li><a href="{% url 'homePuestaINM' %}">Puesta INM </a></li>
+    <li><a href="{% url 'homePuestaVP' %}">Puesta VP </a></li>
+</ul>
+
 
 {% endblock contenido  %}
 
