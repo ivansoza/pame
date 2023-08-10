@@ -1,11 +1,4 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-
-
-{% block link %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.css">
-
-{% endblock link %}
-
 {% block dashboard %}Estas en el menu de puesta INM{% endblock dashboard %}
 
 {% block contenido %}
@@ -31,7 +24,7 @@
                 <td>{{ objeto.nombreAutoridadSigna }}</td>
                 <td>{{ objeto.puntoRevision }}</td>
                 <td>{{ objeto.deLaEstacion }}</td>
-                <td><button><a href=" {% url 'crearExtranjeroINM' objeto.id %}">Añadir Extranjeros</a></button></td>
+                <td><button><a href=" {% url 'crearExtranjeroINM' objeto.id%}">Añadir Extranjeros</a></button></td>
             </tr>
         {% endfor %}
     </tbody>
@@ -40,15 +33,3 @@
 {% endblock contenido %}
 
 
-{% block scripts %}
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Inicializa DataTables
-        $('#puestasinm-table').DataTable();
-    });
-</script>
-
-{% endblock scripts %}
