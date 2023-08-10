@@ -1,5 +1,5 @@
 from django.db import models
-from vigilancia.models import ExtranjeroAC, ExtranjeroINM
+from vigilancia.models import Extranjero
 
 # Create your models here.
 class TestigoUno (models.Model):
