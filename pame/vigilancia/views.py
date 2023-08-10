@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
-
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm
 
 
 
