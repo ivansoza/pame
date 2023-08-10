@@ -13,8 +13,8 @@ class PuestaDisposicionINM(models.Model):
     fechaOficio = models.DateField()
     nombreAutoridadSigna = models.CharField(max_length=100)
     cargoAutoridadSigna = models.CharField(max_length=100)
-    oficioPuesta = models.FileField(upload_to='files',  null=True)
-    oficioComision = models.FileField(upload_to='files',  null=True)
+    oficioPuesta = models.FileField(upload_to='files',  null=True, blank=True)
+    oficioComision = models.FileField(upload_to='files',  null=True, blank=True)
     puntoRevision = models.CharField(max_length=100)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
 

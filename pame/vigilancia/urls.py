@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import inicioINMList
+from .views import inicioINMList, createPuestaINM, createExtranjeroINM
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable, homePuestaAC,homePuestaINM, homePuestaVP
 
 urlpatterns = [
@@ -12,7 +12,8 @@ urlpatterns = [
     path('seguridad/puesta-ac/', homePuestaAC, name='homePuestaAC'),
     path('seguridad/puesta-inm/', inicioINMList.as_view(), name='homePuestaINM'),
     path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
-
+    path('seguridad/crear-puesta-inm/', createPuestaINM.as_view(), name='crearPuestaINM'),
+    path('seguridad/crear-extranjero-inm/', createExtranjeroINM.as_view(), name='crearExtranjeroINM'),
     
     
     #path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")

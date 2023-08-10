@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
-
+from .forms import puestDisposicionINMForm, extranjeroFormsInm
 
 
 
@@ -47,3 +47,15 @@ class inicioINMList(ListView):
     model = PuestaDisposicionINM          
     template_name = "home/puestas/homePuestaINM.html" 
     context_object_name = 'puestasinm'
+
+class createPuestaINM(CreateView):
+    model = PuestaDisposicionINM               
+    form_class = puestDisposicionINMForm      
+    template_name = 'home/puestas/createPuestaINM.html'  
+    success_url = reverse_lazy('homePuestaINM')
+
+class createExtranjeroINM(CreateView):
+    model =Extranjero             
+    form_class = extranjeroFormsInm    
+    template_name = 'home/puestas/crearExtranjeroINM.html'  
+    success_url = reverse_lazy('homePuestaINM')
