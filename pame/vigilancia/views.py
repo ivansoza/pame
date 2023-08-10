@@ -1,8 +1,8 @@
+from typing import Any, Dict
 from django.forms.models import BaseModelForm
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
-from .forms import OficioPuestaDisposicionINMform, ExtranjeroForm, OficioPuestaDisposicionACform
-from .models import OficioPuestaDisposicionINM, Extranjero, OficioPuestaDisposicionAC
+from .models import Extranjero
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -33,16 +33,33 @@ def addHospedaje(request):
 def addTraslado(request):
     return render(request, "addTraslado.html")
 
+<<<<<<< HEAD
 
-class Puesta(TemplateView):
+
+
+=======
+class Puesta(CreateView):
+    model = OficioPuestaDisposicionINM
+    form_class = OficioPuestaDisposicionINMform
     template_name = 'addAccionMigratoria.html'
-
+    success_url = '/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form1'] = OficioPuestaDisposicionINMform()
-        context['form2'] = ExtranjeroForm()
+        context['form_modelo_b'] = ExtranjeroForm()
         return context
+    
+    def form_valid(self, form):
+        form_modelo_b = ExtranjeroForm(self.request.POST)
+        if form.is_valid() and form_modelo_b.is_valid():
+            # Guarda los datos del ModeloA y ModeloB
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+# -> Vista funcional por template view 
+# class Puesta(TemplateView):
+#     template_name = 'addAccionMigratoria.html'
 
 class PuestaAutoridadCompetente(CreateView):
     model = OficioPuestaDisposicionAC
@@ -58,7 +75,14 @@ class PuestaAutoridadCompetente(CreateView):
         context['form2'] = ExtranjeroForm()
         return context
 
-# Primera vista funcional 
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['form1'] = OficioPuestaDisposicionINMform()
+#         context['form2'] = ExtranjeroForm()
+#         return context
+
+
+# -> Primera vista funcional con un solo modelo 
 # class Puesta(CreateView):
 #     model = OficioPuestaDisposicionINM
 #     form_class = OficioPuestaDisposicionINMform
@@ -128,3 +152,4 @@ class PuestaAutoridadCompetente(CreateView):
     #     else:
     #         return self.form_invalid(form)
 
+>>>>>>> origin/master
