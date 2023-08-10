@@ -21,6 +21,10 @@ class PuestaDisposicionINM(models.Model):
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
 
+    def __str__(self):
+        return self.numeroOficio
+    
+
 class PuestaDisposicionAC(models.Model):   
     numeroOficio = models.IntegerField()
     fechaOficio = models.DateField()
@@ -60,7 +64,7 @@ class Extranjero(models.Model):
     viajaSolo = models.BooleanField()
     tipoEstancia = models.CharField(max_length=50, blank=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True)
-    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True)
+    
     class Meta:
         verbose_name_plural = "Extranjeros" 
     

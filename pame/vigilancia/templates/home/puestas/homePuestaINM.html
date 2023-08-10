@@ -31,7 +31,7 @@
                 <td>{{ objeto.nombreAutoridadSigna }}</td>
                 <td>{{ objeto.puntoRevision }}</td>
                 <td>{{ objeto.deLaEstacion }}</td>
-                <td><button><a href=" {% url 'crearExtranjeroINM' %}">Añadir Extranjeros</a></button></td>
+                <td><button><a href=" {% url 'crearExtranjeroINM' objeto.id %}">Añadir Extranjeros</a></button></td>
             </tr>
         {% endfor %}
     </tbody>

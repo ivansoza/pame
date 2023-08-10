@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm
 
 
@@ -54,5 +54,19 @@ class createPuestaINM(CreateView):
 class createExtranjeroINM(CreateView):
     model =Extranjero             
     form_class = extranjeroFormsInm    
-    template_name = 'home/puestas/crearExtranjeroINM.html'  
+    template_name = 'home/puestas/crearExtranjeroINM.html' 
     success_url = reverse_lazy('homePuestaINM')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['deLaPuestaIMN'] = self.kwargs['puesta_id']
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['puesta_id'] = self.kwargs['puesta_id']
+        return context
+
+    def get_success_url(self):
+        return f'/ruta-exitosa/{self.kwargs["puesta_id"]}/'
+    
