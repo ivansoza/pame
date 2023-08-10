@@ -1,13 +1,17 @@
 from django.shortcuts import render
+
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
 
-
-
-
-
-
+from django.urls import reverse
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from django.db import transaction 
+from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect
+from django import forms
+from django.views.generic import TemplateView, CreateView
 
 
 # Create your views here.
@@ -32,10 +36,6 @@ def addHospedaje(request):
 
 def addTraslado(request):
     return render(request, "addTraslado.html")
-
-
-def homePuestaAC (request):
-    return render(request, "home/puestas/homePuestaAC.html")
 
 def homePuestaINM (request):
     return render(request, "home/puestas/homePuestaINM.html")
