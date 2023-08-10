@@ -59,8 +59,8 @@ class Extranjero(models.Model):
     fotografiaExtranjero = models.FileField(upload_to='files',  null=True)
     viajaSolo = models.BooleanField()
     tipoEstancia = models.CharField(max_length=50, blank=True)
-    deLaPuesta = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True)
-    
+    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True)
+    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True)
     class Meta:
         verbose_name_plural = "Extranjeros" 
 

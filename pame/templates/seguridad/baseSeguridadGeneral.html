@@ -53,6 +53,11 @@
     
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+
+  {% block link %}
+  
+  {% endblock link %}
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -455,22 +460,13 @@
 <script type="text/javascript" src=" {% static 'js/fernando.js' %}"></script>  
 
 
+{% block scripts %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
-    
-    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 
-    <script>
-      $(document).ready(function() {
-          $('#miTabla').DataTable({
-              dom: 'Bfrtip', // Habilita los botones de exportación
-              buttons: ['copy', 'csv', 'excel', 'pdf', 'print'], // Botones de exportación disponibles
-          });
-      });
-  </script>
+{% endblock scripts %}
+  
 
 </body>
 </html>

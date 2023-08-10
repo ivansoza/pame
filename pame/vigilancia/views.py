@@ -1,13 +1,13 @@
-from typing import Any, Dict
-from django.forms.models import BaseModelForm
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
-from .models import Extranjero
+from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
-from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
-from django import forms
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, ListView
+
+
+
+
+
+
 
 
 # Create your views here.
@@ -42,3 +42,8 @@ def homePuestaINM (request):
 
 def homePuestaVP (request):
     return render(request, "home/puestas/homePuestaVP.html")
+
+class inicioINMList(ListView):
+    model = PuestaDisposicionINM          
+    template_name = "home/puestas/homePuestaINM.html" 
+    context_object_name = 'puestasinm'
