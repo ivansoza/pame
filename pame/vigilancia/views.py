@@ -4,14 +4,11 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView
 
-from django.urls import reverse
-from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
-from django.db import transaction 
-from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
-from django import forms
-from django.views.generic import TemplateView, CreateView
+
+
+
+
+
 
 
 # Create your views here.
@@ -47,3 +44,15 @@ class inicioINMList(ListView):
     model = PuestaDisposicionINM          
     template_name = "home/puestas/homePuestaINM.html" 
     context_object_name = 'puestasinm'
+
+class createPuestaINM(CreateView):
+    model = PuestaDisposicionINM               
+    form_class = puestDisposicionINMForm      
+    template_name = 'home/puestas/createPuestaINM.html'  
+    success_url = reverse_lazy('homePuestaINM')
+
+class createExtranjeroINM(CreateView):
+    model =Extranjero             
+    form_class = extranjeroFormsInm    
+    template_name = 'home/puestas/crearExtranjeroINM.html'  
+    success_url = reverse_lazy('homePuestaINM')

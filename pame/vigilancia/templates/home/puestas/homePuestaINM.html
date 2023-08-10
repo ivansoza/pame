@@ -11,7 +11,7 @@
 {% block contenido %}
 
 <h1>Listado de Puestas</h1>
-<button><a href="#">Crear Puesta</a></button>
+<button><a href=" {% url 'crearPuestaINM' %}">Crear Puesta</a></button>
 <table id="puestasinm-table" class="display">
     <thead>
         <tr>
@@ -20,6 +20,7 @@
             <th>Autoridad</th>
             <th>Punto Revisión</th>
             <th>Estacion</th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +31,7 @@
                 <td>{{ objeto.nombreAutoridadSigna }}</td>
                 <td>{{ objeto.puntoRevision }}</td>
                 <td>{{ objeto.deLaEstacion }}</td>
+                <td><button><a href=" {% url 'crearExtranjeroINM' %}">Añadir Extranjeros</a></button></td>
             </tr>
         {% endfor %}
     </tbody>
