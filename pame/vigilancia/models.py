@@ -7,6 +7,9 @@ class Nacionalidad(models.Model):
     
     class Meta:
         verbose_name_plural = "Nacionalidades"
+    
+    def __str__(self):
+        return self.nombre
 
 class PuestaDisposicionINM(models.Model):
     numeroOficio = models.CharField(max_length=50)
@@ -56,8 +59,8 @@ OPCION_GENERO_CHOICES=[
     [1,'MUJER'],
 ]
 class Extranjero(models.Model):
-    fechaRegistro = models.DateField()
-    horaRegistro = models.DateTimeField(blank=True, null=True)
+    fechaRegistro = models.DateField(auto_now_add=True)
+    horaRegistro = models.DateTimeField(auto_now_add=True)
     numeroExtranjero = models.IntegerField(blank=True, null=True)
     estacionMigratoria = models.CharField(max_length=50,blank=True)
     nombreExtranjero = models.CharField(max_length= 50, blank=True)
@@ -65,15 +68,15 @@ class Extranjero(models.Model):
     apellidoMaternoExtranjero = models.CharField(max_length=50, blank=True)
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
     huellaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE)
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name="Nacionalidad")
     genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
     fotografiaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
     viajaSolo = models.BooleanField()
     tipoEstancia = models.CharField(max_length=50, blank=True)
-    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros')
-    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros')
+    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
+    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')
 
     class Meta:
         verbose_name_plural = "Extranjeros" 

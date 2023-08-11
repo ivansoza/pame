@@ -63,16 +63,106 @@ class puestaDisposicionACForm(forms.ModelForm):
     class Meta:
         model = PuestaDisposicionAC
         fields ='__all__'
+        widgets = {
+            # Otros campos y widgets
+            'deLaEstacion': forms.Select(attrs={'class': 'form-control'}),
+           
+        }
+
+
 
 class extranjeroFormsInm(forms.ModelForm):
+    numeroExtranjero = forms.IntegerField(
+        label= "Numero:",
+    )
+    estacionMigratoria = forms.CharField(
+        label= "Estación Migratoria:",
+    )
+    nombreExtranjero = forms.CharField(
+        label= "Nombre(s):",
+    )
+    apellidoPaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+    )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+    )
+    firmaExtranjero = forms.FileField(
+        label= "Firma:",
+    )
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+
+    )
+    documentoIdentidad = forms.FileField(
+        label= "Documento de Identidad:",
+
+    )
+    fotografiaExtranjero = forms.FileField(
+        label= "Fotografía de Extranjero:",
+
+    )
+    tipoEstancia = forms.CharField(
+        label= "Tipo de Estancia:",
+    )
     class Meta:
         model = Extranjero
-        fields = ['fechaRegistro', 'horaRegistro','numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
-        
+        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+    widgets = {
+            # Otros campos y widgets
+            'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
+
+        }
+
 
 class extranjeroFormsAC(forms.ModelForm):
+    numeroExtranjero = forms.IntegerField(
+        label= "Numero:",
+    )
+    estacionMigratoria = forms.CharField(
+        label= "Estación Migratoria:",
+    )
+    nombreExtranjero = forms.CharField(
+        label= "Nombre(s):",
+    )
+    apellidoPaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+    )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+    )
+    firmaExtranjero = forms.FileField(
+        label= "Firma:",
+    )
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+
+    )
+    documentoIdentidad = forms.FileField(
+        label= "Documento de Identidad:",
+
+    )
+    fotografiaExtranjero = forms.FileField(
+        label= "Fotografía de Extranjero:",
+
+    )
+    tipoEstancia = forms.CharField(
+        label= "Tipo de Estancia:",
+    )
     class Meta:
         model = Extranjero
-        fields = ['fechaRegistro', 'horaRegistro','numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaAC']
+        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaAC']
+        widgets = {
+            # Otros campos y widgets
+            'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
 
+        }
 
