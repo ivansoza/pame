@@ -185,3 +185,12 @@ class DeleteExtranjeroINM(DeleteView):
     template_name = 'home/puestas/eliminarExtranjeroINM.html'
     success_url = reverse_lazy('homePuestaINM')
 
+class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_puestadisposicioninm',
+    }
+    model = Extranjero
+    form_class = extranjeroFormsAC
+    template_name = 'home/puestas/createExtranjeroAC.html'
+    success_url = reverse_lazy( 'homePuestaAC')
+    
