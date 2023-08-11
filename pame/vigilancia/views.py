@@ -85,7 +85,7 @@ class createExtranjeroINM(CreateView):
 
     # def get_success_url(self):
     #     return f'//{self.kwargs["puesta_id"]}/'
-    
+
 
 
 class createExtranjeroAC(CreateView):
@@ -103,3 +103,20 @@ class createExtranjeroAC(CreateView):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.kwargs['puesta_id']
         return context
+class listarExtranjeros(ListView):
+    model = Extranjero
+    template_name = 'home/puestas/listExtranjenros.html'
+    context_object_name = 'extranjeros'
+
+    def get_queryset(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
+        queryset = Extranjero.objects.filter(deLaPuestaIMN=puesta)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        puesta_id = self.kwargs['puesta_id']
+        context['puesta'] = PuestaDisposicionINM.objects.get(id=puesta_id)
+        return context
+    
