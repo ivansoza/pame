@@ -1,0 +1,13 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block contenido %}
+<h1>EXTRANJERO</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="hidden" name="deLaPuestaAC" value="{{ puesta_id }}">
+        <button type="submit">Guardar</button>
+    </form>
+{% endblock %}

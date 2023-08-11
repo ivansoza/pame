@@ -7,7 +7,7 @@ class puestDisposicionINMForm(forms.ModelForm):
         fields ='__all__'
 
 class puestaDisposicionACForm(forms.ModelForm):
-    class Mate:
+    class Meta:
         model = PuestaDisposicionAC
         fields ='__all__'
 
@@ -20,6 +20,6 @@ class extranjeroFormsInm(forms.ModelForm):
 class extranjeroFormsAC(forms.ModelForm):
     class Meta:
         model = Extranjero
-        fields = ['fechaRegistro', 'horaRegistro','numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia']
+        fields = ['fechaRegistro', 'horaRegistro','numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaAC']
 
 
