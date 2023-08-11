@@ -80,6 +80,9 @@ class Extranjero(models.Model):
 
     class Meta:
         verbose_name_plural = "Extranjeros" 
+    # def __str__(self):
+    #     return self.numeroExtranjero, self.estacionMigratoria, self.nombreExtranjero
+    
     
 OPCION_RELACION_CHOICES=[
     [0,'ESPOSO(A)'],

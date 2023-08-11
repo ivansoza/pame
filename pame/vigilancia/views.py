@@ -177,7 +177,7 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     }
     model = Extranjero
     form_class = extranjeroFormsInm
-    template_name = 'home/puestas/editarEx.html'
+    template_name = 'home/puestas/crearExtranjeroINM.html'
     success_url = reverse_lazy( 'homePuestaINM')
     
 class DeleteExtranjeroINM(DeleteView):
