@@ -1,0 +1,51 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% block dashboard %}Estas en el menu de puesta INM{% endblock dashboard %}
+
+{% block contenido %}
+
+<h1>Listado de Puestas</h1>
+<button><a href=" {% url 'crearPuestaINM' %}">Crear Puesta</a></button>
+<table id="puestasinm-table" class="display">
+    <thead>
+        <tr>
+            <th>Numero Oficio</th>
+            <th>Fecha de Oficio</th>
+            <th>Autoridad</th>
+            <th>Punto Revisión</th>
+            <th>Estacion</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for objeto in puestasinm %}
+            <tr>
+                <td>{{ objeto.numeroOficio }}</td>
+                <td>{{ objeto.fechaOficio }}</td>
+                <td>{{ objeto.nombreAutoridadSigna }}</td>
+                <td>{{ objeto.puntoRevision }}</td>
+                <td>{{ objeto.deLaEstacion }}</td>
+                <td>
+                    <button><a href=" {% url 'crearExtranjeroINM' objeto.id%}">Añadir Extranjeros</a></button>
+                    <button><a href="{% url 'listarExtranjeros' objeto.id %}">Ver Extranjeros</a></button>
+                </td>
+                
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock contenido %}
+
+{% block script %}
+    <script>
+    $(document).ready(function() {
+        $('#puestasinm-table').DataTable();
+    });
+  </script>
+  
+{% endblock script %}
+
+
+
+

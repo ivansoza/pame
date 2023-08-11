@@ -1,12 +1,12 @@
 from django.db import models
-from vigilancia.models import Extranjero
+
 # Create your models here.
 
 class Inventario(models.Model):
     unidadMigratoria = models.CharField(max_length=30, verbose_name='Unidad Migratoria')
     fechaEntrega = models.DateField(verbose_name='Fecha Entrega')
     horaEntrega = models.DateTimeField(verbose_name='Hora Entrega')
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
+  
 
     def __str__(self) -> str:
         return '__all__'

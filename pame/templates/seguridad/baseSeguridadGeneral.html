@@ -1,4 +1,5 @@
 {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,24 +35,12 @@
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
   <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.12124466">
 
-    <!-- datatables -->
-
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
-
   <script src="https://kit.fontawesome.com/78350df3d2.js" crossorigin="anonymous"></script>
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href=" {% static 'bootstrap/css/bootstrap.min.css' %} ">
-  <!-- CSS personalizado --> 
-  <link rel="stylesheet" href="main.css">  
-    
-    
-  <!--datables CSS básico-->
-  <link rel="stylesheet" type="text/css" href=" {% static 'datatables/datatables.min.css' %} "/>
-  <!--datables estilo bootstrap 4 CSS-->  
-  <link rel="stylesheet"  type="text/css" href=" {% static 'datatables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css' %} ">    
-    
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!-- Incluye las bibliotecas de DataTables -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -238,101 +227,106 @@
               </p>
             </a>
           </li>
+
+
+          <!-- Puesta disposición -->
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
-                Puestas 
+                Puesta a Disposición
                 <i class="fas fa-angle-left right"></i>
                 <span class="badge badge-info right"></span>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'addAccionMigratoria' %}" class="nav-link">
+                <a href="{% url 'homePuestaINM' %} "  class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Acción Migratoria</p>
+                  <p>Por personal del INM</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'addAutoridadCompetente' %}" class="nav-link">
+                <a href="{% url 'homePuestaAC' %} " class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Autoridad Competente</p>
+                  <p>Por autoridad competente</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'addTraslado' %} " class="nav-link">
+                <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Voluntad propia</p>
+                  <p>Por voluntad propia</p>
                 </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'addTraslado' %} " class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Hospedaje</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Traslado</p>
-                  <i class="right fas fa-angle-left"></i>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="pages/charts/flot.html" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Traslado Temporal</p>
-                    </a>
-                  </li>
-                    <li class="nav-item">
-                      <a href="pages/charts/flot.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Trasladar</p>
-                      </a>
-                    </li>
-                      </p>
-                    </a>
-                  </li>
-                </ul>
               </li>
             </ul>
           </li>
+
+
+                    <!-- Cierre de Puesta disposición -->
+
+
+                    <!--  Traslado -->
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
-                Ejemplo
+                Traslado
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="pages/charts/chartjs.html" class="nav-link">
+                <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>ChartJS</p>
+                  <p>Enviar extranjero</p>
                 </a>
               </li>
+
               <li class="nav-item">
-                <a href="pages/charts/flot.html" class="nav-link">
+                <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Flot</p>
+                  <p>Arribar extranjeros</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inline</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/uplot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>uPlot</p>
-                </a>
-              </li>
+            
             </ul>
           </li>
+                    <!--  Fin Traslado -->
+
+
+                    <!--  Alojamiento -->
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Alojamiento
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+
+          </li>
+
+          <!-- Fin  Alojamiento -->
+          <!--   Extranjeros -->
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-pie"></i>
+              <p>
+                Ver Extranjeros
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+
+          </li>
+
+          <!-- Fin  Extranjeros -->
+
+
 
 
 
@@ -370,11 +364,10 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        
-{% block contenido %}
+  {% block contenido %}
 
 
-{% endblock contenido %}
+  {% endblock contenido %}
 
 
 
@@ -401,6 +394,7 @@
 </div>
 <!-- ./wrapper -->
 
+<!-- jQuery -->
 <!-- jQuery -->
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -439,16 +433,6 @@
 <script src="{% static 'js/dashboard.js' %}"></script>
 
 
-<!-- jQuery, Popper.js, Bootstrap JS -->
-<script src=" {% static 'jquery/jquery-3.3.1.min.js' %} "></script>
-<script src=" {% static 'popper/popper.min.js' %} "></script>
-<script src=" {% static 'bootstrap/js/bootstrap.min.js' %} "></script>
-  
-<!-- datatables JS -->
-<script type="text/javascript" src=" {% static 'datatables/datatables.min.js' %} "></script>    
- 
-<script type="text/javascript" src=" {% static 'js/fernando.js' %}"></script>  
-
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
@@ -457,15 +441,20 @@
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+    
+    
 
-    <script>
-      $(document).ready(function() {
-          $('#miTabla').DataTable({
-              dom: 'Bfrtip', // Habilita los botones de exportación
-              buttons: ['copy', 'csv', 'excel', 'pdf', 'print'], // Botones de exportación disponibles
-          });
-      });
-  </script>
+
+    {% block script  %}
+    
+    {% endblock script  %}
+
+
+   
+
 
 </body>
 </html>

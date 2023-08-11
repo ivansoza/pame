@@ -1,0 +1,74 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% block dashboard %}Listado de Extranjeros{% endblock dashboard %}
+
+{% block contenido %}
+<table id="puestasinm-table" class="display">
+    <thead>
+        <tr>
+            <th>Estacion Migratoria</th>
+            <th>Nombre</th>
+            <th>Apellido Paterno</th>
+            <th>Apellido Materno</th>
+            <th>Nacionalidad</th>
+            <th>deLaPuesta</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for objeto in extranjeros %}
+        <tr>
+            <td>{{ objeto.estacionMigratoria }}</td>
+            <td>{{ objeto.nombreExtranjero }}</td>
+            <td>{{ objeto.apellidoPaternoExtranjero }}</td>
+            <td>{{ objeto.apellidoMaternoExtranjero }}</td>
+            <td>{{ objeto.nacionalidad }}</td>
+            <td>{{ objeto.deLaPuestaIMN }}</td>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock contenido %}
+
+
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#puestasinm-table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i>',
+                    titleAttr: 'Copiar'
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i>',
+                    titleAttr: 'CSV'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    titleAttr: 'Imprimir'
+                }
+            ]
+        });
+    });
+  </script>
+  
+
+{% endblock script %}
+
+
+    

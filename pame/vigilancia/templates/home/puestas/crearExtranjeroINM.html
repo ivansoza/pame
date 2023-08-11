@@ -1,0 +1,12 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+
+{% block contenido %}
+<h1>EXTRANJERO</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}">
+        <button type="submit">Guardar</button>
+    </form>
+{% endblock %}

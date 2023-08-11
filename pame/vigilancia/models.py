@@ -1,78 +1,83 @@
 from django.db import models
 from catalogos.models import Estacion
-# Create your models here.
 
 class Nacionalidad(models.Model):
     nombre = models.CharField(max_length=200,verbose_name='Nacionalidad')
     Abreviatura = models.CharField(max_length=200,verbose_name='Abreviatura')
-   
-    def __str__(self) -> str:
-        return '__all__'
     
     class Meta:
         verbose_name_plural = "Nacionalidades"
 
-class Genero(models.Model):
-    genero = models.CharField(max_length=100,verbose_name='Genero')
-    
-    def __str__(self) -> str:
-        return '__all__'
-    
+class PuestaDisposicionINM(models.Model):
+    numeroOficio = models.CharField(max_length=50)
+    fechaOficio = models.DateField()
+    nombreAutoridadSigna = models.CharField(max_length=100)
+    cargoAutoridadSigna = models.CharField(max_length=100)
+    oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
+    oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
+    puntoRevision = models.CharField(max_length=100)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, null=True, blank=True)
 
-class Extranjero(models.Model):
-    fechaRegistro = models.DateField(verbose_name='Fecha de Registro')
-    horaRegistro = models.DateTimeField(verbose_name='Hora de Registro')
-    numeroE = models.IntegerField(verbose_name='Numero')
-    nombreE = models.CharField(max_length= 50, verbose_name='Nombre')
-    apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno', blank=True)
-    apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno', blank=True)
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
-    genero = models.ForeignKey(Genero, on_delete=models.CASCADE, verbose_name='Genero')
-    documentoIdentidad = models.FileField(verbose_name='Documento Identidad')
-    fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
-    viajaSolo = models.BooleanField(verbose_name='¿Viaja solo?')
-
-    def __str__(self) -> str:
-
-        return '__all__'
-    
-    
-    
-class OficioPuestaDisposicionINM(models.Model):
-    numeroOficio = models.IntegerField(verbose_name='Numero Oficial')
-    fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
-    puntoRevision = models.CharField(max_length=100, verbose_name='Punto de Revisión')
-    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estacion Migratoria', blank=True, null=True)
-    nombreAutoridadSigna = models.CharField(max_length=100, verbose_name='Nombre de la Autoridad Asignada')
-    cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
-    oficioPuesta = models.FileField(verbose_name='Oficio Puesta')
-    oficioComision = models.FileField(verbose_name='Oficio Comisión')
-    def __str__(self) -> str:
-        return '__all__'
-    
     class Meta:
-        verbose_name_plural = "Oficinas Puesta Disposición por INM"
-    
-     
-class OficioPuestaDisposicionAC(models.Model):
-    numeroOficio = models.IntegerField(verbose_name='Numero Oficio')
-    fechaOficio = models.DateField(verbose_name='Fecha Oficio')
-    numeroCarpeta = models.CharField(max_length=30, verbose_name='Numero de Carpeta')
-    estacion = models.ForeignKey(Estacion, verbose_name="Estacion Migratoria", on_delete=models.CASCADE, blank=True, null=True)
-    dependencia = models.CharField(max_length=100, verbose_name='Dependencia')
-    nombreAutoridadSigna = models.CharField(max_length=100, verbose_name='Nombre de la Autoridad Asignada' )
-    cargoAutoridadSigna = models.CharField(max_length=100, verbose_name='Cargo de la Autoridad Asignada')
-    entidadFederativa = models.CharField(max_length=100, verbose_name='Entidad Federativa')
-    municipio = models.CharField(max_length=50, verbose_name='Municipio ', blank=True)
-    localidad = models.CharField(max_length=50, verbose_name='Localidad ', blank=True)
-    certificadoMedico = models.FileField(verbose_name='Certificado Medico', blank=True)
-    oficioPuesta =models.FileField(verbose_name='Oficio Puesta',blank=True)
-    oficioComision = models.FileField(verbose_name='Oficio Comisión', blank=True)
-    def __str__(self) -> str:
-        return '__all__'
+        verbose_name_plural = "Puestas a Disposición INM"
 
-class Meta:
-        verbose_name_plural = "Oficinas Puesta Disposición por AC"
+    def __str__(self):
+        return self.numeroOficio
+    
+    @property
+    def extranjeros(self):
+        return self.extranjeros.all()
+    
+
+class PuestaDisposicionAC(models.Model):   
+    numeroOficio = models.IntegerField()
+    fechaOficio = models.DateField()
+    nombreAutoridadSigna = models.CharField(max_length=100)
+    cargoAutoridadSigna = models.CharField(max_length=100)
+    oficioPuesta = models.FileField(upload_to='files/',  null=True)
+    oficioComision = models.FileField(upload_to='files/',  null=True)
+    puntoRevision = models.CharField(max_length=100)
+    dependencia = models.CharField(max_length=100)
+    numeroCarpeta = models.IntegerField()
+    entidadFederativa = models.CharField(max_length=100)
+    certificadoMedico = models.FileField(upload_to='files')
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Puestas a Disposicion AC"
+    
+    def __str__(self):
+        return str(self.numeroOficio) 
+    
+    
+
+OPCION_GENERO_CHOICES=[
+    [0,'HOMBRE'],
+    [1,'MUJER'],
+]
+class Extranjero(models.Model):
+    fechaRegistro = models.DateField()
+    horaRegistro = models.DateTimeField(blank=True, null=True)
+    numeroExtranjero = models.IntegerField(blank=True, null=True)
+    estacionMigratoria = models.CharField(max_length=50,blank=True)
+    nombreExtranjero = models.CharField(max_length= 50, blank=True)
+    apellidoPaternoExtranjero = models.CharField(max_length=50, blank=True)
+    apellidoMaternoExtranjero = models.CharField(max_length=50, blank=True)
+    firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    huellaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE)
+    genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
+    fechaNacimiento = models.DateField()
+    documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
+    fotografiaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
+    viajaSolo = models.BooleanField()
+    tipoEstancia = models.CharField(max_length=50, blank=True)
+    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros')
+    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros')
+
+    class Meta:
+        verbose_name_plural = "Extranjeros" 
+    
 OPCION_RELACION_CHOICES=[
     [0,'ESPOSO(A)'],
     [1,'HIJO(A)'],
@@ -80,18 +85,10 @@ OPCION_RELACION_CHOICES=[
     [3,'PADRE'],
     [4,'OTRO'],
 ]
-
 class Acompanante(models.Model):
-    delAcompañante = models.IntegerField(verbose_name='Numero del Acompañante', blank=True, null=True)
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Numero del Extranjero')
-    nombreE = models.CharField(max_length= 50, verbose_name='Nombre', blank=True)
-    apellidoPaternoE = models.CharField(max_length=50, verbose_name='Apellido Paterno', blank=True)
-    apellidoMaternoE = models.CharField(max_length=50, verbose_name='Apellido Materno', blank=True)
-    relacion = models.IntegerField(choices=OPCION_RELACION_CHOICES, verbose_name='Relación')
+    delExtranjero = models.IntegerField()
+    delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True)
+    relacion = models.IntegerField(choices=OPCION_RELACION_CHOICES)
 
-    def __str__(self) -> str:
-        return '__all__'
-    
     class Meta:
         verbose_name_plural = "Acompañantes"
-    

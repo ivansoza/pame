@@ -1,0 +1,11 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+
+{% block contenido %}
+<h1>Puesta AC</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+{% endblock %}
