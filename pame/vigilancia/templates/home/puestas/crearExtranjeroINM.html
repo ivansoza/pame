@@ -1,12 +1,75 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
 
 
 {% block contenido %}
 <h1>EXTRANJERO</h1>
-    <form method="post" enctype="multipart/form-data">
+<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+    <h1>Datos del extranjero</h1>
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}">
-        <button type="submit">Guardar</button>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-1">
+                {{form.numeroExtranjero|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-2">
+                {{form.estacionMigratoria|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.nombreExtranjero|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.apellidoPaternoExtranjero|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.apellidoMaternoExtranjero|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+    
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.firmaExtranjero|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.huellaExtranjero|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.nacionalidad|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.genero|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaNacimiento|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+     
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.documentoIdentidad|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fotografiaExtranjero|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.viajaSolo|as_crispy_field}}
+            </div>
+        </div>
+    
+        <div class="row">
+       
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.tipoEstancia|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.deLaPuestaIMN|as_crispy_field}}
+            </div>
+        </div>
+            <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}">
+        <button class="btn btn-primary float-end btn-primary" type="submit">Guardar</button>
     </form>
 {% endblock %}
