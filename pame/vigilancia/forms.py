@@ -14,20 +14,12 @@ class puestaDisposicionACForm(forms.ModelForm):
 class extranjeroFormsInm(forms.ModelForm):
     class Meta:
         model = Extranjero
-        fields = '__all__'
-
-        def _init_(self, *args, **kwargs):
-          super()._init_(*args, **kwargs)
-           # Excluye el campo que deseas excluir
-          del self.fields['deLaPuestaAC']
+        fields = ['fechaRegistro', 'horaRegistro','numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+        
 
 class extranjeroFormsAC(forms.ModelForm):
     class Meta:
         model = Extranjero
-        fields = '__all__'
+        fields = ['fechaRegistro', 'horaRegistro','numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia']
 
-        def _init_(self, *args, **kwargs):
-          super()._init_(*args, **kwargs)
-           # Excluye el campo que deseas excluir
-          del self.fields['deLaPuestaINM']
 

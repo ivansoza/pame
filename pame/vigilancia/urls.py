@@ -15,7 +15,7 @@ urlpatterns = [
     path('seguridad/puesta-inm/', inicioINMList.as_view(), name='homePuestaINM'),
     path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
     path('seguridad/crear-puesta-inm/', createPuestaINM.as_view(), name='crearPuestaINM'),
-    path('seguridad/crear-extranjero-inm/', createExtranjeroINM.as_view(), name='crearExtranjeroINM'),
+    path('seguridad/crear-extranjero-inm/<int:puesta_id>/', createExtranjeroINM.as_view(), name='crearExtranjeroINM'),
     
     
     #path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")    
