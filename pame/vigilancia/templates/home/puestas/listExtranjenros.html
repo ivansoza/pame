@@ -28,4 +28,47 @@
     </tbody>
 </table>
 {% endblock contenido %}
+
+
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#puestasinm-table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i>',
+                    titleAttr: 'Copiar'
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i>',
+                    titleAttr: 'CSV'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    titleAttr: 'Imprimir'
+                }
+            ]
+        });
+    });
+  </script>
+  
+
+{% endblock script %}
+
+
     
