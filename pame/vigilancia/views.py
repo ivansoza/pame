@@ -2,7 +2,8 @@ from django.shortcuts import render
 
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView
+from django.views.generic.edit import UpdateView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm
 
 
@@ -103,6 +104,7 @@ class createExtranjeroAC(CreateView):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.kwargs['puesta_id']
         return context
+    
 class listarExtranjeros(ListView):
     model = Extranjero
     template_name = 'home/puestas/listExtranjenros.html'
@@ -119,4 +121,27 @@ class listarExtranjeros(ListView):
         puesta_id = self.kwargs['puesta_id']
         context['puesta'] = PuestaDisposicionINM.objects.get(id=puesta_id)
         return context
+    
+class listarExtranjerosAC(ListView):
+    model = Extranjero
+    template_name = 'home/puestas/listExtranjenrosAC.html'
+    context_object_name = 'extranjerosAC'
+
+    def get_queryset(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
+        queryset = Extranjero.objects.filter(deLaPuestaAC=puesta)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        puesta_id = self.kwargs['puesta_id']
+        context['puesta'] = PuestaDisposicionAC.objects.get(id=puesta_id)
+        return context
+    
+class EditarExtranjeroINM(UpdateView):
+    model = Extranjero
+    form_class = extranjeroFormsInm
+    template_name = 'home/puestas/editarEx.html'
+    success_url = 'listarExtranjeros'
     
