@@ -41,7 +41,7 @@ class PuestaDisposicionAC(models.Model):
     numeroCarpeta = models.IntegerField()
     entidadFederativa = models.CharField(max_length=100)
     certificadoMedico = models.FileField(upload_to='files/',  null=True, blank=True)
-    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen")
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"

@@ -10,21 +10,18 @@
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nacionalidad</th>
-            <th>Opciones</th>
+            <th>deLaPuesta</th>
         </tr>
     </thead>
     <tbody>
-        {% for objeto in extranjeros %}
+        {% for objeto in extranjerosAC %}
         <tr>
             <td>{{ objeto.estacionMigratoria }}</td>
             <td>{{ objeto.nombreExtranjero }}</td>
             <td>{{ objeto.apellidoPaternoExtranjero }}</td>
             <td>{{ objeto.apellidoMaternoExtranjero }}</td>
             <td>{{ objeto.nacionalidad }}</td>
-            <td>
-                <button><a href="{% url 'editarExtranjeroINM' objeto.id %}">Editar</a></button>
-                <button><a href="{% url 'listarExtranjeros' objeto.id %}">Eliminar</a></button>
-            </td>
+            <td>{{ objeto.deLaPuestaAC }}</td>
             </td>
         </tr>
         {% endfor %}

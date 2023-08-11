@@ -25,7 +25,7 @@
                     <td>{{ objeto.deLaEstacion }}</td>
                     <td>
                         <a class="btn btn-sm btn-success mr-2" href="{% url 'createExtranjeroAC' objeto.id %}">Añadir Extranjeros</a>
-                        <a class="btn btn-sm btn-info" href="#">Ver Extranjeros</a>
+                        <a class="btn btn-sm btn-info" href="{% url 'listarExtranjerosAC' objeto.id %}">Ver Extranjeros</a>
                     </td>
                 </tr>
             {% endfor %}
