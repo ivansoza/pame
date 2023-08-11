@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -171,9 +171,17 @@ class listarExtranjerosAC(ListView):
         context['puesta'] = PuestaDisposicionAC.objects.get(id=puesta_id)
         return context
     
-class EditarExtranjeroINM(UpdateView):
+class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_puestadisposicioninm',
+    }
     model = Extranjero
     form_class = extranjeroFormsInm
     template_name = 'home/puestas/editarEx.html'
-    success_url = 'listarExtranjeros'
+    success_url = reverse_lazy( 'homePuestaINM')
     
+class DeleteExtranjeroINM(DeleteView):
+    model = Extranjero
+    template_name = 'home/puestas/eliminarExtranjeroINM.html'
+    success_url = reverse_lazy('homePuestaINM')
+

@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import inicioINMList, createPuestaINM, createExtranjeroINM, inicioACList, createPuestaAC, createExtranjeroAC
+from .views import inicioINMList, createPuestaINM, createExtranjeroINM, inicioACList, createPuestaAC, createExtranjeroAC, DeleteExtranjeroINM
 from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, listarExtranjerosAC, EditarExtranjeroINM
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP
 
@@ -24,9 +24,9 @@ urlpatterns = [
 
 
     
-    path('seguridad/listar-extranjero/<str:puesta_id>/', listarExtranjeros.as_view(), name='listarExtranjeros'),
-    path('seguridad/listar-extranjeroAC/<str:puesta_id>/', listarExtranjerosAC.as_view(), name='listarExtranjerosAC'),
+    path('seguridad/listar-extranjero/<int:puesta_id>/', listarExtranjeros.as_view(), name='listarExtranjeros'),
+    path('seguridad/listar-extranjeroAC/<int:puesta_id>/', listarExtranjerosAC.as_view(), name='listarExtranjerosAC'),
     path('editarExtranjeroINM/<int:pk>/', EditarExtranjeroINM.as_view(), name='editarExtranjeroINM'),
-    
+    path('eliminar-extranjero/<int:pk>/', DeleteExtranjeroINM.as_view(), name='eliminarExtranjeroINM'),
     #path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")    
 ]
