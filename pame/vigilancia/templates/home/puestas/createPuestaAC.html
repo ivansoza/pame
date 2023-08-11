@@ -1,11 +1,62 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-
+{% load crispy_forms_tags %} 
 
 {% block contenido %}
-<h1>Puesta AC</h1>
-    <form method="post">
+<h1>Puesta por Autoridad Competente</h1>
+    <form method="post" class="card p-3 mt-5" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar</button>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.numeroOficio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaOficio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.nombreAutoridadSigna|as_crispy_field}}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.cargoAutoridadSigna|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.oficioPuesta|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.oficioComision|as_crispy_field}}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.puntoRevision|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.dependencia|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.numeroCarpeta|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.entidadFederativa|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.certificadoMedico|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.deLaEstacion|as_crispy_field}}
+            </div>
+        </div>
+        <button class="btn btn-primary float-end btn-primary" type="submit">Guardar</button>
     </form>
+
+
 {% endblock %}

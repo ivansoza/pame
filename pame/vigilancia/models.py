@@ -34,14 +34,14 @@ class PuestaDisposicionAC(models.Model):
     fechaOficio = models.DateField()
     nombreAutoridadSigna = models.CharField(max_length=100)
     cargoAutoridadSigna = models.CharField(max_length=100)
-    oficioPuesta = models.FileField(upload_to='files/',  null=True)
-    oficioComision = models.FileField(upload_to='files/',  null=True)
+    oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
+    oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
     puntoRevision = models.CharField(max_length=100)
     dependencia = models.CharField(max_length=100)
     numeroCarpeta = models.IntegerField()
     entidadFederativa = models.CharField(max_length=100)
-    certificadoMedico = models.FileField(upload_to='files')
-    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
+    certificadoMedico = models.FileField(upload_to='files/',  null=True, blank=True)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen")
 
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
