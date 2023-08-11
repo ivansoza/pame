@@ -4,10 +4,36 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm
+from django.shortcuts import redirect
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib import messages
 
+class CreatePermissionRequiredMixin(UserPassesTestMixin):
+    login_url = '/permisoDenegado/'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.permissions_required = kwargs.get('permissions_required', {})
 
+    def test_func(self):
+        user = self.request.user
+        for permission, codename in self.permissions_required.items():
+            if not user.has_perm(codename):
+                raise PermissionDenied(f"No tienes el permiso necesario: {permission}")
+        return True
+   
+    def test_func(self):
+        return all(self.request.user.has_perm(perm) for perm in self.permission_required.values())
+ 
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            # Si el usuario está autenticado pero no tiene el permiso, redirige a una página de acceso denegado
+            return redirect('permisoDenegado')  # Cambia 'acceso_denegado' a la URL adecuada
+        else:
+            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            return redirect(self.login_url)
 
-
+   
 
 
 
@@ -51,14 +77,20 @@ class inicioACList(ListView):
     template_name = "home/puestas/homePuestaAC.html" 
     context_object_name = 'puestaAC'
 
-class createPuestaINM(CreateView):
+class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_puestadisposicioninm',
+    }
     model = PuestaDisposicionINM               
     form_class = puestDisposicionINMForm      
     template_name = 'home/puestas/createPuestaINM.html'  
     success_url = reverse_lazy('homePuestaINM')
 
 
-class createPuestaAC(CreateView):
+class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_puestadisposicionac',
+    }
     model = PuestaDisposicionAC
     form_class = puestaDisposicionACForm
     template_name = 'home/puestas/createPuestaAC.html'  

@@ -205,8 +205,9 @@
           <img src=" {% static 'img/logo160x1601.png' %} " class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block"> {{user.username}}<sup>{{ user.groups.first.name }}</sup></a>
-          <a href="#" class="d-block"> {{user.estancia}}</sup></a>
+          <a href="#" class="d-block"> {{user.username}}</a>
+          <a href="#" class="d-block">  {{ user.groups.first.name }}</sup></a>
+          <a href="#" class="d-block">  {{user.estancia}}</sup></a>
         </div>
       </div>
 
