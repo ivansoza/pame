@@ -23,7 +23,7 @@
             <td>{{ objeto.nacionalidad }}</td>
             <td>
                 <button><a href="{% url 'editarExtranjeroINM' puesta.id objeto.id %}">Editar</a></button>
-                <button><a href="#">Eliminar</a></button>
+                <button><a href="{% url 'listarExtranjeros' objeto.id %}">Eliminar</a></button>
             </td>
             </td>
         </tr>

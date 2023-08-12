@@ -28,10 +28,10 @@ urlpatterns = [
     path('seguridad/listar-extranjeroAC/<str:puesta_id>/', listarExtranjerosAC.as_view(), name='listarExtranjerosAC'),
     path('editarExtranjeroINM/<int:puesta_id>/<int:pk>/', EditarExtranjeroINM.as_view(), name='editarExtranjeroINM'),
     
-    path('seguridad/listar-extranjero/<int:puesta_id>/', listarExtranjeros.as_view(), name='listarExtranjeros'),
-    path('seguridad/listar-extranjeroAC/<int:puesta_id>/', listarExtranjerosAC.as_view(), name='listarExtranjerosAC'),
-    path('editarExtranjeroAC/<int:pk>/', EditarExtranjeroAC.as_view(), name='editarExtranjeroAC'),
-     path('editarExtranjeroINM/<int:pk>/', EditarExtranjeroINM.as_view(), name='editarExtranjeroINM'),
-    path('eliminar-extranjero/<int:pk>/', DeleteExtranjeroINM.as_view(), name='eliminarExtranjeroINM'),
+    # path('seguridad/listar-extranjero/<int:puesta_id>/', listarExtranjeros.as_view(), name='listarExtranjeros'),
+    # path('seguridad/listar-extranjeroAC/<int:puesta_id>/', listarExtranjerosAC.as_view(), name='listarExtranjerosAC'),
+    # path('editarExtranjeroAC/<int:pk>/', EditarExtranjeroAC.as_view(), name='editarExtranjeroAC'),
+    #  path('editarExtranjeroINM/<int:pk>/', EditarExtranjeroINM.as_view(), name='editarExtranjeroINM'),
+    # path('eliminar-extranjero/<int:pk>/', DeleteExtranjeroINM.as_view(), name='eliminarExtranjeroINM'),
     #path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")    
 ]
