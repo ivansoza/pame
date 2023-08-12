@@ -224,7 +224,7 @@
            
           </li>
           <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link active">
+            <a href=" {% url 'homeSeguridadGeneral' %}" class="nav-link {% if navbar == 'home' %}active{% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Menú
@@ -237,7 +237,7 @@
           <!-- Puesta disposición -->
 
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link {% if navbar == 'seguridad' %}active{% endif %}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
                 Puesta a Disposición

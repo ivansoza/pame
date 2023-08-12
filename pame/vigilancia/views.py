@@ -45,7 +45,9 @@ class CreatePermissionRequiredMixin(UserPassesTestMixin):
 
 
 def homeSeguridadGeneral(request):
-    return render (request, "home/homeSeguridadGeneral.html")
+    return render (request, "home/homeSeguridadGeneral.html",{'navbar':'home'})
+
+
 
 
 def homeSeguridadResponsable(request):
@@ -75,11 +77,21 @@ class inicioINMList(ListView):
     template_name = "home/puestas/homePuestaINM.html" 
     context_object_name = 'puestasinm'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
+
 
 class inicioACList(ListView):
     model = PuestaDisposicionAC
     template_name = "home/puestas/homePuestaAC.html" 
     context_object_name = 'puestaAC'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
 
 class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -90,6 +102,11 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     template_name = 'home/puestas/createPuestaINM.html'  
     success_url = reverse_lazy('homePuestaINM')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
+
 
 class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -99,6 +116,12 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
     form_class = puestaDisposicionACForm
     template_name = 'home/puestas/createPuestaAC.html'  
     success_url = reverse_lazy('homePuestaAC')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
 
 
 
@@ -116,6 +139,8 @@ class createExtranjeroINM(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.kwargs['puesta_id']
+        context['navbar'] = 'seguridad'  # Agrega esto para el componente activo del navbar
+        
         return context
     
 
@@ -138,6 +163,8 @@ class createExtranjeroAC(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.kwargs['puesta_id']
+        context['navbar'] = 'seguridad'  # Agrega esto para el componente activo del navbar
+
         return context
     
 class listarExtranjeros(ListView):
@@ -155,6 +182,8 @@ class listarExtranjeros(ListView):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
         context['puesta'] = PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['navbar'] = 'seguridad'  # Agrega esto para el componente activo del navbar
+
         return context
     
 class listarExtranjerosAC(ListView):
@@ -172,6 +201,8 @@ class listarExtranjerosAC(ListView):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
         context['puesta'] = PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['navbar'] = 'seguridad'  # Agrega esto para el componente activo del navbar
+
         return context
     
 class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
@@ -182,11 +213,21 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     form_class = extranjeroFormsInm
     template_name = 'home/puestas/crearExtranjeroINM.html'
     success_url = reverse_lazy( 'homePuestaINM')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
     
 class DeleteExtranjeroINM(DeleteView):
     model = Extranjero
     template_name = 'home/puestas/eliminarExtranjeroINM.html'
     success_url = reverse_lazy('homePuestaINM')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
 
 class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
@@ -197,3 +238,7 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     template_name = 'home/puestas/createExtranjeroAC.html'
     success_url = reverse_lazy( 'homePuestaAC')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        return context
