@@ -211,7 +211,9 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     }
     model = Extranjero
     form_class = extranjeroFormsInm
-    template_name = 'home/puestas/editarEx.html'
+<<<<<<<<< Temporary merge branch 1
+    template_name = 'home/puestas/crearExtranjeroINM.html'
+    success_url = reverse_lazy( 'homePuestaINM')
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -232,7 +234,7 @@ class DeleteExtranjeroINM(DeleteView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         return context
     
-    
+
 class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_puestadisposicioninm',
