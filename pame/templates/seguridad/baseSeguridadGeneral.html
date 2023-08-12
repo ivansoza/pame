@@ -15,6 +15,8 @@
 
   <!-- Google Font: Source Sans Pro -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -32,7 +34,7 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{% static 'css/OverlayScrollbars.min.css' %}">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"> -->
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
   <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.12124466">
@@ -45,6 +47,12 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+
+  {% block link %}
+  
+  {% endblock link %}
+
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -452,7 +460,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 
-
+    
+  
+    
     {% block script  %}
     
     {% endblock script  %}

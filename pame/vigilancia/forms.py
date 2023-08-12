@@ -45,6 +45,8 @@ class puestDisposicionINMForm(forms.ModelForm):
 
 
 class puestaDisposicionACForm(forms.ModelForm):
+
+    
     numeroOficio = forms.CharField(
         label= "Número de Oficio:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: 162729'})
@@ -110,6 +112,10 @@ class puestaDisposicionACForm(forms.ModelForm):
 
 
 class extranjeroFormsInm(forms.ModelForm):
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:"
+
+    )
     numeroExtranjero = forms.IntegerField(
         label= "Numero:",
     )
@@ -127,11 +133,6 @@ class extranjeroFormsInm(forms.ModelForm):
     )
     firmaExtranjero = forms.FileField(
         label= "Firma:",
-    )
-    fechaNacimiento = forms.DateField(
-        label= "Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
-
     )
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
@@ -147,17 +148,22 @@ class extranjeroFormsInm(forms.ModelForm):
     class Meta:
         model = Extranjero
         fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
-    widgets = {
+        widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
-
+            'fechaNacimiento':forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
         }
 
 
 class extranjeroFormsAC(forms.ModelForm):
+
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:"
+
+    )
     numeroExtranjero = forms.IntegerField(
         label= "Numero:",
     )
@@ -176,11 +182,7 @@ class extranjeroFormsAC(forms.ModelForm):
     firmaExtranjero = forms.FileField(
         label= "Firma:",
     )
-    fechaNacimiento = forms.DateField(
-        label= "Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
-
-    )
+   
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
 
@@ -201,6 +203,7 @@ class extranjeroFormsAC(forms.ModelForm):
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
+            'fechaNacimiento':forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
 
         }
 
