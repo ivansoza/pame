@@ -211,8 +211,11 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     }
     model = Extranjero
     form_class = extranjeroFormsInm
-    template_name = 'home/puestas/crearExtranjeroINM.html'
-    success_url = reverse_lazy( 'homePuestaINM')
+    template_name = 'home/puestas/editarEx.html'
+
+    def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+        return reverse_lazy('listarExtranjeros', kwargs={'puesta_id': puesta_id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
