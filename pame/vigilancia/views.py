@@ -211,7 +211,6 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     }
     model = Extranjero
     form_class = extranjeroFormsInm
-<<<<<<<<< Temporary merge branch 1
     template_name = 'home/puestas/crearExtranjeroINM.html'
     success_url = reverse_lazy( 'homePuestaINM')
 
