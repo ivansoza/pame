@@ -7,6 +7,9 @@ class Nacionalidad(models.Model):
     
     class Meta:
         verbose_name_plural = "Nacionalidades"
+    
+    def __str__(self):
+        return self.nombre
 
 class PuestaDisposicionINM(models.Model):
     numeroOficio = models.CharField(max_length=50)
@@ -34,14 +37,14 @@ class PuestaDisposicionAC(models.Model):
     fechaOficio = models.DateField()
     nombreAutoridadSigna = models.CharField(max_length=100)
     cargoAutoridadSigna = models.CharField(max_length=100)
-    oficioPuesta = models.FileField(upload_to='files/',  null=True)
-    oficioComision = models.FileField(upload_to='files/',  null=True)
+    oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
+    oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
     puntoRevision = models.CharField(max_length=100)
     dependencia = models.CharField(max_length=100)
     numeroCarpeta = models.IntegerField()
     entidadFederativa = models.CharField(max_length=100)
-    certificadoMedico = models.FileField(upload_to='files')
-    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, null=True, blank=True)
+    certificadoMedico = models.FileField(upload_to='files/',  null=True, blank=True)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
@@ -56,8 +59,8 @@ OPCION_GENERO_CHOICES=[
     [1,'MUJER'],
 ]
 class Extranjero(models.Model):
-    fechaRegistro = models.DateField()
-    horaRegistro = models.DateTimeField(blank=True, null=True)
+    fechaRegistro = models.DateField(auto_now_add=True)
+    horaRegistro = models.DateTimeField(auto_now_add=True)
     numeroExtranjero = models.IntegerField(blank=True, null=True)
     estacionMigratoria = models.CharField(max_length=50,blank=True)
     nombreExtranjero = models.CharField(max_length= 50, blank=True)
@@ -65,18 +68,21 @@ class Extranjero(models.Model):
     apellidoMaternoExtranjero = models.CharField(max_length=50, blank=True)
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
     huellaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE)
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name="Nacionalidad")
     genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
     fotografiaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
     viajaSolo = models.BooleanField()
     tipoEstancia = models.CharField(max_length=50, blank=True)
-    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros')
-    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros')
+    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
+    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')
 
     class Meta:
         verbose_name_plural = "Extranjeros" 
+    # def __str__(self):
+    #     return self.numeroExtranjero, self.estacionMigratoria, self.nombreExtranjero
+    
     
 OPCION_RELACION_CHOICES=[
     [0,'ESPOSO(A)'],

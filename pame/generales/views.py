@@ -4,6 +4,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.views.generic import TemplateView
 # Create your views here.
 from .models import ImagenCarrousel
 
@@ -53,3 +54,6 @@ class CustomLoginView(LoginView):
             return reverse_lazy('home')
 
 
+
+class templeteDenegado(TemplateView):
+    template_name = 'permisoDenegado.html'
