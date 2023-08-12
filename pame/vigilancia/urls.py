@@ -24,9 +24,9 @@ urlpatterns = [
 
 
     
-    path('seguridad/listar-extranjero/<str:puesta_id>/', listarExtranjeros.as_view(), name='listarExtranjeros'),
+    path('seguridad/listar-extranjero/<int:puesta_id>', listarExtranjeros.as_view(), name='listarExtranjeros'),
     path('seguridad/listar-extranjeroAC/<str:puesta_id>/', listarExtranjerosAC.as_view(), name='listarExtranjerosAC'),
-    path('editarExtranjeroINM/<int:pk>/', EditarExtranjeroINM.as_view(), name='editarExtranjeroINM'),
+    path('editarExtranjeroINM/<int:puesta_id>/<int:pk>/', EditarExtranjeroINM.as_view(), name='editarExtranjeroINM'),
     
     #path('accion-migratoria/', Puesta.as_view(), name="addAccionMigratoria")    
 ]

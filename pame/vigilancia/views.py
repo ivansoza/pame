@@ -143,5 +143,7 @@ class EditarExtranjeroINM(UpdateView):
     model = Extranjero
     form_class = extranjeroFormsInm
     template_name = 'home/puestas/editarEx.html'
-    success_url = 'listarExtranjeros'
-    
+
+    def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+        return reverse_lazy('listarExtranjeros', kwargs={'puesta_id': puesta_id})
