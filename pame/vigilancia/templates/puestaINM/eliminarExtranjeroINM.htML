@@ -67,6 +67,9 @@
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="confirm-button">Eliminar</button>
+                <a href="{% url 'listarExtranjeros' puesta_id %}" class="btn btn-secondary">Volver a la Lista de Extranjeros</a>
+
+            
             </form>
         </div>
     </div>
@@ -79,4 +82,5 @@
 
 
 {% endblock contenido %}
+
 

@@ -1,0 +1,49 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% block contenido %}
+
+<h1 class="mb-4">Listado de Puestas por Acción Migratoria</h1>
+<a class="btn btn-primary mb-3" href=" {% url 'crearPuestaAC' %}">Crear Puesta</a>
+
+<table id="puestaAC-table" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Numero Oficio</th>
+            <th>Fecha de Oficio</th>
+            <th>Autoridad</th>
+            <th>Punto Revisión</th>
+            <th>Estación</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for puesta in puestaAC %}
+            <tr>
+                <td>{{ puesta.numeroOficio }}</td>
+                <td>{{ puesta.fechaOficio }}</td>
+                <td>{{ puesta.nombreAutoridadSigna }}</td>
+                <td>{{ puesta.puntoRevision }}</td>
+                <td>{{ puesta.deLaEstacion }}</td>
+                <td>
+                    <a class="btn btn-sm btn-success mr-2" href=" {% url 'crearExtranjeroAC' puesta.id%}">Añadir Extranjeros</a>
+                    <a class="btn btn-sm btn-info" href="{% url 'listarExtranjeroAC' puesta.id %}">Ver Extranjeros</a>
+
+                </td>
+                
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock contenido %}
+
+{% block script %}
+    <script>
+    $(document).ready(function() {
+        $('#puestaAC-table').DataTable();
+    });
+  </script>
+  
+{% endblock script %}
+

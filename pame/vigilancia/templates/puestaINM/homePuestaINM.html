@@ -17,16 +17,16 @@
         </tr>
     </thead>
     <tbody>
-        {% for objeto in puestasinm %}
+        {% for puesta in puestasinm %}
             <tr>
-                <td>{{ objeto.numeroOficio }}</td>
-                <td>{{ objeto.fechaOficio }}</td>
-                <td>{{ objeto.nombreAutoridadSigna }}</td>
-                <td>{{ objeto.puntoRevision }}</td>
-                <td>{{ objeto.deLaEstacion }}</td>
+                <td>{{ puesta.numeroOficio }}</td>
+                <td>{{ puesta.fechaOficio }}</td>
+                <td>{{ puesta.nombreAutoridadSigna }}</td>
+                <td>{{ puesta.puntoRevision }}</td>
+                <td>{{ puesta.deLaEstacion }}</td>
                 <td>
-                    <a class="btn btn-sm btn-success mr-2" href=" {% url 'crearExtranjeroINM' objeto.id%}">Añadir Extranjeros</a>
-                    <a class="btn btn-sm btn-info" href="{% url 'listarExtranjeros' objeto.id %}">Ver Extranjeros</a>
+                    <a class="btn btn-sm btn-success mr-2" href=" {% url 'crearExtranjeroINM' puesta.id%}">Añadir Extranjeros</a>
+                    <a class="btn btn-sm btn-info" href="{% url 'listarExtranjeros' puesta.id %}">Ver Extranjeros</a>
 
                 </td>
                 

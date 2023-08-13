@@ -113,7 +113,8 @@ class puestaDisposicionACForm(forms.ModelForm):
 
 class extranjeroFormsInm(forms.ModelForm):
     fechaNacimiento = forms.DateField(
-        label= "Fecha de Nacimiento:"
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
 
     )
     numeroExtranjero = forms.IntegerField(
@@ -121,6 +122,8 @@ class extranjeroFormsInm(forms.ModelForm):
     )
     estacionMigratoria = forms.CharField(
         label= "Estación Migratoria:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Mexico'}),
+
     )
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
@@ -154,14 +157,15 @@ class extranjeroFormsInm(forms.ModelForm):
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
-            'fechaNacimiento':forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+          
         }
 
 
 class extranjeroFormsAC(forms.ModelForm):
 
     fechaNacimiento = forms.DateField(
-        label= "Fecha de Nacimiento:"
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
 
     )
     numeroExtranjero = forms.IntegerField(
@@ -203,7 +207,5 @@ class extranjeroFormsAC(forms.ModelForm):
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
-            'fechaNacimiento':forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
-
         }
 

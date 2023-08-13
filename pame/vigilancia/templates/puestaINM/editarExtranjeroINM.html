@@ -9,6 +9,9 @@
 
 {% block contenido %}
 <h1>EXTRANJERO</h1>
+
+<p>Relación con la Puesta: {{ object.deLaPuestaIMN }}</p>
+
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
@@ -76,13 +79,13 @@
         </div>
 
 
-            <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}">
+            {% comment %} <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}"> {% endcomment %}
         <button class="btn btn-primary float-end btn-primary" type="submit">Guardar</button>
+        <br>
+        <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-secondary">Cancelar</a>
+  
     </form>    
 {% endblock %}
-
-
-
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>

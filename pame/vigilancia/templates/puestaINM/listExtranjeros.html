@@ -2,6 +2,9 @@
 {% block dashboard %}Listado de Extranjeros{% endblock dashboard %}
 
 {% block contenido %}
+
+<h1>Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
+
 <table id="puestasinm-table" class="table table-striped table-bordered">
     <thead>
         <tr>
@@ -10,26 +13,32 @@
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nacionalidad</th>
+            <th>Puesta</th>
             <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
-        {% for objeto in extranjeros %}
+        {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ objeto.estacionMigratoria }}</td>
-            <td>{{ objeto.nombreExtranjero }}</td>
-            <td>{{ objeto.apellidoPaternoExtranjero }}</td>
-            <td>{{ objeto.apellidoMaternoExtranjero }}</td>
-            <td>{{ objeto.nacionalidad }}</td>
+            <td>{{ extranjero.estacionMigratoria }}</td>
+            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
+            <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
+            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{{ extranjero.deLaPuestaIMN }}</td>
+
             <td>
-                <a class="btn btn-sm btn-success mr-2" href="{% url 'editarExtranjeroINM' puesta.id objeto.id %}">Editar</a>
-                <a class="btn btn-sm btn-danger" href="{% url 'eliminarExtranjeroINM' objeto.id %}">Eliminar</a> 
+                <a class="btn btn-sm btn-success mr-2" href="{% url 'editarExtranjeroINM' extranjero.id %}">Editar</a> 
+                <a class="btn btn-sm btn-danger" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">Eliminar</a> 
             </td>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<a href="{% url 'homePuestaINM' %}" class="btn btn-secondary">Volver a la Lista de Puestas</a>
+
 {% endblock contenido %}
 
 

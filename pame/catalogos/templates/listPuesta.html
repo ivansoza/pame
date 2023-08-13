@@ -1,0 +1,37 @@
+{% extends 'administrador/base.html' %}
+
+
+
+{% block contenido %}
+<h1>Lista de Puestas</h1>
+  
+<a href="{% url 'crear_puesta' %}" class="btn btn-primary mb-3">Agregar Puesta</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Número de Oficio</th>
+      <th>Nombre del Responsable</th>
+      <th>Estado</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for puesta in puestas %}
+      <tr>
+        <td>{{ puesta.numero_oficio }}</td>
+        <td>{{ puesta.nombre_responsable }}</td>
+        <td>{{ puesta.estado }}</td>
+        <td>
+           <a href="{% url 'agregar_extranjero' puesta.id %}" class="btn btn-success btn-sm">Agregar Extranjero</a> 
+           <a href="{% url 'lista_extranjeros' puesta.id %}" class="btn btn-info btn-sm">Ver Extranjeros</a>
+
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock contenido %}
+
+

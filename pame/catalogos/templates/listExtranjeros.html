@@ -1,0 +1,34 @@
+{% extends 'administrador/base.html' %}
+
+{% block contenido %}
+  <h1>Lista de Extranjeros para la Puesta {{ puesta.numero_oficio }}</h1>
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre del Extranjero</th>
+        <th>Edad</th>
+        <th>Puesta</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+
+
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for extranjero in extranjeros %}
+        <tr>
+          <td>{{ extranjero.nombre_extranjero }}</td>
+          <td>{{ extranjero.edad }}</td>
+          <td>{{ extranjero.puesta }}</td>
+          <td> <a href="{% url 'editar_extranjero' extranjero.id%}" class="btn btn-warning btn-sm">Editar</a></td>
+          <td> <a href="{% url 'eliminar_extranjero' extranjero.id %}" class="btn btn-danger btn-sm">Eliminar</a></td>
+
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <a href="{% url 'lista_puestas' %}" class="btn btn-secondary">Volver a la Lista de Puestas</a>
+{% endblock contenido %}
