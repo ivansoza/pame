@@ -1,9 +1,21 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
+
 
 {% block contenido %}
 
-<h1 class="mb-4">Listado de Puestas por Instituto Nacional de Migración</h1>
-<a class="btn btn-primary mb-3" href=" {% url 'crearPuestaINM' %}">Crear Puesta</a>
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Listado de Puestas por Instituto Nacional de Migración</h1>
+</div>
+
+<br>
+
+<a class="btn btn-custom mb-3" href=" {% url 'crearPuestaINM' %}">Crear Puesta</a>
+<a class="btn btn-custom1 mb-3" href=" {% url 'homeSeguridadGeneral' %}">Regresar al menu</a>
 
 <table id="puestasinm-table" class="table table-striped table-bordered">
     <thead>
@@ -41,8 +53,12 @@
 {% block script %}
     <script>
     $(document).ready(function() {
-        $('#puestasinm-table').DataTable();
+        $('#puestasinm-table').DataTable({
+        "columnDefs": [
+            { "orderable": false, "targets": -1 } // Desactivar ordenación para la última columna
+        ]
     });
+});
   </script>
   
 {% endblock script %}

@@ -42,6 +42,7 @@
   }
 
   .card-button:hover {
+    color: white;
     background-color: rgba(0, 0, 0, 0.8);
   }
   .titulo-general-container {
@@ -69,4 +70,10 @@
     text-align: center; /* Centra el texto horizontalmente */
     font-weight: 700; /* Nivel de negrita más ligero */
 
+  }
+
+
+  .imagen-icono {
+    max-width: 80px; /* Ajusta el ancho máximo de la imagen según tu preferencia */
+    max-height: 80px; /* Ajusta la altura máxima de la imagen según tu preferencia */
   }

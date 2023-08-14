@@ -1,8 +1,16 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-{% block dashboard %}Listado de Extranjeros{% endblock dashboard %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
 
 {% block contenido %}
-<h1>Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
+
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
+</div>
 
 <table id="puestaAC-table" class="table table-striped table-bordered">
     <thead>
@@ -36,7 +44,7 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'homePuestaAC' %}" class="btn btn-secondary">Volver a la Lista de Puestas</a>
+<a href="{% url 'homePuestaAC' %}" class="btn btn btn-custom">Volver a la Lista de Puestas</a>
 
 {% endblock contenido %}
 

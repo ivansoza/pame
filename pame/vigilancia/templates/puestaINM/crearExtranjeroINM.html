@@ -1,16 +1,19 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
-
+{% load static %}
 {% block link %}
-
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
 {% endblock link %}
 
 
 
 {% block contenido %}
-<h1>EXTRANJERO</h1>
 
-<h1>Agregar Extranjero a Puesta {{ puesta.numeroOficio }}</h1>
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Agregar Extranjero a Puesta {{ puesta.numeroOficio }}</h1>
+</div>
+
 
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
