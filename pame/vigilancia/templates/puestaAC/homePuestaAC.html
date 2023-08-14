@@ -48,12 +48,15 @@
 {% endblock contenido %}
 
 {% block script %}
+
     <script>
-    $(document).ready(function() {
-        $('#puestaAC-table').DataTable();
-        
+        $(document).ready(function() {
+            $('#puestaAC-table').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": -1 } // Desactivar ordenación para la última columna
+            ]
+        });
     });
-  </script>
-  
+      </script>
 {% endblock script %}
 

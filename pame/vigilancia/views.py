@@ -83,6 +83,8 @@ class inicioINMList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+
         return context
 
 
@@ -98,6 +100,7 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
 
 class createExtranjeroINM(CreateView):
@@ -124,6 +127,8 @@ class createExtranjeroINM(CreateView):
         puesta_id = self.kwargs['puesta_id']
         context['puesta'] = PuestaDisposicionINM.objects.get(id=puesta_id)
         context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+
         return context
 
 class listarExtranjeros(ListView):
@@ -141,6 +146,8 @@ class listarExtranjeros(ListView):
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
         context['puesta'] = puesta
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
         return context
     
 class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
@@ -158,6 +165,8 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
         context = super().get_context_data(**kwargs)
         context['puesta'] = self.object.deLaPuestaIMN
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
         return context
 class DeleteExtranjeroINM(DeleteView):
     model = Extranjero
@@ -170,6 +179,9 @@ class DeleteExtranjeroINM(DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
         return context
 
 #------------------------ Fin Puesta por INM-----------------------------
@@ -183,6 +195,8 @@ class inicioACList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
         return context
     
 class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
@@ -197,6 +211,8 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
         return context
     
 class createExtranjeroAC(CreateView):
@@ -223,6 +239,8 @@ class createExtranjeroAC(CreateView):
         puesta_id = self.kwargs['puesta_id']
         context['puesta'] = PuestaDisposicionAC.objects.get(id=puesta_id)
         context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
         return context
 
 class listarExtranjerosAC(ListView):
@@ -240,6 +258,8 @@ class listarExtranjerosAC(ListView):
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
         context['puesta'] = puesta
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
         return context
 
 class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
@@ -257,6 +277,8 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
         context = super().get_context_data(**kwargs)
         context['puesta'] = self.object.deLaPuestaAC
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
         return context    
     
 class DeleteExtranjeroAC(DeleteView):
@@ -270,4 +292,6 @@ class DeleteExtranjeroAC(DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.object.deLaPuestaAC.id
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
         return context
