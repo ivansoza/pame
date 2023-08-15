@@ -57,4 +57,25 @@ class Estacion(models.Model):
     
     class Meta:
         verbose_name_plural = "Estaciones"
+
+
+
+
+#Creacion de un modelo prueba para el funcionamkento 
+
+class Puesta(models.Model):
+    numero_oficio = models.CharField(max_length=20)
+    nombre_responsable = models.CharField(max_length=100)
+    estado = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.numero_oficio
+
+class Extranjero(models.Model):
+    nombre_extranjero = models.CharField(max_length=100)
+    edad = models.PositiveIntegerField()
+    puesta = models.ForeignKey(Puesta, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.nombre_extranjero} - {self.puesta.numero_oficio}"
     

@@ -1,8 +1,20 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-{% block dashboard %}Listado de Extranjeros{% endblock dashboard %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223ww ">
+{% endblock link %}
 
 {% block contenido %}
-<table id="puestasinm-table" class="display">
+
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
+</div>
+
+
+
+<table id="puestasinm-table" class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>Estacion Migratoria</th>
@@ -10,27 +22,35 @@
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nacionalidad</th>
+            <th>Puesta</th>
             <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
-        {% for objeto in extranjeros %}
+        {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ objeto.estacionMigratoria }}</td>
-            <td>{{ objeto.nombreExtranjero }}</td>
-            <td>{{ objeto.apellidoPaternoExtranjero }}</td>
-            <td>{{ objeto.apellidoMaternoExtranjero }}</td>
-            <td>{{ objeto.nacionalidad }}</td>
+            <td>{{ extranjero.estacionMigratoria }}</td>
+            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
+            <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
+            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{{ extranjero.deLaPuestaIMN }}</td>
+
             <td>
-                <button><a href="{% url 'editarExtranjeroINM' puesta.id objeto.id %}">Editar</a></button>
-                <button><a href="{% url 'listarExtranjeros' objeto.id %}">Eliminar</a></button>
+                <a class="btn btn-sm btn-success mr-2" href="{% url 'editarExtranjeroINM' extranjero.id %}">Editar</a> 
+                <a class="btn btn-sm btn-danger" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">Eliminar</a> 
             </td>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<a href="{% url 'homePuestaINM' %}" class="btn btn-custom">Volver a la Lista de Puestas</a>
+
 {% endblock contenido %}
+
+
 
 
 

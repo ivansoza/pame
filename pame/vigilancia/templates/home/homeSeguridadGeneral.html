@@ -1,21 +1,109 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-
+{% load static %}
 
 {% block titulo %}PAME - Seguridad General{% endblock titulo %}
 
-{% block dashboard %}Seguridad General{% endblock dashboard %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/cards/style.css' %}?v1.2ss">
+{% endblock link %}
+
+
 
 {% block seccion  %}Seguridad general{% endblock seccion  %}
 
 
 {% block contenido  %}
-<h1>Estas en el menú de Seguridad General</h1>
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Accesos Directos</h1>
+  </div>  
+<div class="container mt-10">
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconAC.png' %} " alt="Icono de imagen" class="imagen-icono">
+        </div>
+          <p class="titulo" >CREAR PUESTA POR AUTORIDAD COMPETENTE</p>
 
-<ul>
+          <a href="{% url 'crearPuestaAC' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon">            
+            <img src=" {% static 'img/icons/iconINM.png' %} " alt="Icono de imagen" class="imagen-icono">
+          </div>
+          <p class="titulo" >CREAR PUESTA POR (INM)</p>
+
+          <a href="{% url 'crearPuestaINM' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaAC.png' %} " alt="Icono de imagen" class="imagen-icono">
+
+          </i></div>
+          <p class="titulo" >VER PUESTAS POR AUTORIDAD COMPETENTE</p>
+
+          <a href="{% url 'homePuestaAC' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaINM.png' %} " alt="Icono de imagen" class="imagen-icono">
+
+          </div>
+          <p class="titulo" >VER PUESTAS POR (INM)</p>
+          <a href="{% url 'homePuestaINM' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-book"></i></div>
+          <p class="titulo" >CREAR PUESTA POR VOLUNTAD PROPIA</p>
+          <button class="card-button">Ir</button>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-sticky-note"></i></div>
+          <p class="titulo" >PUESTA POR ACCIÓN MIGRATORIA</p>
+          <button class="card-button">Ir</button>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+          <p class="titulo" >PUESTA POR ACCIÓN MIGRATORIA</p>
+          <button class="card-button">Ir</button>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-envelope"></i></div>
+          <p class="titulo" >PUESTA POR ACCIÓN MIGRATORIA</p>
+          <button class="card-button">Ir</button>
+        </div>
+      </div>
+    </div>
+
+
+   
+<!-- <ul>
     <li><a href=" {% url 'homePuestaAC' %} ">Puesta AC </a></li> 
     <li><a href="{% url 'homePuestaINM' %}">Puesta INM </a></li>
     <li><a href="{% url 'homePuestaVP' %}">Puesta VP </a></li>
-</ul>
+
+    <li><a href="{% url 'lista_puestas' %}">Puesta prueba </a></li>
+
+
+</ul> -->
 
 
 {% endblock contenido  %}

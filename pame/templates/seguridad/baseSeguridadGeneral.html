@@ -15,6 +15,8 @@
 
   <!-- Google Font: Source Sans Pro -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -32,10 +34,10 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{% static 'css/OverlayScrollbars.min.css' %}">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"> -->
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
-  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.12124466">
+  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.dsds">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 
 
@@ -45,6 +47,12 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+
+  {% block link %}
+  
+  {% endblock link %}
+
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -236,7 +244,7 @@
 
           <!-- Puesta disposición -->
 
-          <li class="nav-item">
+          <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
             <a href="#" class="nav-link {% if navbar == 'seguridad' %}active{% endif %}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
@@ -247,13 +255,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'homePuestaINM' %} "  class="nav-link">
+                <a href="{% url 'homePuestaINM' %} "  class="nav-link {% if seccion == 'seguridadINM' %}active{% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Por personal del INM</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'homePuestaAC' %} " class="nav-link">
+                <a href="{% url 'homePuestaAC' %} " class="nav-link  {% if seccion == 'seguridadAC' %}active{% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Por autoridad competente</p>
                 </a>
@@ -384,10 +392,10 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>Copyright &copy; 2023-2025 PAME.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
+      <b>Version</b> 1.0.0
     </div>
   </footer>
 
@@ -452,7 +460,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 
-
+    
+  
+    
     {% block script  %}
     
     {% endblock script  %}

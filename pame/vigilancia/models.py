@@ -33,7 +33,7 @@ class PuestaDisposicionINM(models.Model):
     
 
 class PuestaDisposicionAC(models.Model):   
-    numeroOficio = models.IntegerField()
+    numeroOficio = models.CharField(max_length=50)
     fechaOficio = models.DateField()
     nombreAutoridadSigna = models.CharField(max_length=100)
     cargoAutoridadSigna = models.CharField(max_length=100)

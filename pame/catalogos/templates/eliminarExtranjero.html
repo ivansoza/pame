@@ -1,0 +1,14 @@
+{% extends 'administrador/base.html' %}
+
+{% block contenido %}
+  <h1>Confirmar Eliminación de Extranjero</h1>
+  <p>¿Estás seguro de que deseas eliminar el extranjero "{{ extranjero.nombre_extranjero }}"?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'lista_extranjeros' puesta_id %}" class="btn btn-secondary">Volver a la Lista de Extranjeros</a>
+</form>
+{% endblock contenido %}
+
+

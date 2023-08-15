@@ -1,8 +1,18 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-{% block dashboard %}Listado de Extranjeros{% endblock dashboard %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
 
 {% block contenido %}
-<table id="puestasinm-table" class="display">
+
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
+</div>
+
+<table id="puestaAC-table" class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>Estacion Migratoria</th>
@@ -11,26 +21,31 @@
             <th>Apellido Materno</th>
             <th>Nacionalidad</th>
             <th>deLaPuesta</th>
-            <th>deLaPuesta</th>
+            <th>Opciones</th>
+
         </tr>
     </thead>
     <tbody>
-        {% for objeto in extranjerosAC %}
+        {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ objeto.estacionMigratoria }}</td>
-            <td>{{ objeto.nombreExtranjero }}</td>
-            <td>{{ objeto.apellidoPaternoExtranjero }}</td>
-            <td>{{ objeto.apellidoMaternoExtranjero }}</td>
-            <td>{{ objeto.nacionalidad }}</td>
-            <td>{{ objeto.deLaPuestaAC }}</td>
+            <td>{{ extranjero.estacionMigratoria }}</td>
+            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
+            <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
+            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{{ extranjero.deLaPuestaAC }}</td>
             <td>
-                <button><a href="{% url 'editarExtranjeroAC' objeto.id %}">Editar</a></button>
-                <button><a href="{% url 'eliminarExtranjeroINM' objeto.id %}">Eliminar</a></button>
+
+                <a class="btn btn-sm btn-success mr-2" href="{% url 'editarExtranjeroAC' extranjero.id %}">Editar</a> 
+                <a class="btn btn-sm btn-danger" href="{% url 'eliminar_extranjeroAC' extranjero.id %}">Eliminar</a>
+                
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<a href="{% url 'homePuestaAC' %}" class="btn btn btn-custom">Volver a la Lista de Puestas</a>
+
 {% endblock contenido %}
 
 
@@ -38,7 +53,7 @@
 {% block script %}
 <script>
     $(document).ready(function() {
-        $('#puestasinm-table').DataTable({
+        $('#puestaAC-table').DataTable({
             dom: 'Bfrtip',
             buttons: [
                 {

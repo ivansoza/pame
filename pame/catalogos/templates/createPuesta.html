@@ -1,0 +1,16 @@
+{% extends 'administrador/base.html' %}
+
+
+
+{% block contenido %}
+<h1>Agregar Puesta</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'lista_puestas' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+
+{% endblock contenido %}
