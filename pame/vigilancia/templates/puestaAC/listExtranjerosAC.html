@@ -1,7 +1,7 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SD ">
 {% endblock link %}
 
 
@@ -35,16 +35,25 @@
             <td>{{ extranjero.nacionalidad }}</td>
             <td>{{ extranjero.deLaPuestaAC }}</td>
             <td>
-
-                <a class="btn btn-sm btn-success mr-2" href="{% url 'editarExtranjeroAC' extranjero.id %}">Editar</a> 
-                <a class="btn btn-sm btn-danger" href="{% url 'eliminar_extranjeroAC' extranjero.id %}">Eliminar</a>
-                
+                <a class="btn btn-sm btn-custom1" href="{% url 'editarExtranjeroAC' extranjero.id %}">
+                   <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-sm btn-custom1" href="{% url 'eliminar_extranjeroAC' extranjero.id %}">
+                   <i class="fas fa-trash-alt"></i>
+                </a>
+                <a class="btn btn-sm btn-custom1" href="{% url 'agregar_biometricosAC' extranjero.id %}">
+                   <i class="fas fa-fingerprint"></i>
+                </a>
+                <a class="btn btn-sm btn-custom1" href="#">
+                   <i class="fas fa-exchange-alt"></i>
+                </a>
+          
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'homePuestaAC' %}" class="btn btn btn-custom">Volver a la Lista de Puestas</a>
+<a href="{% url 'homePuestaAC' %}" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
 {% endblock contenido %}
 

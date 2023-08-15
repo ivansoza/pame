@@ -7,7 +7,7 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, ExtranjeroDatosBiometricosFormAC
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -280,6 +280,26 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
         return context    
+    
+
+class biometricosAC(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+         'perm1': 'vigilancia.change_puestadisposicioninm',
+    }
+    model = Extranjero
+    form_class = ExtranjeroDatosBiometricosFormAC
+    template_name = 'puestaAC/createBiometricosAC.html'
+
+    def get_success_url(self):
+        return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['puesta'] = self.object.deLaPuestaAC
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
+        return context  
     
 class DeleteExtranjeroAC(DeleteView):
     model = Extranjero
