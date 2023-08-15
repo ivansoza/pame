@@ -62,6 +62,22 @@
     background-color: #1E4C40;
     color: white; /* Cambia el color del texto */
   }
+
+
+#puestaAC-table {
+    width: 100%; /* Adjust as needed */
+}
+
+#puestaAC-table th,
+#puestaAC-table td {
+    width: auto; /* Adjust as needed */
+}
+
+/* Add any additional styling you want */
+.custom-table {
+    /* Your custom styles here */
+}
   
-  
-  
+
+/* ------------------------ICONOS DE LA TABLA  */
+
