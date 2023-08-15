@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     width: 250px; /* Ancho igual al tamaño de la altura */
-    height: 220px; /* Altura para hacer las cards cuadradas */
+    height: 270px; /* Altura para hacer las cards cuadradas */
     position: relative; /* Para posicionar el botón en la parte inferior */
     overflow: hidden; /* Para que el botón no se desborde */
   }
@@ -42,19 +42,38 @@
   }
 
   .card-button:hover {
+    color: white;
     background-color: rgba(0, 0, 0, 0.8);
   }
+  .titulo-general-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 
-  h1 {
+  .titulo-general {
+    background-color: #a98159;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    width: 500px; /* Cambia el valor según lo que necesites */
+
+
     font-size: 24px; /* Cambia el tamaño del encabezado h1 */
-    font-weight: bold; /* Hace que el texto sea negrita */
     text-align: center; /* Centra el texto horizontalmente */
     margin-bottom: 20px; /* Agrega espacio inferior */
   }
-
-  p {
+  
+  .titulo{
     font-size: 15px; /* Cambia el tamaño del párrafo p */
     text-align: center; /* Centra el texto horizontalmente */
     font-weight: 700; /* Nivel de negrita más ligero */
 
+  }
+
+
+  .imagen-icono {
+    max-width: 80px; /* Ajusta el ancho máximo de la imagen según tu preferencia */
+    max-height: 80px; /* Ajusta la altura máxima de la imagen según tu preferencia */
   }

@@ -1,96 +1,11 @@
 {% extends 'administrador/base.html' %}
 
 
-{% block titulo %}Certificado Medico{% endblock titulo %}
+{% block titulo %}Certificado Médico{% endblock titulo %}
 
 {% block contenido %}
 
-
-<form method="post">
-    {% csrf_token %}
-    {{ puesta_general_form.as_p }}
-
-    <select name="selected_complemento">
-        <option value="none" selected>Selecciona un complemento</option>
-        <option value="complemento1">Complemento 1</option>
-        <option value="complemento2">Complemento 2</option>
-    </select>
-
-    {% if selected_complemento == 'complemento1' %}
-        {{ complemento1_form.as_p }}
-        <h1>Seleccionaste Complemento 1</h1>
-    {% elif selected_complemento == 'complemento2' %}
-        {{ complemento2_form.as_p }}
-        <h1>Seleccionaste Complemento 2</h1>
-    {% else %}
-        <h1>Ningún complemento seleccionado</h1>
-    {% endif %}
-
-    <button type="submit">Guardar</button>
-</form>
-
-<!-- 
-<form method="POST" name="homeForm" id="home-form">
-    {% csrf_token %}
-    
-    {{ puesta_general_form.as_p }}
-    
-    <select id="complemento-selector" name="complemento_selector">
-        <option value="complemento">Selecciona el complemento</option>
-        <option value="complemento1">Complemento 1</option>
-        <option value="complemento2">Complemento 2</option>
-    </select>
-    
-    <div> 
-        <div id="complemento1-section" style="display: none;">
-            {{ complemento1_form.as_p }}
-        </div>
-        
-        <div id="complemento2-section" style="display: none;">
-            {{ complemento2_form.as_p }}
-        </div>
-    </div>
-    
-    <button type="submit">Guardar</button>
-</form>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const complementoSelector = document.getElementById('complemento-selector');
-    const complemento1Section = document.getElementById('complemento1-section');
-    const complemento2Section = document.getElementById('complemento2-section');
-    
-    const homeForm = document.getElementById('home-form');  // Get the form element
-    
-    complementoSelector.addEventListener('change', () => {
-        if (complementoSelector.value === 'complemento1') {
-            complemento1Section.style.display = 'block';
-            complemento2Section.style.display = 'none';
-        } else if (complementoSelector.value === 'complemento2') {
-            complemento1Section.style.display = 'none';
-            complemento2Section.style.display = 'block';
-        } else {
-            complemento1Section.style.display = 'none';
-            complemento2Section.style.display = 'none';
-        }
-    });
-    
-    homeForm.addEventListener('submit', () => {
-        // Show or hide the complemento sections based on the selected value
-        if (complementoSelector.value === 'complemento1') {
-            complemento1Section.style.display = 'block';
-            complemento2Section.style.display = 'none';
-        } else if (complementoSelector.value === 'complemento2') {
-            complemento1Section.style.display = 'none';
-            complemento2Section.style.display = 'block';
-        }
-    });
-});
-
-</script> -->
-
-
-
-{% endblock %}
+    <h1>Estas en el home de Certificado Médico</h1>
+{% endblock contenido %}
 
 

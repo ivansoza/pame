@@ -1,3 +1,4 @@
+
 {% extends 'administrador/base.html' %}
 {% load static %}
 {% block titulo %}Pame - Menu {% endblock titulo %}
@@ -7,69 +8,214 @@
 
 {% block seccion %}Menu Principal{% endblock seccion %}
 
+
 {% block contenido %}
 
+<style>
+    .container .card{
+        width: 250px; /* Ancho igual al tamaño de la altura */
+        height: 270px;
+        font-size: 15px; /* Cambia el tamaño del párrafo p */
+        text-align: center; /* Centra el texto horizontalmente */
+        font-weight: 700; /* Nivel de negrita más ligero */
+        margin-bottom: 20px;
+        font-family: 'Montserrat', sans-serif;
 
-<ul>
-    <li><a href=" {% url 'homeCertificadoMedico' %} ">ola</a></li>
+    }
 
-</ul>
-
-<ul>
+    .card {
+        border-radius: 5px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column; /* Para apilar el icono y el botón verticalmente */
+        align-items: center;
+        justify-content: center;
+        width: 10%; /* Ancho igual al tamaño de la altura */
+        height: 90%; /* Altura para hacer las cards cuadradas */
+        position: relative; /* Para posicionar el botón en la parte inferior */
+        overflow: hidden; /* Para que el botón no se desborde */
+      }
     
-    <h1 class="title" style="text-align: center;"> Accesos Rapidos</h1>
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+    
+      .icon {
+        font-size: 80px; /* Icono más grande */
+        color: #B78D62;
+        margin-top: 30%;
+        transition: color 0.3s;
+      }
+    
+      .card:hover .icon {
+        color: #a98159;
+      }
+    
+      .card-button {
+        margin-top: auto; /* Mueve el botón hacia la parte inferior */
+        margin-bottom: 25%;
+        background-color: #991F40; /* Fondo transparente */
+        color: white;   
+        border-radius: 10%; /* Forma ovalada */
+        padding: 5px 10px; /* Espacio interno del botón */
+        width: 40%; /* Ancho del botón */
+        text-align: center; /* Centra el texto horizontalmente */
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+    
+      .card-button:hover {
+        color: white;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      .titulo-general-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+    
+      .titulo-general {
+        background-color: #a98159;
+        padding: 10px;
+        border-radius: 5px;
+        color: white;
+        width: 500px; /* Cambia el valor según lo que necesites */
+    
+    
+        font-size: 24px; /* Cambia el tamaño del encabezado h1 */
+        text-align: center; /* Centra el texto horizontalmente */
+        margin-bottom: 20px; /* Agrega espacio inferior */
+      }
+    
+    
+      .imagen-icono {
+        max-width: 110px; /* Ajusta el ancho máximo de la imagen según tu preferencia */
+        max-height: 110px; /* Ajusta la altura máxima de la imagen según tu preferencia */
+      }
+</style>
 
-  
-
-        
-        <div class="container" >
-            <div class="card">
-                <h4><a href="{% url 'homeSeguridadGeneral' %}" style="font-size: x-large ;">SeguridadGeneral</a> </h4>
-                <img src="{% static 'img/gh.jpg' %}" style="object-fit: cover; width: 80%; height: 80%; display: block; margin: 0 auto; width: 50%;">
-            </div>
-
-            
-            <div class="card">
-                <a href="#" style="font-size: x-large;">Directivos</a>
-                <img src="{% static 'img/ceo.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
-            </div>
-            
-            <div class="card">
-                <a href="#" style="font-size: x-large;">Juridico General</a>
-                <img src="{% static 'img/gjuridico.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
-                <a href="{% url 'homeAmparo' %}" style="font-size: large;">Amparo</a>
-
-            </div>
-        
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Accesos Directos</h1>
+  </div>  
+<div class="container mt-10">
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
         <div class="card">
-            <a href="#" style="font-size: x-large;">Juridico Responsable</a>
-            <img src="{% static 'img/jr.png' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconAC.png' %} " alt="Icono de imagen" class="imagen-icono">
         </div>
+          <p class="titulo" style="font-size: 18px;" >Acuerdo de Inicio</p>
 
+          <a href="{% url 'homeAcuerdoInicio' %}" class="card-button" style="color: white;" >Ir</a>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon">            
+            <img src=" {% static 'img/icons/iconINM.png' %} " alt="Icono de imagen" class="imagen-icono">
+          </div>
+          <p class="titulo" style="font-size: 18px;">Actuaciones</p>
 
-        <div class="card">
-            <a href="#" style="font-size: x-large;">Medico</a>
-            <img src="{% static 'img/medico.jpg' %}" style="object-fit: cover; width: 200%; height: 40%; display: block; margin: 0 auto; width: 30%;">
-            <a href="{% url 'homeCertificadoMedico' %}" style="font-size: large;">Certificado Medico</a>
-            <a href="{% url 'homeConsultaMedica' %}" style="font-size: large;">Consulta Medica</a>
-            <a href="{% url 'homeFarmacia' %}" style="font-size: large;">Farmacia</a>
+          <a href="{% url 'homeActuaciones' %}" class="card-button" style="color: white;">Ir</a>
         </div>
-        
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
         <div class="card">
-            <a href="#" style="font-size: x-large;">Administradores</a>
-            <img src="{% static 'img/administrador.png' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
-        </div>
-        
-        <div class="card">
-            <a href="#" style="font-size: x-large;">Seguridad Responsable</a>
-            <img src="{% static 'img/seguridadmi.jpg' %}" style="object-fit: cover; width: 300%; height: 65%; display: block; margin: 0 auto; width: 30%;">
-        </div>
-        <div class="card">
-            <a href="#" style="font-size: x-large;">Comedor</a>
-            <img src="{% static 'img/cocina.jpg' %}" style="object-fit: cover; width: 200%; height: 50%; display: block; margin: 0 auto; width: 30%;">
-            <a href=""  style="font-size: large;" >Comedor</a>
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaAC.png' %} " alt="Icono de imagen" class="imagen-icono">
 
+          </i></div>
+          <p class="titulo" style="font-size: 18px;" >Amparo</p>
+
+          <a href="{% url 'homeAmparo' %}" class="card-button" style="color: white;">Ir</a>
         </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaINM.png' %} " alt="Icono de imagen" class="imagen-icono">
+
+          </div>
+          <p class="titulo" style="font-size: 18px;">Certificado Medico</p>
+          <a href="{% url 'homeCertificadoMedico' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+          <p class="titulo" style="font-size: 18px;" >Consulta Medica</p>
+          <a href="{% url 'homeConsultaMedica' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+          <p class="titulo" style="font-size: 18px;" >Farmacia</p>
+          <a href="{% url 'homeFarmacia' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-book"></i></div>
+          <p class="titulo" style="font-size: 18px;" >Comparecencia</p>
+          <a href="#" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-sticky-note"></i></div>
+          <p class="titulo" style="font-size: 18px;" >Consulado</p>
+          <a href="{% url 'homeConsulado' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+          <p class="titulo" style="font-size: 18px;">Pertenencias</p>
+          <a href="{% url 'homePertenencias' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+      
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+          <p class="titulo" style="font-size: 18px;" >Seguridad General</p>
+          <a href="{% url 'homeSeguridadGeneral' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card">
+          <div class="icon"><i class="fas fa-envelope"></i></div>
+          <p class="titulo" style="font-size: 18px;">llamadas Telefonicas</p>
+          <a href="{% url 'homeLLamadasTelefonicas' %}" class="card-button" style="color: white;">Ir</a>
+        </div>
+      </div>
     </div>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+
+   
+<!-- <ul>
+    <li><a href=" {% url 'homePuestaAC' %} ">Puesta AC </a></li> 
+    <li><a href="{% url 'homePuestaINM' %}">Puesta INM </a></li>
+    <li><a href="{% url 'homePuestaVP' %}">Puesta VP </a></li>
+
+    <li><a href="{% url 'lista_puestas' %}">Puesta prueba </a></li>
+
+
+</ul> -->
+
 
 {% endblock contenido %}

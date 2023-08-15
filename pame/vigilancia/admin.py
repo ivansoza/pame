@@ -1,17 +1,13 @@
 from django.contrib import admin
 
-from .models import Extranjero, OficioPuestaDisposicionINM, OficioPuestaDisposicionAC, Acompanante, Nacionalidad, Genero
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM, PuestaDisposicionAC
+admin.site.register(Extranjero )
 
-# Register your models here.
+admin.site.register(PuestaDisposicionINM)
 
-admin.site.register(Extranjero)
-
-admin.site.register(OficioPuestaDisposicionINM)
-
-admin.site.register(OficioPuestaDisposicionAC)
+admin.site.register(PuestaDisposicionAC)
 
 admin.site.register(Acompanante)
 
 admin.site.register(Nacionalidad)
 
-admin.site.register(Genero)

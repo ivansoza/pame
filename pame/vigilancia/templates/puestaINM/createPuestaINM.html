@@ -1,0 +1,106 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %} 
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
+
+{% block contenido %}
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Puesta por Instituto Nacional de Migración</h1>
+</div>
+
+    <form id="Puesta" method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.numeroOficio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaOficio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.nombreAutoridadSigna|as_crispy_field}}
+            </div>
+        </div>        
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.cargoAutoridadSigna|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.oficioPuesta|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.oficioComision|as_crispy_field}}
+            </div>
+        </div>       
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.puntoRevision|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6" style="display: none;" >
+                {{form.deLaEstacion|as_crispy_field}}
+            </div>
+           
+        </div> 
+
+
+
+        <button id="botonGuardar" class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+        <hr>
+        <a href="{% url 'homePuestaINM' %}" class="btn btn-custom1">Cancelar</a>
+
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formulario = document.getElementById('Puesta');
+    const botonGuardar = document.getElementById('botonGuardar');
+    
+    botonGuardar.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        const camposFaltantes = verificarCamposVacios();
+        if (camposFaltantes.length > 0) {
+            const camposFaltantesTexto = camposFaltantes.join(', ');
+            Swal.fire({
+                icon: 'error',
+                title: 'Campos faltantes',
+                html: `Por favor, completa los siguientes campos obligatorios:<br><strong>${camposFaltantesTexto}</strong>`,
+            });
+        } else {
+            Swal.fire({
+                icon: 'success',
+                title: '¿Formulario?',
+                text: '¿Guardado exitosamente?',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    setTimeout(function(){
+                        formulario.submit();
+                    }, 1);
+                }
+            });
+        }
+    });
+    
+    function verificarCamposVacios() {
+        const campos = formulario.querySelectorAll('[required]');
+        const camposFaltantes = [];
+
+        campos.forEach(function(campo) {
+            if (campo.value.trim() === '') {
+                const etiqueta = formulario.querySelector(`label[for="${campo.getAttribute('id')}"]`);
+                const etiquetaTexto = etiqueta ? etiqueta.textContent : campo.getAttribute('name');
+                camposFaltantes.push(etiquetaTexto);
+            }
+        });
+
+        return camposFaltantes;
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SD ">
+{% endblock link %}
+
+
+{% block contenido %}
+
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
+</div>
+
+<table id="puestaAC-table" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Estacion Migratoria</th>
+            <th>Nombre</th>
+            <th>Apellido Paterno</th>
+            <th>Apellido Materno</th>
+            <th>Nacionalidad</th>
+            <th>deLaPuesta</th>
+            <th>Opciones</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for extranjero in extranjeros %}
+        <tr>
+            <td>{{ extranjero.estacionMigratoria }}</td>
+            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
+            <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
+            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{{ extranjero.deLaPuestaAC }}</td>
+            <td>
+                <a class="btn btn-sm btn-custom1" href="{% url 'editarExtranjeroAC' extranjero.id %}">
+                   <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-sm btn-custom1" href="{% url 'eliminar_extranjeroAC' extranjero.id %}">
+                   <i class="fas fa-trash-alt"></i>
+                </a>
+                <a class="btn btn-sm btn-custom1" href="{% url 'agregar_biometricosAC' extranjero.id %}">
+                   <i class="fas fa-fingerprint"></i>
+                </a>
+                <a class="btn btn-sm btn-custom1" href="#">
+                   <i class="fas fa-exchange-alt"></i>
+                </a>
+          
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'homePuestaAC' %}" class="btn btn-custom">Volver a la Lista de Puestas</a>
+
+{% endblock contenido %}
+
+
+
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#puestaAC-table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i>',
+                    titleAttr: 'Copiar'
+                },
+                {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i>',
+                    titleAttr: 'CSV'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    titleAttr: 'Imprimir'
+                }
+            ]
+        });
+    });
+  </script>
+  
+
+{% endblock script %}
+
+
+    

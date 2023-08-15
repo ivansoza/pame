@@ -1,266 +1,212 @@
 from django import forms
-from .models import OficioPuestaDisposicionINM, OficioPuestaDisposicionAC, Extranjero
-from django.core.validators import RegexValidator
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion
 
-class OficioPuestaDisposicionINMform(forms.ModelForm):
-    class Meta:
-        model = OficioPuestaDisposicionINM
-        fields = ['numeroOficio', 'fechaOficio', 'nombreAutoridadSigna', 'cargoAutoridadSigna',
-                  'puntoRevision', 'oficioPuesta', 'oficioComision', 'estacion']
-        labels = {
-            'numeroOficio':'Numero de Oficio',
-            'fechaOficio':'Fecha',
-            'nombreAutoridadSigna':"Nombre de Autoridad Asignada",
-            'cargoAutoridadSigna':'Cargo de autoridad Asignada',
-            'puntoRevision':'Punto de Revision',
-            'oficioPuesta':'Oficio Puesta a Disposicion',
-            'oficioComision':'Oficio Comision',
-            'estacion':'Estacion Migratoria',
-        }
-        widgets = {
-            'numeroOficio': forms.TextInput(
-                attrs={
-                    'placeholder':'Numero de Oficio'
-                }
-            ),
-            'nombreAutoridadSigna': forms.TextInput(
-                attrs={
-                    'placeholder':'Ingresa el nombre de la Autoridad Asignada'
-                }
-            ),
-            'cargoAutoridadSigna': forms.TextInput(
-                attrs={
-                    'placeholder':'Ingresa el Cargo de la Autoridad'
-                }
-            ),
-            'puntoRevision': forms.TextInput(
-                attrs={
-                    'placeholder':'Ingresa el Punto de Revision'
-                }
-            ),
-            'oficioPuesta': forms.ClearableFileInput(
-                attrs={
-                    'placeholder':'Ingresa el Numero De oficio'
-                }
-            ),
-            'oficioComision': forms.ClearableFileInput(
-                attrs={
-                    'placeholder':'Ingresa el Numero de Comision'
-                }
-            ),
-            
-        }
+class puestDisposicionINMForm(forms.ModelForm):
+    numeroOficio = forms.CharField(
+        label= "Número de Oficio:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: 162729'})
+    )   
 
-    def clean_numeroOficio(self):
-        data = self.cleaned_data['numeroOficio']
-        if not data.isdigit():
-            raise forms.ValidationError('Solo debe contener numeros')
-        return data
-    
-    def clean_oficioPuesta(self):
-        data = self.cleaned_data['oficioPuesta']
-        if not data.isdigit():
-            raise forms.ValidationError('Solo debe contener numeros')
-        return data
-    
-    def clean_oficioComision(self):
-        data = self.cleaned_data['oficioComision']
-        if not data.isdigit():
-            raise forms.ValidationError('Solo debe contener numeros')
-        return data
-    
-class OficioPuestaDisposicionACform(forms.ModelForm):
-    class Meta:
-        model = OficioPuestaDisposicionAC
-        fields = [
-            'numeroOficio',
-            'fechaOficio',
-            'dependencia',
-            'numeroCarpeta',
-            'nombreAutoridadSigna',
-            'cargoAutoridadSigna',
-            'entidadFederativa',
-            'oficioPuesta',
-            'certificadoMedico',
-            'estacion',
-            'municipio',
-            'localidad',
-            'oficioComision',
-        ]
-        
-    numerooficio = forms.CharField(
-        label= 'Numero de Oficio',
-        validators= [RegexValidator(
-            r'^[1-9]\d*$', message='Solo se permiten numeros'
-        )],
-        widget=forms.TextInput(attrs={'placeholder': 'No. Oficio'})
-    )
-
-    fechaOficio = forms.CharField(
-        label='Fecha Oficio',
-    )
-
-    dependencia = forms.CharField(
-        label= 'Nombre Dependencia',
-        validators= [RegexValidator(
-            r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
-            message='Solo se permiten palabras'
-        )],
-        widget=forms.TextInput(attrs={'placeholder' : 'Ej: Juan'})
-    )
-
-    numeroCarpeta = forms.CharField(
-        label='Numero de Carpeta',
-        validators=[RegexValidator(
-            r'^[1-9]\d*$', message='Solo sepermiten numeros' 
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Ej: 12345'})
+    fechaOficio = forms.DateField(
+        label= "Fecha de Oficio:",
+        widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
 
     nombreAutoridadSigna = forms.CharField(
-        label='Nombre de Autoridad Asignada',
-        validators=[RegexValidator(
-            r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
-            message='Solo se permiten letras'
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Nombre'})
+        label= "Nombre de Autoridad Asignada:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
     )
-
     cargoAutoridadSigna = forms.CharField(
-        label='Cargo de la Autoridad Asignada',
-        validators=[RegexValidator(
-            r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
-            message='Solo se permiten letras'
-        )],
+        label= "Cargo de Autoridad Asignada:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
     )
 
-    entidadFederativa = forms.CharField(
-        label='Entidad Federativa',
+    oficioPuesta = forms.FileField(
+         label= "Oficio de Puesta:",
+         # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+     )
+    
+    oficioComision = forms.FileField(
+         label= "Oficio de Comisión:",
+         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+     )
+    
+    puntoRevision = forms.CharField(
+        label= "Punto de Revision:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
     )
+    
+    
+    class Meta:
+        model = PuestaDisposicionINM
+        fields ='__all__'
 
-    oficioPuesta = forms.FileInput(
-        
-    )
 
-    certificadoMedico = forms.FileInput(
-      
-    )
 
-   
+class puestaDisposicionACForm(forms.ModelForm):
 
     
+    numeroOficio = forms.CharField(
+        label= "Número de Oficio:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: 162729'})
 
-class ExtranjeroForm(forms.ModelForm):
+    )
+    fechaOficio = forms.DateField(
+        label= "Fecha de Oficio:",
+        widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+
+    nombreAutoridadSigna = forms.CharField(
+        label= "Nombre de Autoridad Asignada:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
+    )
+
+    cargoAutoridadSigna = forms.CharField(
+        label= "Cargo de Autoridad Asignada:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
+    )
+
+    oficioPuesta = forms.FileField(
+         label= "Oficio de Puesta:",
+         # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+     )
+
+    oficioComision = forms.FileField(
+         label= "Oficio de Comisión:",
+         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+     )
+
+    puntoRevision = forms.CharField(
+        label= "Punto de Revision:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
+    )
+
+    dependencia = forms.CharField(
+        label= "Dependencia:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Dependencia 1'})
+    )
+
+    numeroCarpeta = forms.CharField(
+        label= "Número de Carpeta:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Carpeta 1'})
+    )
+    
+    entidadFederativa = forms.CharField(
+        label= "Entidad Federativa:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Entidad 1'})
+    )
+    certificadoMedico = forms.FileField(
+         label= "Certificado Medico:",
+         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+     )
+    class Meta:
+        model = PuestaDisposicionAC
+        fields ='__all__'
+        widgets = {
+            # Otros campos y widgets
+            'deLaEstacion': forms.Select(attrs={'class': 'form-control'}),
+           
+        }
+
+
+
+class extranjeroFormsInm(forms.ModelForm):
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+
+    )
+    numeroExtranjero = forms.IntegerField(
+        label= "Numero:",
+    )
+    estacionMigratoria = forms.CharField(
+        label= "Estación Migratoria:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Mexico'}),
+
+    )
+    nombreExtranjero = forms.CharField(
+        label= "Nombre(s):",
+    )
+    apellidoPaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+    )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+    )
+
+    documentoIdentidad = forms.FileField(
+        label= "Documento de Identidad:",
+
+    )
+  
+    tipoEstancia = forms.CharField(
+        label= "Tipo de Estancia:",
+    )
     class Meta:
         model = Extranjero
-        fields = [
-            'fechaRegistro',
-            'horaRegistro',
-            'numeroE',
-            'nombreE',
-            'apellidoPaternoE',
-            'apellidoMaternoE',
-            'firmaE',
-            'huellaE',
-            'nacionalidad',
-            'genero',
-            'fechaNacimiento',
-            'documentoIdentidad',
-            'fotografiaExtranjero',
-            'viajaSolo'
-        ]
+        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+        widgets = {
+            # Otros campos y widgets
+            'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
+        }
 
-    fechaRegistro = forms.DateField(
-        label='Fecha de Registro',
-        widget=forms.DateInput(attrs={'type':'date'})
-    )
-
-    class TimePickerWidget(forms.TimeInput):
-        input_type = 'time'
-
-    horaRegistro = forms.TimeField(
-        label='Hora de Registro', input_formats=['%I:%M %p'],
-        #Los segundos incrementan de 1 minuto
-        widget=TimePickerWidget(attrs={'step': '60'})
-    )
-
-    numeroE = forms.CharField(
-        label='Numero de Extranjero',
-        validators=[RegexValidator(
-            r'^\d+$',
-            message='Solo se permiten numeros'
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Ej: 12345'})
-    )
-
-    nombreE = forms.CharField(
-        label='Nombre',
-        validators=[RegexValidator(
-            r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
-            message='Solo se permiten letras'
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Ingresa tu nombre'})
-    )
-
-    apellidoPaternoE = forms.CharField(
-        label='Apellido Paterno',
-        validators=[RegexValidator(
-            r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
-            message='Solo se permiten letras'
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Ingresa el Primero Apellido'})
-    )
-
-    apellidoE = forms.CharField(
-        label='Apellido Materno',
-        validators=[RegexValidator(
-            r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$',
-            message='Solo se permiten letras'
-        )],
-        widget=forms.TextInput(attrs={'placeholder':'Ingresa el Segundo Apellido'})
-    )
-
-    firmaE = forms.ImageField(
-        label='Firma',
-        widget=forms.ClearableFileInput(attrs={'multiple': True})
-    )
-
-    huellaE = forms.ImageField(
-        label='Huella',
-        widget=forms.ClearableFileInput(attrs={'multiple': True})
-    )
-
-    nacionalidad = forms.CharField(
-        label='Nacionalidad',
-        widget=forms.TextInput(attrs={'placeholder':'Selecciona la Nacionalidad'})
-    )
-
-    genero = forms.CharField(
-        label='Genero',
-        widget=forms.TextInput(attrs={'placeholder':'Selecciona el Genero'})
-    )
-    
-    fechaNacimiento = forms.DateField(
-        label='Fecha de Nacimiento',
-        widget=forms.DateInput(attrs={'type':'date'})
-    )
-
-    documentoIdentidad = forms.ImageField(
-        label='Documento de Identidad',
-        widget=forms.ClearableFileInput(attrs={'multiple': True})
-    )
-
-    fotografiaExtranjero = forms.ImageField(
-        label='Documento de Identidad',
-        widget=forms.ClearableFileInput(attrs={'multiple': True})
-    )
-
-    viajaSolo = forms.BooleanField(
-        label='Viaja Solo'
-    )
-
-class PruebaForm(forms.ModelForm):
+        
+class ExtranjeroDatosBiometricosFormINM(forms.ModelForm):
     class Meta:
-        model = OficioPuestaDisposicionAC
-        fields = '__all__'
+        model = Extranjero
+        fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
+
+
+
+class extranjeroFormsAC(forms.ModelForm):
+
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+
+    )
+    numeroExtranjero = forms.IntegerField(
+        label= "Numero:",
+    )
+    estacionMigratoria = forms.CharField(
+        label= "Estación Migratoria:",
+    )
+    nombreExtranjero = forms.CharField(
+        label= "Nombre(s):",
+    )
+    apellidoPaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+    )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+    )
+   
+   
+    documentoIdentidad = forms.FileField(
+        label= "Documento de Identidad:",
+
+    )
+  
+    tipoEstancia = forms.CharField(
+        label= "Tipo de Estancia:",
+    )
+    class Meta:
+        model = Extranjero
+        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC']
+        widgets = {
+            # Otros campos y widgets
+            'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
+        }
+
+class ExtranjeroDatosBiometricosFormAC(forms.ModelForm):
+    class Meta:
+        model = Extranjero
+        fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
+
+

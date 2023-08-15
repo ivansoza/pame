@@ -133,9 +133,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es-mx'
+LANGUAGES = [
+    ('es', 'Spanish'),
+]
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
@@ -174,7 +177,7 @@ JAZZMIN_SETTINGS = {
     "site_brand": "PAME",
 
     # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": "img/logo160x1601.png",
+    "site_logo": "img/logo160x16021.png",
 
     "welcome_sign": "Bienvenido al Sistema PAME",
 

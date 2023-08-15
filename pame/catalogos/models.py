@@ -57,49 +57,25 @@ class Estacion(models.Model):
     
     class Meta:
         verbose_name_plural = "Estaciones"
+
+
+
+
+#Creacion de un modelo prueba para el funcionamkento 
+
+class Puesta(models.Model):
+    numero_oficio = models.CharField(max_length=20)
+    nombre_responsable = models.CharField(max_length=100)
+    estado = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.numero_oficio
+
+class Extranjero(models.Model):
+    nombre_extranjero = models.CharField(max_length=100)
+    edad = models.PositiveIntegerField()
+    puesta = models.ForeignKey(Puesta, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.nombre_extranjero} - {self.puesta.numero_oficio}"
     
-class User(models.Model):
-    identificador = models.CharField(max_length=10, null=False)
-    nombre = models.CharField(max_length=50, null=False)
-    apellidoPat = models.CharField(max_length=50, null=False)
-    apellidoMat = models.CharField(max_length=50, null=False)
-    email = models.EmailField(max_length=254, null=False)
-    telefono = models.CharField(max_length=10, null=False)
-    contasena = models.CharField(max_length=12, null=False)
-
-    def __str__(self) -> str:
-        return self.identificador, self.nombre
-    
-    class Meta:
-        verbose_name_plural = "Usuarios"
-    
-# genero=[
-
-#     ("H","Hombre"),
-#     ("M","Mujer"),
-#     ("NB","No Binario"),
-# ]
-  
-
-# edoCivil=[
-
-#     ("H","Hombre"),
-#     ("M","Mujer"),
-#     ("NB","No Binario"),
-# ]
-
-class Extranjeros(models.Model):
-    identificador = models.CharField(max_length=10, null=False)
-    nombre = models.CharField(max_length=50, null=False)
-    apellidoPat = models.CharField(max_length=50, null=False)
-    apellidoMat = models.CharField(max_length=50, null=False)
-    edad = models.IntegerField(null=False)
-    nacionalidad = models.CharField(max_length=50, null=False)
-    fecha_nac = models.DateField(verbose_name="Fecha de Nacimiento")
-    fecha_ing = models.DateField(verbose_name="Fecha de Ingreso")
-
-    def __str__(self) -> str:
-        return self.identificador, self.nombre, self.nacionalidad   
-    
-    class Meta:
-        verbose_name_plural = "Extranjeros"

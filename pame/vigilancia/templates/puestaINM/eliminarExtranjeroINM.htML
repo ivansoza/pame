@@ -1,0 +1,86 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+
+{% block contenido %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+    }
+    .header {
+        background-color: #0c231e;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+    }
+    .confirmation-box {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px 0;
+    }
+    .confirmation-box h2 {
+        margin-top: 0;
+    }
+    .confirmation-box ul {
+        list-style: none;
+        padding: 0;
+    }
+    .confirmation-box li {
+        margin-bottom: 10px;
+    }
+    .confirm-button {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .confirm-button:hover {
+        background-color: #c0392b;
+    }
+</style>
+
+    <div class="container">
+        <div class="header">
+            <h1>Confirmar Eliminación</h1>
+        </div>
+        <div class="confirmation-box">
+            <p style="text-align: center;">
+                <img src=" {% static 'img/gh.jpg' %} " style="width: 250px;" class="logo-img">
+            </p>
+            <h2>¿Estás seguro de que deseas eliminar al siguiente extranjero?</h2>
+            <ul>
+                <li>Nombre: {{ object.nombreExtranjero }}</li>
+                <li>Apellido Paterno: {{ object.apellidoPaternoExtranjero }}</li>
+                <!-- Agrega más campos aquí según lo necesario -->
+            </ul>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="confirm-button">Eliminar</button>
+                <a href="{% url 'listarExtranjeros' puesta_id %}" class="btn btn-secondary">Volver a la Lista de Extranjeros</a>
+
+            
+            </form>
+        </div>
+    </div>
+</body>
+
+
+
+
+
+
+
+{% endblock contenido %}
+
+

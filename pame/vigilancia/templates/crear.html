@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load crispy_forms_tags %}
+<html>
+<head>
+    <title>Crear Producto</title>
+</head>
+<body>
+    <h1>Crear Oficio</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% crispy form %}
+        {{ formset.management_form }}
+        <hr>
+        <div id="productos-formset">
+            {% for form in formset %}
+                {% crispy form %}
+            {% endfor %}
+        </div>
+        <button type="submit">Guardar</button>
+        <button id="agregar-producto">Agregar Extranjero</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const formsetDiv = document.getElementById("productos-formset");
+            const agregarProductoBtn = document.getElementById("agregar-producto");
+
+            agregarProductoBtn.addEventListener("click", function (event) {
+                event.preventDefault();
+                const emptyForm = "{{ formset.empty_form|escapejs }}";
+                formsetDiv.insertAdjacentHTML("beforeend", emptyForm.replace(/__prefix__/g, formsetDiv.children.length));
+            });
+        });
+    </script>
+</body>
+</html>

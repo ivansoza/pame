@@ -29,6 +29,7 @@ entvirt/
 # Ignorar archivos compilados o generados por static file preprocessors
 #staticfiles/
 #static_collected/
+media/
 
 # Ignorar archivos generados por el comando "collectstatic"
 #collectedstatic/

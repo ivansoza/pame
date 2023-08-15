@@ -1,0 +1,62 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.23322">
+{% endblock link %}
+
+{% block contenido %}
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Listado de Puestas por Acción Migratoria</h1>
+</div>
+
+<br>
+<a class="btn btn-custom mb-3" href="{% url 'crearPuestaAC' %}">Crear Puesta</a>
+<a class="btn btn-custom1 mb-3" href=" {% url 'homeSeguridadGeneral' %}">Regresar al menu</a>
+
+<table id="puestaAC-table" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Numero Oficio</th>
+            <th>Fecha de Oficio</th>
+            <th>Autoridad</th>
+            <th>Punto Revisión</th>
+            <th>Estación</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for puesta in puestaAC %}
+            <tr>
+                <td>{{ puesta.numeroOficio }}</td>
+                <td>{{ puesta.fechaOficio }}</td>
+                <td>{{ puesta.nombreAutoridadSigna }}</td>
+                <td>{{ puesta.puntoRevision }}</td>
+                <td>{{ puesta.deLaEstacion }}</td>
+                <td>
+                    <a class="btn btn-sm btn-success mr-2" href=" {% url 'crearExtranjeroAC' puesta.id%}">Añadir Extranjeros</a>
+                    <a class="btn btn-sm btn-info" href="{% url 'listarExtranjeroAC' puesta.id %}">Ver Extranjeros</a>
+
+                </td>
+                
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock contenido %}
+
+{% block script %}
+
+    <script>
+        $(document).ready(function() {
+            $('#puestaAC-table').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": -1 } // Desactivar ordenación para la última columna
+            ]
+        });
+    });
+      </script>
+{% endblock script %}
+
