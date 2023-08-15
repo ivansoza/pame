@@ -36,9 +36,19 @@
             <td>{{ extranjero.nacionalidad }}</td>
             <td>{{ extranjero.deLaPuestaIMN }}</td>
 
-            <td>
-                <a class="btn btn-sm btn-success mr-2" href="{% url 'editarExtranjeroINM' extranjero.id %}">Editar</a> 
-                <a class="btn btn-sm btn-danger" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">Eliminar</a> 
+            <td>       
+                <a class="btn btn-sm btn-custom1" href="{% url 'editarExtranjeroINM' extranjero.id %}">
+                    <i class="fas fa-edit"></i>
+                 </a>
+                 <a class="btn btn-sm btn-custom1" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">
+                    <i class="fas fa-trash-alt"></i>
+                 </a> 
+                <a class="btn btn-sm btn-custom1" href="{% url 'agregar_biometricosINM' extranjero.id %}">
+                    <i class="fas fa-fingerprint"></i>
+                 </a>
+                 <a class="btn btn-sm btn-custom1" href="#">
+                    <i class="fas fa-exchange-alt"></i>
+                 </a>
             </td>
             </td>
         </tr>
