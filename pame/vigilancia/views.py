@@ -201,7 +201,7 @@ class inicioACList(ListView):
     
 class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
-        'perm1': 'vigilancia.add_puestadisposicioninm',
+        'perm1': 'vigilancia.add_puestadisposicionac',
     }
     model = PuestaDisposicionAC               
     form_class = puestaDisposicionACForm      
