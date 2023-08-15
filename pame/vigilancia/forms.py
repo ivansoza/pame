@@ -134,31 +134,32 @@ class extranjeroFormsInm(forms.ModelForm):
     apellidoMaternoExtranjero = forms.CharField(
         label= "Apellido Materno:",
     )
-    firmaExtranjero = forms.FileField(
-        label= "Firma:",
-    )
+
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
 
     )
-    fotografiaExtranjero = forms.FileField(
-        label= "Fotografía de Extranjero:",
-
-    )
+  
     tipoEstancia = forms.CharField(
         label= "Tipo de Estancia:",
     )
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','firmaExtranjero','huellaExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','fotografiaExtranjero','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
         widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
-          
         }
+
+        
+class ExtranjeroDatosBiometricosFormINM(forms.ModelForm):
+    class Meta:
+        model = Extranjero
+        fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
+
 
 
 class extranjeroFormsAC(forms.ModelForm):
