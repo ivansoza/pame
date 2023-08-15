@@ -174,7 +174,7 @@ JAZZMIN_SETTINGS = {
     "site_brand": "PAME",
 
     # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": "img/logo160x1601.png",
+    "site_logo": "img/logo160x16021.png",
 
     "welcome_sign": "Bienvenido al Sistema PAME",
 
