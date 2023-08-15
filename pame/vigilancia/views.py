@@ -13,7 +13,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
 from django.urls import reverse
-
+from django.contrib.auth import get_user_model
+from catalogos.models import Estacion
 
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -80,6 +81,13 @@ class inicioINMList(ListView):
     template_name = "puestaINM/homePuestaINM.html" 
     context_object_name = 'puestasinm'
 
+    def get_queryset(self):
+        # Filtrar las puestas por estación del usuario logueado
+        user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
+        user_estacion = user_profile.estancia
+        queryset = PuestaDisposicionINM.objects.filter(deLaEstacion=user_estacion)
+        return queryset
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
@@ -96,6 +104,23 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     form_class = puestDisposicionINMForm      
     template_name = 'puestaINM/createPuestaINM.html'  
     success_url = reverse_lazy('homePuestaINM')
+
+    def get_initial(self):
+        initial = super().get_initial()
+
+        # Acceder al usuario autenticado y sus datos en la base de datos
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -201,7 +226,7 @@ class inicioACList(ListView):
     
 class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
-        'perm1': 'vigilancia.add_puestadisposicioninm',
+        'perm1': 'vigilancia.add_puestadisposicionac',
     }
     model = PuestaDisposicionAC               
     form_class = puestaDisposicionACForm      

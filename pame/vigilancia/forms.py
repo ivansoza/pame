@@ -35,7 +35,7 @@ class puestDisposicionINMForm(forms.ModelForm):
         label= "Punto de Revision:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
     )
-
+    
 
     
     class Meta:
