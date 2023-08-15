@@ -128,7 +128,10 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
 
-class createExtranjeroINM(CreateView):
+class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_extranjero',
+    }
     model =Extranjero             
     form_class = extranjeroFormsInm    
     template_name = 'puestaINM/crearExtranjeroINM.html' 
@@ -177,7 +180,7 @@ class listarExtranjeros(ListView):
     
 class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
-         'perm1': 'vigilancia.change_puestadisposicioninm',
+         'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = extranjeroFormsInm
@@ -193,6 +196,7 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
+   
     
 class biometricosINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
@@ -213,6 +217,9 @@ class biometricosINM(CreatePermissionRequiredMixin,UpdateView):
 
         return context  
 class DeleteExtranjeroINM(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
     model = Extranjero
     template_name = 'puestaINM/eliminarExtranjeroINM.html'
     
@@ -236,6 +243,13 @@ class inicioACList(ListView):
     template_name = "puestaAC/homePuestaAC.html" 
     context_object_name = 'puestaAC'
     
+    def get_queryset(self):
+        # Filtrar las puestas por estación del usuario logueado
+        user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
+        user_estacion = user_profile.estancia
+        queryset = PuestaDisposicionAC.objects.filter(deLaEstacion=user_estacion)
+        return queryset
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
@@ -252,6 +266,23 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
     template_name = 'puestaAC/createPuestaAC.html'  
     success_url = reverse_lazy('homePuestaAC')
 
+    def get_initial(self):
+        initial = super().get_initial()
+
+        # Acceder al usuario autenticado y sus datos en la base de datos
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
@@ -259,7 +290,10 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
 
         return context
     
-class createExtranjeroAC(CreateView):
+class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_extranjero',
+    }
     model =Extranjero             
     form_class = extranjeroFormsAC    
     template_name = 'puestaAC/createExtranjeroAC.html' 
@@ -308,7 +342,7 @@ class listarExtranjerosAC(ListView):
 
 class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
-         'perm1': 'vigilancia.change_puestadisposicioninm',
+         'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = extranjeroFormsAC
@@ -328,7 +362,7 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
 
 class biometricosAC(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
-         'perm1': 'vigilancia.change_puestadisposicioninm',
+         'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = ExtranjeroDatosBiometricosFormAC

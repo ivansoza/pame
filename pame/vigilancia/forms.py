@@ -36,7 +36,6 @@ class puestDisposicionINMForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
     )
     
-
     
     class Meta:
         model = PuestaDisposicionINM
