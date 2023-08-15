@@ -14,7 +14,7 @@
 
 
 
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+<form id="extranjeroAC" method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
 
     {% csrf_token %}
@@ -69,11 +69,57 @@
             {{form.deLaPuestaAC|as_crispy_field}}
         </div>
     </div>
-    <button class="btn btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+    <button id="botonGuardar" class="btn btn btn-custom float-end btn-primary" type="submit">Guardar</button>
     <br>
     <a href="{% url 'homePuestaAC' %}" class="btn btn-custom1">Cancelar</a>       
    
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formulario = document.getElementById('extranjeroAC');
+            const botonGuardar = document.getElementById('botonGuardar');
+            
+            botonGuardar.addEventListener('click', function(event) {
+                event.preventDefault();
+        
+                if (verificarCamposVacios()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Campos vacíos',
+                        text: 'Por favor, completa todos los campos obligatorios.',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¿Extranjero?',
+                        text: '¿Guardado exitosamente?',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            setTimeout(function(){
+                                formulario.submit();
+                            }, 1);
+                        }
+                    });
+                }
+            });
+            
+            function verificarCamposVacios() {
+                const campos = formulario.querySelectorAll('[required]');
+                let hayCamposVacios = false;
+        
+                campos.forEach(function(campo) {
+                    if (campo.value.trim() === '') {
+                        hayCamposVacios = true;
+                        return;
+                    }
+                });
+        
+                return hayCamposVacios;
+            }
+        });
+        </script>
 {% endblock %}
 
 
