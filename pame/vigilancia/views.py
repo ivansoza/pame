@@ -135,8 +135,11 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     model =Extranjero             
     form_class = extranjeroFormsInm    
     template_name = 'puestaINM/crearExtranjeroINM.html' 
-    success_url = reverse_lazy('homePuestaINM')
-
+    # success_url = reverse_lazy('homePuestaINM')
+    
+    def get_success_url(self):
+        return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
+    
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
@@ -148,6 +151,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
+        
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
