@@ -7,7 +7,7 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, ExtranjeroDatosBiometricosFormAC, ExtranjeroDatosBiometricosFormINM
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -143,7 +143,20 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
-        return {'deLaPuestaIMN': puesta} 
+        initial = super().get_initial()
+
+        # Acceder al usuario autenticado y sus datos en la base de datos
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion} 
 
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -202,24 +215,24 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
         return context
    
     
-class biometricosINM(CreatePermissionRequiredMixin,UpdateView):
-    permission_required = {
-         'perm1': 'vigilancia.change_puestadisposicioninm',
-    }
-    model = Extranjero
-    form_class = ExtranjeroDatosBiometricosFormINM
-    template_name = 'puestaINM/createBiometricosINM.html'
+# class biometricosINM(CreatePermissionRequiredMixin,UpdateView):
+#     permission_required = {
+#          'perm1': 'vigilancia.change_puestadisposicioninm',
+#     }
+#     model = Extranjero
+#     form_class = ExtranjeroDatosBiometricosFormINM
+#     template_name = 'puestaINM/createBiometricosINM.html'
 
-    def get_success_url(self):
-        return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
+#     def get_success_url(self):
+#         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['puesta'] = self.object.deLaPuestaIMN
-        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
-        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['puesta'] = self.object.deLaPuestaIMN
+#         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+#         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
-        return context  
+#         return context  
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -306,7 +319,23 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
-        return {'deLaPuestaAC': puesta} 
+       
+        initial = super().get_initial()
+
+        # Acceder al usuario autenticado y sus datos en la base de datos
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion } 
+    
+     
       
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -364,24 +393,24 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
         return context    
     
 
-class biometricosAC(CreatePermissionRequiredMixin,UpdateView):
-    permission_required = {
-         'perm1': 'vigilancia.change_extranjero',
-    }
-    model = Extranjero
-    form_class = ExtranjeroDatosBiometricosFormAC
-    template_name = 'puestaAC/createBiometricosAC.html'
+# class biometricosAC(CreatePermissionRequiredMixin,UpdateView):
+#     permission_required = {
+#          'perm1': 'vigilancia.change_extranjero',
+#     }
+#     model = Extranjero
+#     form_class = ExtranjeroDatosBiometricosFormAC
+#     template_name = 'puestaAC/createBiometricosAC.html'
 
-    def get_success_url(self):
-        return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
+#     def get_success_url(self):
+#         return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['puesta'] = self.object.deLaPuestaAC
-        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
-        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['puesta'] = self.object.deLaPuestaAC
+#         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+#         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
-        return context  
+#         return context  
     
 class DeleteExtranjeroAC(DeleteView):
     model = Extranjero

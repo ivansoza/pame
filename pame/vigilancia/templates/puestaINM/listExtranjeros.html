@@ -29,7 +29,7 @@
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ extranjero.estacionMigratoria }}</td>
+            <td>{{ extranjero.deLaEstacion }}</td>
             <td>{{ extranjero.nombreExtranjero }}</td>
             <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
             <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
@@ -43,7 +43,7 @@
                  <a class="btn btn-sm btn-icon3" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">
                     <i class="fas fa-trash-alt"></i>
                  </a> 
-                 {% if extranjero.firmaExtranjero and extranjero.huellaExtranjero and extranjero.fotografiaExtranjero%}
+                 {% comment %} <!-- {% if extranjero.firmaExtranjero and extranjero.huellaExtranjero and extranjero.fotografiaExtranjero%}
 
                  <a class="btn btn-sm btn-icon3" href="{% url 'agregar_biometricosINM' extranjero.id %}">
                     <i class="fas fa-fingerprint"></i>
@@ -58,8 +58,8 @@
                  <i class="fas fa-fingerprint"></i>
               </a>
  
-             {% endif %}
-             
+             {% endif %} -->
+              {% endcomment %}
                  <a class="btn btn-sm btn-icon3" href="#">
                     <i class="fas fa-exchange-alt"></i>
                  </a>

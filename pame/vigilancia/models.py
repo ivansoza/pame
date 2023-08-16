@@ -71,12 +71,11 @@ class Extranjero(models.Model):
     apellidoPaternoExtranjero = models.CharField(max_length=50, blank=True)
     apellidoMaternoExtranjero = models.CharField(max_length=50, blank=True)
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name="Nacionalidad")
-    firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    huellaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
+   
     genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
-    fotografiaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
+    
     viajaSolo = models.BooleanField()
     tipoEstancia = models.CharField(max_length=50, blank=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
