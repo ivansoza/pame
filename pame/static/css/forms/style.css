@@ -81,3 +81,38 @@
 
 /* ------------------------ICONOS DE LA TABLA  */
 
+.btn-icon1 {
+  background-color: #922E41; 
+  color: white; 
+  border-color: #922E41; 
+}
+
+.btn-icon1:hover {
+  color: white;
+  background-color: #621e33; 
+  border-color: #621e33; 
+}
+
+.btn-icon2 {
+  background-color: #B59664; 
+  color: white; 
+  border-color: #B59664; 
+}
+
+.btn-icon2:hover {
+  color: white;
+  background-color: #987e53; 
+  border-color: #987e53; 
+}
+
+.btn-icon3 {
+  background-color: #325A4F; 
+  color: white; 
+  border-color: #325A4F; 
+}
+
+.btn-icon3:hover {
+  color: white;
+  background-color: #27463e; 
+  border-color: #27463e; 
+}

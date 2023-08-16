@@ -37,16 +37,30 @@
             <td>{{ extranjero.deLaPuestaIMN }}</td>
 
             <td>       
-                <a class="btn btn-sm btn-custom1" href="{% url 'editarExtranjeroINM' extranjero.id %}">
+                <a class="btn btn-sm btn-icon3" href="{% url 'editarExtranjeroINM' extranjero.id %}">
                     <i class="fas fa-edit"></i>
                  </a>
-                 <a class="btn btn-sm btn-custom1" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">
+                 <a class="btn btn-sm btn-icon3" href="{% url 'eliminarExtranjeroINM' extranjero.id %}">
                     <i class="fas fa-trash-alt"></i>
                  </a> 
-                <a class="btn btn-sm btn-custom1" href="{% url 'agregar_biometricosINM' extranjero.id %}">
+                 {% if extranjero.firmaExtranjero and extranjero.huellaExtranjero and extranjero.fotografiaExtranjero%}
+
+                 <a class="btn btn-sm btn-icon3" href="{% url 'agregar_biometricosINM' extranjero.id %}">
                     <i class="fas fa-fingerprint"></i>
                  </a>
-                 <a class="btn btn-sm btn-custom1" href="#">
+             {% elif extranjero.firmaExtranjero or extranjero.huellaExtranjero or extranjero.fotografiaExtranjero%}
+             <a class="btn btn-sm btn-icon2" href="{% url 'agregar_biometricosINM' extranjero.id %}">
+                 <i class="fas fa-fingerprint"></i>
+              </a>
+                 
+             {% else %}
+             <a class="btn btn-sm btn-icon1" href="{% url 'agregar_biometricosINM' extranjero.id %}">
+                 <i class="fas fa-fingerprint"></i>
+              </a>
+ 
+             {% endif %}
+             
+                 <a class="btn btn-sm btn-icon3" href="#">
                     <i class="fas fa-exchange-alt"></i>
                  </a>
             </td>
