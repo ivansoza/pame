@@ -119,7 +119,12 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
+        # Generar el número con formato automáticamente
+        ultimo_registro = PuestaDisposicionINM.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroOficio.split('NUP')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'NUP{ultimo_numero + 1:03d}'
 
+        initial['numeroOficio'] = nuevo_numero
         return initial
 
     def get_context_data(self, **kwargs):
@@ -297,8 +302,15 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
+         # Generar el número con formato automáticamente
+        ultimo_registro = PuestaDisposicionAC.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroOficio.split('NUP-AC-')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'NUP-AC-{ultimo_numero + 1:03d}'
 
+        initial['numeroOficio'] = nuevo_numero
         return initial
+
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
