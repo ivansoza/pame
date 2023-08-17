@@ -18,6 +18,9 @@
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.numeroOficio|as_crispy_field}}
+                <script>
+                    document.getElementById('id_numeroOficio').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.fechaOficio|as_crispy_field}}
