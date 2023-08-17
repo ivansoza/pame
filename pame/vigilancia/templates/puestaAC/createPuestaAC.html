@@ -16,49 +16,56 @@
         {% csrf_token %}
 
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.numeroOficio|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.fechaOficio|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.nombreAutoridadSigna|as_crispy_field}}
             </div>
         </div>
 
 
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.cargoAutoridadSigna|as_crispy_field}}
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.nombreAutoridadSignaUno|as_crispy_field}}
             </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.cargoAutoridadSignaUno|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.nombreAutoridadSignaDos|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.cargoAutoridadSignaDos|as_crispy_field}}
+            </div>
+        
+        </div>
+
+
+        <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.oficioPuesta|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.oficioComision|as_crispy_field}}
             </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.puntoRevision|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.dependencia|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.numeroCarpeta|as_crispy_field}}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.entidadFederativa|as_crispy_field}}
-            </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.certificadoMedico|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.puntoRevision|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.dependencia|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.numeroCarpeta|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.entidadFederativa|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4" style="display: none;">
                 {{form.deLaEstacion|as_crispy_field}}
@@ -70,50 +77,4 @@
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const formulario = document.getElementById('Puesta');
-            const botonGuardar = document.getElementById('botonGuardar');
-            
-            botonGuardar.addEventListener('click', function(event) {
-                event.preventDefault();
-        
-                if (verificarCamposVacios()) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Campos vacíos',
-                        text: 'Por favor, completa todos los campos obligatorios.',
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¿Formulario?',
-                        text: '¿Guardado exitosamente?',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            setTimeout(function(){
-                                formulario.submit();
-                            }, 1);
-                        }
-                    });
-                }
-            });
-            
-            function verificarCamposVacios() {
-                const campos = formulario.querySelectorAll('[required]');
-                let hayCamposVacios = false;
-        
-                campos.forEach(function(campo) {
-                    if (campo.value.trim() === '') {
-                        hayCamposVacios = true;
-                        return;
-                    }
-                });
-        
-                return hayCamposVacios;
-            }
-        });
-        </script>
-
-
 {% endblock %}

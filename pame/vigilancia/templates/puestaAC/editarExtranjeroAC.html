@@ -19,11 +19,11 @@
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-1">
+            <div class="col-sm-6 col-md-6 col-lg-3">
                 {{form.numeroExtranjero|as_crispy_field}}
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-2">
-                {{form.estacionMigratoria|as_crispy_field}}
+            <div class="col-sm-6 col-md-6 col-lg-2" style='display:none'>
+                {{form.deLaEstacion|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.nombreExtranjero|as_crispy_field}}
@@ -35,7 +35,7 @@
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
         </div>
-
+    
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nacionalidad|as_crispy_field}}
@@ -47,24 +47,22 @@
                 {{form.fechaNacimiento|as_crispy_field}}
             </div>
         </div>
-
+    
         <div class="row">
-     
+         
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.documentoIdentidad|as_crispy_field}}
             </div>
-   
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                {{form.tipoEstancia|as_crispy_field}}
+            </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.viajaSolo|as_crispy_field}}
             </div>
         </div>
     
         <div class="row">
-       
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                {{form.tipoEstancia|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
                 {{form.deLaPuestaAC|as_crispy_field}}
             </div>
         </div>

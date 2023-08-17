@@ -1,5 +1,5 @@
 from django import forms
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico
 
 class puestDisposicionINMForm(forms.ModelForm):
     numeroOficio = forms.CharField(
@@ -12,14 +12,24 @@ class puestDisposicionINMForm(forms.ModelForm):
         widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
 
-    nombreAutoridadSigna = forms.CharField(
-        label= "Nombre de Autoridad Asignada:",
+    nombreAutoridadSignaUno = forms.CharField(
+        label= "Nombre de Autoridad Asignada 1:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
     )
-    cargoAutoridadSigna = forms.CharField(
-        label= "Cargo de Autoridad Asignada:",
+    cargoAutoridadSignaUno = forms.CharField(
+        label= "Cargo de Autoridad Asignada 1:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
     )
+
+    nombreAutoridadSignaDos = forms.CharField(
+        label= "Nombre de Autoridad Asignada 2:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
+    )
+    cargoAutoridadSignaDos = forms.CharField(
+        label= "Cargo de Autoridad Asignada 2:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
+    )
+
 
     oficioPuesta = forms.FileField(
          label= "Oficio de Puesta:",
@@ -56,13 +66,23 @@ class puestaDisposicionACForm(forms.ModelForm):
         widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
 
-    nombreAutoridadSigna = forms.CharField(
-        label= "Nombre de Autoridad Asignada:",
+    nombreAutoridadSignaUno = forms.CharField(
+        label= "Nombre de Autoridad Asignada 1:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
     )
 
-    cargoAutoridadSigna = forms.CharField(
-        label= "Cargo de Autoridad Asignada:",
+    cargoAutoridadSignaUno = forms.CharField(
+        label= "Cargo de Autoridad Asignada 1:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
+    )
+
+    nombreAutoridadSignaDos = forms.CharField(
+        label= "Nombre de Autoridad Asignada 2:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
+    )
+
+    cargoAutoridadSignaDos = forms.CharField(
+        label= "Cargo de Autoridad Asignada 2:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
     )
 
@@ -119,11 +139,7 @@ class extranjeroFormsInm(forms.ModelForm):
     numeroExtranjero = forms.IntegerField(
         label= "Numero:",
     )
-    estacionMigratoria = forms.CharField(
-        label= "Estación Migratoria:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Mexico'}),
-
-    )
+   
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
     )
@@ -144,7 +160,7 @@ class extranjeroFormsInm(forms.ModelForm):
     )
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
         widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -154,11 +170,21 @@ class extranjeroFormsInm(forms.ModelForm):
         }
 
         
-class ExtranjeroDatosBiometricosFormINM(forms.ModelForm):
-    class Meta:
-        model = Extranjero
-        fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
+# class ExtranjeroDatosBiometricosFormINM(forms.ModelForm):
+#     class Meta:
+#         model = Extranjero
+#         fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
 
+
+class BiometricoFormINM(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = '__all__'  # Incluye todos los campos del modelo
+
+class BiometricoFormAC(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = '__all__'  # Incluye todos los campos del modelo
 
 
 class extranjeroFormsAC(forms.ModelForm):
@@ -171,9 +197,7 @@ class extranjeroFormsAC(forms.ModelForm):
     numeroExtranjero = forms.IntegerField(
         label= "Numero:",
     )
-    estacionMigratoria = forms.CharField(
-        label= "Estación Migratoria:",
-    )
+    
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
     )
@@ -195,7 +219,7 @@ class extranjeroFormsAC(forms.ModelForm):
     )
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','estacionMigratoria','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC']
         widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -204,9 +228,9 @@ class extranjeroFormsAC(forms.ModelForm):
             'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
         }
 
-class ExtranjeroDatosBiometricosFormAC(forms.ModelForm):
-    class Meta:
-        model = Extranjero
-        fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
+# class ExtranjeroDatosBiometricosFormAC(forms.ModelForm):
+#     class Meta:
+#         model = Extranjero
+#         fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
 
 

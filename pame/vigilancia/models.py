@@ -14,8 +14,10 @@ class Nacionalidad(models.Model):
 class PuestaDisposicionINM(models.Model):
     numeroOficio = models.CharField(max_length=50)
     fechaOficio = models.DateField()
-    nombreAutoridadSigna = models.CharField(max_length=100)
-    cargoAutoridadSigna = models.CharField(max_length=100)
+    nombreAutoridadSignaUno = models.CharField(max_length=100)
+    cargoAutoridadSignaUno = models.CharField(max_length=100)
+    nombreAutoridadSignaDos = models.CharField(max_length=100)
+    cargoAutoridadSignaDos = models.CharField(max_length=100)
     oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
     oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
     puntoRevision = models.CharField(max_length=100)
@@ -35,8 +37,10 @@ class PuestaDisposicionINM(models.Model):
 class PuestaDisposicionAC(models.Model):   
     numeroOficio = models.CharField(max_length=50)
     fechaOficio = models.DateField()
-    nombreAutoridadSigna = models.CharField(max_length=100)
-    cargoAutoridadSigna = models.CharField(max_length=100)
+    nombreAutoridadSignaUno = models.CharField(max_length=100)
+    cargoAutoridadSignaUno = models.CharField(max_length=100)
+    nombreAutoridadSignaDos = models.CharField(max_length=100)
+    cargoAutoridadSignaDos = models.CharField(max_length=100)
     oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
     oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
     puntoRevision = models.CharField(max_length=100)
@@ -61,18 +65,17 @@ OPCION_GENERO_CHOICES=[
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(auto_now_add=True)
     horaRegistro = models.DateTimeField(auto_now_add=True)
-    numeroExtranjero = models.IntegerField(blank=True, null=True)
-    estacionMigratoria = models.CharField(max_length=50,blank=True)
+    numeroExtranjero = models.CharField(max_length=10, unique=True)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estacion de Origen', null=True, blank=True)
     nombreExtranjero = models.CharField(max_length= 50, blank=True)
     apellidoPaternoExtranjero = models.CharField(max_length=50, blank=True)
     apellidoMaternoExtranjero = models.CharField(max_length=50, blank=True)
-    firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    huellaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name="Nacionalidad")
+   
     genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
-    fotografiaExtranjero = models.FileField(upload_to='files/',  null=True,blank=True)
+    
     viajaSolo = models.BooleanField()
     tipoEstancia = models.CharField(max_length=50, blank=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
@@ -80,9 +83,8 @@ class Extranjero(models.Model):
 
     class Meta:
         verbose_name_plural = "Extranjeros" 
-    # def __str__(self):
-    #     return self.numeroExtranjero, self.estacionMigratoria, self.nombreExtranjero
-    
+    def __str__(self):
+         return self.nombreExtranjero
     
 OPCION_RELACION_CHOICES=[
     [0,'ESPOSO(A)'],
@@ -98,3 +100,18 @@ class Acompanante(models.Model):
 
     class Meta:
         verbose_name_plural = "Acompañantes"
+
+class Biometrico(models.Model):
+    Extranjero = models.OneToOneField(
+        Extranjero, on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    fotografiaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    fechaHoraFotografia = models.DateTimeField(auto_now_add=True)
+    huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    fechaHoraHuella = models.DateTimeField(auto_now_add=True)
+    firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    fechaHoraFirma = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Biometricos'

@@ -1,7 +1,7 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SD ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDD22D ">
 {% endblock link %}
 
 
@@ -28,26 +28,44 @@
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ extranjero.estacionMigratoria }}</td>
+            <td>{{ extranjero.deLaEstacion }}</td>
             <td>{{ extranjero.nombreExtranjero }}</td>
             <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
             <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
             <td>{{ extranjero.nacionalidad }}</td>
-            <td>{{ extranjero.deLaPuestaAC }}</td>
-            <td>
-                <a class="btn btn-sm btn-custom1" href="{% url 'editarExtranjeroAC' extranjero.id %}">
-                   <i class="fas fa-edit"></i>
-                </a>
-                <a class="btn btn-sm btn-custom1" href="{% url 'eliminar_extranjeroAC' extranjero.id %}">
-                   <i class="fas fa-trash-alt"></i>
-                </a>
-                <a class="btn btn-sm btn-custom1" href="{% url 'agregar_biometricosAC' extranjero.id %}">
-                   <i class="fas fa-fingerprint"></i>
-                </a>
-                <a class="btn btn-sm btn-custom1" href="#">
-                   <i class="fas fa-exchange-alt"></i>
-                </a>
-          
+            <td>{{ extranjero.deLaPuestaIMN }}</td>
+
+            <td>       
+                <a class="btn btn-sm btn-icon3" href="{% url 'editarExtranjeroAC' extranjero.id %}">
+                    <i class="fas fa-edit"></i>
+                 </a>
+                 <a class="btn btn-sm btn-icon3" href="{% url 'eliminar_extranjeroAC' extranjero.id %}">
+                    <i class="fas fa-trash-alt"></i>
+                 </a> 
+                 {% if extranjero.biometrico %}
+                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
+                     <a class="btn btn-sm btn-icon3" href="{% url 'editar_biometricoAC' extranjero.biometrico.Extranjero.id %}">
+                         <i class="fas fa-fingerprint"></i>
+                     </a>
+                     {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
+                     <a class="btn btn-sm btn-icon2" href="{% url 'editar_biometricoAC' extranjero.biometrico.Extranjero.id %}">
+                         <i class="fas fa-fingerprint"></i>
+                     </a>
+                     {% else %}
+                     <a class="btn btn-sm btn-icon1" href="{% url 'editar_biometricoAC' extranjero.biometrico.Extranjero.id %}">
+                         <i class="fas fa-fingerprint"></i>
+                     </a>
+                    {% endif %}
+                {% else %}
+                 <a class="btn btn-sm btn-icon1" href="{% url 'agregar_biometricoAC' extranjero.id %}">
+                     <i class="fas fa-fingerprint"></i>
+                 </a>
+             {% endif %}
+             
+             <a class="btn btn-sm btn-icon3" href="#">
+                 <i class="fas fa-exchange-alt"></i>
+             </a>
+            
             </td>
         </tr>
         {% endfor %}

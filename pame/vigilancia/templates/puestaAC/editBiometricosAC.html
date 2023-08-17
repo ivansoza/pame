@@ -1,0 +1,49 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
+{% block contenido %}
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Editar datos biometricos a Extranjero : {{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</h1>
+</div>
+
+<h1 class="titulo-general">De la puesta : {{ puesta.numeroOficio }} </h1>
+
+
+
+
+<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+    {% csrf_token %}
+    <div class="row">
+
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            {{form.Extranjero|as_crispy_field}}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            {{form.fotografiaExtranjero|as_crispy_field}}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            {{form.huellaExtranjero|as_crispy_field}}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3">
+            {{form.firmaExtranjero|as_crispy_field}}
+        </div>
+    </div>
+    
+    <button class="btn btn-custom float-end " type="submit">Guardar</button>
+    <br>
+
+    <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom1">Cancelar</a>       
+
+</form>
+{% endblock %}
+
+
+
+{% block script %}
+
+{% endblock script %}
