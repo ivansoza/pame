@@ -116,3 +116,33 @@
   background-color: #27463e; 
   border-color: #27463e; 
 }
+
+
+/* sss */
+
+/* Estilo base para el tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Estilo del texto del tooltip */
+.tooltip::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 3px;
+  opacity: 0; /* Inicialmente oculto */
+  pointer-events: none; /* No afecta la interacción del usuario */
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Mostrar el tooltip al pasar el mouse por encima */
+.tooltip:hover::after {
+  opacity: 1;
+}

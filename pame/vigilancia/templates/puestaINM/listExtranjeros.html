@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2252653ww ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.225ddd2653ww ">
 {% endblock link %}
 
 {% block contenido %}
@@ -45,7 +45,7 @@
                  </a> 
                  {% if extranjero.biometrico %}
                      {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
-                     <a class="btn btn-sm btn-icon3" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}">
+                     <a class="btn btn-sm btn-icon3" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" title="Editar Datos Biométricos">
                          <i class="fas fa-fingerprint"></i>
                      </a>
                      {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
