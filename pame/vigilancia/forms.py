@@ -136,7 +136,7 @@ class extranjeroFormsInm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
 
     )
-    numeroExtranjero = forms.IntegerField(
+    numeroExtranjero = forms.CharField(
         label= "Numero:",
     )
    
@@ -194,7 +194,7 @@ class extranjeroFormsAC(forms.ModelForm):
         widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
 
     )
-    numeroExtranjero = forms.IntegerField(
+    numeroExtranjero = forms.CharField(
         label= "Numero:",
     )
     

@@ -122,7 +122,7 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionINM.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroOficio.split('NUP')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'NUP{ultimo_numero + 1:03d}'
+        nuevo_numero = f'NUP{ultimo_numero + 1:06d}'
 
         initial['numeroOficio'] = nuevo_numero
         return initial
@@ -162,7 +162,12 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
-        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion} 
+
+        ultimo_registro = Extranjero.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroExtranjero.split('EXT-')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'EXT-{ultimo_numero + 1:06d}'
+        initial['numeroExtranjero'] = nuevo_numero
+        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero} 
 
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -358,7 +363,7 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
          # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionAC.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroOficio.split('NUP-AC-')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'NUP-AC-{ultimo_numero + 1:03d}'
+        nuevo_numero = f'NUP-AC-{ultimo_numero + 1:06d}'
 
         initial['numeroOficio'] = nuevo_numero
         return initial
@@ -402,7 +407,11 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
-        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion } 
+        ultimo_registro = Extranjero.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroExtranjero.split('EXT-')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'EXT-{ultimo_numero + 1:06d}'
+        initial['numeroExtranjero'] = nuevo_numero
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero } 
     
      
       
