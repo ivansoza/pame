@@ -3,11 +3,11 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
-from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM
+from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -143,7 +143,8 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     # success_url = reverse_lazy('homePuestaINM')
     
     def get_success_url(self):
-        return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
+        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
+        return reverse('agregar_biometricoINM', args=[extranjero_id])
     
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -218,8 +219,60 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
-   
     
+class AgregarBiometricoINM(CreateView):
+    model = Biometrico
+    form_class = BiometricoFormINM
+    template_name = 'puestaINM/createBiometricosINM.html'  # Cambiar a la ruta correcta
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        initial['Extranjero'] = extranjero
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtén el ID del extranjero del argumento en la URL
+        extranjero_id = self.kwargs.get('extranjero_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaIMN
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        return context
+
+class EditarBiometricoINM(UpdateView):
+    model = Biometrico
+    form_class = BiometricoFormINM
+    template_name = 'puestaINM/editBiometricosINM.html' 
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+    # Obtén el ID del extranjero del argumento en el URL
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaIMN
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        return context
+
 # class biometricosINM(CreatePermissionRequiredMixin,UpdateView):
 #     permission_required = {
 #          'perm1': 'vigilancia.change_puestadisposicioninm',
@@ -326,7 +379,11 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
     model =Extranjero             
     form_class = extranjeroFormsAC    
     template_name = 'puestaAC/createExtranjeroAC.html' 
-    success_url = reverse_lazy('homePuestaAC')
+
+    def get_success_url(self):
+        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
+        return reverse('agregar_biometricoAC', args=[extranjero_id])
+    
 
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -403,7 +460,59 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
         return context    
+
+class AgregarBiometricoAC(CreateView):
+    model = Biometrico
+    form_class = BiometricoFormAC
+    template_name = 'puestaAC/createBiometricosAC.html'  # Cambiar a la ruta correcta
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjeroAC', args=[extranjero.deLaPuestaAC.id])
     
+    def get_initial(self):
+        initial = super().get_initial()
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        initial['Extranjero'] = extranjero
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtén el ID del extranjero del argumento en la URL
+        extranjero_id = self.kwargs.get('extranjero_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaAC
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        return context
+
+class EditarBiometricoAC(UpdateView):
+    model = Biometrico
+    form_class = BiometricoFormAC
+    template_name = 'puestaAC/editBiometricosAC.html' 
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjeroAC', args=[extranjero.deLaPuestaAC.id])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+    # Obtén el ID del extranjero del argumento en el URL
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaAC
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        return context
 
 # class biometricosAC(CreatePermissionRequiredMixin,UpdateView):
 #     permission_required = {

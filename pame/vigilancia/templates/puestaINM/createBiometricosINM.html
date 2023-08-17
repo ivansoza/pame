@@ -19,27 +19,31 @@
 
 
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
-    <h1>Datos del extranjero</h1>
-
     {% csrf_token %}
     <div class="row">
-        <div class="col-sm-12 col-md-4 col-lg-4">
-            {{form.firmaExtranjero|as_crispy_field}}
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-            {{form.huellaExtranjero|as_crispy_field}}
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-            {{form.fotografiaExtranjero|as_crispy_field}}
-        </div>
+
+    <div class="col-sm-6 col-md-6 col-lg-3">
+        {{form.Extranjero|as_crispy_field}}
     </div>
+    <div class="col-sm-6 col-md-6 col-lg-3">
+        {{form.fotografiaExtranjero|as_crispy_field}}
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-3">
+        {{form.huellaExtranjero|as_crispy_field}}
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-3">
+        {{form.firmaExtranjero|as_crispy_field}}
+    </div>
+</div>
 
 
-    <button class="btn btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+
+    <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
     <br>
-    <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>       
-   
-    </form>
+
+    <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Guardar despues</a>       
+
+</form>
 {% endblock %}
 
 

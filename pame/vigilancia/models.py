@@ -83,8 +83,8 @@ class Extranjero(models.Model):
 
     class Meta:
         verbose_name_plural = "Extranjeros" 
-    # def __str__(self):
-    #     return self.numeroExtranjero, self.estacionMigratoria, self.nombreExtranjero
+    def __str__(self):
+         return self.nombreExtranjero
     
 OPCION_RELACION_CHOICES=[
     [0,'ESPOSO(A)'],
@@ -107,10 +107,11 @@ class Biometrico(models.Model):
         primary_key=True,
     )
     fotografiaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraFotografia = models.DateTimeField()
+    fechaHoraFotografia = models.DateTimeField(auto_now_add=True)
     huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    FechaHoraHuella = models.FileField('files/', null=True, blank=True)
-    fechaHoraFirma = models.DateTimeField()
+    fechaHoraHuella = models.DateTimeField(auto_now_add=True)
+    firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    fechaHoraFirma = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = 'Biometricos'

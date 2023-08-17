@@ -1,5 +1,5 @@
 from django import forms
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico
 
 class puestDisposicionINMForm(forms.ModelForm):
     numeroOficio = forms.CharField(
@@ -175,6 +175,16 @@ class extranjeroFormsInm(forms.ModelForm):
 #         model = Extranjero
 #         fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
 
+
+class BiometricoFormINM(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = '__all__'  # Incluye todos los campos del modelo
+
+class BiometricoFormAC(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = '__all__'  # Incluye todos los campos del modelo
 
 
 class extranjeroFormsAC(forms.ModelForm):
