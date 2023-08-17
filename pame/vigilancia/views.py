@@ -413,8 +413,6 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         initial['numeroExtranjero'] = nuevo_numero
         return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero } 
     
-     
-      
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
@@ -422,7 +420,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         extranjero.puesta = puesta
         extranjero.save()  #
         return super().form_valid(form)
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
