@@ -114,12 +114,35 @@
     console.log('Guardando foto:', imageData);
   }
 
-  // Función para guardar la huella
+  // Función para capturar y guardar la huella digital
   function guardarHuella() {
-    // Aquí puedes agregar tu lógica para guardar la huella dactilar
-    alert('Huella guardada correctamente.');
+    try {
+      // Inicializar el lector de huellas
+      var fingerprintReader = new YourFingerprintReaderSDK(); // Reemplaza con la inicialización del SDK
+      
+      // Capturar la huella digital
+      var fingerprintData = fingerprintReader.captureFingerprint(); // Reemplaza con la llamada al método de captura
+      
+      // Enviar la huella digital al servidor o realizar otras acciones
+      // Ejemplo: realizar una solicitud AJAX para enviar los datos al servidor
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'url_del_servidor', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            alert('Huella guardada correctamente.');
+          } else {
+            alert('Error al guardar la huella.');
+          }
+        }
+      };
+      xhr.send(JSON.stringify({ fingerprintData: fingerprintData }));
+    } catch (error) {
+      console.error('Error al capturar la huella:', error);
+    }
   }
-
+  
   // Función para guardar la firma
   function guardarFirma() {
     var firmaImageData = firmaPad.toDataURL();

@@ -1,5 +1,6 @@
 from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico
+import datetime
 
 class puestDisposicionINMForm(forms.ModelForm):
     numeroOficio = forms.CharField(
@@ -11,6 +12,11 @@ class puestDisposicionINMForm(forms.ModelForm):
         label= "Fecha de Oficio:",
         widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Establecer la fecha actual como valor por defecto
+        self.fields['fechaOficio'].initial = datetime.date.today()
+        self.fields['fechaOficio'].widget.attrs['readonly'] = 'readonly'  # Marcar como solo lectura
 
     nombreAutoridadSignaUno = forms.CharField(
         label= "Nombre de Autoridad Asignada 1:",
