@@ -237,4 +237,7 @@ class extranjeroFormsAC(forms.ModelForm):
 class acompananteForms(forms.ModelForm):
     class Meta:
        model = Acompanante
-       fields ='__all__'
+       fields = ['delExtranjero', 'delAcompanante', 'relacion']        
+        # Agregar un filtro de búsqueda para las claves foráneas
+       delExtranjero = forms.ModelChoiceField(queryset=Extranjero.objects.all(), widget=forms.TextInput(attrs={'autocomplete': 'off'}))
+       delAcompanante = forms.ModelChoiceField(queryset=Extranjero.objects.all(), widget=forms.TextInput(attrs={'autocomplete': 'off'}))

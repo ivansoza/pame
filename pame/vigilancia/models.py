@@ -95,7 +95,7 @@ OPCION_RELACION_CHOICES=[
     [4,'OTRO'],
 ]
 class Acompanante(models.Model):
-    delExtranjero = models.IntegerField()
+    delExtranjero = models.CharField(max_length=200)
     delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True)
     relacion = models.IntegerField(choices=OPCION_RELACION_CHOICES)
 
