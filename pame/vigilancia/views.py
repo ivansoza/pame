@@ -2,7 +2,7 @@ from typing import Any
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
-
+from django.shortcuts import get_object_or_404
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
@@ -145,14 +145,13 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
-        
         if self.object.viajaSolo:
             return reverse('agregar_biometricoINM', args=[extranjero_id])
         else:
-            return reverse('createAcompananteINM')
-    
+            # return reverse('crearExtranjeroAC', args=[puesta_id])
+            return reverse('listAcompanantesINM', args=[extranjero_id, puesta_id])
+        
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
@@ -308,6 +307,8 @@ class DeleteExtranjeroINM(DeleteView):
         
         return context
     
+
+
 class acompananteCreateINM(CreateView):
     model = Acompanante
     form_class = acompananteForms
@@ -333,6 +334,27 @@ class acompananteCreateINM(CreateView):
         context['seccion'] = 'seguridadINM'
         
         return context
+    
+class acompananteList(ListView):
+    model = Extranjero
+    template_name = "puestaINM/listAcompananteINM.html" 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        extranjero_principal_id = self.kwargs.get('extranjero_id')
+        puesta_id = self.kwargs.get('puesta_id')
+
+        # Obtener datos del extranjero principal
+        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+
+        # Obtener la lista de extranjeros de la misma puesta
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id).exclude(pk=extranjero_principal_id)
+
+        context['extranjero_principal'] = extranjero_principal
+        context['extranjeros_puesta'] = extranjeros_puesta
+
+        return context
+
 #------------------------ Fin Puesta por INM-----------------------------
 
 #------------------------  Puesta por AC -----------------------------
