@@ -166,7 +166,7 @@ class extranjeroFormsInm(forms.ModelForm):
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
-            'viajaSolo': forms.CheckboxInput(attrs={'class': 'form-check-input', 'type':"checkbox"}),
+            'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
 
         
