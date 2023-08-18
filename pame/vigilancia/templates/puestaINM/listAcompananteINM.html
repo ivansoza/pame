@@ -1,0 +1,13 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block contenido %}
+<h1>Posibles Acompañantes para {{ extranjero_principal.nombreExtranjero }}</h1>
+<p>Datos del extranjero principal:</p>
+<ul>
+    <li>Nombre: {{ extranjero_principal.nombreExtranjero }}</li>
+    <li>Apellido Paterno: {{ extranjero_principal.apellidoPaternoExtranjero }}</li>
+    <!-- Agrega más campos aquí -->
+</ul>
+{% endblock %}
