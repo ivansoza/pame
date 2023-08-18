@@ -114,6 +114,7 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            UsuarioId = usuario_data.id
             estacion_id = usuario_data.estancia_id
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
@@ -121,8 +122,8 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
             pass
         # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionINM.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroOficio.split('NUP')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'NUP{ultimo_numero + 1:06d}'
+        ultimo_numero = int(ultimo_registro.numeroOficio.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/INM/{estacion_id}/{UsuarioId}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
         return initial
@@ -157,17 +158,20 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id = usuario_data.id
             estacion_id = usuario_data.estancia_id
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
+            viaja_solo = True
+            initial['viajaSolo']= viaja_solo
         except Usuario.DoesNotExist:
             pass
 
         ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split('EXT-')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'EXT-{ultimo_numero + 1:06d}'
+        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero} 
+        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
 
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -355,6 +359,7 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id = usuario_data.id
             estacion_id = usuario_data.estancia_id
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
@@ -362,8 +367,8 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
             pass
          # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionAC.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroOficio.split('NUP-AC-')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'NUP-AC-{ultimo_numero + 1:06d}'
+        ultimo_numero = int(ultimo_registro.numeroOficio.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/AC/{estacion_id}/{usuario_id}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
         return initial
@@ -402,19 +407,20 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id= usuario_data.id
             estacion_id = usuario_data.estancia_id
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
         ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split('EXT-')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'EXT-{ultimo_numero + 1:06d}'
+        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero } 
-    
+        viaja_solo = True
+        initial['viajaSolo'] = viaja_solo
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo': viaja_solo } 
      
-      
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
@@ -422,7 +428,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         extranjero.puesta = puesta
         extranjero.save()  #
         return super().form_valid(form)
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
@@ -464,6 +470,9 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['puesta'] = self.object.deLaPuestaAC
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa

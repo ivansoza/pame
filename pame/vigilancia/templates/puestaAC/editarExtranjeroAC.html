@@ -11,9 +11,16 @@
 {% block contenido %}
 
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Relación con la Puesta: {{ object.deLaPuestaAC }}</h1>
+    <h1 class="titulo-general">
+        Editar datos del extranjero:        
+        <span class="puesta-color" >{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</span>
+    </h1>
+  
 </div>
-
+<h1 class="subtitulo-general">
+    De la puesta:        
+    <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+</h1>
 
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
