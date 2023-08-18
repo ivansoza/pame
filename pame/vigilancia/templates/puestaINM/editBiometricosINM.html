@@ -20,6 +20,46 @@
     {% csrf_token %}
     <div class="row">
 
+        <!-- Botón para abrir la ventana modal -->
+<button class="btn1" type="button" id="abrirModal1" onclick="abrirModal('myModal1')">foto</button>
+<button class="btn1" type="button" id="abrirModal2" onclick="abrirModal('myModal2')">huella</button>
+<button class="btn1" type="button" id="abrirModal3" onclick="abrirModal('myModal3')">firma</button>
+
+<!-- Ventanas modales -->
+<div id="myModal1" class="modal">
+  <video id="video" autoplay></video>
+  <button class="btn" id="capturarBtn" onclick="capturarFoto()">Capturar Foto</button>
+  <button class="btn" type="button" id="volverBtn" onclick="volverATomar()" style="display: none;">Volver a tomar foto</button>
+  <button class="btn" type="button" id="guardarFotoBtn" onclick="guardarFoto()">Guardar Foto</button>
+  <button class="btn" type="button" onclick="cerrarModal('myModal1')">Cerrar</button>
+  <canvas id="canvas" width="320" height="240"></canvas>
+  <img id="capturedImage" style="display: none;">
+  <input type="hidden" id="capturedImageData">
+  {{form.fotografiaExtranjero|as_crispy_field}}
+
+</div>
+
+<div id="myModal2" class="modal">
+  <h2>Ingresa tu huella</h2>
+  <button class="btn" type="button" onclick="capturarHuella()">Capturar Huella</button>
+  <button class="btn" type="button" onclick="cerrarModal('myModal2')">Cerrar</button>
+  <button class="btn" type="button" id="guardarHuellaBtn" onclick="guardarHuella()">Guardar Huella</button>
+  {{form.huellaExtranjero|as_crispy_field}}
+</div>
+
+<div id="myModal3" class="modal">
+  <h2>Ingresa tu firma</h2>
+  <canvas id="firmaCanvas" width="300" height="150" style="border: 1px solid black;"></canvas>
+  <button class="btn" type="button" id="capturarFirmaBtn" onclick="capturarFirma()">Capturar Firma</button>
+  <button class="btn" type="button" id="volverAFirmarBtn" onclick="volverAFirmar()" style="display: none;">Volver a firmar</button>
+  <button class="btn" id="guardarFirmaBtn" onclick="guardarFirma()">Guardar Firma</button>
+  <button class="btn" type="button" onclick="cerrarModal('myModal3')">Cerrar</button>
+  {{form.firmaExtranjero|as_crispy_field}}
+</div>
+<br>
+<div>
+
+
         <div class="col-sm-6 col-md-6 col-lg-3">
             {{form.Extranjero|as_crispy_field}}
         </div>
@@ -45,5 +85,6 @@
 
 
 {% block script %}
+
 
 {% endblock script %}

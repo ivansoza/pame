@@ -3,6 +3,8 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+    <link rel="stylesheet" href="{% static 'css/biometricos.css' %}">
+
 {% endblock link %}
 
 {% block contenido %}
@@ -45,5 +47,6 @@
 
 
 {% block script %}
+<script src="{% static 'js/biometricos.js' %}"></script>
 
 {% endblock script %}

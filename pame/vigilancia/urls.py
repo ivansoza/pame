@@ -31,10 +31,8 @@ urlpatterns = [
     path('agregar_biometricoAC/<int:extranjero_id>/', AgregarBiometricoAC.as_view(), name='agregar_biometricoAC'),
     path('editar_biometricoAC/<int:pk>/', EditarBiometricoAC.as_view(), name='editar_biometricoAC'),
 
-    # path('extranjero-ac/<int:pk>/', biometricosAC.as_view(), name='agregar_biometricosAC'),
-    # path('extranjero-inm/<int:pk>/', biometricosINM.as_view(), name='agregar_biometricosINM'),
 
-
+# ------------------------- PUESTA VOLUNTAD PROPIA ----------------
     path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
    #Puesta AC
 

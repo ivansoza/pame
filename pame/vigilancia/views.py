@@ -468,6 +468,9 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['puesta'] = self.object.deLaPuestaAC
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
