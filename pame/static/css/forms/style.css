@@ -12,6 +12,12 @@
     text-align: center;
     margin: 0;
   }
+  .subtitulo-general{
+    font-size: 20px;
+    text-align: left;
+    padding: 10px;
+
+  }
   
   .titulo-general-container::before {
     content: "";
@@ -23,6 +29,10 @@
     background-color: #a98159;
   }
 
+  .puesta-color {
+    color: #762138;
+    font-weight: 500;
+  }
 
   /* Botones */
 
