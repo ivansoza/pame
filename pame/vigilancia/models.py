@@ -65,7 +65,7 @@ OPCION_GENERO_CHOICES=[
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(auto_now_add=True)
     horaRegistro = models.DateTimeField(auto_now_add=True)
-    numeroExtranjero = models.CharField(max_length=10, unique=True)
+    numeroExtranjero = models.CharField(max_length=25, unique=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estacion de Origen', null=True, blank=True)
     nombreExtranjero = models.CharField(max_length= 50, blank=True)
     apellidoPaternoExtranjero = models.CharField(max_length=50, blank=True)

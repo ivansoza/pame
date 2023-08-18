@@ -407,7 +407,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
-            usuario_id= usuario_data.is_authenticated
+            usuario_id= usuario_data.id
             estacion_id = usuario_data.estancia_id
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
@@ -417,7 +417,9 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
         nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero } 
+        viaja_solo = True
+        initial['viajaSolo'] = viaja_solo
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo': viaja_solo } 
      
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
