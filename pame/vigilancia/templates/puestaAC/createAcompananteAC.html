@@ -1,0 +1,14 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block contenido %}
+<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+    <h1>Asignar Acompañantes</h1>
+        {% csrf_token %}
+        {{ form.as_p}}
+  
+    </form>    
+
+
+{% endblock contenido %}

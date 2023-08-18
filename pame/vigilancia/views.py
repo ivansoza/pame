@@ -288,24 +288,7 @@ class EditarBiometricoINM(UpdateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
 
-# class biometricosINM(CreatePermissionRequiredMixin,UpdateView):
-#     permission_required = {
-#          'perm1': 'vigilancia.change_puestadisposicioninm',
-#     }
-#     model = Extranjero
-#     form_class = ExtranjeroDatosBiometricosFormINM
-#     template_name = 'puestaINM/createBiometricosINM.html'
 
-#     def get_success_url(self):
-#         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['puesta'] = self.object.deLaPuestaIMN
-#         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
-#         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
-
-#         return context  
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -330,6 +313,13 @@ class acompananteCreateINM(CreateView):
     form_class = acompananteForms      
     template_name = 'puestaINM/acompanantesINM.html'  
     success_url = reverse_lazy('homePuestaINM')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
+        return context
 #------------------------ Fin Puesta por INM-----------------------------
 
 #------------------------  Puesta por AC -----------------------------
@@ -407,7 +397,8 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         if self.object.viajaSolo:
             return reverse('agregar_biometricoAC', args=[extranjero_id])
         else:
-            return reverse('crearExtranjeroAC', args=[puesta_id])
+            # return reverse('crearExtranjeroAC', args=[puesta_id])
+            return reverse('createAcompananteAC')
 
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -546,25 +537,6 @@ class EditarBiometricoAC(UpdateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
 
-# class biometricosAC(CreatePermissionRequiredMixin,UpdateView):
-#     permission_required = {
-#          'perm1': 'vigilancia.change_extranjero',
-#     }
-#     model = Extranjero
-#     form_class = ExtranjeroDatosBiometricosFormAC
-#     template_name = 'puestaAC/createBiometricosAC.html'
-
-#     def get_success_url(self):
-#         return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
-    
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['puesta'] = self.object.deLaPuestaAC
-#         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
-#         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
-
-#         return context  
-    
 class DeleteExtranjeroAC(DeleteView):
     model = Extranjero
     template_name = 'puestaAC/eliminarExtranjeroAC.html'
@@ -576,6 +548,20 @@ class DeleteExtranjeroAC(DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['puesta_id'] = self.object.deLaPuestaAC.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
+        return context
+
+class createAcompananteAC(CreateView):
+    model = Acompanante          
+    form_class = acompananteForms      
+    template_name = 'puestaAC/createAcompananteAC.html'  
+    success_url = reverse_lazy('homePuestaAC')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
         return context
