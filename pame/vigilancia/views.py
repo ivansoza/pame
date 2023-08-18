@@ -144,8 +144,14 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     # success_url = reverse_lazy('homePuestaINM')
     
     def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
-        return reverse('agregar_biometricoINM', args=[extranjero_id])
+        
+        if self.object.viajaSolo:
+            return reverse('agregar_biometricoINM', args=[extranjero_id])
+        else:
+            return reverse('crearExtranjeroINM', args=[puesta_id])
     
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']

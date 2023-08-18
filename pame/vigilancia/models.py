@@ -62,6 +62,7 @@ OPCION_GENERO_CHOICES=[
     [0,'HOMBRE'],
     [1,'MUJER'],
 ]
+
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(auto_now_add=True)
     horaRegistro = models.DateTimeField(auto_now_add=True)
@@ -76,7 +77,7 @@ class Extranjero(models.Model):
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
     
-    viajaSolo = models.BooleanField()
+    viajaSolo = models.BooleanField(default=True)
     tipoEstancia = models.CharField(max_length=50, blank=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')
