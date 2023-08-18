@@ -58,9 +58,15 @@ class Estacion(models.Model):
 
 class Salida(models.Model):
     tipoSalida = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.tipoSalida
 
 class Estancia(models.Model):
     tipoEstancia = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.tipoEstancia
 
 class Relacion(models.Model):
     tipoRelacion = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.tipoRelacion

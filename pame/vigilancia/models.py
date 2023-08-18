@@ -79,9 +79,9 @@ class Extranjero(models.Model):
     genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
-    
-    viajaSolo = models.BooleanField()
-    tipoEstancia = models.CharField(max_length=50, blank=True)
+    tipoEstancia = models.ForeignKey(Estancia, on_delete=models.CASCADE)
+    estatus = models.IntegerField(choices=OPCION_ESTATUS_CHOICES)
+    viajaSolo = models.BooleanField(default=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')
 
@@ -105,15 +105,15 @@ class Biometrico(models.Model):
     )
 
     fotografiaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraFotoCreate = models.DateTimeField()
-    fechaHoraFotoUpdate = models.DateTimeField()
+    fechaHoraFotoCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraFotoUpdate = models.DateTimeField(auto_now_add=True)
 
     huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraHuellaCreate = models.DateTimeField()
-    fechaHoraHuellaUpdate = models.DateTimeField()
+    fechaHoraHuellaCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraHuellaUpdate = models.DateTimeField(auto_now_add=True)
 
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraFirmaCreate = models.DateTimeField()
+    fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
 
     class Meta:
