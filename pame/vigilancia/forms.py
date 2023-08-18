@@ -234,3 +234,7 @@ class extranjeroFormsAC(forms.ModelForm):
 #         fields = ['firmaExtranjero', 'huellaExtranjero', 'fotografiaExtranjero']
 
 
+class acompananteForms(forms.ModelForm):
+    class Meta:
+       model = Acompanante
+       fields ='__all__'

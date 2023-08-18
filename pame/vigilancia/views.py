@@ -3,11 +3,11 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
-from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico
+from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, acompananteForms
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -151,7 +151,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         if self.object.viajaSolo:
             return reverse('agregar_biometricoINM', args=[extranjero_id])
         else:
-            return reverse('crearExtranjeroINM', args=[puesta_id])
+            return reverse('createAcompananteINM')
     
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -324,7 +324,12 @@ class DeleteExtranjeroINM(DeleteView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
-
+    
+class acompananteCreateINM(CreateView):
+    model = Acompanante          
+    form_class = acompananteForms      
+    template_name = 'puestaINM/acompanantesINM.html'  
+    success_url = reverse_lazy('homePuestaINM')
 #------------------------ Fin Puesta por INM-----------------------------
 
 #------------------------  Puesta por AC -----------------------------
