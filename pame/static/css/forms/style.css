@@ -1,14 +1,5 @@
 /* Estilos generales */
-.table-responsive {
-  overflow-x: auto !important;
-}
 
-/* Media query para responsividad */
-@media (max-width: 768px) {
-  .table-responsive {
-      overflow-x: scroll !important;
-  }
-}
 .titulo-general-container {
     display: inline-block;
     padding: 10px;
@@ -73,6 +64,7 @@
     background-color: #1E4C40;
     color: white; /* Cambia el color del texto */
   }
+
 
 
 #puestaAC-table {

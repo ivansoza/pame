@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.@##dfxsxsfdDD ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.@##dfxsddxsfdDD ">
 {% endblock link %}
 
 {% block contenido %}
@@ -16,7 +16,7 @@
 <a class="btn btn-custom mb-3" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
 <div class="table-responsive">
 
-<table id="puestasinm-table" class="table table-striped table-bordered">
+<table id="puestasinm-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
             <th>Estacion Migratoria</th>
@@ -90,6 +90,8 @@
 <script>
     $(document).ready(function() {
         $('#puestasinm-table').DataTable({
+            responsive: true,
+
             dom: 'Bfrtip',
             buttons: [
                 {
