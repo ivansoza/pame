@@ -1,7 +1,5 @@
 from django.db import models
 
-
-# Create your models here.
 class Tipos(models.Model):
     tipo = models.CharField(max_length=50, null=False)
 
@@ -42,7 +40,7 @@ class Estacion(models.Model):
     nombre = models.CharField(max_length=50, null=False)
     calle = models.CharField(max_length=50, null=False)
     noext = models.CharField(max_length=5)
-    noint = models.CharField(max_length=5, default='sn')
+    noint = models.CharField(max_length=5, blank=True)
     colonia = models.CharField(max_length=50, null=False)
     cp = models.IntegerField(null=False)
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
@@ -58,24 +56,17 @@ class Estacion(models.Model):
     class Meta:
         verbose_name_plural = "Estaciones"
 
+class Salida(models.Model):
+    tipoSalida = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.tipoSalida
 
+class Estancia(models.Model):
+    tipoEstancia = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.tipoEstancia
 
-
-#Creacion de un modelo prueba para el funcionamkento 
-
-class Puesta(models.Model):
-    numero_oficio = models.CharField(max_length=20)
-    nombre_responsable = models.CharField(max_length=100)
-    estado = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.numero_oficio
-
-class Extranjero(models.Model):
-    nombre_extranjero = models.CharField(max_length=100)
-    edad = models.PositiveIntegerField()
-    puesta = models.ForeignKey(Puesta, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.nombre_extranjero} - {self.puesta.numero_oficio}"
-    
+class Relacion(models.Model):
+    tipoRelacion = models.CharField(max_length=50)
+    def __str__(self) -> str:
+        return self.tipoRelacion

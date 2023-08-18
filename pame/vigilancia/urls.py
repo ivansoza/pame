@@ -19,7 +19,7 @@ urlpatterns = [
     path('eliminar-extranjero/<int:pk>/', DeleteExtranjeroINM.as_view(), name='eliminarExtranjeroINM'),
     path('agregar_biometricoINM/<int:extranjero_id>/', AgregarBiometricoINM.as_view(), name='agregar_biometricoINM'),
     path('editar_biometricoINM/<int:pk>/', EditarBiometricoINM.as_view(), name='editar_biometricoINM'),
-    path('acompanantesINM/', acompananteCreateINM.as_view(),name='createAcompananteINM'),
+    path('acompanantesINM/<int:puesta_id>/', acompananteCreateINM.as_view(),name='createAcompananteINM'),
 
     # --------------- PUESTA AC  ---------------------
     path('puesta-ac/', inicioACList.as_view(), name='homePuestaAC'),

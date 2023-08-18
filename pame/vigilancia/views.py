@@ -309,16 +309,29 @@ class DeleteExtranjeroINM(DeleteView):
         return context
     
 class acompananteCreateINM(CreateView):
-    model = Acompanante          
-    form_class = acompananteForms      
-    template_name = 'puestaINM/acompanantesINM.html'  
+    model = Acompanante
+    form_class = acompananteForms
+    template_name = 'puestaINM/acompanantesINM.html'
     success_url = reverse_lazy('homePuestaINM')
+
+    def get_queryset(self):
+        puesta_id = self.kwargs['puesta_id']
+        return Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
-        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
-
+        puesta_id = self.kwargs['puesta_id']
+        
+        # Filtrar extranjeros por la puesta actual
+        extranjeros = self.get_queryset()
+        
+        puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
+        
+        context['puesta'] = puesta
+        context['extranjeros'] = extranjeros  # Pasar los extranjeros filtrados al contexto
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        
         return context
 #------------------------ Fin Puesta por INM-----------------------------
 

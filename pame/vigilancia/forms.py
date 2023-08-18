@@ -1,5 +1,6 @@
 from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico
+import datetime
 
 class puestDisposicionINMForm(forms.ModelForm):
     numeroOficio = forms.CharField(
@@ -11,6 +12,11 @@ class puestDisposicionINMForm(forms.ModelForm):
         label= "Fecha de Oficio:",
         widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Establecer la fecha actual como valor por defecto
+        self.fields['fechaOficio'].initial = datetime.date.today()
+        self.fields['fechaOficio'].widget.attrs['readonly'] = 'readonly'  # Marcar como solo lectura
 
     nombreAutoridadSignaUno = forms.CharField(
         label= "Nombre de Autoridad Asignada 1:",
@@ -155,12 +161,10 @@ class extranjeroFormsInm(forms.ModelForm):
 
     )
   
-    tipoEstancia = forms.CharField(
-        label= "Tipo de Estancia:",
-    )
+   
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus'] 
         widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -214,12 +218,10 @@ class extranjeroFormsAC(forms.ModelForm):
 
     )
   
-    tipoEstancia = forms.CharField(
-        label= "Tipo de Estancia:",
-    )
+   
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus']
         widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -237,4 +239,7 @@ class extranjeroFormsAC(forms.ModelForm):
 class acompananteForms(forms.ModelForm):
     class Meta:
        model = Acompanante
-       fields ='__all__'
+       fields = ['delExtranjero', 'delAcompanante', 'relacion']        
+        # Agregar un filtro de búsqueda para las claves foráneas
+       delExtranjero = forms.ModelChoiceField(queryset=Extranjero.objects.all(), widget=forms.TextInput(attrs={'autocomplete': 'off'}))
+       delAcompanante = forms.ModelChoiceField(queryset=Extranjero.objects.all(), widget=forms.TextInput(attrs={'autocomplete': 'off'}))
