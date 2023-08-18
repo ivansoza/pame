@@ -15,6 +15,8 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from catalogos.models import Estacion
+from django.shortcuts import get_object_or_404
+
 
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -411,7 +413,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
             return reverse('agregar_biometricoAC', args=[extranjero_id])
         else:
             # return reverse('crearExtranjeroAC', args=[puesta_id])
-            return reverse('createAcompananteAC')
+            return reverse('listAcompanantesAC', args=[extranjero_id, puesta_id])
 
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -576,5 +578,26 @@ class createAcompananteAC(CreateView):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+
+        return context
+    
+class ListAcompanantesAC(ListView):
+    model = Extranjero
+    template_name= 'puestaAC/listAcompanantesAC.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        extranjero_principal_id = self.kwargs.get('extranjero_id')
+        puesta_id = self.kwargs.get('puesta_id')
+
+        # Obtener datos del extranjero principal
+        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+
+        # Obtener la lista de extranjeros de la misma puesta
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id).exclude(pk=extranjero_principal_id)
+
+        context['extranjero_principal'] = extranjero_principal
+        context['extranjeros_puesta'] = extranjeros_puesta
 
         return context
