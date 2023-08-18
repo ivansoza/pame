@@ -1,5 +1,5 @@
 from django import forms 
-from .models import Responsable, Puesta, Extranjero
+from .models import Responsable
 from django.core.validators import RegexValidator
 
 
@@ -64,14 +64,3 @@ class ResponsableForm(forms.ModelForm):
     class Meta:
         model = Responsable
         fields = ["nombre","apellidoPat","apellidoMat","email","telefono"]
-
-
-class PuestaForm(forms.ModelForm):
-    class Meta:
-        model = Puesta
-        fields = '__all__' 
-
-class ExtranjeroForm(forms.ModelForm):
-    class Meta:
-        model = Extranjero
-        fields = '__all__'  # Puedes especificar aquí los campos que quieres incluir en el formulario
