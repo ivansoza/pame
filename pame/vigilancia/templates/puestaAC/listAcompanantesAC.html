@@ -10,9 +10,11 @@
 {% block contenido %}
 
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Lista de extranjeros para acompańantes para: {{ extranjero_principal.nombreExtranjero}} {{ extranjero_principal.apellidoPaternoExtranjero}} {{ extranjero_principal.apellidoMaternoExtranjero}}</h1>
+    <h1 class="titulo-general">Lista de acompańantes para: {{ extranjero_principal.nombreExtranjero}} {{ extranjero_principal.apellidoPaternoExtranjero}} {{ extranjero_principal.apellidoMaternoExtranjero}}</h1>
 </div>
 <br>
+
+
 
 <p>Datos del extranjero principal:</p>
 <ul>
@@ -22,6 +24,9 @@
 
     <!-- Agrega más campos aquí -->
 </ul>
+
+<a class="btn btn-custom mb-3" href="{% url 'crearAcompananteAC' puesta.id extranjero_principal.id  %}">Crear Extranjero</a>
+
 
 
 <div class="table-responsive">
@@ -60,7 +65,7 @@
     </table>
 </div>
 
-<a href="#" class="btn btn-custom">Volver a la Lista de Puestas</a>
+<a href="{% url 'listarExtranjeroAC' puesta.id%}" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
 
 

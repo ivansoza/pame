@@ -493,6 +493,7 @@ class listarExtranjerosAC(ListView):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
+    
         context['puesta'] = puesta
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
@@ -590,15 +591,61 @@ class DeleteExtranjeroAC(DeleteView):
 
         return context
 
-class createAcompananteAC(CreateView):
-    model = Acompanante          
-    form_class = acompananteForms      
-    template_name = 'puestaAC/createAcompananteAC.html'  
-    success_url = reverse_lazy('homePuestaAC')
+class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_extranjero',
+    }
+    model =Extranjero             
+    form_class = extranjeroFormsAC    
+    template_name = 'puestaAC/createAcompananteAC.html' 
 
+    def get_success_url(self):
+        # puesta_id = self.kwargs['puesta_id']
+        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
+        return reverse('agregar_biometricoAC', args=[extranjero_id])
+    
+
+    def get_initial(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
+       
+        initial = super().get_initial()
+
+        # Acceder al usuario autenticado y sus datos en la base de datos
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id= usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+        ultimo_registro = Extranjero.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        initial['numeroExtranjero'] = nuevo_numero
+        viaja_solo = True
+        initial['viajaSolo'] = viaja_solo
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo': viaja_solo } 
+     
+    def form_valid(self, form):
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
+        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
+        extranjero.puesta = puesta
+        extranjero.save()  #
+        return super().form_valid(form)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        puesta_id = self.kwargs['puesta_id']
+        context['puesta'] = PuestaDisposicionAC.objects.get(id=puesta_id)
+        extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal
+        context['extranjero_principal_id'] = extranjero_principal_id  # Pasa el ID al contexto
+        context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
         return context
@@ -612,6 +659,7 @@ class ListAcompanantesAC(ListView):
         
         extranjero_principal_id = self.kwargs.get('extranjero_id')
         puesta_id = self.kwargs.get('puesta_id')
+        context['puesta'] = PuestaDisposicionAC.objects.get(id=puesta_id)
 
         # Obtener datos del extranjero principal
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
