@@ -72,9 +72,12 @@
                 <td>{{ extranjero.nacionalidad }}</td>
                 <td>{{ extranjero.deLaPuestaIMN }}</td>
                 <td>       
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'agregar_acompananteINM' extranjero_principal.id extranjero.id %}" data-title="Agregar Acompañante">
-                        <i class="fas fa-plus"></i>
-                    </a>
+               
+                    <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
+                    href="{% url 'agregar_acompananteINM' extranjero_principal.id extranjero.id %}"
+                    data-title="Agregar Acompañante" onclick="abrir_modal_edicion(this.href); return false;">
+                     <i class="fas fa-plus"></i>
+                 </a>
                 </td>
             </tr>
             {% endfor %}
@@ -128,6 +131,10 @@
 
 <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
+<div class="modal fade" id="edicion" role="dialog">
+
+</div>
+
 
 
 {% endblock contenido %}
@@ -168,6 +175,16 @@
         });
     });
   </script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_edicion(url){
+        $('#edicion').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
 
 {% endblock script %}

@@ -371,7 +371,7 @@ class acompananteList(ListView):
 class AgregarAcompananteViewINM(CreateView):
     model = Acompanante
     form_class = AcompananteForm
-    template_name = 'puestaINM/acompanantesINM.html'
+    template_name = 'modal/acompananteINM.html'
 
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
