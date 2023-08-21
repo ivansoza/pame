@@ -91,9 +91,12 @@ class Extranjero(models.Model):
          return self.nombreExtranjero
     
 class Acompanante(models.Model):
-    delExtranjero = models.CharField(max_length=200)
-    delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True)
+    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delExtranjero')
+    delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delAcompanante')
     relacion = models.ForeignKey(Relacion, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.delExtranjero} - {self.delAcompanante}"
 
     class Meta:
         verbose_name_plural = "Acompañantes"

@@ -1,0 +1,21 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
+
+
+
+{% block contenido %}
+<h2>Agregar Acompañante</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'listAcompanantesAC' extranjero_id=extranjero_principal.id puesta_id=extranjero_principal.deLaPuestaAC.id %}">Volver</a>
+{% endblock contenido %}
+
