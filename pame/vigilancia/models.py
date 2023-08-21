@@ -62,12 +62,10 @@ OPCION_GENERO_CHOICES=[
     [0,'HOMBRE'],
     [1,'MUJER'],
 ]
-
 OPCION_ESTATUS_CHOICES=[
     [0,'ACTIVO'],
     [1,'INACTIVO'],
 ]
-
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(auto_now_add=True)
     horaRegistro = models.DateTimeField(auto_now_add=True)
@@ -81,11 +79,9 @@ class Extranjero(models.Model):
     genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
-    
-    viajaSolo = models.BooleanField()
-    tipoSalida = models.ForeignKey(Salida, on_delete=models.CASCADE)
     tipoEstancia = models.ForeignKey(Estancia, on_delete=models.CASCADE)
     estatus = models.IntegerField(choices=OPCION_ESTATUS_CHOICES)
+    viajaSolo = models.BooleanField(default=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')
 
@@ -95,9 +91,12 @@ class Extranjero(models.Model):
          return self.nombreExtranjero
     
 class Acompanante(models.Model):
-    delExtranjero = models.IntegerField()
-    delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True)
+    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delExtranjero')
+    delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delAcompanante')
     relacion = models.ForeignKey(Relacion, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.delExtranjero} - {self.delAcompanante}"
 
     class Meta:
         verbose_name_plural = "Acompañantes"
@@ -109,15 +108,15 @@ class Biometrico(models.Model):
     )
 
     fotografiaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraFotoCreate = models.DateTimeField()
-    fechaHoraFotoUpdate = models.DateTimeField()
+    fechaHoraFotoCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraFotoUpdate = models.DateTimeField(auto_now_add=True)
 
     huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraHuellaCreate = models.DateTimeField()
-    fechaHoraHuellaUpdate = models.DateTimeField()
+    fechaHoraHuellaCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraHuellaUpdate = models.DateTimeField(auto_now_add=True)
 
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
-    fechaHoraFirmaCreate = models.DateTimeField()
+    fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -37,7 +37,7 @@
                 <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
                 <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
                 <td>{{ extranjero.nacionalidad }}</td>
-                <td>{{ extranjero.deLaPuestaIMN }}</td>
+                <td>{{ extranjero.deLaPuestaAC }}</td>
 
                 <td>       
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroAC' extranjero.id %}" data-title="Editar Extranjero">
@@ -69,7 +69,9 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Añadir Traslado">
                         <i class="fas fa-exchange-alt"></i>
                     </a>
-            
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesAC' extranjero.id puesta.id%}" data-title="Acompańante">
+                        <i class="fas fa-handshake"></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

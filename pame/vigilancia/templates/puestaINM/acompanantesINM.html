@@ -1,0 +1,13 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block contenido %}
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit">Guardar</button>
+  </form>  
+
+
+{% endblock contenido %}

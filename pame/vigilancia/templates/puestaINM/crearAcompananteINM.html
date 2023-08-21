@@ -1,33 +1,30 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
+
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2erer343 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
 {% endblock link %}
-
-
 
 
 {% block contenido %}
 
+
 <div class="titulo-general-container">
-    <h1 class="titulo-general">
-        Editar datos del extranjero:        
-        <span class="puesta-color" >{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</span>
-    </h1>
-  
+    {% comment %} <h1 class="titulo-general">Agregar Extranjero a Puesta {{ puesta.numeroOficio }}</h1> {% endcomment %}
 </div>
-<h1 class="subtitulo-general">
-    De la puesta:        
-    <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
-</h1>
+
 
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
+        {{ form.puesta.as_hidden }}
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-3">
                 {{form.numeroExtranjero|as_crispy_field}}
+                <script>
+                    document.getElementById('id_numeroExtranjero').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-2" style='display:none'>
                 {{form.deLaEstacion|as_crispy_field}}
@@ -66,22 +63,21 @@
             <div class="col-sm-12 col-md-6 col-lg-3" >
                 {{form.estatus|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-3" style='display:none'>
                 {{form.viajaSolo|as_crispy_field}}
             </div>
         </div>
     
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
-                {{form.deLaPuestaAC|as_crispy_field}}
+                {{form.deLaPuestaIMN|as_crispy_field}}
             </div>
         </div>
 
 
-            {% comment %} <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}"> {% endcomment %}
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
         <br>
-        <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom1">Cancelar</a>
+        <a href="{% url 'listAcompanantesINM' extranjero_principal_id puesta.id %}" class="btn btn-custom1">Cancelar</a>
   
     </form>    
 {% endblock %}
