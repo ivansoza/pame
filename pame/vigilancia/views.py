@@ -100,8 +100,24 @@ class inicioINMList(ListView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
 
-        return context
+        user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
+        user_estacion = user_profile.estancia
 
+        puestas_count = self.get_queryset().count() 
+        context['puestas_count'] = puestas_count
+
+        #extranjeros_total = Extranjero.objects.filter(deLaEstacion=user_estacion).count() #OBTENER EL NUMERO TOTAL DE EXTRANJERO POR LA ESTACION 
+        extranjeros_total = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).count()
+        context['extranjeros_total'] = extranjeros_total
+        nacionalidades_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
+        context['nacionalidades_count'] = nacionalidades_count
+
+        hombres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=0).count()
+        mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1).count()
+        context['mujeres_count'] = mujeres_count
+        context['hombres_count'] = hombres_count
+
+        return context
 
 class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -313,11 +329,7 @@ class DeleteExtranjeroINM(DeleteView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
-    
 
-
-
-    
 class acompananteList(ListView):
     model = Extranjero
     template_name = "puestaINM/listAcompananteINM.html" 
@@ -334,10 +346,54 @@ class acompananteList(ListView):
         # Obtener la lista de extranjeros de la misma puesta
         extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id).exclude(pk=extranjero_principal_id)
 
-        context['extranjero_principal'] = extranjero_principal
-        context['extranjeros_puesta'] = extranjeros_puesta
+        # Filtrar extranjeros no relacionados
+        extranjeros_no_relacionados = extranjeros_puesta.exclude(
+            Q(acompanantes_delExtranjero__delAcompanante=extranjero_principal) |
+            Q(acompanantes_delAcompanante__delExtranjero=extranjero_principal)
+        )
 
+        # Filtrar las relaciones donde el extranjero principal es delExtranjero y no está relacionado como delAcompanante
+        relaciones_del_extranjero = Acompanante.objects.filter(delExtranjero=extranjero_principal).exclude(delAcompanante=extranjero_principal)
+        
+        # Filtrar las relaciones donde el extranjero principal es delAcompanante y no está relacionado como delExtranjero
+        relaciones_del_acompanante = Acompanante.objects.filter(delAcompanante=extranjero_principal).exclude(delExtranjero=extranjero_principal)
+
+        context['extranjero_principal'] = extranjero_principal
+        context['extranjeros_no_relacionados'] = extranjeros_no_relacionados
+        context['relaciones_del_extranjero'] = relaciones_del_extranjero
+        context['relaciones_del_acompanante'] = relaciones_del_acompanante
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridaINM'  # Cambia esto según la página activa
+        
         return context
+    
+class AgregarAcompananteViewINM(CreateView):
+    model = Acompanante
+    form_class = AcompananteForm
+    template_name = 'puestaINM/acompanantesINM.html'
+
+    def get_success_url(self):
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        return reverse_lazy('listAcompanantesINM', kwargs={'extranjero_id': extranjero_principal.id, 'puesta_id': extranjero_principal.deLaPuestaIMN.id})
+    
+    def form_valid(self, form):
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_id = self.kwargs['extranjero_id']
+
+        form.instance.delExtranjero_id = extranjero_principal_id
+        form.instance.delAcompanante_id = extranjero_id
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_id = self.kwargs['extranjero_id']
+        context['extranjero_principal'] = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
+        return context
+    
 class createExtranjeroAcomINM(CreateView):
     model =Extranjero             
     form_class = extranjeroFormsInm    
