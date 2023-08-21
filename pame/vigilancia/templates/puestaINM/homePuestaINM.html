@@ -7,6 +7,12 @@
 
 
 {% block contenido %}
+<style>
+    /* Personaliza el tamaño de la barra de búsqueda */
+    div.dataTables_wrapper div.dataTables_filter input {
+      width: 300px; /* Cambia el tamaño según tus necesidades */
+    }
+  </style>
 
 <div class="titulo-general-container">
     <h1 class="titulo-general">Listado de Puestas por Instituto Nacional de Migración</h1>
@@ -137,12 +143,12 @@
             ],
             "language": {
                 "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sLengthMenu": "Mostrar _MENU_ Registros",
                 "sZeroRecords": "No se encontraron resultados",
                 "sEmptyTable": "Ningún dato disponible en esta tabla",
                 "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
                 "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ Registros)",
                 "sSearch": "Buscar:",
                 "sInfoThousands": ",",
                 "sLoadingRecords": "Cargando...",
