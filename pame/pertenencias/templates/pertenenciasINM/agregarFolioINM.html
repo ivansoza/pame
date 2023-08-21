@@ -1,0 +1,23 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDDdd22D ">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock link %}
+|
+
+
+{% block contenido %}
+<h1>Crear Nuevo Inventario</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <a type='submit' href="{% url 'listPertenenciasINM' extranjero.id puesta.id%}">
+            Guardar Folio de Inventario
+        </a>
+    </form>
+{% endblock %}

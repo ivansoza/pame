@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante
-
+from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
@@ -228,6 +228,7 @@ class listarExtranjeros(ListView):
         puesta_id = self.kwargs['puesta_id']
         return Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
@@ -237,7 +238,7 @@ class listarExtranjeros(ListView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
-    
+     
 class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',

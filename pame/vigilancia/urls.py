@@ -9,6 +9,7 @@ urlpatterns = [
     path('seguridad-responsable/', homeSeguridadResponsable, name='homeSeguridadResponsable'),
     path('hospedaje/',addHospedaje, name="addHospedaje"),
     path('traslado/',addTraslado, name="addTraslado"),
+    
   
     # --------------- PUESTA INM  ---------------------
     path('puesta-inm/', inicioINMList.as_view(), name='homePuestaINM'),
