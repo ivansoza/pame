@@ -71,6 +71,16 @@
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
                     <i class="fas fa-handshake"></i>
                 </a>
+                {% if extranjero.inventario_set.all  %}
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listPertenenciasINM' extranjero.id puesta.id%}" data-title="Pertenencias">
+                    <i class="fas fa-tshirt"></i>
+                </a>
+                {% else %}
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearInventarioINM' extranjero.id%}" data-title="Pertenencias">
+                    <i class="fas fa-tshirt"></i>
+                </a>
+                {% endif %}
+                
             </td>
         </tr>
         {% endfor %}

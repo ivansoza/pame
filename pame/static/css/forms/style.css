@@ -209,14 +209,17 @@
 }
 
 /* Estilos para el icono */
-.icono {
-  background-color: #3498db;
-  color: #ffffff;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
+.circle-container {
+  width: 150px; /* Ancho del contenedor */
+  height: 150px; /* Altura del contenedor */
+  border-radius: 50%; /* Establece la forma de círculo */
+  overflow: hidden; /* Oculta las partes de la imagen fuera del círculo */
+  position: relative;
+}
+.circle-container img {
+  width: 100%; /* La imagen ocupa el ancho completo del contenedor */
+  height: auto; /* La altura se ajusta automáticamente para mantener la proporción */
+  position: absolute;
+  top: 0;
+  left: 0;
 }

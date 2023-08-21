@@ -1,12 +1,13 @@
 from django.db import models
-
+from vigilancia.models import Extranjero
 # Create your models here.
 
 class Inventario(models.Model):
     unidadMigratoria = models.CharField(max_length=30, verbose_name='Unidad Migratoria')
-    fechaEntrega = models.DateField(verbose_name='Fecha Entrega')
-    horaEntrega = models.DateTimeField(verbose_name='Hora Entrega')
-  
+    fechaEntrega = models.DateField(verbose_name='Fecha Entrega', auto_now_add=True)
+    horaEntrega = models.DateTimeField(verbose_name='Hora Entrega', auto_now_add=True)
+    validacion = models.FileField(upload_to='files/',  null=True,blank=True,verbose_name='Documento de Validación')
+    noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return '__all__'
