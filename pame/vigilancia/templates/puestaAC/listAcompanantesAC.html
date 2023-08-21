@@ -77,9 +77,11 @@
                 <td>{{ extranjero.nacionalidad }}</td>
                 <td>{{ extranjero.deLaPuestaAC }}</td>
                 <td>       
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'agregar_acompanante' extranjero_principal.id extranjero.id %}" data-title="Agregar Acompañante">
-                        <i class="fas fa-plus"></i>
-                    </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
+                    href="{% url 'agregar_acompananteAC' extranjero_principal.id extranjero.id %}"
+                    data-title="Agregar Acompañante" onclick="abrir_modal_edicion(this.href); return false;">
+                     <i class="fas fa-plus"></i>
+                 </a>
                 </td>
             </tr>
             {% endfor %}
@@ -137,6 +139,12 @@
 <a href="{% url 'listarExtranjeroAC' puesta.id%}" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
 
+<div class="modal fade" id="edicion" role="dialog">
+
+</div>
+
+
+
 
 {% endblock contenido %}
 
@@ -149,21 +157,16 @@
         });
     });
   </script>
-  <script>
-    function agregarRelacion(extranjeroId) {
-        const relacionId = document.getElementById(`relacion${extranjeroId}`).value;
 
-        // Realiza una solicitud AJAX para crear la relación
-        fetch(`/crear-relacion/${extranjeroId}/${relacionId}/`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Recarga la página para actualizar la lista de relaciones
-                    location.reload();
-                }
-            });
-    }
-</script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_edicion(url){
+        $('#edicion').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
 {% endblock script %}

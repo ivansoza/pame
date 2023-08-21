@@ -810,7 +810,8 @@ class ListAcompanantesAC(ListView):
 class AgregarAcompananteViewAC(CreateView):
     model = Acompanante
     form_class = AcompananteForm
-    template_name = 'puestaAC/agregar_acompananteAC.html'
+    # template_name = 'puestaAC/agregar_acompananteAC.html'
+    template_name = 'modal/acompananteAC.html'
 
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
