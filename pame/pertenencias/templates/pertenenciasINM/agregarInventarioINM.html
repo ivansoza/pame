@@ -1,0 +1,38 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block contenido %}
+<h1>Asignar numero de Inventario</h1>
+  <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{form.foloInventario|as_crispy_field}}
+                <script>
+                  document.getElementById('id_foloInventario').readOnly = true;
+              </script>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.unidadMigratoria|as_crispy_field}}
+                <script>
+                  document.getElementById('id_unidadMigratoria').readOnly = true;
+              </script>
+            </div>
+          </div>
+         <div class="row">
+          <div class="col-sm-12 col-md-4 col-lg-6">
+            {{form.noExtranjero|as_crispy_field}}
+            <script>
+              document.getElementById('id_noExtranjero').readOnly = true;
+            </script>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            {{form.validacion|as_crispy_field}}
+          </div>
+        </div>
+        <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+        
+    </form>
+{% endblock %}
