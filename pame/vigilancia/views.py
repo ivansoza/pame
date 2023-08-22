@@ -317,7 +317,7 @@ class DeleteExtranjeroINM(DeleteView):
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Extranjero
-    template_name = 'puestaINM/eliminarExtranjeroINM.html'
+    template_name = 'modal/eliminarExtranjeroINM.html'
     
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaIMN.id
@@ -694,7 +694,7 @@ class EditarBiometricoAC(UpdateView):
 
 class DeleteExtranjeroAC(DeleteView):
     model = Extranjero
-    template_name = 'puestaAC/eliminarExtranjeroAC.html'
+    template_name = 'modal/eliminarExtranjeroAC.html'
     
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaAC.id
