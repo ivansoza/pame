@@ -1,0 +1,22 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDDdd22D ">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock link %}
+
+
+{% block contenido %}
+<h1>Agregar Pertenencias</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar">
+    </form>
+    <a href="{% url 'ver_pertenenciasINM' inventario_id=inventario.id %}">Volver a la Lista de Pertenencias</a>
+
+{% endblock %}
