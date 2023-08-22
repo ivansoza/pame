@@ -11,12 +11,12 @@
 
 
 {% block contenido %}
-<h1>Agregar Pertenencias</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Guardar">
-    </form>
-    <a href="{% url 'ver_pertenenciasINM' inventario_id=inventario.id %}">Volver a la Lista de Pertenencias</a>
+<h1>Agregar Pertenencia</h1>
+{{extranjero_principal.deLaPuestaIMN}}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Guardar</button>
+</form>
 
 {% endblock %}

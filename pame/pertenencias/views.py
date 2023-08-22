@@ -66,6 +66,9 @@ class crearFolioInventarioINM(CreateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context 
 
+
+
+#IVAN
 class CrearInventarioView(CreateView):
     model = Inventario
     form_class = InventarioForm
@@ -77,8 +80,14 @@ class CrearInventarioView(CreateView):
         return super().form_valid(form)
     def get_initial(self):
         extranjero_id = self.kwargs['extranjero_id']
-        return {'noExtranjero': extranjero_id}
-    
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estaciones_id = extranjero.deLaEstacion.id
+        estaciones = extranjero.deLaEstacion.nombre
+        ultimo_registro = Inventario.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/INV/{estaciones_id}/{extranjero_id}/{ultimo_numero + 1:06d}'
+
+        return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -90,7 +99,7 @@ class CrearInventarioView(CreateView):
         inventario_id = self.object.id  # Obtiene el ID del inventario recién creado
         return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id})
     
-
+#IVAN
 class ListaPertenenciasView(ListView):
     model = Pertenencias
     template_name = 'pertenenciasINM/listPertenencias.html'
@@ -105,7 +114,7 @@ class ListaPertenenciasView(ListView):
         inventario = Inventario.objects.get(pk=inventario_id)
         context['inventario'] = inventario
         return context
-    
+    #IVAN
 class CrearPertenenciasView(CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
@@ -131,6 +140,14 @@ class CrearPertenenciasView(CreateView):
         context['inventario'] = inventario
         return context
     
+
+
+
+
+
+
+
+
 
 class listPertenenciasINM(ListView):
     model = Extranjero
