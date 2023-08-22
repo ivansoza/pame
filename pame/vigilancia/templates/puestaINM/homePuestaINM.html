@@ -156,8 +156,36 @@
     $(document).ready(function () {
         $('#puestasinm-table').DataTable({
             responsive: true,
+            dom: 'Bfrtip',
             "columnDefs": [
                 { "orderable": false, "targets": -1 } // Desactivar ordenación para la última columna
+            ],
+            buttons: [
+              {
+                extend: 'copy',
+                text: '<i class="fas fa-copy"></i>',
+                titleAttr: 'Copiar'
+              },
+              {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i>',
+                    titleAttr: 'CSV'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    titleAttr: 'Imprimir'
+                }
             ],
             "language": {
                 "sProcessing": "Procesando...",

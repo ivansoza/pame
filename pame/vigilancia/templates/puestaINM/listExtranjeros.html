@@ -29,7 +29,7 @@
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nacionalidad</th>
-            <th>Puesta</th>
+            <!-- <th>Puesta</th> -->
             <th>Opciones</th>
         </tr>
     </thead>
@@ -41,9 +41,10 @@
             <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
             <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
             <td>{{ extranjero.nacionalidad }}</td>
-            <td>{{ extranjero.deLaPuestaIMN }}</td>
+            <!-- Eliminar numero de puesta en la tabla  -->
+            <!-- <td>{{ extranjero.deLaPuestaIMN }}</td> --> 
 
-            <td>       
+            <td>
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroINM' extranjero.id %}" data-title="Editar Extranjero">
                     <i class="fas fa-edit"></i>
                 </a>
@@ -74,7 +75,7 @@
                         <i class="fas fa-fingerprint"></i>
                     </a>
                 {% endif %}
-                         
+
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Añadir Traslado">
                     <i class="fas fa-exchange-alt"></i>
                 </a>
@@ -90,7 +91,7 @@
                     <i class="fas fa-tshirt"></i>
                 </a>
                 {% endif %}
-                
+
             </td>
         </tr>
         {% endfor %}
@@ -115,8 +116,8 @@
     $(document).ready(function() {
         $('#puestasinm-table').DataTable({
             responsive: true,
-
             dom: 'Bfrtip',
+            scrollX: false,
             buttons: [
                 {
                     extend: 'copy',
@@ -185,6 +186,3 @@
     
 </script>
 {% endblock script %}
-
-
-    
