@@ -116,6 +116,8 @@ class inicioINMList(ListView):
         mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1).count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
+        capacidad_actual = user_estacion.capacidad
+        context['capacidad_actual'] = capacidad_actual
 
         return context
 
@@ -174,7 +176,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         else:
             # return reverse('crearExtranjeroAC', args=[puesta_id])
             return reverse('listAcompanantesINM', args=[extranjero_id, puesta_id])
-        
+                
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
@@ -204,11 +206,20 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
+        estacion = form.cleaned_data['deLaEstacion']
+        if estacion:
+            estacion.capacidad -= 1
+            estacion.save()     
+        
+
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
         
         return super().form_valid(form)
+    
+    
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -318,7 +329,7 @@ class DeleteExtranjeroINM(DeleteView):
     }
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroINM.html'
-    
+
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaIMN.id
         return reverse('listarExtranjeros', args=[puesta_id])
@@ -493,6 +504,8 @@ class inicioACList(ListView):
         mujeres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=1).count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
+        capacidad_actual = user_estacion.capacidad
+        context['capacidad_actual'] = capacidad_actual
 
         return context
     
@@ -583,11 +596,17 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
-        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
+        estacion = form.cleaned_data['deLaEstacion']
+        
+        if estacion:
+            estacion.capacidad -= 1
+            estacion.save()
+
+        extranjero = form.save(commit=False)
         extranjero.puesta = puesta
-        extranjero.save()  #
+        extranjero.save()
+
         return super().form_valid(form)
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']

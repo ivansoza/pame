@@ -1,6 +1,7 @@
 from django.db import models
 from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion
 
+
 class Nacionalidad(models.Model):
     nombre = models.CharField(max_length=200,verbose_name='Nacionalidad')
     Abreviatura = models.CharField(max_length=200,verbose_name='Abreviatura')
@@ -90,6 +91,13 @@ class Extranjero(models.Model):
     def __str__(self):
          return self.nombreExtranjero
     
+    def delete(self, *args, **kwargs):
+        # Incrementar la capacidad de la estación al eliminar
+        if self.deLaEstacion:
+            self.deLaEstacion.capacidad += 1
+            self.deLaEstacion.save()
+        super().delete(*args, **kwargs)
+        
 class Acompanante(models.Model):
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delExtranjero')
     delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delAcompanante')
