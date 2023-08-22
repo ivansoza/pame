@@ -26,11 +26,7 @@
         <div class="detalle">
             <div class="dato">
                 <span class="etiqueta">Nombre:</span>
-                <span class="valor">{{ extranjero_principal.nombreExtranjero }}</span>
-            </div>
-            <div class="dato">
-                <span class="etiqueta">Apellido Paterno:</span>
-                <span class="valor">{{ extranjero_principal.apellidoPaternoExtranjero }}</span>
+                <span class="valor">{{ extranjero_principal.nombreExtranjero  }} {{extranjero_principal.apellidoPaternoExtranjero}} {{extranjero_principal.apellidoMaternoExtranjero}} </span>
             </div>
             <div class="dato">
                 <span class="etiqueta">Puesta:</span>
@@ -38,8 +34,13 @@
             </div>
             <div class="dato">
                 <span class="etiqueta">Inventario:</span>
-                <span class="valor">{{ extranjero_principal.inventario.id}}</span>
+                <span class="valor"> 
+
+                        {{ elemento }}
+                    
+                </span>
             </div>
+           
         </div>
         <div class="circle-container">
           <img src="{{extranjero_principal.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
@@ -51,7 +52,8 @@
 </div>
 <br>
 
-<a class="btn btn-custom mb-3" href="#">Agregar Pertenencia</a>
+
+<a class="btn btn-custom mb-3" href="{% url 'crearPertenenciaINM' extranjero_principal.id %}">Agregar Pertenencia</a>
 
 
 <br>

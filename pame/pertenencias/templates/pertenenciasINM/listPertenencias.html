@@ -1,0 +1,44 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDDdd22D ">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock link %}
+
+{% block contenido %}
+
+<h1>Detalles del Inventario</h1>
+   <p>Folio de Inventario: {{ inventario.foloInventario }}</p>
+   <p>Unidad Migratoria: {{ inventario.unidadMigratoria }}</p>
+   <p>Nombre del extranjero: {{ inventario.noExtranjero }}</p>
+
+
+
+<h1>Pertenencias del Inventario</h1>
+
+<a href="{% url 'crear_pertenenciasINM' inventario_id=inventario.id %}">Agregar Pertenencias</a>
+<table>
+    <thead>
+        <tr>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Observaciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pertenencia in object_list %}
+            <tr>
+                <td>{{ pertenencia.descripcion }}</td>
+                <td>{{ pertenencia.cantidad }}</td>
+                <td>{{ pertenencia.observaciones }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% comment %} <a href="{% url 'crear_inventario' %}">Volver al Crear Inventario</a> {% endcomment %}
+
+{% endblock %}
