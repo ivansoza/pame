@@ -4,7 +4,12 @@
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.@##dfxsddxsfdDD ">
 {% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
 
+{% endblock dashboard %}
 {% block contenido %}
 <style>
     /* Personaliza el tamaño de la barra de búsqueda */
