@@ -10,66 +10,10 @@ from django.urls import reverse_lazy
 
 def homePertenencias (request):
     return render (request, "homePertenencias.html")
-
-class pertenenciasINM(ListView):
-    model= Extranjero
-    template_name = "pertenenciasINM/listPertenenciasINM.html" 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        extranjero_principal_id = self.kwargs.get('extranjero_id')
-        puesta_id = self.kwargs.get('puesta_id')
-        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
-
-        # Obtener datos del extranjero principal
-        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
-        context['extranjero_principal'] = extranjero_principal
-        context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridaINM'  # Cambia esto según la página activa
-        
-        return context
-    
-class crearFolioInventarioINM(CreateView):
-     model= Inventario
-     form_class = InventarioForm
-     template_name = "pertenenciasINM/agregarFolioINM.html"
-     def get_success_url(self):
-        extranjero_id = self.object.noExtranjero.id
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        puesta = extranjero.deLaPuestaIMN.id
-        
-        return reverse('listPertenenciasINM',args=[extranjero_id, puesta])
-    
-     def get_initial(self):
-        initial = super().get_initial()
-        extranjero_id = self.kwargs.get('extranjero_id')
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        estaciones = extranjero.deLaEstacion.id
-        ultimo_registro = Inventario.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/INV/{estaciones}/{extranjero_id}/{ultimo_numero + 1:06d}'
-        initial['foloInventario'] = nuevo_numero
-        initial['noExtranjero'] = extranjero
-        initial['unidadMigratoria'] = estaciones
-        return initial
-    
-     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Obtén el ID del extranjero del argumento en la URL
-        extranjero_id = self.kwargs.get('extranjero_id')
-        # Obtén la instancia del extranjero correspondiente al ID
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        puesta = extranjero.deLaPuestaIMN
-        context['puesta'] = puesta
-        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
-        context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
-        return context 
-
-
+#------------------------INVENTARIO INM -----------------
 
 #IVAN
-class CrearInventarioView(CreateView):
+class CrearInventarioViewINM(CreateView):
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenenciasINM/agregarInventarioINM.html'
@@ -105,10 +49,10 @@ class CrearInventarioView(CreateView):
         puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
         return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
-#IVAN
-class ListaPertenenciasView(ListView):
+
+class ListaPertenenciasViewINM(ListView):
     model = Pertenencias
-    template_name = 'pertenenciasINM/listPertenencias.html'
+    template_name = 'pertenenciasINM/listPertenenciasINM.html'
 
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -124,8 +68,8 @@ class ListaPertenenciasView(ListView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
         return context
-    #IVAN
-class CrearPertenenciasView(CreateView):
+
+class CrearPertenenciasViewINM(CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/crearPertenenciasINM.html'
@@ -193,7 +137,7 @@ class CrearInventarioViewAC(CreateView):
         puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
         return reverse('ver_pertenenciasAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
-#IVAN
+
 class ListaPertenenciasViewAC(ListView):
     model = Pertenencias
     template_name = 'pertenenciasAC/listPertenenciasAC.html'
@@ -212,7 +156,7 @@ class ListaPertenenciasViewAC(ListView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'
         return context
-    #IVAN
+
 class CrearPertenenciasViewAC(CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
@@ -249,66 +193,3 @@ class CrearPertenenciasViewAC(CreateView):
     
 
 #-------------------------------FIN --------------------------------
-
-
-
-
-
-
-
-
-class listPertenenciasINM(ListView):
-    model = Extranjero
-    template_name = "pertenenciasINM/listPertenenciasINM.html" 
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        extranjero_principal_id = self.kwargs.get('extranjero_id')
-        puesta_id = self.kwargs.get('puesta_id')
-        context['puesta'] = PuestaDisposicionINM.objects.get(id=puesta_id)
-
-        # Obtener datos del extranjero principal
-        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
-        inventario_id = self.kwargs.get('extranjero_id')
-        inventario = Inventario.objects.get(id=inventario_id)
-        extranjero = inventario.noExtranjero 
-        elementos = Inventario.objects.all()
-        context['elementos'] = elementos
-        context['extranjero_principal'] = extranjero_principal
-      
-        context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridadINM'
-        
-        return context
-    
-class crearPertenenciaINM(CreateView):
-    model=Pertenencias
-    form_class = PertenenciaForm
-    template_name = "pertenenciasINM/agregarPertenenciaINM.html"
-    
-    def get_success_url(self):
-        extranjero_id = self.object.noExtranjero.id
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        puesta = extranjero.deLaPuestaIMN.id
-        return reverse('listPertenenciasINM',args=[extranjero_id, puesta])
-    
-    def get_context_data(self, **kwargs):
-     context = super().get_context_data(**kwargs)
-    
-     extranjero_principal_id = self.kwargs.get('extranjero_id')
-     
-
-     # Obtener datos del extranjero principal
-     extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
-    
-     # Filtrar las pertenencias del extranjero principal
-     pertenencias_del_extranjero = Inventario.objects.filter(noExtranjero_id=extranjero_principal)
-
-     context['extranjero_principal'] = extranjero_principal
-     context['pertenencias_del_extranjero'] = pertenencias_del_extranjero
-     context['navbar'] = 'seguridad' 
-     context['seccion'] = 'seguridadINM'
-    
-     return context 
-   
