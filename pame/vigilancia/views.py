@@ -630,7 +630,6 @@ class listarExtranjerosAC(ListView):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
-    
         context['puesta'] = puesta
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
