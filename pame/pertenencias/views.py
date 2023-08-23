@@ -222,11 +222,14 @@ class CrearPertenenciasViewAC(CreateView):
         inventario_id = self.kwargs['inventario_id']
         form.instance.delInventario_id = inventario_id
         return super().form_valid(form)
+
     def get_initial(self):
         initial = super().get_initial()
         inventario_id = self.kwargs['inventario_id']
         initial['delInventario'] = inventario_id
         return initial
+
+
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
         puesta_id = self.kwargs.get('puesta_id')

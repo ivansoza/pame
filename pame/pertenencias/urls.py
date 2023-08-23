@@ -17,7 +17,7 @@ urlpatterns = [
 
 
 #----------------------------AC-------------------------
-    path('crear-inventario-ac/<int:extranjero_id>/<int:puesta_id>/', CrearPertenenciasViewAC.as_view(), name='crear_inventarioAC'),
+    path('crear-inventario-ac/<int:extranjero_id>/<int:puesta_id>/', CrearInventarioViewAC.as_view(), name='crear_inventarioAC'),
     path('ver-pertenencias-ac/<int:inventario_id>/<int:puesta_id>/', ListaPertenenciasViewAC.as_view(), name='ver_pertenenciasAC'),
     path('crear-pertenencias-ac/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasViewAC.as_view(), name='crear_pertenenciasAC'),
 

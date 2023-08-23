@@ -81,21 +81,21 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesAC' extranjero.id puesta.id%}" data-title="Acompańante">
                         <i class="fas fa-handshake"></i>
                     </a>
-                {% if extranjero.inventario_set.all  %}
-                {% with first_inventario=extranjero.inventario_set.first %}
+                    {% if extranjero.inventario_set.all  %}
+                    {% with first_inventario=extranjero.inventario_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
+                        <i class="fas fa-tshirt"></i>
+                    </a>
+                    {% endwith %}
 
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id%}" data-title="Pertenencias">
-                    <i class="fas fa-tshirt"></i>
-                </a>
-                {% endwith %}
-
-                {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias">
-                    <i class="fas fa-tshirt"></i>
-                </a>
-                {% endif %}
+                    {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
+                         <i class="fas fa-tshirt"></i>
+                    </a>
+                    {% endif %}
                 </td>
             </tr>
+            
             {% endfor %}
         </tbody>
     </table>
