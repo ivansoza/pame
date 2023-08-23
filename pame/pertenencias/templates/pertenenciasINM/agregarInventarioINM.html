@@ -2,9 +2,21 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDD22D ">
+{% endblock link %}
+
 
 {% block contenido %}
-<h1>Asignar numero de Inventario</h1>
+
+
+<div class="titulo-general-container">
+  <h1 class="titulo-general">Asignar numero de Inventario</h1>
+</div>
+<br>
+
+
+<h1></h1>
   <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="row">
@@ -30,9 +42,13 @@
           </div>
           <div class="col-sm-12 col-md-6 col-lg-6">
             {{form.validacion|as_crispy_field}}
+            
           </div>
         </div>
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
-        
+        <hr>
+        <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>
     </form>
+
+
 {% endblock %}

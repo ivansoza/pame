@@ -92,12 +92,16 @@ class CrearInventarioView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs['extranjero_id']
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+
         context['extranjero_id'] = extranjero_id
         return context
 
     def get_success_url(self):
         inventario_id = self.object.id  # Obtiene el ID del inventario recién creado
-        return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id})
+        puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
+        return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
 #IVAN
 class ListaPertenenciasView(ListView):
@@ -112,6 +116,8 @@ class ListaPertenenciasView(ListView):
         context = super().get_context_data(**kwargs)
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['inventario'] = inventario
         return context
     #IVAN
@@ -131,12 +137,16 @@ class CrearPertenenciasView(CreateView):
         return initial
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
-        return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id})
+        puesta_id = self.kwargs.get('puesta_id')
+
+        return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['inventario'] = inventario
         return context
     
