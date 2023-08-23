@@ -42,7 +42,7 @@
 <h1>Pertenencias del Inventario</h1>
         
 
-<a class='btn btn-custom' href="{% url 'crear_pertenenciasINM' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>
+<a class='btn btn-custom' href="{% url 'crear_pertenenciasAC' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>
 
 <br>
 <br>
@@ -70,7 +70,7 @@
 </table>
 
 <hr>
-<a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom">Volver</a>
+<a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom">Volver</a>
 <div class="modal fade" id="agregarpertenencia" role="dialog">
 
 </div>

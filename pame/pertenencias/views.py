@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView
-from vigilancia.models import Extranjero, PuestaDisposicionINM
+from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC
 from .forms import InventarioForm, PertenenciaForm
 from .models import Pertenencias, Inventario
 from django.shortcuts import get_object_or_404
@@ -94,6 +94,8 @@ class CrearInventarioView(CreateView):
         extranjero_id = self.kwargs['extranjero_id']
         puesta_id = self.kwargs.get('puesta_id')
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
 
         context['extranjero_id'] = extranjero_id
         return context
@@ -119,12 +121,14 @@ class ListaPertenenciasView(ListView):
         puesta_id = self.kwargs.get('puesta_id')
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
         return context
     #IVAN
 class CrearPertenenciasView(CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
-    template_name = 'pertenenciasINM/crearPertenenciasINM.html'
+    template_name = 'modals/crearPertenenciasINM.html'
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -148,9 +152,100 @@ class CrearPertenenciasView(CreateView):
         puesta_id = self.kwargs.get('puesta_id')
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+    #-------------------------------------
+#------------------------INVENTARIO AC -----------------
+class CrearInventarioViewAC(CreateView):
+    model = Inventario
+    form_class = InventarioForm
+    template_name = 'pertenenciasAC/agregarInventarioAC.html'
+
+    def form_valid(self, form):
+        extranjero_id = self.kwargs['extranjero_id']
+        form.instance.noExtranjero_id = extranjero_id
+        return super().form_valid(form)
+    def get_initial(self):
+        extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estaciones_id = extranjero.deLaEstacion.id
+        estaciones = extranjero.deLaEstacion.nombre
+        ultimo_registro = Inventario.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/INV/{estaciones_id}/{extranjero_id}/{ultimo_numero + 1:06d}'
+
+        return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs['extranjero_id']
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'
+
+        context['extranjero_id'] = extranjero_id
+        return context
+
+    def get_success_url(self):
+        inventario_id = self.object.id  # Obtiene el ID del inventario recién creado
+        puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
+        return reverse('ver_pertenenciasAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
+    
+#IVAN
+class ListaPertenenciasViewAC(ListView):
+    model = Pertenencias
+    template_name = 'pertenenciasAC/listPertenenciasAC.html'
+
+    def get_queryset(self):
+        inventario_id = self.kwargs['inventario_id']
+        return Pertenencias.objects.filter(delInventario_id=inventario_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'
+        return context
+    #IVAN
+class CrearPertenenciasViewAC(CreateView):
+    model = Pertenencias
+    form_class = PertenenciaForm  # Usa tu formulario modificado
+    template_name = 'modals/crearPertenenciasAC.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.kwargs['inventario_id']
+        puesta_id = self.kwargs.get('puesta_id')
+
+        return reverse('ver_pertenenciasAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'
         return context
     
 
+#-------------------------------FIN --------------------------------
 
 
 
