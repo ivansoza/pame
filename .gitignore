@@ -19,7 +19,6 @@ entvirt/
 *.bak
 *.pyc
 
-pame/settings.py
 # Ignorar archivos de configuración local
 *.sqlite3
 #local_settings.py
@@ -31,6 +30,7 @@ pame/settings.py
 #staticfiles/
 #static_collected/
 media/
+settings.py
 
 # Ignorar archivos generados por el comando "collectstatic"
 #collectedstatic/
