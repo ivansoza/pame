@@ -345,6 +345,7 @@ class DeleteExtranjeroINM(DeleteView):
 class acompananteList(ListView):
     model = Extranjero
     template_name = "puestaINM/listAcompananteINM.html" 
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
