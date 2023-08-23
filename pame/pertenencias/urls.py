@@ -9,8 +9,8 @@ urlpatterns = [
     path('crear-pertenenciaINM/<int:extranjero_id>/', crearPertenenciaINM.as_view(), name="crearPertenenciaINM"),
 
 
-    path('crear-inventario/<int:extranjero_id>/', CrearInventarioView.as_view(), name='crear_inventarioINM'),
-    path('ver-pertenencias/<int:inventario_id>/', ListaPertenenciasView.as_view(), name='ver_pertenenciasINM'),
-    path('crear-pertenencias/<int:inventario_id>/', CrearPertenenciasView.as_view(), name='crear_pertenenciasINM'),
+    path('crear-inventario/<int:extranjero_id>/<int:puesta_id>/', CrearInventarioView.as_view(), name='crear_inventarioINM'),
+    path('ver-pertenencias/<int:inventario_id>/<int:puesta_id>/', ListaPertenenciasView.as_view(), name='ver_pertenenciasINM'),
+    path('crear-pertenencias/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasView.as_view(), name='crear_pertenenciasINM'),
 
 ]

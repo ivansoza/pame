@@ -19,6 +19,7 @@ entvirt/
 *.bak
 *.pyc
 
+pame/settings.py
 # Ignorar archivos de configuración local
 *.sqlite3
 #local_settings.py

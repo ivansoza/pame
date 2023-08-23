@@ -45,7 +45,7 @@
 
 <h1>Pertenencias del Inventario</h1>
 
-<a class='btn btn-custom' href="{% url 'crear_pertenenciasINM' inventario_id=inventario.id %}">Agregar Pertenencias</a>
+<a class='btn btn-custom' href="{% url 'crear_pertenenciasINM' inventario_id=inventario.id puesta_id=puesta.id%}">Agregar Pertenencias</a>
 
 <br>
 <br>
@@ -71,5 +71,8 @@
         {% endfor %}
     </tbody>
 </table>
+
+<hr>
+<a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom">Volver</a>
 
 {% endblock %}
