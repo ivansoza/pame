@@ -31,7 +31,7 @@ class Valores(models.Model):
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
 
     def __str__(self) -> str:
-        return '__all__'
+        return self.descripcion
     
     class Meta:
         verbose_name_plural = "Valores"

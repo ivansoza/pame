@@ -15,18 +15,26 @@
 <div class="modal-dialog modal-lg" role="document" >
     <div class="modal-content">
         <div class="modal-header custom-header-color"> <!-- Agrega la clase personalizada aquí -->
-            <h2 class="modal-title">Agregar Pertenencia</h2>
+            <h2 class="modal-title">Confirmar eliminacion</h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        {% load crispy_forms_tags %}
+        <p style="text-align: center;">
+            <img src=" {% static 'img/gh.jpg' %} " style="width: 250px;" class="logo-img">
+        </p>
 
-        <form action="{% url 'crear_pertenenciasAC' inventario_id=inventario.id puesta_id=puesta.id%}" method="POST">
+        <form action="{% url 'eliminar_pertenenciasAC' pk=object.id %}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                {% csrf_token %}
-                {{ form|crispy }}
+                
+                <h2>¿Estás seguro de que deseas eliminar la siguiente pertenencia?</h2>
+                <ul>
+                    <li>Descripcion: {{ object.descripcion }}</li>
+                    <li>Inventario: {{ object.delInventario }}</li>
+
+                    <!-- Agrega más campos aquí según lo necesario -->
+                </ul>
             </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-custom1" data-bs-dismiss="modal">Cerrar</button>
@@ -34,7 +42,5 @@
 
         </div>
         </form>
-
     </div>
 </div>
-
