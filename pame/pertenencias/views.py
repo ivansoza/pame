@@ -203,7 +203,46 @@ class CrearPertenenciasValoresViewINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
+class UpdatePertenenciasValorINM(UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_valor',
+    }
+    model = Valores
+    form_class = ValoresForm 
+    template_name = 'modals/editarPertenenciaValorINM.html'
 
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        return reverse('ver_pertenencias_valorINM', args=[inventario_id, puesta_id])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+    
+class UpdatePertenenciasValorAC(UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_valor',
+    }
+    model = Valores
+    form_class = ValoresForm 
+
+    template_name = 'modals/editarPertenenciaValorAC.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        return reverse('ver_pertenencias_valorAC', args=[inventario_id, puesta_id])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        
+        return context
 
 class DeletePertenenciasIValorNM(DeleteView):
     permission_required = {

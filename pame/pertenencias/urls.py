@@ -1,6 +1,6 @@
 from django.urls import path, include
-from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM
-from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC
+from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM
+from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC
 
 from .views import homePertenencias
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('eliminar-pertenencias-inm/<int:pk>/',DeletePertenenciasINM.as_view(), name='eliminar_pertenenciasINM'),
     path('eliminar-pertenencias-valor-inm/<int:pk>/',DeletePertenenciasIValorNM.as_view(), name='eliminar_pertenencias_valorINM'),
     path('editar_pertenencias-inm/<int:pk>/', EditarPertenenciasViewINM.as_view(), name='editar_pertenenciasINM'),
+    path('editar-pertenencias-valor-inm/<int:pk>/',UpdatePertenenciasValorINM.as_view(), name='editar_pertenencias_valorINM'),
 
 
 #----------------------------AC-------------------------
@@ -25,5 +26,8 @@ urlpatterns = [
     path('ver-pertenencias-valor-ac/<int:inventario_id>/<int:puesta_id>/', ListaPertenenciasValorViewAC.as_view(), name='ver_pertenencias_valorAC'),
     path('crear-pertenencias-valor-ac/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasValoresViewAC.as_view(), name='crear_pertenencias_valorAC'),
     path('eliminar-pertenencias-ac/<int:pk>/', DeletePertenenciasAC.as_view(), name='eliminar_pertenenciasAC'),
-    path('eliminar-pertenencias-valor-ac/<int:pk>/',DeletePertenenciasValoresAC.as_view(), name="eliminar_pertenencias_valorAC")
+    path('eliminar-pertenencias-valor-ac/<int:pk>/',DeletePertenenciasValoresAC.as_view(), name="eliminar_pertenencias_valorAC"),
+    path('editar_pertenencias-ac/<int:pk>/', EditarPertenenciasViewAC.as_view(), name='editar_pertenenciasAC'),
+    path('editar-pertenencias-valor-ac/<int:pk>/',UpdatePertenenciasValorAC.as_view(), name="editar_pertenencias_valorAC"),
+
 ]
