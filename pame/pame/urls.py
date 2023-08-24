@@ -34,7 +34,7 @@ urlpatterns = [
     path("consulado/", include("consulado.urls")),
     path("consulta-medica/", include("consultaMedica.urls")),
     path("farmacia/", include("farmacia.urls")),
-    path("llamadas-telefonicames/", include("llamadasTelefonicas.urls")),
+    path("llamadas-telefonicas/", include("llamadasTelefonicas.urls")),
     path("pertenencias/", include("pertenencias.urls")),
     path("seguridad/", include("vigilancia.urls")),
     path("salud/", include("salud.urls")),

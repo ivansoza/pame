@@ -4,6 +4,4 @@ from .views import homeLLamadasTelefonicas
 
 urlpatterns = [
     path('', homeLLamadasTelefonicas, name="homeLLamadasTelefonicas"),
-
-    
 ]
