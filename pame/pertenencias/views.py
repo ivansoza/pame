@@ -181,7 +181,7 @@ class DeletePertenenciasIValorNM(DeleteView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
-        return reverse('eliminar_pertenencias_valorINM', args=[inventario_id, puesta_id])
+        return reverse('ver_pertenencias_valorINM', args=[inventario_id, puesta_id])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
