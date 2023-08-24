@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView, DeleteView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC
 from .forms import InventarioForm, PertenenciaForm, ValoresForm
 from .models import Pertenencias, Inventario, Valores
@@ -120,6 +120,22 @@ class DeletePertenenciasINM(DeleteView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
+    
+class EditarPertenenciasViewINM(UpdateView):
+    model = Pertenencias
+    form_class = PertenenciaForm  # Usa tu formulario modificado
+    template_name = 'modals/editPertenenciasINM.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        return reverse_lazy('ver_pertenenciasINM', args=[inventario_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
 
 class ListaPertenenciasValorViewINM(ListView):
     model = Valores
@@ -170,6 +186,8 @@ class CrearPertenenciasValoresViewINM(CreateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
         return context
+    
+
 
 class DeletePertenenciasIValorNM(DeleteView):
     permission_required = {

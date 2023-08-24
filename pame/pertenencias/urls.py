@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM
+from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM
 from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC
 
 from .views import homePertenencias
@@ -15,6 +15,7 @@ urlpatterns = [
     path('crear-pertenencias-valor-inm/<int:inventario_id>/<int:puesta_id>/',CrearPertenenciasValoresViewINM.as_view(), name='crear_pertenencias_valorINM'),
     path('eliminar-pertenencias-inm/<int:pk>/',DeletePertenenciasINM.as_view(), name='eliminar_pertenenciasINM'),
     path('eliminar-pertenencias-valor-inm/<int:pk>/',DeletePertenenciasIValorNM.as_view(), name='eliminar_pertenencias_valorINM'),
+    path('editar_pertenencias/<int:pk>/', EditarPertenenciasViewINM.as_view(), name='editar_pertenenciasINM'),
 
 
 #----------------------------AC-------------------------
