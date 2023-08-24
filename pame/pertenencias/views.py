@@ -368,5 +368,25 @@ class CrearPertenenciasValoresViewAC(CreateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'
         return context
+    
+class DeletePertenenciasValoresAC(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = Valores
+    template_name = 'modals/eliminarPertenenciaValorAC.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        return reverse_lazy('ver_pertenencias_valorAC', args=[inventario_id, puesta_id])
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        
+        return context
 
 #-------------------------------FIN --------------------------------
