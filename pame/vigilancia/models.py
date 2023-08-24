@@ -64,8 +64,8 @@ OPCION_GENERO_CHOICES=[
     [1,'MUJER'],
 ]
 OPCION_ESTATUS_CHOICES=[
-    [0,'ACTIVO'],
-    [1,'INACTIVO'],
+    ('Activo','activo'),
+    ('Inactivo','inactivo'),
 ]
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(auto_now_add=True)
@@ -81,7 +81,7 @@ class Extranjero(models.Model):
     fechaNacimiento = models.DateField()
     documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
     tipoEstancia = models.ForeignKey(Estancia, on_delete=models.CASCADE)
-    estatus = models.IntegerField(choices=OPCION_ESTATUS_CHOICES)
+    estatus = models.CharField(max_length=25,choices=OPCION_ESTATUS_CHOICES, default='Activo')
     viajaSolo = models.BooleanField(default=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')

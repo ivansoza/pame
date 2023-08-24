@@ -24,6 +24,12 @@
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.fechaOficio|as_crispy_field}}
+                <script>
+                    var fechaOficioField = document.getElementById("id_fechaOficio");
+                    var fechaActual = new Date().toISOString().split('T')[0];
+                    fechaOficioField.value = fechaActual;
+                    document.getElementById('id_fechaOficio').readOnly = true;
+                </script>
             </div>
         </div>
 

@@ -167,6 +167,7 @@ class extranjeroFormsInm(forms.ModelForm):
         fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus'] 
         widgets = {
             # Otros campos y widgets
+            'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
@@ -220,6 +221,7 @@ class extranjeroFormsAC(forms.ModelForm):
         fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus']
         widgets = {
             # Otros campos y widgets
+            'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),

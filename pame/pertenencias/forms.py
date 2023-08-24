@@ -1,5 +1,5 @@
 from django import forms
-from .models import Inventario, Pertenencias
+from .models import Inventario, Pertenencias, Valores
 
 class InventarioForm(forms.ModelForm):
     class Meta:
@@ -12,3 +12,7 @@ class PertenenciaForm(forms.ModelForm):
         fields = '__all__'
 
 
+class ValoresForm(forms.ModelForm):
+    class Meta:
+        model = Valores
+        fields = '__all__'

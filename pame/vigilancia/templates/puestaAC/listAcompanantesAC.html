@@ -8,7 +8,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 {% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id%}">
+  <i class="fas fa-arrow-left"></i>
+</a>
 
+{% endblock dashboard %}
 
 
 {% block contenido %}

@@ -25,13 +25,13 @@ class Pertenencias(models.Model):
     class Meta:
         verbose_name_plural = "Pertenencias"
 class Valores(models.Model):
-    descripcion = models.DateField(max_length=100, verbose_name='Descripcion')
+    descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     cantidad = models.FloatField(verbose_name='Cantidad')
     Obsevaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
 
     def __str__(self) -> str:
-        return '__all__'
+        return self.descripcion
     
     class Meta:
         verbose_name_plural = "Valores"

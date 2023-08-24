@@ -4,6 +4,13 @@
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDD22D ">
 {% endblock link %}
 
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaAC' %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
+
 
 {% block contenido %}
 <style>
@@ -81,8 +88,27 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesAC' extranjero.id puesta.id%}" data-title="Acompańante">
                         <i class="fas fa-handshake"></i>
                     </a>
+                    {% if extranjero.inventario_set.all  %}
+                    {% with first_inventario=extranjero.inventario_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
+                        <i class="fas fa-tshirt"></i>
+                    </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                        <i class="fas fa-money-bill"></i>
+                    </a>
+                    {% endwith %}
+
+                    {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
+                         <i class="fas fa-tshirt"></i>
+                    </a>
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'ver_pertenencias_valorAC' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                        <i class="fas fa-money-bill"></i>
+                    </a>
+                    {% endif %}
                 </td>
             </tr>
+
             {% endfor %}
         </tbody>
     </table>
