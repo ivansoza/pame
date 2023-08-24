@@ -93,11 +93,17 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
                         <i class="fas fa-tshirt"></i>
                     </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                        <i class="fas fa-money-bill"></i>
+                    </a>
                     {% endwith %}
 
                     {% else %}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
                          <i class="fas fa-tshirt"></i>
+                    </a>
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'ver_pertenencias_valorAC' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                        <i class="fas fa-money-bill"></i>
                     </a>
                     {% endif %}
                 </td>
