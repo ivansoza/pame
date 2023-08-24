@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DeleteView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC
-from .forms import InventarioForm, PertenenciaForm
-from .models import Pertenencias, Inventario
+from .forms import InventarioForm, PertenenciaForm, ValoresForm
+from .models import Pertenencias, Inventario, Valores
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -98,6 +98,96 @@ class CrearPertenenciasViewINM(CreateView):
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
+        return context
+
+class DeletePertenenciasINM(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = Pertenencias
+    template_name = 'modals/eliminarPertenenciaINM.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        return reverse_lazy('ver_pertenenciasINM', args=[inventario_id, puesta_id])
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+
+class ListaPertenenciasValorViewINM(ListView):
+    model = Valores
+    template_name = 'pertenenciasINM/listPertenenciasValorINM.html'
+
+    def get_queryset(self):
+        inventario_id = self.kwargs['inventario_id']
+        return Valores.objects.filter(delInventario_id=inventario_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+class CrearPertenenciasValoresViewINM(CreateView):
+    model = Valores
+    form_class = ValoresForm  # Usa tu formulario modificado
+    template_name = 'modals/crearPertenenciasValorINM.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.kwargs['inventario_id']
+        puesta_id = self.kwargs.get('puesta_id')
+
+        return reverse('ver_pertenencias_valorINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+
+class DeletePertenenciasIValorNM(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_valor',
+    }
+    model = Valores
+    template_name = 'modals/eliminarPertenenciaValorINM.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        return reverse('eliminar_pertenencias_valorINM', args=[inventario_id, puesta_id])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
         return context
     #-------------------------------------
 #------------------------INVENTARIO AC -----------------
