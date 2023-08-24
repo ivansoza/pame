@@ -70,7 +70,18 @@
             <td>{{ pertenencia.descripcion }}</td>
             <td>{{ pertenencia.cantidad }}</td>
             <td>{{ pertenencia.observaciones }}</td>
-            <td><a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'eliminar_pertenenciasAC' pertenencia.id %}" data-title="Eliminar Pertenencia" onclick="abrir_modal(this.href); return false;"><i class="fas fa-trash-alt"></i></a></td>
+
+           
+
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link"
+                href="{% url 'editar_pertenenciasAC' pertenencia.id%}"
+                data-title="Editar Pertenencia" onclick="abrir_modal_editar(this.href); return false;">
+                <i class="fas fa-edit"></i>
+               </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'eliminar_pertenenciasAC' pertenencia.id %}" data-title="Eliminar Pertenencia" onclick="abrir_modal(this.href); return false;"><i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -79,8 +90,15 @@
 <hr>
 <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom">Volver</a>
 <div class="modal fade" id="agregarpertenencia" role="dialog">
+
+</div>
 <div class="modal fade" id="eliminarextranjero" role="dialog">
 
+</div>
+
+<div class="modal fade" id="editartpertenencia" role="dialog">
+
+    
 </div>
 
 
@@ -98,6 +116,18 @@
     }
     
 </script>
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_editar(url){
+        $('#editartpertenencia').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
+
+
 <script type="text/javascript">
     var $ = jQuery.noConflict();
     function abrir_modal_eliminar(url){

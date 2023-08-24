@@ -136,6 +136,22 @@ class EditarPertenenciasViewINM(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
+    
+class EditarPertenenciasViewAC(UpdateView):
+    model = Pertenencias
+    form_class = PertenenciaForm  # Usa tu formulario modificado
+    template_name = 'modals/editPertenenciasAC.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        return reverse_lazy('ver_pertenenciasAC', args=[inventario_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
+        return context
 
 class ListaPertenenciasValorViewINM(ListView):
     model = Valores
