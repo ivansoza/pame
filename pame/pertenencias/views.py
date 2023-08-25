@@ -25,20 +25,24 @@ class CrearInventarioViewINM(CreateView):
     def get_initial(self):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        nExtranjero = extranjero.nombreExtranjero
         estaciones_id = extranjero.deLaEstacion.id
         estaciones = extranjero.deLaEstacion.nombre
         ultimo_registro = Inventario.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
         nuevo_numero = f'2023/INV/{estaciones_id}/{extranjero_id}/{ultimo_numero + 1:06d}'
 
-        return {'noExtranjero': nExtranjero, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones}
+        return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs['extranjero_id']
         puesta_id = self.kwargs.get('puesta_id')
+        extranjero_id1 = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id1)
+        nExtranjero = extranjero.nombreExtranjero
+        apExtranjero = extranjero.apellidoPaternoExtranjero
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['extranjero_id1'] = nExtranjero + "" + apExtranjero
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
 
@@ -113,6 +117,9 @@ class CrearEnseresINM(CreateView):
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
         return initial
     
