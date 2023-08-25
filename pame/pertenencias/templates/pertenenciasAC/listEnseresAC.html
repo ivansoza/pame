@@ -56,8 +56,7 @@
     <thead>
         <tr>
             <th>Unidad Migratoria</th>
-            <th>Fecha de Entrega</th>
-            <th>Hora de Entrega</th>
+            <th>Fecha y Hora de Entrega</th>
             <th>Enseres</th>
             <th>Opciones</th>
 
@@ -69,7 +68,6 @@
         {% for enseres in enseresac %}
         <tr>
             <td>{{ enseres.unidadMigratoria }}</td>
-            <td>{{ enseres.fechaEntrega }}</td>
             <td>{{ enseres.horaEntrega }}</td>
             <td>{{ enseres.enseres }}</td>
 

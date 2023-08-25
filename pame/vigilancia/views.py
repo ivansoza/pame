@@ -107,13 +107,13 @@ class inicioINMList(ListView):
         context['puestas_count'] = puestas_count
 
         #extranjeros_total = Extranjero.objects.filter(deLaEstacion=user_estacion).count() #OBTENER EL NUMERO TOTAL DE EXTRANJERO POR LA ESTACION 
-        extranjeros_total = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).count()
+        extranjeros_total = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, estatus='Activo').count()
         context['extranjeros_total'] = extranjeros_total
         nacionalidades_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
         context['nacionalidades_count'] = nacionalidades_count
 
-        hombres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=0).count()
-        mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1).count()
+        hombres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=0, estatus='Activo').count()
+        mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1, estatus='Activo').count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
         capacidad_actual = user_estacion.capacidad
@@ -267,6 +267,27 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
 
     def get_success_url(self):
         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
+    def form_valid(self, form):
+        extranjero = form.save(commit=False)
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+
+        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+            # Cambio de estatus de Activo a Inactivo
+            estacion = extranjero.deLaEstacion
+            if estacion:
+                estacion.capacidad += 1
+                estacion.save()
+
+        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+            # Cambio de estatus de Inactivo a Activo
+            estacion = extranjero.deLaEstacion
+            if estacion and estacion.capacidad > 0:
+                estacion.capacidad -= 1
+                estacion.save()
+
+        extranjero.save()
+
+        return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -503,13 +524,13 @@ class inicioACList(ListView):
         context['puestas_count'] = puestas_count
 
         #extranjeros_total = Extranjero.objects.filter(deLaEstacion=user_estacion).count() #OBTENER EL NUMERO TOTAL DE EXTRANJERO POR LA ESTACION 
-        extranjeros_total = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion).count()
+        extranjeros_total = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, estatus='Activo').count()
         context['extranjeros_total'] = extranjeros_total
         nacionalidades_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
         context['nacionalidades_count'] = nacionalidades_count
 
-        hombres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=0).count()
-        mujeres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=1).count()
+        hombres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=0, estatus='Activo').count()
+        mujeres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=1, estatus='Activo').count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
         capacidad_actual = user_estacion.capacidad
@@ -661,6 +682,28 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     model = Extranjero
     form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
+    def form_valid(self, form):
+        extranjero = form.save(commit=False)
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+
+        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+            # Cambio de estatus de Activo a Inactivo
+            estacion = extranjero.deLaEstacion
+            if estacion:
+                estacion.capacidad += 1
+                estacion.save()
+
+        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+            # Cambio de estatus de Inactivo a Activo
+            estacion = extranjero.deLaEstacion
+            if estacion and estacion.capacidad > 0:
+                estacion.capacidad -= 1
+                estacion.save()
+
+        extranjero.save()
+
+        return super().form_valid(form)
+    
 
     def get_success_url(self):
         return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
