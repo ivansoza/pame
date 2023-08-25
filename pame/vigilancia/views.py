@@ -364,7 +364,7 @@ class acompananteList(ListView):
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
 
         # Obtener la lista de extranjeros de la misma puesta
-        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id).exclude(pk=extranjero_principal_id)
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id, estatus ='Activo').exclude(pk=extranjero_principal_id)
 
         # Filtrar extranjeros no relacionados
         extranjeros_no_relacionados = extranjeros_puesta.exclude(
@@ -821,7 +821,7 @@ class ListAcompanantesAC(ListView):
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
 
         # Obtener la lista de extranjeros de la misma puesta
-        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id).exclude(pk=extranjero_principal_id)
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id, estatus='Activo').exclude(pk=extranjero_principal_id)
         
         # Filtrar extranjeros no relacionados
         extranjeros_no_relacionados = extranjeros_puesta.exclude(

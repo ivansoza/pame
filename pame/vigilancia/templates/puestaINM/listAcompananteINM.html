@@ -21,7 +21,7 @@
   </style>
 
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Agregar acompańantes </h1>
+    <h1 class="titulo-general">Agregar acompañantes </h1>
 </div>
 <br>
 
@@ -44,13 +44,14 @@
                 <span class="valor">{{ extranjero_principal.deLaPuestaIMN }}</span>
             </div>
         </div>
-        <div class="icono">
-            <i class="fas fa-user"></i>
-        </div>
+        <div class="circle-container">
+            <img src="{{extranjero_principal.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
+          </div>
     </div>
+    
 </div>
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Lista de acompańantes para: {{ extranjero_principal.nombreExtranjero}} {{ extranjero_principal.apellidoPaternoExtranjero}} {{ extranjero_principal.apellidoMaternoExtranjero}}</h1>
+    <h1 class="titulo-general">Lista de acompañantes para: {{ extranjero_principal.nombreExtranjero}} {{ extranjero_principal.apellidoPaternoExtranjero}} {{ extranjero_principal.apellidoMaternoExtranjero}}</h1>
 </div>
 <br>
 
