@@ -572,4 +572,129 @@ class DeletePertenenciasValoresAC(DeleteView):
         
         return context
 
+
+
+
+class ListaEnseresViewAC(ListView):
+    model = EnseresBasicos
+    template_name = 'pertenenciasAC/listEnseresAC.html'
+    context_object_name = 'enseresac'
+    def get_queryset(self):
+        extranjero_id= self.kwargs['extranjero_id']
+        return EnseresBasicos.objects.filter(noExtranjero=extranjero_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id= self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+class CrearEnseresAC(CreateView):
+    model= EnseresBasicos
+    form_class = EnseresForm
+    template_name = 'pertenenciasAC/crearEnseresAC.html'
+
+    def get_success_url(self):
+        extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjeroAC', args=[extranjero.deLaPuestaAC.id])
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('extranjero_id')
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        initial['noExtranjero'] = extranjero_id
+        return initial
+    
+
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        enseres = form.save(commit=False)
+        enseres.noExtranjero = extranjero
+        enseres.save()
+        return super().form_valid(form)
+    
+class EditarEnseresViewAC(UpdateView):
+    model = EnseresBasicos
+    form_class = EnseresForm  # Usa tu formulario modificado
+    template_name = 'modals/ac/editarEnseresAC.html'
+
+    def get_success_url(self):
+         enseres_id = self.object.noExtranjero.id
+         puesta_id = self.object.noExtranjero.deLaPuestaAC.id
+         return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+class DeleteEnseresAC(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = EnseresBasicos
+    template_name = 'modals/ac/eliminarEnseresAC.html'
+
+    def get_success_url(self):
+         enseres_id = self.object.noExtranjero.id
+         puesta_id = self.object.noExtranjero.deLaPuestaAC.id
+         return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+
+class CrearEnseresModaAC(CreateView):
+    model= EnseresBasicos
+    form_class = EnseresForm
+    template_name = 'modals/ac/crearEnseresModaAC.html'
+    
+    def get_success_url(self):
+         enseres_id = self.object.noExtranjero.id
+         puesta_id = self.object.noExtranjero.deLaPuestaAC.id
+         return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('extranjero_id')
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
+        return context
+    
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        initial['noExtranjero'] = extranjero_id
+        return initial
+    
+
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        enseres = form.save(commit=False)
+        enseres.noExtranjero = extranjero
+        enseres.save()
+        return super().form_valid(form)
 #-------------------------------FIN --------------------------------

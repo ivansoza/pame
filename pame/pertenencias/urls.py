@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM
-from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC
+from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC
 
 from .views import homePertenencias
 
@@ -35,10 +35,10 @@ urlpatterns = [
     path('editar_pertenencias-ac/<int:pk>/', EditarPertenenciasViewAC.as_view(), name='editar_pertenenciasAC'),
     path('editar-pertenencias-valor-ac/<int:pk>/',UpdatePertenenciasValorAC.as_view(), name="editar_pertenencias_valorAC"),
 
-    path('listar-ensere-ac/<int:extranjero_id>/<int:puesta_id>/', ListaEnseresViewINM.as_view(), name='listarEnseresAC'),
-    path('crear-enseres-ac/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresINM.as_view(), name='crearEnseresAC'),
-    path('editar-enseres-ac/<int:pk>/', EditarEnseresViewINM.as_view(), name='editarEnseresAC'),
-    path('eliminar-enseres-ac/<int:pk>/', DeleteEnseresINM.as_view(), name='eliminarEnseresAC'),
-    path('crear-enseres-ac1/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresModaINM.as_view(), name='crearEnseresModaAC'),
+    path('listar-ensere-ac/<int:extranjero_id>/<int:puesta_id>/', ListaEnseresViewAC.as_view(), name='listarEnseresAC'),
+    path('crear-enseres-ac/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresAC.as_view(), name='crearEnseresAC'),
+    path('editar-enseres-ac/<int:pk>/', EditarEnseresViewAC.as_view(), name='editarEnseresAC'),
+    path('eliminar-enseres-ac/<int:pk>/', DeleteEnseresAC.as_view(), name='eliminarEnseresAC'),
+    path('crear-enseres-ac1/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresModaAC.as_view(), name='crearEnseresModaAC'),
 
 ]
