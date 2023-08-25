@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC
-from .forms import InventarioForm, PertenenciaForm, ValoresForm
-from .models import Pertenencias, Inventario, Valores
+from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm
+from .models import Pertenencias, Inventario, Valores, EnseresBasicos
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -69,6 +69,129 @@ class ListaPertenenciasViewINM(ListView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
         return context
+    
+class ListaEnseresViewINM(ListView):
+    model = EnseresBasicos
+    template_name = 'pertenenciasINM/listEnseresINM.html'
+    context_object_name = 'enseresinm'
+    def get_queryset(self):
+        extranjero_id= self.kwargs['extranjero_id']
+        return EnseresBasicos.objects.filter(noExtranjero=extranjero_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id= self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+
+class CrearEnseresINM(CreateView):
+    model= EnseresBasicos
+    form_class = EnseresForm
+    template_name = 'pertenenciasINM/crearEnseresINM.html'
+
+    def get_success_url(self):
+        extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('extranjero_id')
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        initial['noExtranjero'] = extranjero_id
+        return initial
+    
+
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        enseres = form.save(commit=False)
+        enseres.noExtranjero = extranjero
+        enseres.save()
+        return super().form_valid(form)
+    
+class CrearEnseresModaINM(CreateView):
+    model= EnseresBasicos
+    form_class = EnseresForm
+    template_name = 'modals/inm/crearEnseresModaINM.html'
+    
+    def get_success_url(self):
+         enseres_id = self.object.noExtranjero.id
+         puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+         return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('extranjero_id')
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
+        return context
+    
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        initial['noExtranjero'] = extranjero_id
+        return initial
+    
+
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        enseres = form.save(commit=False)
+        enseres.noExtranjero = extranjero
+        enseres.save()
+        return super().form_valid(form)
+    
+class EditarEnseresViewINM(UpdateView):
+    model = EnseresBasicos
+    form_class = EnseresForm  # Usa tu formulario modificado
+    template_name = 'modals/editarEnseresINM.html'
+
+    def get_success_url(self):
+         enseres_id = self.object.noExtranjero.id
+         puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+         return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+class DeleteEnseresINM(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = EnseresBasicos
+    template_name = 'modals/inm/eliminarEnseres.html'
+
+    def get_success_url(self):
+         enseres_id = self.object.noExtranjero.id
+         puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+         return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
 
 class CrearPertenenciasViewINM(CreateView):
     model = Pertenencias

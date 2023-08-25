@@ -3,6 +3,7 @@
 *.pyo
 *.pyd
 __pycache__
+.DS_Store
 
 # Ignorar el directorio donde se instalan las dependencias
 env/

@@ -140,7 +140,19 @@
                     <i class="fas fa-money-bill"></i>
                 </a>
                 {% endif %}
-                
+
+
+                {% if extranjero.enseresbasicos_set.all %}
+                {% with first_enseres=extranjero.enseresbasicos_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Ver enseres">
+                        <i class="fas fa-shopping-basket"></i>
+                    </a>
+                {% endwith %}
+                 {% else %}
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Ver enseres">
+                    <i class="fas fa-shopping-basket"></i>
+                </a>
+                {% endif %}
 
             </td>
         </tr>
