@@ -12,7 +12,7 @@ def homePertenencias (request):
     return render (request, "homePertenencias.html")
 #------------------------INVENTARIO INM -----------------
 
-#IVAN
+#Creacion del inventario 
 class CrearInventarioViewINM(CreateView):
     model = Inventario
     form_class = InventarioForm
@@ -49,7 +49,7 @@ class CrearInventarioViewINM(CreateView):
         puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
         return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
-
+#---------------------------------------------------------
 class ListaPertenenciasViewINM(ListView):
     model = Pertenencias
     template_name = 'pertenenciasINM/listPertenenciasINM.html'
