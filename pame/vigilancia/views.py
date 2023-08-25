@@ -8,7 +8,7 @@ from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -237,8 +237,15 @@ class listarExtranjeros(ListView):
 
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
-        return Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
-    
+        estado = self.request.GET.get('estado_filtrado', 'activo') 
+        queryset = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
+
+        if estado == 'activo':
+            queryset = queryset.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            queryset = queryset.filter(estatus='Inactivo')
+        return queryset
+
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -255,7 +262,7 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
-    form_class = extranjeroFormsInm
+    form_class = editExtranjeroINMForm
     template_name = 'puestaINM/editarExtranjeroINM.html'
 
     def get_success_url(self):
@@ -530,6 +537,8 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
             usuario_id = usuario_data.id
             estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
@@ -540,6 +549,8 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         nuevo_numero = f'2023/AC/{estacion_id}/{usuario_id}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
+        initial['entidadFederativa'] = estado
+        initial['dependencia'] = estacionM
         return initial
 
         
@@ -624,7 +635,14 @@ class listarExtranjerosAC(ListView):
 
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
-        return Extranjero.objects.filter(deLaPuestaAC_id=puesta_id)
+        estado = self.request.GET.get('estado_filtrado', 'activo') 
+        queryset = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id)
+
+        if estado == 'activo':
+            queryset = queryset.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            queryset = queryset.filter(estatus='Inactivo')
+        return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -641,7 +659,7 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
-    form_class = extranjeroFormsAC
+    form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
 
     def get_success_url(self):
