@@ -24,12 +24,17 @@ class llamadasTelefonicas(View):
 
         nombre_extranjero = extranjero.nombreExtranjero
         estancia_extranjero = estancia.deLaEstacion
-
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
         context = {
             'nombre_extranjero': nombre_extranjero,
             'estancia_extranjero': estancia_extranjero
+            
         }
         return render(request, self.template_name, context)
+    
+
+  
 
 class ListLlamadas(ListView):
     model= LlamadasTelefonicas
@@ -51,6 +56,8 @@ class ListLlamadas(ListView):
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
         return context
     
 class crearLlamadas(CreateView):
