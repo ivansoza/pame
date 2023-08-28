@@ -7,9 +7,15 @@
 {% endblock link %}
 
 {% block titulo %}PAME | Telefono{% endblock titulo %}
-{% block dashboard %}Telefono {% endblock dashboard %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
 
 {% block contenido %}
+
 <div class="titulo-general-container">
     <h1 class="titulo-general">Llamadas Telefonicas</h1>
 </div>
@@ -35,7 +41,7 @@
     </div>
 </div>
 
-<a class="btn btn-custom" href="{% url 'crear_llamadaAC' llamada_id=llamada.id %}">Agregar Llamada</a>
+<a class="btn btn-custom" href="{% url 'crear_llamadaAC' llamada_id=llamada.id puesta_id=puesta.id %}">Agregar Llamada</a>
 
 <br>
 <br>

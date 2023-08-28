@@ -107,7 +107,9 @@ class ListLlamadasAC(ListView):
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
+        puesta_id = self.kwargs.get('puesta_id')
 
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
