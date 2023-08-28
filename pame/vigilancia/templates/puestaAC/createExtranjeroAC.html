@@ -5,7 +5,11 @@
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
 {% endblock link %}
-
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaAC'%}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 {% block contenido %}
 
 <div class="titulo-general-container">

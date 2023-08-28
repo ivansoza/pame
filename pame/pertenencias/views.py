@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
+from django import forms
 from django.core.exceptions import PermissionDenied
 
 # Create your views here.
@@ -192,9 +193,11 @@ class CrearEnseresModaINM(CreateView):
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
         return initial
-    
 
     def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
@@ -203,6 +206,11 @@ class CrearEnseresModaINM(CreateView):
         enseres.noExtranjero = extranjero
         enseres.save()
         return super().form_valid(form)
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
     
 class EditarEnseresViewINM(UpdateView):
     model = EnseresBasicos
@@ -749,6 +757,9 @@ class CrearEnseresModaAC(CreateView):
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
         return initial
     
@@ -760,4 +771,8 @@ class CrearEnseresModaAC(CreateView):
         enseres.noExtranjero = extranjero
         enseres.save()
         return super().form_valid(form)
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
 #-------------------------------FIN --------------------------------

@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView
 from django.views import View
 from catalogos.models import Estacion
 from .models import LlamadasTelefonicas
-from vigilancia.models import Extranjero, PuestaDisposicionINM
+from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC
 from .forms import LlamadasTelefonicasForm
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -24,12 +24,17 @@ class llamadasTelefonicas(View):
 
         nombre_extranjero = extranjero.nombreExtranjero
         estancia_extranjero = estancia.deLaEstacion
-
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
         context = {
             'nombre_extranjero': nombre_extranjero,
             'estancia_extranjero': estancia_extranjero
+            
         }
         return render(request, self.template_name, context)
+    
+
+  
 
 class ListLlamadas(ListView):
     model= LlamadasTelefonicas
@@ -46,10 +51,13 @@ class ListLlamadas(ListView):
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
-
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
         return context
     
 class crearLlamadas(CreateView):
@@ -58,7 +66,9 @@ class crearLlamadas(CreateView):
     model = LlamadasTelefonicas
 
     def get_success_url(self):
-        return reverse('ver_llamadasIMN', args=[self.object.noExtranjero.id])
+        puesta_id = self.kwargs['puesta_id']
+        puesta=PuestaDisposicionINM.objects.get(id=puesta_id)
+        return reverse('ver_llamadasIMN', args=[self.object.noExtranjero.id, puesta.id])
 
     def get_initial(self):
         initial = super().get_initial()
