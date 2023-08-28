@@ -61,7 +61,7 @@ class ListLlamadas(ListView):
         return context
     
 class crearLlamadas(CreateView):
-    template_name = 'LtIMN/crearLlamada.html'
+    template_name = 'modals/crearLlamada.html'
     form_class = LlamadasTelefonicasForm
     model = LlamadasTelefonicas
 
