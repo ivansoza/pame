@@ -40,10 +40,12 @@
       }
   </style>
 
-<div class="titulo-general-container">
-    <h1 class="titulo-general">Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
-</div>
-
+  <div class="titulo-general-container">
+    <h1 class="titulo-general">
+        Lista de Extranjeros para la Puesta:
+        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+    </h1>
+  </div>
 <br>
 <a class="btn btn-custom mb-3" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
 <br>

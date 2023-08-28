@@ -6,12 +6,23 @@
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
 {% endblock link %}
 
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
+
+
 
 {% block contenido %}
 
 
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Agregar Extranjero a Puesta {{ puesta.numeroOficio }}</h1>
+  <h1 class="titulo-general">
+      Agregar Extranjero a Puesta:
+      <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+  </h1>
 </div>
 
 

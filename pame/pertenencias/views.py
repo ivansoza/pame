@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.urls import reverse_lazy
 # Create your views here.
+from django import forms
 
 def homePertenencias (request):
     return render (request, "homePertenencias.html")
@@ -114,6 +115,7 @@ class CrearEnseresINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
+   
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
@@ -122,6 +124,11 @@ class CrearEnseresINM(CreateView):
         initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
         return initial
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
     
 
     def form_valid(self, form):
@@ -180,6 +187,11 @@ class EditarEnseresViewINM(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
     
 class DeleteEnseresINM(DeleteView):
     permission_required = {
@@ -625,6 +637,9 @@ class CrearEnseresAC(CreateView):
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
         return initial
     
@@ -636,6 +651,11 @@ class CrearEnseresAC(CreateView):
         enseres.noExtranjero = extranjero
         enseres.save()
         return super().form_valid(form)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
     
 class EditarEnseresViewAC(UpdateView):
     model = EnseresBasicos
@@ -652,6 +672,10 @@ class EditarEnseresViewAC(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadAC'
         return context
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
     
 class DeleteEnseresAC(DeleteView):
     permission_required = {
