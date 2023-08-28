@@ -149,7 +149,18 @@
                      <i class="fas fa-shopping-basket"></i>
                     </a>
                     {% endif %}
-
+                    
+                    {% if extranjero.llamadastelefonicas_set.all %}
+                    {% with first_llamada=extranjero.llamadastelefonicas_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id %}" data-title="Llamadas Telefonicas">
+                    <i class="fas fa-phone"></i>
+                    </a>
+                    {% endwith %}
+                    {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id %}" data-title="Llamadas Telefonicas">
+                    <i class="fas fa-phone"></i>
+                    </a>
+                    {% endif %}
                 </td>
             </tr>
 

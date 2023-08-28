@@ -82,3 +82,53 @@ class crearLlamadas(CreateView):
         form.instance.noExtranjero = extranjero
         return super().form_valid(form)
     
+class ListLlamadasAC(ListView):
+    model= LlamadasTelefonicas
+    template_name = 'LtAC/LtAC.html'
+
+    def get_queryset(self):
+        llamada_id = self.kwargs['llamada_id']
+        return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
+        return context
+    
+class crearLlamadasAC(CreateView):
+    template_name = 'LtAC/crearLlamadaAC.html'
+    form_class = LlamadasTelefonicasForm
+    model = LlamadasTelefonicas
+
+    def get_success_url(self):
+        return reverse('ver_llamadasAC', args=[self.object.noExtranjero.id])
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Obtén el ID del extranjero desde la URL
+        llamada_id = self.kwargs.get('llamada_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        
+        # Rellena los campos en initial
+        initial['noExtranjero'] = extranjero
+        initial['estacionMigratoria'] = extranjero.deLaEstacion
+        
+        return initial
+
+    def form_valid(self, form):
+        # Asigna la relación al campo noExtranjero
+        llamada_id = self.kwargs.get('llamada_id')
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        extranjero = get_object_or_404(Extranjero, id=llamada_id)
+
+        form.instance.noExtranjero = extranjero
+        return super().form_valid(form)
