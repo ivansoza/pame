@@ -15,11 +15,11 @@
 {% block contenido  %}
 <div class="titulo-general-container">
     <h1 class="titulo-general">Accesos Directos</h1>
-  </div>  
+</div>  
 <div class="container mt-10">
-    <div class="row">
+  <div class="row justify-content-center">
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon">
             <img src=" {% static 'img/icons/iconAC.png' %} " alt="Icono de imagen" class="imagen-icono">
         </div>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon">
             <img src=" {% static 'img/icons/iconPuestaAC.png' %} " alt="Icono de imagen" class="imagen-icono">
 
@@ -40,8 +40,10 @@
           <a href="{% url 'homePuestaAC' %}" class="card-button">Ir</a>
         </div>
       </div>
+
+
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon">            
             <img src=" {% static 'img/icons/iconINM.png' %} " alt="Icono de imagen" class="imagen-icono">
           </div>
@@ -52,7 +54,7 @@
       </div>
       
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon">
             <img src=" {% static 'img/icons/iconPuestaINM.png' %} " alt="Icono de imagen" class="imagen-icono">
 
@@ -63,7 +65,7 @@
       </div>
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon"><i class="fas fa-book"></i></div>
           <p class="titulo" >CREAR PUESTA POR VOLUNTAD PROPIA</p>
           <button class="card-button">Ir</button>
@@ -71,7 +73,7 @@
       </div>
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon"><i class="fas fa-sticky-note"></i></div>
           <p class="titulo" >PUESTA POR ACCIÓN MIGRATORIA</p>
           <button class="card-button">Ir</button>
@@ -79,7 +81,7 @@
       </div>
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon"><i class="fas fa-clipboard-list"></i></div>
           <p class="titulo" >PUESTA POR ACCIÓN MIGRATORIA</p>
           <button class="card-button">Ir</button>
@@ -87,55 +89,16 @@
       </div>
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
+        <div class="card mx-auto">
           <div class="icon"><i class="fas fa-envelope"></i></div>
           <p class="titulo" >PUESTA POR ACCIÓN MIGRATORIA</p>
           <button class="card-button">Ir</button>
         </div>
       </div>
-    </div>
 
-<div class="container mt-10">
-    <div class="row">
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-star"></i></div>
-          <p>PUESTA POR ACCIÓN MIGRATORIA</p>
-
-          <button class="card-button">Ejemplo 1</button>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-heart"></i></div>
-          <p>Hola</p>
-
-          <button class="card-button">Ejemplo 2</button>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-rocket"></i></div>
-          <p>Hola</p>
-
-          <button class="card-button">Ejemplo 3</button>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-fire"></i></div>
-          <p>Hola</p>
-          <button class="card-button">Ejemplo 4</button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-fire"></i></div>
-          <p>Hola</p>
-          <button class="card-button">Ejemplo 4</button>
-        </div>
-      </div>
   </div>
+</div>
+
+
 
 {% endblock contenido  %}

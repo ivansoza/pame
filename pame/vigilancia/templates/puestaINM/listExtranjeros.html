@@ -16,20 +16,55 @@
     div.dataTables_wrapper div.dataTables_filter input {
       width: 300px; /* Cambia el tamaño según tus necesidades */
     }
+    #filtro-form {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      
+      #filtro-form label {
+        margin-right: 10px;
+      }
+      
+      #filtro-form select {
+        padding: 5px;
+      }
+      
+      #filtro-form button {
+        padding: 5px 10px;
+        margin-left:10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
   </style>
 
-<div class="titulo-general-container">
-    <h1 class="titulo-general">Lista de Extranjeros para la Puesta: {{ puesta.numeroOficio }}</h1>
-</div>
-
+  <div class="titulo-general-container">
+    <h1 class="titulo-general">
+        Lista de Extranjeros para la Puesta:
+        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+    </h1>
+  </div>
 <br>
 <a class="btn btn-custom mb-3" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
+<br>
+<br>
 <div class="table-responsive">
-
+    <form method="get" id="filtro-form">
+        <label for="estado_filtrado">Mostrar:</label>
+        <select name="estado_filtrado" id="estado_filtrado" onchange="this.form.submit()">
+            <option value="todos">Seleccione una Opción de Filtrado</option>
+            <option value="todos">Todos</option>
+            <option value="activo">Activos</option>
+            <option value="inactivo">Inactivos</option>
+        </select>
+        
+    </form>
+<br>
 <table id="puestasinm-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
-            <th>Estacion Migratoria</th>
             <th>Nombre</th>
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
@@ -41,7 +76,6 @@
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ extranjero.deLaEstacion }}</td>
             <td>{{ extranjero.nombreExtranjero }}</td>
             <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
             <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
@@ -81,9 +115,6 @@
                     </a>
                 {% endif %}
 
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Añadir Traslado">
-                    <i class="fas fa-exchange-alt"></i>
-                </a>
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
                     <i class="fas fa-handshake"></i>
                 </a>
@@ -93,8 +124,8 @@
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id%}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
-                    <i class="fas fa-money-bill"></i>
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Pertenencias de valores">
+                    <i class="fas fa-coins"></i>
                 </a>
                 {% endwith %}
 
@@ -103,7 +134,20 @@
                     <i class="fas fa-tshirt"></i>
                 </a>
                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
-                    <i class="fas fa-money-bill"></i>
+                    <i class="fas fa-coins"></i>
+                </a>
+                {% endif %}
+
+
+                {% if extranjero.enseresbasicos_set.all %}
+                {% with first_enseres=extranjero.enseresbasicos_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Ver enseres">
+                        <i class="fas fa-shopping-basket"></i>
+                    </a>
+                {% endwith %}
+                 {% else %}
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Ver enseres">
+                    <i class="fas fa-shopping-basket"></i>
                 </a>
                 {% endif %}
                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id %}" data-title="Llamadas Telefonicas">
@@ -202,5 +246,14 @@
         })
     }
     
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const estadoFiltradoSelect = document.getElementById('estado_filtrado');
+        estadoFiltradoSelect.addEventListener('change', function() {
+            this.form.submit();
+        });
+    });
 </script>
 {% endblock script %}

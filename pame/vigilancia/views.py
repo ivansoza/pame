@@ -8,7 +8,7 @@ from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -107,13 +107,13 @@ class inicioINMList(ListView):
         context['puestas_count'] = puestas_count
 
         #extranjeros_total = Extranjero.objects.filter(deLaEstacion=user_estacion).count() #OBTENER EL NUMERO TOTAL DE EXTRANJERO POR LA ESTACION 
-        extranjeros_total = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).count()
+        extranjeros_total = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, estatus='Activo').count()
         context['extranjeros_total'] = extranjeros_total
         nacionalidades_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
         context['nacionalidades_count'] = nacionalidades_count
 
-        hombres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=0).count()
-        mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1).count()
+        hombres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=0, estatus='Activo').count()
+        mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1, estatus='Activo').count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
         capacidad_actual = user_estacion.capacidad
@@ -237,8 +237,15 @@ class listarExtranjeros(ListView):
 
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
-        return Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
-    
+        estado = self.request.GET.get('estado_filtrado', 'activo') 
+        queryset = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
+
+        if estado == 'activo':
+            queryset = queryset.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            queryset = queryset.filter(estatus='Inactivo')
+        return queryset
+
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -255,11 +262,32 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
-    form_class = extranjeroFormsInm
+    form_class = editExtranjeroINMForm
     template_name = 'puestaINM/editarExtranjeroINM.html'
 
     def get_success_url(self):
         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
+    def form_valid(self, form):
+        extranjero = form.save(commit=False)
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+
+        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+            # Cambio de estatus de Activo a Inactivo
+            estacion = extranjero.deLaEstacion
+            if estacion:
+                estacion.capacidad += 1
+                estacion.save()
+
+        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+            # Cambio de estatus de Inactivo a Activo
+            estacion = extranjero.deLaEstacion
+            if estacion and estacion.capacidad > 0:
+                estacion.capacidad -= 1
+                estacion.save()
+
+        extranjero.save()
+
+        return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -299,7 +327,10 @@ class AgregarBiometricoINM(CreateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
 
-class EditarBiometricoINM(UpdateView):
+class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_biometrico',
+    }
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'puestaINM/editBiometricosINM.html' 
@@ -357,7 +388,7 @@ class acompananteList(ListView):
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
 
         # Obtener la lista de extranjeros de la misma puesta
-        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id).exclude(pk=extranjero_principal_id)
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id, estatus ='Activo').exclude(pk=extranjero_principal_id)
 
         # Filtrar extranjeros no relacionados
         extranjeros_no_relacionados = extranjeros_puesta.exclude(
@@ -380,7 +411,10 @@ class acompananteList(ListView):
         
         return context
     
-class AgregarAcompananteViewINM(CreateView):
+class AgregarAcompananteViewINM(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_acompanante',
+    }
     model = Acompanante
     form_class = AcompananteForm
     template_name = 'modal/acompananteINM.html'
@@ -407,7 +441,10 @@ class AgregarAcompananteViewINM(CreateView):
         context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
         return context
     
-class createExtranjeroAcomINM(CreateView):
+class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_extranjero',
+    }
     model =Extranjero             
     form_class = extranjeroFormsInm    
     template_name = 'puestaINM/crearAcompananteINM.html' 
@@ -496,13 +533,13 @@ class inicioACList(ListView):
         context['puestas_count'] = puestas_count
 
         #extranjeros_total = Extranjero.objects.filter(deLaEstacion=user_estacion).count() #OBTENER EL NUMERO TOTAL DE EXTRANJERO POR LA ESTACION 
-        extranjeros_total = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion).count()
+        extranjeros_total = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, estatus='Activo').count()
         context['extranjeros_total'] = extranjeros_total
         nacionalidades_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
         context['nacionalidades_count'] = nacionalidades_count
 
-        hombres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=0).count()
-        mujeres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=1).count()
+        hombres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=0, estatus='Activo').count()
+        mujeres_count = Extranjero.objects.filter(deLaPuestaAC__deLaEstacion=user_estacion, genero=1, estatus='Activo').count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
         capacidad_actual = user_estacion.capacidad
@@ -530,6 +567,8 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
             # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
             usuario_id = usuario_data.id
             estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
             estacion = Estacion.objects.get(pk=estacion_id)
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
@@ -540,6 +579,8 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         nuevo_numero = f'2023/AC/{estacion_id}/{usuario_id}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
+        initial['entidadFederativa'] = estado
+        initial['dependencia'] = estacionM
         return initial
 
         
@@ -624,7 +665,14 @@ class listarExtranjerosAC(ListView):
 
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
-        return Extranjero.objects.filter(deLaPuestaAC_id=puesta_id)
+        estado = self.request.GET.get('estado_filtrado', 'activo') 
+        queryset = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id)
+
+        if estado == 'activo':
+            queryset = queryset.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            queryset = queryset.filter(estatus='Inactivo')
+        return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -641,8 +689,30 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
-    form_class = extranjeroFormsAC
+    form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
+    def form_valid(self, form):
+        extranjero = form.save(commit=False)
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+
+        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+            # Cambio de estatus de Activo a Inactivo
+            estacion = extranjero.deLaEstacion
+            if estacion:
+                estacion.capacidad += 1
+                estacion.save()
+
+        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+            # Cambio de estatus de Inactivo a Activo
+            estacion = extranjero.deLaEstacion
+            if estacion and estacion.capacidad > 0:
+                estacion.capacidad -= 1
+                estacion.save()
+
+        extranjero.save()
+
+        return super().form_valid(form)
+    
 
     def get_success_url(self):
         return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
@@ -688,7 +758,10 @@ class AgregarBiometricoAC(CreateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
 
-class EditarBiometricoAC(UpdateView):
+class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_biometrico',
+    }
     model = Biometrico
     form_class = BiometricoFormAC
     template_name = 'puestaAC/editBiometricosAC.html' 
@@ -712,6 +785,9 @@ class EditarBiometricoAC(UpdateView):
         return context
 
 class DeleteExtranjeroAC(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroAC.html'
     
@@ -803,7 +879,7 @@ class ListAcompanantesAC(ListView):
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
 
         # Obtener la lista de extranjeros de la misma puesta
-        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id).exclude(pk=extranjero_principal_id)
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaAC_id=puesta_id, estatus='Activo').exclude(pk=extranjero_principal_id)
         
         # Filtrar extranjeros no relacionados
         extranjeros_no_relacionados = extranjeros_puesta.exclude(

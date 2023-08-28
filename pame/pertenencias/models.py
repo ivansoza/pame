@@ -1,6 +1,6 @@
 from django.db import models
 from vigilancia.models import Extranjero
-# Create your models here.
+from multiselectfield import MultiSelectField
 
 class Inventario(models.Model):
     foloInventario = models.CharField(max_length=30, verbose_name='Folio de Inventario')
@@ -35,3 +35,20 @@ class Valores(models.Model):
     
     class Meta:
         verbose_name_plural = "Valores"
+
+ENSERES = (
+    ("Papel Higienico","Papel Higienico"),
+    ("Kit Personal","Kit Personal"),
+    ("Pañal Desechable","Pañal Desechable"),
+    ("Toalla Sanitaria","Toalla Sanitaria"),
+    ("Colchoneta","Colchoneta"),
+    ("Manta Termica","Manta Termica"),
+
+
+)
+class EnseresBasicos(models.Model):
+    unidadMigratoria = models.CharField(max_length=30, verbose_name='Unidad Migratoria')
+    fechaEntrega = models.DateField(verbose_name='Fecha Entrega', auto_now_add=True)
+    horaEntrega = models.DateTimeField(verbose_name='Hora Entrega', auto_now_add=True)
+    enseres = MultiSelectField(choices=ENSERES, max_length=200)
+    noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)

@@ -174,7 +174,17 @@ class extranjeroFormsInm(forms.ModelForm):
             'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
 
-
+class editExtranjeroINMForm(forms.ModelForm):
+    class Meta:
+        model = Extranjero
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus'] 
+        widgets = {
+            # Otros campos y widgets
+            #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
+        }
 
 
 class BiometricoFormINM(forms.ModelForm):
@@ -232,6 +242,17 @@ class extranjeroFormsAC(forms.ModelForm):
 #         model = Acompanante
 #         fields = ['delAcompanante', 'relacion']
 
+class editExtranjeroACForms(forms.ModelForm):
+    class Meta:
+      model = Extranjero
+      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus']
+      widgets = {
+            # Otros campos y widgets
+            'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
+             'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
+      }
 
 class AcompananteForm(forms.ModelForm):
     class Meta:
