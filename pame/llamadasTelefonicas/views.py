@@ -66,10 +66,8 @@ class crearLlamadas(CreateView):
     model = LlamadasTelefonicas
 
     def get_success_url(self):
-
         puesta_id = self.kwargs['puesta_id']
         puesta=PuestaDisposicionINM.objects.get(id=puesta_id)
-
         return reverse('ver_llamadasIMN', args=[self.object.noExtranjero.id, puesta.id])
 
     def get_initial(self):
