@@ -6,14 +6,46 @@ from .models import Pertenencias, Inventario, Valores, EnseresBasicos
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.shortcuts import redirect
+from django.core.exceptions import PermissionDenied
+
 # Create your views here.
+
+class PermissionRequiredMixin(UserPassesTestMixin):
+    login_url = '/permisoDenegado/'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.permissions_required = kwargs.get('permissions_required', {})
+
+    def test_func(self):
+        user = self.request.user
+        for permission, codename in self.permissions_required.items():
+            if not user.has_perm(codename):
+                raise PermissionDenied(f"No tienes el permiso necesario: {permission}")
+        return True
+   
+    def test_func(self):
+        return all(self.request.user.has_perm(perm) for perm in self.permission_required.values())
+ 
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            # Si el usuario está autenticado pero no tiene el permiso, redirige a una página de acceso denegado
+            return redirect('permisoDenegado')  # Cambia 'acceso_denegado' a la URL adecuada
+        else:
+            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            return redirect(self.login_url)
+
 
 def homePertenencias (request):
     return render (request, "homePertenencias.html")
 #------------------------INVENTARIO INM -----------------
 
 #Creacion del inventario 
-class CrearInventarioViewINM(CreateView):
+class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'pertenencias.add_inventario',
+    }
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenenciasINM/agregarInventarioINM.html'

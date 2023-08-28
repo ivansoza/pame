@@ -327,7 +327,10 @@ class AgregarBiometricoINM(CreateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
 
-class EditarBiometricoINM(UpdateView):
+class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_biometrico',
+    }
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'puestaINM/editBiometricosINM.html' 
@@ -408,7 +411,10 @@ class acompananteList(ListView):
         
         return context
     
-class AgregarAcompananteViewINM(CreateView):
+class AgregarAcompananteViewINM(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_acompanante',
+    }
     model = Acompanante
     form_class = AcompananteForm
     template_name = 'modal/acompananteINM.html'
@@ -435,7 +441,10 @@ class AgregarAcompananteViewINM(CreateView):
         context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
         return context
     
-class createExtranjeroAcomINM(CreateView):
+class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_extranjero',
+    }
     model =Extranjero             
     form_class = extranjeroFormsInm    
     template_name = 'puestaINM/crearAcompananteINM.html' 
@@ -749,7 +758,10 @@ class AgregarBiometricoAC(CreateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
 
-class EditarBiometricoAC(UpdateView):
+class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_biometrico',
+    }
     model = Biometrico
     form_class = BiometricoFormAC
     template_name = 'puestaAC/editBiometricosAC.html' 
@@ -773,6 +785,9 @@ class EditarBiometricoAC(UpdateView):
         return context
 
 class DeleteExtranjeroAC(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroAC.html'
     
