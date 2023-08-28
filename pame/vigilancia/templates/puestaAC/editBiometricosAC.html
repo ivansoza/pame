@@ -6,7 +6,11 @@
     <link rel="stylesheet" href="{% static 'css/biometricos.css' %}">
 
 {% endblock link %}
-
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 {% block contenido %}
 
 <div class="titulo-general-container">
