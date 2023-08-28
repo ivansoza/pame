@@ -9,7 +9,7 @@ Desea_llamar_choices = [
 class LlamadasTelefonicas(models.Model):
     noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     estacionMigratoria = models.CharField(max_length=50)
-    fechaHoraLlamada = models.DateTimeField()
+    fechaHoraLlamada = models.DateTimeField(auto_now_add=True)
     deseaLlamar = models.CharField(max_length=2, choices=Desea_llamar_choices)
     observaciones =  models.TextField(null=True, blank=True)
     motivo = models.TextField(null=True, blank=True)
