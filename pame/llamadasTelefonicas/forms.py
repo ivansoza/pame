@@ -1,7 +1,7 @@
 from django import forms
-from .models import llamadasTelefonicas
+from .models import LlamadasTelefonicas
 
-class llamadasTelefonicasForm(forms.modelForm):
+class LlamadasTelefonicasForm(forms.ModelForm):
     class Meta:
-        model = llamadasTelefonicas
+        model = LlamadasTelefonicas
         fields = '__all__'

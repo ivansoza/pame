@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import llamadasTelefonicas
+from .models import LlamadasTelefonicas
 
-admin.site.register(llamadasTelefonicas)
+admin.site.register(LlamadasTelefonicas)
