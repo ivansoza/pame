@@ -1,0 +1,58 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block contenido %}
+
+<form method="post">
+    {% csrf_token %}
+    
+    <!-- Otros campos del formulario -->
+    {{ form.noExtranjero|as_crispy_field}}
+    {{ form.estacionMigratoria|as_crispy_field }}
+    {{ form.fechaHoraLlamada|as_crispy_field}}
+    
+    <!-- {{ form.deseaLlamar.label_tag }} -->
+    {{ form.deseaLlamar|as_crispy_field }}
+    
+    <div id="observaciones" style="display: none;">
+        <!-- {{ form.observaciones.label_tag }} -->
+        {{ form.observaciones|as_crispy_field }}
+    </div>
+    
+    <div id="motivo" style="display: none;">
+        <!-- {{ form.motivo.label_tag }} -->
+        {{ form.motivo|as_crispy_field }}
+    </div>
+    
+    <button type="submit">Enviar</button>
+</form>
+
+{% endblock contenido %}
+
+{% block script %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deseallamarSelect = document.getElementById("id_deseaLlamar");
+        const observacionesDiv = document.getElementById("observaciones");
+        const motivoDiv = document.getElementById("motivo");
+        
+        deseallamarSelect.addEventListener("change", function () {
+            const selectedOption = deseallamarSelect.options[deseallamarSelect.selectedIndex].value;
+            
+            if (selectedOption === "si") {
+                observacionesDiv.style.display = "none";  // Oculta observaciones
+                motivoDiv.style.display = "block";  // Muestra motivo
+            } else if (selectedOption === "no") {
+                observacionesDiv.style.display = "block";  // Muestra observaciones
+                motivoDiv.style.display = "none";  // Oculta motivo
+            }
+        });
+        
+        // Trigger an initial change event to set the initial state
+        deseallamarSelect.dispatchEvent(new Event('change'));
+    });
+</script>
+    
+{% endblock script %}

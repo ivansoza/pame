@@ -4,15 +4,10 @@
 
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDDdd22D ">
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 {% endblock link %}
 
 {% block titulo %}PAME | Telefono{% endblock titulo %}
 {% block dashboard %}Telefono {% endblock dashboard %}
-{% block seccion  %}Telefono{% endblock seccion  %}
 
 {% block contenido %}
 <div class="titulo-general-container">
@@ -30,7 +25,7 @@
         <div class="detalle">
             <div class="dato">
                 <span class="etiqueta">Nombre:</span>
-                <span class="valor">{{ nombre_extranjero  }} {{extranjero_principal.apellidoPaternoExtranjero}} {{extranjero_principal.apellidoMaternoExtranjero}}</span>
+                <span class="valor">{{ nombre_extranjero  }}</span>
             </div>
             <div class="dato">
                 <span class="etiqueta">Estación Migratoria:</span>
@@ -40,7 +35,8 @@
     </div>
 </div>
 
-<a class="btn btn-custom" href="#">Agregar Llamada</a>
+<a class="btn btn-custom" href="{% url 'crear_llamada' llamada_id=llamada.id %}">Agregar Llamada</a>
+
 <br>
 <br>
 
@@ -52,8 +48,27 @@
             <th>Motivo/Observaciones</th>
         </tr>
     </thead>
+    <tbody>
+        {% for llamada in object_list %}
+          <tr>
+            <td>{{ llamada.fechaHoraLlamada }}</td>
+            <td>{{ llamada.get_deseaLlamar_display }}</td>  <!-- Muestra el valor legible del choice -->
+            <td>
+                {% if llamada.deseaLlamar == 'si' %}
+                    {{ llamada.motivo }}
+                {% elif llamada.deseaLlamar == 'no' %}
+                    {{ llamada.observaciones }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
-
+{{ objetos.fechaHoraLlamada }}
 <a class="btn btn-custom" href="#">Imprimir Documento</a>
 <a class="btn btn-custom" href="#">Digitalizar Documento</a>
 {% endblock contenido %}
+
+{% block script}
+
+{% endblock script}
