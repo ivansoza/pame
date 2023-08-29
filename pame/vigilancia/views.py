@@ -470,7 +470,7 @@ class DeleteAcompananteINM1(DeleteView):
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
-    template_name = 'modal/eliminarAcompananteINM.html'
+    template_name = 'modal/eliminarAcompananteINM1.html'
 
     def get_success_url(self):
         acompanante = self.object
@@ -520,7 +520,7 @@ class DeleteAcompananteAC1(DeleteView):
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
-    template_name = 'modal/eliminarAcompananteAC.html'
+    template_name = 'modal/eliminarAcompananteAC1.html'
 
     def get_success_url(self):
         acompanante = self.object

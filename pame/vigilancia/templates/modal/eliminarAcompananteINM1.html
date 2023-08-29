@@ -20,7 +20,7 @@
             <img src=" {% static 'img/gh.jpg' %} " style="width: 250px;" class="logo-img">
         </p>
 
-        <form action="{% url 'delete_acompananteINM' pk=object.id%}" method="POST">
+        <form action="{% url 'delete_acompananteINM1' pk=object.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
                 

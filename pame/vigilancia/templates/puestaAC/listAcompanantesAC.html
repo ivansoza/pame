@@ -127,9 +127,12 @@
             <td>{{ relacion.delAcompanante.nombreExtranjero }}</td>
             <td>{{ relacion.relacion }}</td>
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteAC' relacion.pk%}" data-title="Eliminar Relacion">
+
+                
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteAC' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
                     <i class="fas fa-trash-alt"></i>
-                </a>                   </td>
+                </a>
+            </td>
         </tr>
         {% endfor %}
         {% for relacion in relaciones_del_acompanante %}
@@ -139,7 +142,7 @@
             <td>{{ relacion.delExtranjero.nombreExtranjero }}</td>
             <td>{{ relacion.relacion }}</td>
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteAC1' relacion.pk%}" data-title="Eliminar Relacion">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteAC1' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
                     <i class="fas fa-trash-alt"></i>
                 </a>             
             </td>
@@ -154,6 +157,9 @@
 
 </div>
 
+<div class="modal fade" id="eliminar" role="dialog">
+
+</div>
 
 
 
@@ -228,6 +234,17 @@
     var $ = jQuery.noConflict();
     function abrir_modal_edicion(url){
         $('#edicion').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
+
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_eliminar(url){
+        $('#eliminar').load(url, function(){
             $(this).modal('show');
         })
     }
