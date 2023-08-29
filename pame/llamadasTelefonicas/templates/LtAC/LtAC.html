@@ -7,9 +7,15 @@
 {% endblock link %}
 
 {% block titulo %}PAME | Telefono{% endblock titulo %}
-{% block dashboard %}Telefono {% endblock dashboard %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
 
 {% block contenido %}
+
 <div class="titulo-general-container">
     <h1 class="titulo-general">Llamadas Telefonicas</h1>
 </div>
@@ -24,18 +30,26 @@
     <div class="contenido">
         <div class="detalle">
             <div class="dato">
-                <span class="etiqueta">Nombre:</span>
+                <span class="etiqueta">Nombre(s):</span>
                 <span class="valor">{{ nombre_extranjero  }}</span>
+            </div>
+            <div class="dato">
+                <span class="etiqueta">Apellido(s):</span>
+                <span class="valor">{{ apellido_paterno }} {{ apellido_materno }}</span>
             </div>
             <div class="dato">
                 <span class="etiqueta">Estación Migratoria:</span>
                 <span class="valor">{{ estancia_extranjero }}</span>
             </div>
+            <div class="dato">
+                <span class="etiqueta">Puesta:</span>
+                <span class="valor">{{ folio }}</span>
+            </div>
         </div>
     </div>
 </div>
 
-<a class="btn btn-custom" href="{% url 'crear_llamadaAC' llamada_id=llamada.id %}">Agregar Llamada</a>
+<a class="btn btn-custom" href="{% url 'crear_llamadaAC' llamada_id=llamada.id puesta_id=puesta.id %}">Agregar Llamada</a>
 
 <br>
 <br>
