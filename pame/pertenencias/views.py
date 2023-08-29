@@ -75,8 +75,9 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
         extranjero = Extranjero.objects.get(id=extranjero_id1)
         nExtranjero = extranjero.nombreExtranjero
         apExtranjero = extranjero.apellidoPaternoExtranjero
+        amExtranjero = extranjero.apellidoMaternoExtranjero
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
-        context['extranjero_id1'] = nExtranjero + "" + apExtranjero
+        context['extranjero_id1'] = nExtranjero + " " + apExtranjero+" "+amExtranjero
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
 

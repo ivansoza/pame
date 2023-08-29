@@ -49,40 +49,51 @@
     </div>
 </div>
 
-<a class="btn btn-custom" href="{% url 'crear_llamadaAC' llamada_id=llamada.id puesta_id=puesta.id %}">Agregar Llamada</a>
+<a class="btn btn-custom" href="{% url 'crear_llamada_ac' llamada_id=llamada.id puesta_id=puesta.id %}"onclick="abrir_modal(this.href); return false;">Agregar Llamada</a>
 
 <br>
 <br>
 
-<table id="llamadas-table" class="table table-striped table-bordered display responsive nowrap" style="width: 100%;">
-    <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>¿Realizo llamada?</th>
-            <th>Motivo/Observaciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for llamada in object_list %}
-          <tr>
-            <td>{{ llamada.fechaHoraLlamada }}</td>
-            <td>{{ llamada.get_deseaLlamar_display }}</td>  <!-- Muestra el valor legible del choice -->
-            <td>
-                {% if llamada.deseaLlamar == 'si' %}
-                    {{ llamada.motivo }}
-                {% elif llamada.deseaLlamar == 'no' %}
-                    {{ llamada.observaciones }}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">    <thead>
+    <tr>
+        <th>Fecha y Hora</th>
+        <th>¿Realizo llamada?</th>
+        <th>Motivo/Observaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for llamada in object_list %}
+      <tr>
+        <td>{{ llamada.fechaHoraLlamada }}</td>
+        <td>{{ llamada.deseaLlamar }}</td>
+        <!-- Muestra el valor legible del choice -->
+        
+        <td>
+                {{ llamada.motivo }}
+                {{ llamada.observaciones }}
+        </td>
+    </tr>
+    {% endfor %}
+   </tbody>
 </table>
+
 {{ objetos.fechaHoraLlamada }}
 <a class="btn btn-custom" href="#">Imprimir Documento</a>
 <a class="btn btn-custom" href="#">Digitalizar Documento</a>
+<div class="modal fade" id="agregarllamada" role="dialog">
 {% endblock contenido %}
 
-{% block script}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-{% endblock script}
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal(url){
+        $('#agregarllamada').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
+{% endblock script%}
