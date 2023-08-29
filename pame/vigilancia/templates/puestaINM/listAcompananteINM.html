@@ -32,12 +32,16 @@
     <div class="contenido">
         <div class="detalle">
             <div class="dato">
-                <span class="etiqueta">Nombre:</span>
+                <span class="etiqueta">Nombre(s):</span>
                 <span class="valor">{{ extranjero_principal.nombreExtranjero }}</span>
             </div>
             <div class="dato">
-                <span class="etiqueta">Apellido Paterno:</span>
-                <span class="valor">{{ extranjero_principal.apellidoPaternoExtranjero }}</span>
+                <span class="etiqueta">Apellido(s):</span>
+                <span class="valor">{{ extranjero_principal.apellidoPaternoExtranjero }} {{ extranjero_principal.apellidoMaternoExtranjero }}</span>
+            </div>
+            <div class="dato">
+                <span class="etiqueta">Estación Migratoria:</span>
+                <span class="valor">{{ extranjero_principal.deLaEstacion }}</span>
             </div>
             <div class="dato">
                 <span class="etiqueta">Puesta:</span>
@@ -45,7 +49,7 @@
             </div>
         </div>
         <div class="circle-container">
-            {% comment %} <img src="{{extranjero_principal.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;"> {% endcomment %}
+            <img src="{{extranjero_principal.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;"> 
           </div>
     </div>
     
