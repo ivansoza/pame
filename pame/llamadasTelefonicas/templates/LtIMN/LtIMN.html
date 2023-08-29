@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="circle-container">
-            <img src="{{object.noExtranjero.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
+            <img src="{{extranjero.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
           </div>
     </div>
 </div>
@@ -58,13 +58,12 @@
         {% for llamada in object_list %}
           <tr>
             <td>{{ llamada.fechaHoraLlamada }}</td>
-            <td>{{ llamada.get_deseaLlamar_display }}</td>  <!-- Muestra el valor legible del choice -->
+            <td>{{ llamada.deseaLlamar }}</td>
+             <!-- Muestra el valor legible del choice -->
+            </td>
             <td>
-                {% if llamada.deseaLlamar == 'si' %}
                     {{ llamada.motivo }}
-                {% elif llamada.deseaLlamar == 'no' %}
                     {{ llamada.observaciones }}
-                {% endif %}
             </td>
         </tr>
         {% endfor %}
