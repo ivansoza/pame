@@ -1,15 +1,16 @@
 {% load static %}
 
-
 <style>
     .custom-header-color {
         background-color: #8B2941;
-        color: white; /* Ajusta el color del texto según tu preferencia */
+        color: white;
     }
     .custom-close-button {
         color: white;
     }
 </style>
+
+<!-- Bootstrap CSS -->
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -22,21 +23,20 @@
         
         {% load crispy_forms_tags %}
 
-        <form action="#" method="POST">
+        <form id="llamadaForm" action="{% url 'crear_llamada' llamada_id=llamada.id puesta_id=puesta.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                {% csrf_token %}
                 {{ form.noExtranjero|as_crispy_field}}
                 {{ form.estacionMigratoria|as_crispy_field }}
                 
                 {{ form.deseaLlamar|as_crispy_field }}
                 
-                <div id="observaciones" style="display: none;">
-                    {{ form.observaciones|as_crispy_field }}
+                <div id="motivoDiv" {% if form.deseaLlamar.value == 'No' %}style="display: none;"{% endif %}>
+                    {{ form.motivo|as_crispy_field }}
                 </div>
                 
-                <div id="motivo" style="display: none;">
-                    {{ form.motivo|as_crispy_field }}
+                <div id="observacionesDiv" {% if form.deseaLlamar.value == 'Si' %}style="display: none;"{% endif %}>
+                    {{ form.observaciones|as_crispy_field }}
                 </div>
             </div>
             
@@ -46,28 +46,26 @@
             </div>
         </form>
         
-        <!-- Script dentro del modal -->
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const deseallamarSelect = document.getElementById("id_deseaLlamar");
-                const observacionesDiv = document.getElementById("observaciones");
-                const motivoDiv = document.getElementById("motivo");
+            const form = document.getElementById('llamadaForm');
+            const deseaLlamarSelect = form.querySelector('#id_deseaLlamar');
+            const motivoDiv = form.querySelector('#motivoDiv');
+            const observacionesDiv = form.querySelector('#observacionesDiv');
 
-                deseallamarSelect.addEventListener("change", function () {
-                    const selectedOption = deseallamarSelect.options[deseallamarSelect.selectedIndex].value;
-
-                    if (selectedOption === "si") {
-                        observacionesDiv.style.display = "none";  // Oculta observaciones
-                        motivoDiv.style.display = "block";  // Muestra motivo
-                    } else if (selectedOption === "no") {
-                        observacionesDiv.style.display = "block";  // Muestra observaciones
-                        motivoDiv.style.display = "none";  // Oculta motivo
-                    }
-                });
-
-                // Trigger an initial change event to set the initial state
-                deseallamarSelect.dispatchEvent(new Event('change'));
+            deseaLlamarSelect.addEventListener('change', function () {
+                if (deseaLlamarSelect.value === 'No') {
+                    motivoDiv.style.display = 'none';
+                    observacionesDiv.style.display = 'block';
+                } else if (deseaLlamarSelect.value === 'Si') {
+                    motivoDiv.style.display = 'block';
+                    observacionesDiv.style.display = 'none';
+                }
+                
+                // Recargar el modal para aplicar los cambios
+                const modal = new bootstrap.Modal(document.getElementById('myModal'));
+                modal.show();
             });
         </script>
+        
     </div>
 </div>

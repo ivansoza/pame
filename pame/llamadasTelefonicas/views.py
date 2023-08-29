@@ -44,6 +44,7 @@ class ListLlamadas(ListView):
         llamada_id = self.kwargs['llamada_id']
         return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         llamada_id = self.kwargs['llamada_id']
@@ -91,6 +92,22 @@ class crearLlamadas(CreateView):
 
         form.instance.noExtranjero = extranjero
         return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
     
 class ListLlamadasAC(ListView):
     model= LlamadasTelefonicas
