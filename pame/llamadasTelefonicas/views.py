@@ -51,10 +51,17 @@ class ListLlamadas(ListView):
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
+        apellido_paterno = llamada.apellidoPaternoExtranjero
+        apellido_materno = llamada.apellidoMaternoExtranjero
+        puesta = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
+
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
+        context['apellido_paterno'] = apellido_paterno
+        context['apellido_materno'] = apellido_materno
+        context['puesta'] = puesta
         context['estancia_extranjero'] = estancia_extranjero
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
@@ -107,12 +114,20 @@ class ListLlamadasAC(ListView):
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
+        apellido_paterno = llamada.apellidoPaternoExtranjero
+        apellido_materno = llamada.apellidoMaternoExtranjero
+        folio = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
 
         context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
+        context['apellido_paterno'] = apellido_paterno
+        context['apellido_materno'] = apellido_materno
+        context['folio'] = folio
         context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
         return context
     
 class crearLlamadasAC(CreateView):
