@@ -121,6 +121,29 @@ class inicioINMList(ListView):
 
         return context
 
+class estadisticasPuestaINM(ListView):
+    model=PuestaDisposicionINM
+    template_name = "puestaINM/estadisticasINM.html" 
+    context_object_name = 'puestainm'
+
+    def get_queryset(self):
+        # Filtrar las puestas por estación del usuario logueado
+        user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
+        user_estacion = user_profile.estancia
+        queryset = PuestaDisposicionINM.objects.filter(deLaEstacion=user_estacion)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        return context
+    
+    
+
+
+
+
 class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicioninm',

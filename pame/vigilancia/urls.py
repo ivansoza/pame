@@ -3,7 +3,7 @@ from django.urls import path, include
 from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP
-
+from .views import estadisticasPuestaINM
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
     path('seguridad-responsable/', homeSeguridadResponsable, name='homeSeguridadResponsable'),
@@ -13,6 +13,8 @@ urlpatterns = [
   
     # --------------- PUESTA INM  ---------------------
     path('puesta-inm/', inicioINMList.as_view(), name='homePuestaINM'),
+    path('estadisticas-inm/', estadisticasPuestaINM.as_view(), name='estadisticaINM'),
+
     path('crear-puesta-inm/', createPuestaINM.as_view(), name='crearPuestaINM'),
     path('crear-extranjero-inm/<int:puesta_id>/', createExtranjeroINM.as_view(), name='crearExtranjeroINM'),
     path('listar-extranjero/<int:puesta_id>', listarExtranjeros.as_view(), name='listarExtranjeros'),
