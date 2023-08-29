@@ -51,14 +51,17 @@
             const deseaLlamarSelect = form.querySelector('#id_deseaLlamar');
             const motivoDiv = form.querySelector('#motivoDiv');
             const observacionesDiv = form.querySelector('#observacionesDiv');
-
+            const motivoTextarea = document.querySelector('#id_motivo'); // Cambiar el ID al campo real
+            const observacionesTextarea = document.querySelector('#id_observaciones'); // Cambiar el ID al campo real
             deseaLlamarSelect.addEventListener('change', function () {
                 if (deseaLlamarSelect.value === 'No') {
                     motivoDiv.style.display = 'none';
                     observacionesDiv.style.display = 'block';
+                    motivoTextarea.value = ''; // Limpiar el texto del área de motivo
                 } else if (deseaLlamarSelect.value === 'Si') {
                     motivoDiv.style.display = 'block';
                     observacionesDiv.style.display = 'none';
+                    observacionesTextarea.value = ''; 
                 }
                 
                 // Recargar el modal para aplicar los cambios
