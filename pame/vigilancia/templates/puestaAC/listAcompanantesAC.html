@@ -127,7 +127,7 @@
             <td>{{ relacion.delAcompanante.nombreExtranjero }}</td>
             <td>{{ relacion.relacion }}</td>
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Eliminar Relacion">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteAC' relacion.pk%}" data-title="Eliminar Relacion">
                     <i class="fas fa-trash-alt"></i>
                 </a>                   </td>
         </tr>
@@ -139,7 +139,7 @@
             <td>{{ relacion.delExtranjero.nombreExtranjero }}</td>
             <td>{{ relacion.relacion }}</td>
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Eliminar Relacion">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteAC1' relacion.pk%}" data-title="Eliminar Relacion">
                     <i class="fas fa-trash-alt"></i>
                 </a>             
             </td>

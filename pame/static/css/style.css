@@ -56,3 +56,14 @@
 }
 
 
+
+.nav-item .nav-link.first-li.active {
+  background-color: #922E41 !important;
+  color: #fff;
+}
+
+.nav-item .nav-link.second-li.active {
+  background-color: #B59664 !important;
+  color: #ffffff;
+
+}

@@ -42,7 +42,7 @@
   <!-- <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"> -->
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
-  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.dsdsSSW">
+  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.dsdsSSSSW">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 
 
@@ -248,7 +248,7 @@
           <!-- Puesta disposición -->
 
           <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'seguridad' %}active{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'seguridad' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-copy"></i>
               <p>
                 Puesta a Disposición
@@ -258,13 +258,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'homePuestaINM' %} "  class="nav-link {% if seccion == 'seguridadINM' %}active{% endif %}">
+                <a href="{% url 'homePuestaINM' %} "  class="nav-link {% if seccion == 'seguridadINM' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Por personal del INM</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'homePuestaAC' %} " class="nav-link  {% if seccion == 'seguridadAC' %}active{% endif %}">
+                <a href="{% url 'homePuestaAC' %} " class="nav-link  {% if seccion == 'seguridadAC' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Por autoridad competente</p>
                 </a>

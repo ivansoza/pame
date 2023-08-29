@@ -44,30 +44,31 @@
                 <button type="button" class="btn btn-custom1" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom">Confirmar</button>
             </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const deseallamarSelect = document.getElementById("id_deseaLlamar");
+                    const observacionesDiv = document.getElementById("observaciones");
+                    const motivoDiv = document.getElementById("motivo");
+    
+                    deseallamarSelect.addEventListener("change", function () {
+                        const selectedOption = deseallamarSelect.options[deseallamarSelect.selectedIndex].value;
+    
+                        if (selectedOption === "si") {
+                            observacionesDiv.style.display = "none";  // Oculta observaciones
+                            motivoDiv.style.display = "block";  // Muestra motivo
+                        } else if (selectedOption === "no") {
+                            observacionesDiv.style.display = "block";  // Muestra observaciones
+                            motivoDiv.style.display = "none";  // Oculta motivo
+                        }
+                    });
+    
+                    // Trigger an initial change event to set the initial state
+                    deseallamarSelect.dispatchEvent(new Event('change'));
+                });
+            </script>
         </form>
         
         <!-- Script dentro del modal -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const deseallamarSelect = document.getElementById("id_deseaLlamar");
-                const observacionesDiv = document.getElementById("observaciones");
-                const motivoDiv = document.getElementById("motivo");
-
-                deseallamarSelect.addEventListener("change", function () {
-                    const selectedOption = deseallamarSelect.options[deseallamarSelect.selectedIndex].value;
-
-                    if (selectedOption === "si") {
-                        observacionesDiv.style.display = "none";  // Oculta observaciones
-                        motivoDiv.style.display = "block";  // Muestra motivo
-                    } else if (selectedOption === "no") {
-                        observacionesDiv.style.display = "block";  // Muestra observaciones
-                        motivoDiv.style.display = "none";  // Oculta motivo
-                    }
-                });
-
-                // Trigger an initial change event to set the initial state
-                deseallamarSelect.dispatchEvent(new Event('change'));
-            });
-        </script>
+  
     </div>
 </div>

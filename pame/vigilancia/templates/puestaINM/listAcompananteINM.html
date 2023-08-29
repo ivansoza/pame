@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="circle-container">
-            <img src="{{extranjero_principal.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
+            {% comment %} <img src="{{extranjero_principal.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;"> {% endcomment %}
           </div>
     </div>
     
@@ -120,7 +120,7 @@
             <td>{{ relacion.delAcompanante.nombreExtranjero }}</td>
             <td>{{ relacion.relacion }}</td>
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Eliminar Relacion">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteINM' relacion.pk%}" data-title="Eliminar Relacion">
                 <i class="fas fa-trash-alt"></i>
                 </a>                   </td>
         </tr>
@@ -132,7 +132,7 @@
             <td>{{ relacion.delExtranjero.nombreExtranjero }}</td>
             <td>{{ relacion.relacion }}</td>
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Eliminar Relacion">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteINM1' relacion.pk%}" data-title="Eliminar Relacion">
                     <i class="fas fa-trash-alt"></i>
                 </a>             
             </td>

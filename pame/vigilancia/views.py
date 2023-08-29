@@ -407,7 +407,7 @@ class acompananteList(ListView):
         context['relaciones_del_extranjero'] = relaciones_del_extranjero
         context['relaciones_del_acompanante'] = relaciones_del_acompanante
         context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridaINM'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
     
@@ -440,6 +440,107 @@ class AgregarAcompananteViewINM(CreatePermissionRequiredMixin,CreateView):
         context['extranjero_principal'] = get_object_or_404(Extranjero, pk=extranjero_principal_id)
         context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
         return context
+    
+class DeleteAcompananteINM(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'modal/eliminarAcompananteINM.html'
+
+    def get_success_url(self):
+        acompanante = self.object
+
+        # Obtener los IDs necesarios
+        extranjero_id = acompanante.delExtranjero.id
+        puesta_id = acompanante.delExtranjero.deLaPuestaIMN.id
+
+        # Generar la URL con los IDs
+        return reverse_lazy('listAcompanantesINM', args=[extranjero_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+class DeleteAcompananteINM1(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'modal/eliminarAcompananteINM.html'
+
+    def get_success_url(self):
+        acompanante = self.object
+
+        # Obtener los IDs necesarios
+        extranjero_id = acompanante.delAcompanante.id
+        puesta_id = acompanante.delAcompanante.deLaPuestaIMN.id
+
+        # Generar la URL con los IDs
+        return reverse_lazy('listAcompanantesINM', args=[extranjero_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+    
+
+class DeleteAcompananteAC(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'modal/eliminarAcompananteAC.html'
+
+    def get_success_url(self):
+        acompanante = self.object
+
+        # Obtener los IDs necesarios
+        extranjero_id = acompanante.delExtranjero.id
+        puesta_id = acompanante.delExtranjero.deLaPuestaAC.id
+
+        # Generar la URL con los IDs
+        return reverse_lazy('listAcompanantesAC', args=[extranjero_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        
+        return context
+class DeleteAcompananteAC1(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'modal/eliminarAcompananteAC.html'
+
+    def get_success_url(self):
+        acompanante = self.object
+
+        # Obtener los IDs necesarios
+        extranjero_id = acompanante.delAcompanante.id
+        puesta_id = acompanante.delAcompanante.deLaPuestaAC.id
+
+        # Generar la URL con los IDs
+        return reverse_lazy('listAcompanantesAC', args=[extranjero_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        
+        return context
+    
+    
     
 class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {

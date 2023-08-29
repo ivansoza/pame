@@ -1,7 +1,7 @@
 from django.urls import path, include
 
-from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM
-from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC
+from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1
+from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP
 
 urlpatterns = [
@@ -23,6 +23,10 @@ urlpatterns = [
     path('listAcompanantesINM/<int:extranjero_id>/<int:puesta_id>/', acompananteList.as_view(),name='listAcompanantesINM'),
     path('crearAcompananteINM/<int:puesta_id>/<int:extranjero_principal_id>/', createExtranjeroAcomINM.as_view(), name='crearAcompananteINM'),
     path('agregar_acompananteINM/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarAcompananteViewINM.as_view(), name='agregar_acompananteINM'),
+    path('DeleteAcompananteINM/<int:pk>/', DeleteAcompananteINM.as_view(), name='delete_acompananteINM'),
+    path('DeleteAcompananteINM1/<int:pk>/', DeleteAcompananteINM1.as_view(), name='delete_acompananteINM1'),
+
+
 
 
 
@@ -40,6 +44,8 @@ urlpatterns = [
     path('agregar_acompanante-ac/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarAcompananteViewAC.as_view(), name='agregar_acompananteAC'),
 
     path('crear-acompanante-ac/<int:puesta_id>/<int:extranjero_principal_id>/', createAcompananteAC.as_view(), name='crearAcompananteAC'),
+    path('DeleteAcompananteAC/<int:pk>/', DeleteAcompananteAC.as_view(), name='delete_acompananteAC'),
+    path('DeleteAcompananteAC1/<int:pk>/', DeleteAcompananteAC1.as_view(), name='delete_acompananteAC1'),
     # path('agregar-relacion-ac/<int:extranjero_principal_id>/', CrearRelacionAcompananteAC.as_view(), name='agregar_relacion_ac'),
     # path('crear-relacion/<int:extranjero_id>/<int:relacion_id>/', CrearRelacionView.as_view(), name='crear_relacion'),
 
