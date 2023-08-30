@@ -175,7 +175,7 @@
                 </a>
                 {% endwith %}
                 {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                 <i class="fas fa-phone"></i>
                 </a>
                 {% endif %}
