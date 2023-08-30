@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView,DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms
 from django.shortcuts import redirect
@@ -19,6 +19,9 @@ from catalogos.models import Estacion, Relacion
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
+
+import sys
+import pickle
 
 from django.http import JsonResponse
 from django.views import View
@@ -1090,3 +1093,31 @@ class CrearRelacionView(View):
         nueva_relacion.save()
 
         return JsonResponse({'success': True})
+    
+
+class CalcularTamanoDiscoView(DetailView):
+    model = Extranjero
+    template_name = 'tester/calcular_tamano_disco.html'
+    context_object_name = 'extranjero'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero = self.get_object()
+        size_on_disk = sys.getsizeof(pickle.dumps(extranjero))
+        context['size_on_disk'] = size_on_disk        
+        puesta_imn = extranjero.deLaPuestaIMN
+        size_on_disk_puesta_imn2 = sys.getsizeof(pickle.dumps(puesta_imn))
+        context['size_on_disk_puesta_imn2'] = size_on_disk_puesta_imn2
+
+
+        try:
+            biometrico = extranjero.biometrico
+            size_on_disk_biometrico_relation = sys.getsizeof(pickle.dumps(biometrico))
+        except Biometrico.DoesNotExist:
+            size_on_disk_biometrico_relation = 0
+        context['size_on_disk_biometrico_relation'] = size_on_disk_biometrico_relation
+
+        acompanantes = Acompanante.objects.filter(Q(delExtranjero=extranjero) | Q(delAcompanante=extranjero))
+        size_on_disk_acompanantes = sum(sys.getsizeof(pickle.dumps(acompanante)) for acompanante in acompanantes)
+        context['size_on_disk_acompanantes'] = size_on_disk_acompanantes
+        return context
