@@ -10,6 +10,7 @@
 </a>
 
 {% endblock dashboard %}
+
 {% block contenido %}
 <style>
     /* Personaliza el tamaño de la barra de búsqueda */
@@ -39,17 +40,33 @@
         cursor: pointer;
       }
   </style>
+  <br>
+<div class="row">
+    <div class="col-6">
+        <div class="titulo-general-container ">
+            <h1 class="titulo-general">
+                Lista de Extranjeros para la Puesta:
+                <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+            </h1>
+          </div>
+            </div>
+    <div class="col-6">
+        <a class="btn btn-custom mb-3 float-sm-right" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
+    </div>
+</div>
 
-  <div class="titulo-general-container">
-    <h1 class="titulo-general">
-        Lista de Extranjeros para la Puesta:
-        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
-    </h1>
-  </div>
+
 <br>
-<a class="btn btn-custom mb-3" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
-<br>
-<br>
+
+<div class="row">
+    <div class="col-6">
+
+    </div>
+
+    <div class="col-6">
+        
+    </div>
+</div>
 <div class="table-responsive">
     <form method="get" id="filtro-form">
         <label for="estado_filtrado">Mostrar:</label>
