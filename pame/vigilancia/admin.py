@@ -1,7 +1,12 @@
 from django.contrib import admin
 
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM, PuestaDisposicionAC, Biometrico
-admin.site.register(Extranjero )
+
+
+class ExtranjeroAdmin(admin.ModelAdmin):
+    list_display = ["fechaRegistro"]
+
+admin.site.register(Extranjero, ExtranjeroAdmin)
 
 admin.site.register(PuestaDisposicionINM)
 
