@@ -1,7 +1,7 @@
 from typing import Any, Dict
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, TemplateView
 from django.views import View
 from catalogos.models import Estacion
 from .models import LlamadasTelefonicas
@@ -14,6 +14,40 @@ from django.shortcuts import get_object_or_404
 
 def homeLLamadasTelefonicas(request):
     return render(request,"LtIMN/LtIMN.html")
+
+
+class notificacionLlamadaINM(TemplateView):
+    template_name = 'LtIMN/notificacionLlamada.html'
+    def get_queryset(self):
+        llamada_id = self.kwargs['llamada_id']
+        return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        estancia_responsable = llamada.deLaEstacion.responsable
+        apellido_paterno = llamada.apellidoPaternoExtranjero
+        apellido_materno = llamada.apellidoMaternoExtranjero
+        no_puesta = llamada.numeroExtranjero
+        puesta_id = self.kwargs.get('puesta_id')
+
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['apellido_paterno'] = apellido_paterno
+        context['apellido_materno'] = apellido_materno
+        context['no_puesta'] = no_puesta
+        context['estancia_extranjero'] = estancia_extranjero
+        context['nombreCompleto'] = nombre_extranjero+" "+apellido_paterno+" "+apellido_materno
+        context['responsable']=estancia_responsable
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
 
 class llamadasTelefonicas(View):
     template_name = 'LtIMN/LtIMN.html'

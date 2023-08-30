@@ -1,0 +1,88 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block contenido %}
+<style>
+    .container {
+      width: 80%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: white;
+    }
+    
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        flex-direction: row;
+        text-align: left;
+      }
+    
+      .image-container {
+        flex: 1;
+      }
+    
+      .text-container {
+        flex: 2;
+        padding-left: 20px;
+        text-align: left;
+      }
+    }
+    
+    .text {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    
+    .image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    </style>
+    <div class="header">
+        Notificación de Llamada Telefónica
+      </div>
+    <div class="container">
+        <div class="content-container">
+          <div class="image-container">
+            <img class="image" src=" {% static 'img/gh.jpg' %} " style="width: 300px;" class="logo-img">        </div>
+        </div>
+          <div class="text-container">
+            <div class="text">
+                <p>Dear {{nombreCompleto}},</p>
+                <p>We would like to inform you that you are allowed to make a telephone call at {{estancia_extranjero}}.</p>
+                <p>Please follow the instructions from the station's personnel to make your call.</p>
+                <p>We appreciate your cooperation.</p>
+                <p>Responsible entity :{{responsable}}</p>
+                <p>Date: <span id="currentDate"></span> </p>
+                <button style="justify-content: end;">Accepto</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        // Get the current date and format it
+        const currentDate = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = currentDate.toLocaleDateString('en-US', options);
+        
+        // Display the formatted date in the HTML
+        document.getElementById('currentDate').textContent = formattedDate;
+        </script>
+{% endblock contenido %}
+
+

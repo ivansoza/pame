@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import homeLLamadasTelefonicas, llamadasTelefonicas, ListLlamadas, crearLlamadas, ListLlamadasAC, crearLlamadasAC, crearLlamadas_AC
+from .views import homeLLamadasTelefonicas, llamadasTelefonicas, ListLlamadas, crearLlamadas, ListLlamadasAC, crearLlamadasAC, crearLlamadas_AC, notificacionLlamadaINM
 
 urlpatterns = [
     # path('', homeLLamadasTelefonicas, name="homeLLamadasTelefonicas"),
@@ -12,5 +12,6 @@ urlpatterns = [
     path('ver-llamadas-imn/<int:llamada_id>/<int:puesta_id>/', ListLlamadas.as_view(), name='ver_llamadasIMN'),
     path('crear-llamada/<int:llamada_id>/<int:puesta_id>/', crearLlamadas.as_view(), name='crear_llamada'),
     path('crear-llamada_ac/<int:llamada_id>/<int:puesta_id>/', crearLlamadas_AC.as_view(), name='crear_llamada_ac'),
+    path('notificar-llamada-inm/<int:llamada_id>/<int:puesta_id>/', notificacionLlamadaINM.as_view(), name='notificar-llamada-inm'),
 
 ]
