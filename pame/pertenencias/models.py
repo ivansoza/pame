@@ -43,12 +43,12 @@ ENSERES = (
     ("Toalla Sanitaria","Toalla Sanitaria"),
     ("Colchoneta","Colchoneta"),
     ("Manta Termica","Manta Termica"),
-
-
+    ("Otros","Otros"),
 )
 class EnseresBasicos(models.Model):
     unidadMigratoria = models.CharField(max_length=30, verbose_name='Unidad Migratoria')
     fechaEntrega = models.DateField(verbose_name='Fecha Entrega', auto_now_add=True)
     horaEntrega = models.DateTimeField(verbose_name='Hora Entrega', auto_now_add=True)
     enseres = MultiSelectField(choices=ENSERES, max_length=200)
+    enseresExtras = models.CharField(max_length=200, verbose_name='Enseres extras', blank=True, null= True)
     noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)

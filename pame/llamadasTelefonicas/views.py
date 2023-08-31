@@ -30,9 +30,11 @@ class notificacionLlamadaINM(TemplateView):
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
-        estancia_responsable = llamada.deLaEstacion.responsable
         apellido_paterno = llamada.apellidoPaternoExtranjero
         apellido_materno = llamada.apellidoMaternoExtranjero
+        estancia_responsableN = llamada.deLaEstacion.responsable.nombre
+        estancia_responsableAP = llamada.deLaEstacion.responsable.apellidoPat
+        estancia_responsableAM = llamada.deLaEstacion.responsable.apellidoMat
         no_puesta = llamada.numeroExtranjero
         nn = llamada.pk
         puesta_id = self.kwargs.get('puesta_id')
@@ -46,7 +48,7 @@ class notificacionLlamadaINM(TemplateView):
         context['no_puesta'] = no_puesta
         context['estancia_extranjero'] = estancia_extranjero
         context['nombreCompleto'] = nombre_extranjero+" "+apellido_paterno+" "+apellido_materno
-        context['responsable']=estancia_responsable
+        context['responsable']=estancia_responsableN+" "+estancia_responsableAP+" "+estancia_responsableAM
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
@@ -280,7 +282,9 @@ class notificacionLlamadaAC(TemplateView):
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
-        estancia_responsable = llamada.deLaEstacion.responsable
+        estancia_responsableN = llamada.deLaEstacion.responsable.nombre
+        estancia_responsableAP = llamada.deLaEstacion.responsable.apellidoPat
+        estancia_responsableAM = llamada.deLaEstacion.responsable.apellidoMat
         apellido_paterno = llamada.apellidoPaternoExtranjero
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
@@ -296,7 +300,7 @@ class notificacionLlamadaAC(TemplateView):
         context['no_puesta'] = no_puesta
         context['estancia_extranjero'] = estancia_extranjero
         context['nombreCompleto'] = nombre_extranjero+" "+apellido_paterno+" "+apellido_materno
-        context['responsable']=estancia_responsable
+        context['responsable']=estancia_responsableN+" "+estancia_responsableAP+" "+estancia_responsableAM
         context['navbar'] = 'seguridad'
-        context['seccion'] = 'seguridadINM'
+        context['seccion'] = 'seguridadAC'
         return context
