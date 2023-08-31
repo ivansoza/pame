@@ -1120,4 +1120,8 @@ class CalcularTamanoDiscoView(DetailView):
         acompanantes = Acompanante.objects.filter(Q(delExtranjero=extranjero) | Q(delAcompanante=extranjero))
         size_on_disk_acompanantes = sum(sys.getsizeof(pickle.dumps(acompanante)) for acompanante in acompanantes)
         context['size_on_disk_acompanantes'] = size_on_disk_acompanantes
+
+        
+
+
         return context

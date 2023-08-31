@@ -8,7 +8,7 @@
 
 {% block titulo %}PAME | Telefono{% endblock titulo %}
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
@@ -48,7 +48,6 @@
         </div>
     </div>
 </div>
-
 <a class="btn btn-custom" href="{% url 'crear_llamada_ac' llamada_id=llamada.id puesta_id=puesta.id %}"onclick="abrir_modal(this.href); return false;">Agregar Llamada</a>
 
 <br>
