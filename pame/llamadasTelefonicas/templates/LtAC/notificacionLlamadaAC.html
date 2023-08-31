@@ -71,7 +71,8 @@
                 <p>We appreciate your cooperation.</p>
                 <p>Station Manager :{{responsable}}</p>
                 <p>Date: <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <a  href="{% url 'ver_llamadasIMN' llamada.id puesta.id %}"class="btn btn-custom">I accept that I have been notified</a>
+
+                <a  href="{% url 'ver_llamadasAC' llamada.id puesta.id %}"class="btn btn-custom">I accept that I have been notified</a>
           </div>
         </div>
       </div>

@@ -34,6 +34,7 @@ class notificacionLlamadaINM(TemplateView):
         apellido_paterno = llamada.apellidoPaternoExtranjero
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
+        nn = llamada.pk
         puesta_id = self.kwargs.get('puesta_id')
 
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
@@ -41,6 +42,7 @@ class notificacionLlamadaINM(TemplateView):
         context['nombre_extranjero'] = nombre_extranjero
         context['apellido_paterno'] = apellido_paterno
         context['apellido_materno'] = apellido_materno
+        context['extranjero']=nn
         context['no_puesta'] = no_puesta
         context['estancia_extranjero'] = estancia_extranjero
         context['nombreCompleto'] = nombre_extranjero+" "+apellido_paterno+" "+apellido_materno
@@ -264,3 +266,37 @@ class crearLlamadas_AC(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
+class notificacionLlamadaAC(TemplateView):
+    template_name = 'LtAC/notificacionLlamadaAC.html'
+    def get_queryset(self):
+        llamada_id = self.kwargs['llamada_id']
+        return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        estancia_responsable = llamada.deLaEstacion.responsable
+        apellido_paterno = llamada.apellidoPaternoExtranjero
+        apellido_materno = llamada.apellidoMaternoExtranjero
+        no_puesta = llamada.numeroExtranjero
+        nn = llamada.pk
+        puesta_id = self.kwargs.get('puesta_id')
+
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['apellido_paterno'] = apellido_paterno
+        context['apellido_materno'] = apellido_materno
+        context['extranjero']=nn
+        context['no_puesta'] = no_puesta
+        context['estancia_extranjero'] = estancia_extranjero
+        context['nombreCompleto'] = nombre_extranjero+" "+apellido_paterno+" "+apellido_materno
+        context['responsable']=estancia_responsable
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
