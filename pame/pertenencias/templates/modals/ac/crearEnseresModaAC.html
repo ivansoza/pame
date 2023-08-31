@@ -36,7 +36,15 @@
                         {{form.noExtranjero|as_crispy_field}}
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12">
-                        {{form.enseres|as_crispy_field}}
+                        {% for value, label in form.enseres.field.choices %}
+                            <div class="form-check">
+                                <input type="checkbox" name="{{ form.enseres.name }}" value="{{ value }}" class="form-check-input" id="id_enseres_{{ forloop.counter }}">
+                                <label class="form-check-label" for="id_enseres_{{ forloop.counter }}">{{ label }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <input type="text" name="{{ form.enseresExtras.name }}" id="id_enseresExtras" class="form-control" >
                     </div>
                 </div>
                     <!-- Campo no editable desde la plantilla html -->
