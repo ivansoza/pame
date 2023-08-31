@@ -1,3 +1,17 @@
+@media (max-width: 900) {
+  .hide-on-small {
+    display: none !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .custom-hide-on-lg {
+    display: none;
+  }
+}
+
+
 .titulo-general-container {
   display: inline-block;
   position: relative;
