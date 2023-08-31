@@ -1,6 +1,6 @@
 @media (max-width: 900) {
   .hide-on-small {
-    display: none !important;
+      display: none !important;
   }
 }
 
@@ -15,6 +15,7 @@
 .titulo-general-container {
   display: inline-block;
   position: relative;
+  margin-bottom: 30px;
 }
 .titulo-general-container-card{
   display: inline-block;
@@ -40,6 +41,7 @@
   width: 80px;
   height: 3px; 
   background-color: #a98159;
+  
 }
 
 .titulo-general-container-card::before {
@@ -47,9 +49,9 @@
   position: absolute;
   bottom: -5px;
   left: 0; 
-  width: 80px;
+  width: 100px;
   height: 3px; 
-  background-color: #a98159;
+  background-color: #762138;
 }
 
 
@@ -57,14 +59,15 @@
   margin-top: 2px;
   font-family: 'Montserrat', sans-serif;
   font-size: 23px;
-  font-weight: 100;
+  font-weight: 400;
   margin-left: 15px;
+  
 }
 
 .titulo-general-container-card .titulo-general {
   margin-top: 2px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 100;
   margin-left: 15px;
 }
@@ -266,4 +269,6 @@
   top: 0;
   left: 0;
 }
+
+
 
