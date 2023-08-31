@@ -14,16 +14,16 @@ class Nacionalidad(models.Model):
         return self.nombre
 
 class PuestaDisposicionINM(models.Model):
-    numeroOficio = models.CharField(max_length=50)
-    fechaOficio = models.DateField()
-    nombreAutoridadSignaUno = models.CharField(max_length=100)
-    cargoAutoridadSignaUno = models.CharField(max_length=100)
-    nombreAutoridadSignaDos = models.CharField(max_length=100)
-    cargoAutoridadSignaDos = models.CharField(max_length=100)
-    oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
-    oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
-    puntoRevision = models.CharField(max_length=100)
-    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, null=True, blank=True)
+    numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
+    fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
+    nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
+    cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
+    nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
+    cargoAutoridadSignaDos = models.CharField(verbose_name='Cargo de Autoridad que firma (2)', max_length=100)
+    oficioPuesta = models.FileField(upload_to='files/', verbose_name='Oficio de Puesta', null=True, blank=True)
+    oficioComision = models.FileField(upload_to='files/', verbose_name='Oficio de Comisión', null=True, blank=True)
+    puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
@@ -36,22 +36,21 @@ class PuestaDisposicionINM(models.Model):
         return self.extranjeros.all()
     
 
-class PuestaDisposicionAC(models.Model):   
-    numeroOficio = models.CharField(max_length=50)
-    fechaOficio = models.DateField()
-    nombreAutoridadSignaUno = models.CharField(max_length=100)
-    cargoAutoridadSignaUno = models.CharField(max_length=100)
-    nombreAutoridadSignaDos = models.CharField(max_length=100)
-    cargoAutoridadSignaDos = models.CharField(max_length=100)
-    oficioPuesta = models.FileField(upload_to='files/',  null=True, blank=True)
-    oficioComision = models.FileField(upload_to='files/',  null=True, blank=True)
-    puntoRevision = models.CharField(max_length=100)
-    dependencia = models.CharField(max_length=100)
-    numeroCarpeta = models.IntegerField()
-    entidadFederativa = models.CharField(max_length=100)
-    certificadoMedico = models.FileField(upload_to='files/',  null=True, blank=True)
-    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen", null=True, blank=True)
-
+class PuestaDisposicionAC(models.Model):
+    numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
+    fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
+    nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
+    cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
+    nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
+    cargoAutoridadSignaDos = models.CharField(verbose_name='Cargo de Autoridad que firma (2)', max_length=100)
+    oficioPuesta = models.FileField(upload_to='files/', verbose_name='Oficio de Puesta', null=True, blank=True)
+    oficioComision = models.FileField(upload_to='files/', verbose_name='Oficio de Comisión', null=True, blank=True)
+    puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
+    dependencia = models.CharField(verbose_name='Dependencia', max_length=100)
+    numeroCarpeta = models.IntegerField(verbose_name='Número de Carpeta')
+    entidadFederativa = models.CharField(verbose_name='Entidad Federativa', max_length=100)
+    certificadoMedico = models.FileField(upload_to='files/', verbose_name='Certificado Médico', null=True, blank=True)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
     
@@ -69,24 +68,23 @@ OPCION_ESTATUS_CHOICES=[
     ('Inactivo','inactivo'),
 ]
 class Extranjero(models.Model):
-    fechaRegistro = models.DateField(auto_now_add=True)
-    horaRegistro = models.DateTimeField(auto_now_add=True)
-    numeroExtranjero = models.CharField(max_length=25, unique=True)
-    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estacion de Origen', null=True, blank=True)
-    nombreExtranjero = models.CharField(max_length= 50, blank=True)
-    apellidoPaternoExtranjero = models.CharField(max_length=50, blank=True)
-    apellidoMaternoExtranjero = models.CharField(max_length=50, blank=True)
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name="Nacionalidad")
+    fechaRegistro = models.DateField(verbose_name='Fecha de Registro', auto_now_add=True)
+    horaRegistro = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
+    numeroExtranjero = models.CharField(verbose_name='Número de Extranjero', max_length=25, unique=True)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
+    nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
+    apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno de Extranjero', max_length=50, blank=True)
+    apellidoMaternoExtranjero = models.CharField(verbose_name='Apellido Materno de Extranjero', max_length=50, blank=True)
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
    
-    genero = models.IntegerField(choices=OPCION_GENERO_CHOICES)
-    fechaNacimiento = models.DateField()
-    documentoIdentidad = models.FileField(upload_to='files/',  null=True,blank=True)
-    tipoEstancia = models.ForeignKey(Estancia, on_delete=models.CASCADE)
-    estatus = models.CharField(max_length=25,choices=OPCION_ESTATUS_CHOICES, default='Activo')
-    viajaSolo = models.BooleanField(default=True)
-    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros',verbose_name='Puesta')
-    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete= models.CASCADE,blank=True, null=True, related_name='extranjeros', verbose_name='Puesta')
-
+    genero = models.IntegerField(verbose_name='Género', choices=OPCION_GENERO_CHOICES)
+    fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
+    documentoIdentidad = models.FileField(upload_to='files/', verbose_name='Documento de Identidad', null=True, blank=True)
+    tipoEstancia = models.ForeignKey(Estancia, on_delete=models.CASCADE, verbose_name='Tipo de Estancia')
+    estatus = models.CharField(verbose_name='Estatus', max_length=25, choices=OPCION_ESTATUS_CHOICES, default='Activo')
+    viajaSolo = models.BooleanField(verbose_name='Viaja Solo', default=True)
+    deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta IMN')
+    deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta AC')
     class Meta:
         verbose_name_plural = "Extranjeros" 
     def __str__(self):
