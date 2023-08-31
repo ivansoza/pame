@@ -1,5 +1,6 @@
 from django.db import models
 from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion
+from PIL import Image, ExifTags
 
 
 class Nacionalidad(models.Model):
@@ -126,6 +127,9 @@ class Biometrico(models.Model):
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
     fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
+    
+
+        
 
     class Meta:
         verbose_name_plural = 'Biometricos'

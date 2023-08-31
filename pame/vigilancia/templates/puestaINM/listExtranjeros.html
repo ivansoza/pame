@@ -2,16 +2,19 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.@##dfxsddxsfdDD ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.sss@##dfxsdssdxsfdDD ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
-  <i class="fas fa-arrow-left"></i>
+    <i class="fas fa-arrow-left"></i>
 </a>
-
 {% endblock dashboard %}
 
 {% block contenido %}
+
+
+
+
 <style>
     /* Personaliza el tamaño de la barra de búsqueda */
     div.dataTables_wrapper div.dataTables_filter input {
@@ -41,19 +44,18 @@
       }
   </style>
   <br>
-<div class="row">
-    <div class="col-6">
-        <div class="titulo-general-container ">
-            <h1 class="titulo-general">
-                Lista de Extranjeros para la Puesta:
-                <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
-            </h1>
-          </div>
-            </div>
-    <div class="col-6">
-        <a class="btn btn-custom mb-3 float-sm-right" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
-    </div>
-</div>
+  <div class="titulo-general-container ">
+    <h1 class="titulo-general">
+        Lista de Extranjeros para la Puesta:
+        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+    </h1>
+  </div>
+
+  
+
+
+
+<a class="btn btn-custom mb-3 float-sm-right" href=" {% url 'crearExtranjeroINM' puesta.id %}">Crear Extranjero</a>
 
 
 <br>
@@ -180,7 +182,7 @@
                 </a>
                 {% endif %}
 
-                <a href="{% url 'calcular' extranjero.id %}">calcular</a>
+                {% comment %} <a href="{% url 'calcular' extranjero.id %}">calcular</a> {% endcomment %}
             </td>
         </tr>
        
