@@ -19,6 +19,7 @@ entvirt/
 *.swo
 *.bak
 *.pyc
+newrelic.ini
 
 # Ignorar archivos de configuración local
 *.sqlite3
