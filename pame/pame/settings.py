@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-50)&z+hib^$mh!wl%w=u$=95!1=5%6ttd3%s=73x4luay*d2v7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["3.17.57.188"]
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
 
@@ -152,7 +152,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'statifiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')
 
 
 MEDIA_URL = '/media/'
