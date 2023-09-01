@@ -31,7 +31,7 @@ entvirt/
 #staticfiles/
 #static_collected/
 media/
-settings.py
+pame/settings.py
 
 # Ignorar archivos generados por el comando "collectstatic"
 #collectedstatic/
