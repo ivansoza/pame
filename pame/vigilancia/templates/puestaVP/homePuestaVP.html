@@ -1,0 +1,223 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% block card %}{% endblock card %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.23347479##22">
+{% endblock link %}
+
+
+
+
+
+{% block contenido %}
+<style>
+  /* Personaliza el tamaño de la barra de búsqueda */
+  div.dataTables_wrapper div.dataTables_filter input {
+    width: 300px; /* Cambia el tamaño según tus necesidades */
+  }
+</style>
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Puestas por Voluntad Propia</h1>
+</div>
+
+<br>
+
+<!-- Small Box (Stat card) -->
+<div class="row">
+  <div class="col-lg">
+    <!-- small card -->
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{ puestas_count }}</h3>
+
+        <p>Puestas</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-file-alt"></i>
+    </div>
+    <a href="#" class="small-box-footer">
+        More info <i class="fas fa-arrow-circle-right"></i>
+      </a>
+     
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg">
+    <!-- small card -->
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{ extranjeros_total }}</h3>
+
+        <p>Extranjeros</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-users"></i>
+    </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg">
+    <!-- small card -->
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{mujeres_count}}</h3>
+
+        <p>Mujeres</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-female"></i>
+    </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg">
+    <!-- small card -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{hombres_count}}</h3>
+
+        <p>Hombres</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-male"></i>
+    </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg">
+    <!-- small card -->
+    <div class="small-box bg-primary">
+      <div class="inner">
+        <h3>{{capacidad_actual}}</h3>
+
+        <p>Lugares disponibles</p>
+      </div>
+      <div class="icon">
+
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <a href="#" class="small-box-footer">
+        More info <i class="fas fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+  <!-- ./col -->
+</div>
+<a class="btn btn-custom mb-3" href=" {% url 'crearPuestaVP' %}">Crear Puesta</a>
+<a class="btn btn-custom1 mb-3" href=" {% url 'homeSeguridadGeneral' %}">Regresar al menu</a>
+
+<div class="table-responsive">
+    <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Numero Oficio</th>
+                <th>Fecha de Oficio</th>
+                <th>Estación</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for puesta in puestasvp %}
+                <tr>
+                    <td>{{ puesta.numeroOficio }}</td>
+                    <td>{{ puesta.fechaOficio }}</td>
+                    <td>{{ puesta.deLaEstacion }}</td>
+                    <td>
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'crearExtranjeroVP' puesta.id %}" data-title="Agregar Extranjeros">
+                            <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
+                        </a>
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarExtranjerosVP' puesta.id %}" data-title="Ver Extranjeros">
+                            <i class="fas fa-users"></i>     <!-- Icono Ver Personas -->
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% comment %} prueba para abrir modal {% endcomment %}
+
+
+
+{% endblock contenido %}
+
+{% block script %}
+
+    <script>
+        $(document).ready(function() {
+            $('#puestaAC-table').DataTable({
+            responsive: true,
+            dom: 'Bfrtip',
+            "columnDefs": [
+                { "orderable": false, "targets": -1 } // Desactivar ordenación para la última columna
+            ],
+            buttons: [
+              {
+                extend: 'copy',
+                text: '<i class="fas fa-copy"></i>',
+                titleAttr: 'Copiar'
+              },
+              {
+                    extend: 'csv',
+                    text: '<i class="fas fa-file-csv"></i>',
+                    titleAttr: 'CSV'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF'
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    titleAttr: 'Imprimir'
+                }
+            ],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ Registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ Registros)",
+                "sSearch": "Buscar:",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "buttons": {
+                    "copy": "Copiar",
+                    "colvis": "Visibilidad"
+                }
+            },
+        });
+    });
+      </script>
+
+
+{% endblock script %}

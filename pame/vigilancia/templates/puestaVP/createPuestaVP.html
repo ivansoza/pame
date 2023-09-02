@@ -1,0 +1,53 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %} 
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+{% endblock link %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestasVP'%}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">Puesta por Voluntad Propia</h1>
+</div>
+
+    <form id="Puesta" method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.numeroOficio|as_crispy_field}}
+                <!-- Campo no editable desde la plantilla html -->
+                <script>
+                    document.getElementById('id_numeroOficio').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaOficio|as_crispy_field}}
+                <script>
+                    var fechaOficioField = document.getElementById("id_fechaOficio");
+                    var fechaActual = new Date().toISOString().split('T')[0];
+                    fechaOficioField.value = fechaActual;
+                    document.getElementById('id_fechaOficio').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4" >
+                {{form.deLaEstacion|as_crispy_field}}
+                <script>
+                    document.getElementById('id_deLaEstacion').readOnly = true;
+                </script>
+            </div>
+            
+        </div>          
+
+        <button id="botonGuardar" class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+        <hr>
+        <a href="{% url 'homePuestasVP' %}" class="btn btn-custom1">Cancelar</a>
+
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+{% endblock %}

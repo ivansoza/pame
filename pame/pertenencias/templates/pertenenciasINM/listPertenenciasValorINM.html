@@ -18,32 +18,69 @@
 <br>
 <h1>Detalles del Inventario</h1>
    
-   <div class="datos-extranjero-principal">
-    <div class="header">
-        <h2>Datos del extranjero</h2>
-    </div>
-    <div class="contenido">
-        <div class="detalle">
-            <div class="dato">
-                <span class="etiqueta">Nombre:</span>
-                <span class="valor"> {{ inventario.noExtranjero }}</span>
-            </div>
-            <div class="dato">
-                <span class="etiqueta">Estación Migratoria:</span>
-                <span class="valor">{{ inventario.unidadMigratoria }}</span>
-            </div>
-            <div class="dato">
-                <span class="etiqueta">Inventario:</span>
-                <span class="valor"> {{inventario.foloInventario}} </span>
-            </div>
-           
+<div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          
+            <div class="row">
+                <!-- Card con datos del extranjero -->
+                <div class="col-md-10">
+            
+                  <div class="card">
+                     <div class="header">
+                        <h2>Datos del Extranjero </h2>
+                     </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col">
+                            <span class="etiqueta">Nombre(s):</span>
+                            <span class="valor">{{ inventario.noExtranjero }}</span>
+                            <br>
+                            <span class="etiqueta">Numero de Extranjero:</span>
+                            <span class="valor">{{ inventario.noExtranjero.numeroExtranjero}}</span>
+                            <br>
+                            <span class="etiqueta">Estación:</span>
+                            <span class="valor">{{ inventario.noExtranjero.deLaEstacion }}</span>
+                        </div>
+            
+                        <div class="col">
+                            <span class="etiqueta">Apellido(s):</span>
+                            <span class="valor">{{ inventario.noExtranjero.apellidoPaternoExtranjero }} {{ inventario.noExtranjero.apellidoMaternoExtranjero }}</span>                
+                            <br>
+                            <span class="etiqueta">Nacionalidad:</span>
+                            <span class="valor">{{ inventario.noExtranjero.nacionalidad }}</span>
+                            <br>
+                            <span class="etiqueta">Fecha de Nacimiento:</span>
+                            <span class="valor">{{ inventario.noExtranjero.fechaNacimiento }}</span>
+                        </div>
+                        <!-- Otros campos de datos -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Card con la foto del extranjero -->
+                <div class="col-md-2 d-none d-md-block">
+                  <div class="card">
+                    {% if inventario.noExtranjero.biometrico.fotografiaExtranjero %}
+                    <img src="{{inventario.noExtranjero.biometrico.fotografiaExtranjero.url}}" class="card-img-top" alt="..." >
+                    {% else %}
+                    <img src="{% static 'img/profile/Hola.jpeg' %}" class="card-img-top" alt="" style="max-width: 200px; height: auto;">
+                    {% endif %}
+                    <div class="card-body text-center" style='background:#9E8364'> 
+                      <p class="card-text" style='color:white'>Foto del Extranjero</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+
+
         </div>
-        <div class="circle-container">
-          <img src="{{inventario.noExtranjero.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
-        </div>
+      </div>
     </div>
-    
-</div>
+  </div>
 <h1>Pertenencias de Valor</h1>
         
 
