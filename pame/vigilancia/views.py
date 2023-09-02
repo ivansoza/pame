@@ -1153,13 +1153,13 @@ class inicioVPList(ListView):
         context['puestas_count'] = puestas_count
 
         #extranjeros_total = Extranjero.objects.filter(deLaEstacion=user_estacion).count() #OBTENER EL NUMERO TOTAL DE EXTRANJERO POR LA ESTACION 
-        extranjeros_total = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, estatus='Activo').count()
+        extranjeros_total = Extranjero.objects.filter(deLaPuestaVP__deLaEstacion=user_estacion, estatus='Activo').count()
         context['extranjeros_total'] = extranjeros_total
-        nacionalidades_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
+        nacionalidades_count = Extranjero.objects.filter(deLaPuestaVP__deLaEstacion=user_estacion).values('nacionalidad').distinct().count()
         context['nacionalidades_count'] = nacionalidades_count
 
-        hombres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=0, estatus='Activo').count()
-        mujeres_count = Extranjero.objects.filter(deLaPuestaIMN__deLaEstacion=user_estacion, genero=1, estatus='Activo').count()
+        hombres_count = Extranjero.objects.filter(deLaPuestaVP__deLaEstacion=user_estacion, genero=0, estatus='Activo').count()
+        mujeres_count = Extranjero.objects.filter(deLaPuestaVP__deLaEstacion=user_estacion, genero=1, estatus='Activo').count()
         context['mujeres_count'] = mujeres_count
         context['hombres_count'] = hombres_count
         capacidad_actual = user_estacion.capacidad
