@@ -6,18 +6,20 @@
 {% endblock link %}
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
 {% endblock dashboard %}
 {% block contenido %}
+
 {% include "includes/tituloPertenencias.html" %}
 {% include "includes/cardPertenencias.html" %}
 
+
         
 
-<a class='btn btn-custom' href="{% url 'crear_pertenenciasINM' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>
+<a class='btn btn-custom' href="{% url 'crear_pertenenciasVP' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>
 
 <br>
 <br>
@@ -49,7 +51,7 @@
              <i class="fas fa-edit"></i>
             </a>
                 <a class="btn btn-sm btn-icon3 tooltip-link"
-                href="{% url 'eliminar_pertenenciasINM' pertenencia.id %}"
+                href="{% url 'eliminar_pertenenciasVP' pertenencia.id %}"
                 data-title="Eliminar Pertenencia" onclick="abrir_modal(this.href); return false;">
                 <i class="fas fa-trash-alt"></i>
                 </a>
@@ -60,7 +62,7 @@
 </table>
 
 <hr>
-<a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom">Volver</a>
+<a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom">Volver</a>
 <div class="modal fade" id="agregarpertenencia" role="dialog">
 </div>
 <div class="modal fade" id="editartpertenencia" role="dialog">

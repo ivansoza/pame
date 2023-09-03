@@ -136,7 +136,7 @@
                 {% if extranjero.inventario_set.all  %}
                 {% with first_inventario=extranjero.inventario_set.first %}
 
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id%}" data-title="Pertenencias">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasVP' first_inventario.id puesta.id%}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Pertenencias de valores">
@@ -145,10 +145,10 @@
                 {% endwith %}
 
                 {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
                     <i class="fas fa-coins"></i>
                 </a>
                 {% endif %}
