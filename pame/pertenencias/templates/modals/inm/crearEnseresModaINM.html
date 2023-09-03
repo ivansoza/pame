@@ -42,7 +42,7 @@
                         {% endfor %}
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12">
-                        <input type="text" name="{{ form.enseresExtras.name }}" id="id_enseresExtras" class="form-control" disabled>
+                        <input type="text" name="{{ form.enseresExtras.name }}" id="id_enseresExtras" class="form-control" >
                     </div>
                 </div>
 
@@ -52,22 +52,7 @@
                 <button type="submit" class="btn btn-custom">Confirmar</button>
             </div>
         </form>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var enseresCheckboxList = document.querySelectorAll('input[name="{{ form.enseres.name }}"]');
-                var enseresExtrasField = document.getElementById('id_enseresExtras');
-
-                enseresCheckboxList.forEach(function(checkbox) {
-                    checkbox.addEventListener('change', function() {
-                        if (document.querySelector('input[name="{{ form.enseres.name }}"][value="Otros"]:checked')) {
-                            enseresExtrasField.removeAttribute('disabled');
-                        } else {
-                            enseresExtrasField.setAttribute('disabled', 'disabled');
-                        }
-                    });
-                });
-            });
-        </script>
+        
     </div>
 </div>
 

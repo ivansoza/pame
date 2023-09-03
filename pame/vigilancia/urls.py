@@ -4,7 +4,7 @@ from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarEx
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP
 from .views import CalcularTamanoDiscoView
-
+from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP
 from .views import estadisticasPuestaINM
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
@@ -58,8 +58,17 @@ urlpatterns = [
 
 
 # ------------------------- PUESTA VOLUNTAD PROPIA ----------------
+
+
     path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
-   #Puesta AC
+    path('puesta-vp/', inicioVPList.as_view(), name='homePuestasVP'),
+    path('crear-puesta-vp/', createPuestaVP.as_view(), name='crearPuestaVP'),
+    path('crear-extranjero-vp/<int:puesta_id>/', createExtranjeroVP.as_view(), name='crearExtranjeroVP'),
+    path('listar-extranjero-vp/<int:puesta_id>', listarExtranjerosVP.as_view(), name='listarExtranjerosVP'),
+    path('editar-extranjero-vp/<int:pk>/', EditarExtranjeroVP.as_view(), name='editar-extranjero-vp'),
+    path('eliminar-extranjero-vp/<int:pk>/', DeleteExtranjeroVP.as_view(), name='eliminar-extranjero-vp'),
+    path('agregar-biometrico-vp/<int:extranjero_id>/', AgregarBiometricoVP.as_view(), name='agregar-biometrico-vp'),
+    path('listar-acompanantes-vp/<int:extranjero_id>/<int:puesta_id>/', listarAcompanantesVP.as_view(),name='list-acompanantes-vp'),
 
 ]
 

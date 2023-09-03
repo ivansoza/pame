@@ -1,0 +1,18 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?vsslkkjjhh1.ee ">
+
+{% endblock link %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+
+{% block contenido %}
+<h1> Lista de Acompañanates </h1>
+{% endblock contenido%}

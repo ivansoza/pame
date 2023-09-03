@@ -57,7 +57,15 @@ class PuestaDisposicionAC(models.Model):
     def __str__(self):
         return str(self.numeroOficio) 
     
-    
+class PuestaDisposicionVP(models.Model):
+    numeroOficio = models.CharField(max_length=50, verbose_name='Numero de Oficio')
+    fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen", null=True, blank=True)
+    class Meta:
+        verbose_name_plural = "Puestas a Disposición VP"
+    def __str__(self):
+        return str(self.numeroOficio) 
+
 
 OPCION_GENERO_CHOICES=[
     [0,'HOMBRE'],
@@ -85,6 +93,8 @@ class Extranjero(models.Model):
     viajaSolo = models.BooleanField(verbose_name='Viaja Solo', default=True)
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta IMN')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta AC')
+    deLaPuestaVP = models.ForeignKey(PuestaDisposicionVP, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta VP')
+
     class Meta:
         verbose_name_plural = "Extranjeros" 
     def __str__(self):
