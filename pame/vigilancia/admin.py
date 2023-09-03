@@ -4,7 +4,7 @@ from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM,
 
 
 class ExtranjeroAdmin(admin.ModelAdmin):
-    list_display = ["fechaRegistro"]
+    list_display = ["fechaRegistro", "horaRegistro","numeroExtranjero","nombreExtranjero","apellidoPaternoExtranjero"]
 
 admin.site.register(Extranjero, ExtranjeroAdmin)
 
