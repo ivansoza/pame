@@ -897,3 +897,20 @@ class DeletePertenenciasVP(DeleteView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         
         return context
+    
+
+class EditarPertenenciasViewVP(UpdateView):
+    model = Pertenencias
+    form_class = PertenenciaForm  # Usa tu formulario modificado
+    template_name = 'modals/vp/editPertenenciasVP.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id
+        return reverse_lazy('ver_pertenenciasVP', args=[inventario_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadVP'
+        return context
