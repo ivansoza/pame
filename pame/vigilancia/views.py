@@ -1509,3 +1509,82 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
 
         return context
+    
+
+class AgregarAcompananteViewVP(CreateView):
+    model = Acompanante
+    form_class = AcompananteForm
+    # template_name = 'puestaAC/agregar_acompananteAC.html'
+    template_name = 'modal/acompananteVP.html'
+
+    def get_success_url(self):
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        return reverse_lazy('listAcompanantesVP', kwargs={'extranjero_id': extranjero_principal.id, 'puesta_id': extranjero_principal.deLaPuestaVP.id})
+    
+    def form_valid(self, form):
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_id = self.kwargs['extranjero_id']
+
+        form.instance.delExtranjero_id = extranjero_principal_id
+        form.instance.delAcompanante_id = extranjero_id
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_id = self.kwargs['extranjero_id']
+        context['extranjero_principal'] = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
+        return context
+
+class DeleteAcompananteVP(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'modal/eliminarAcompananteVP.html'
+
+    def get_success_url(self):
+        acompanante = self.object
+
+        # Obtener los IDs necesarios
+        extranjero_id = acompanante.delExtranjero.id
+        puesta_id = acompanante.delExtranjero.deLaPuestaVP.id
+
+        # Generar la URL con los IDs
+        return reverse_lazy('listAcompanantesVP', args=[extranjero_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        
+        return context
+class DeleteAcompananteVP1(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'modal/eliminarAcompananteVP1.html'
+
+    def get_success_url(self):
+        acompanante = self.object
+
+        # Obtener los IDs necesarios
+        extranjero_id = acompanante.delAcompanante.id
+        puesta_id = acompanante.delAcompanante.deLaPuestaVP.id
+
+        # Generar la URL con los IDs
+        return reverse_lazy('listAcompanantesVP', args=[extranjero_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['puesta_id'] = self.object.deLaPuestaIMN.id
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        
+        return context
+    

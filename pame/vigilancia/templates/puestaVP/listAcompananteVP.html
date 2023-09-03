@@ -34,74 +34,7 @@
   </div>
 
 
-<div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-body">
-          
-            <div class="row">
-                <!-- Card con datos del extranjero -->
-                <div class="col-md-10">
-            
-                  <div class="card">
-                     <div class="header">
-                        <h2>Datos del Extranjero </h2>
-                     </div>
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col">
-                            <span class="etiqueta">Nombre(s):</span>
-                            <span class="valor">{{ extranjero_principal.nombreExtranjero }}</span>
-                            <br>
-                            <span class="etiqueta">Numero de Extranjero:</span>
-                            <span class="valor">{{ extranjero_principal.numeroExtranjero }}</span>
-                            <br>
-                            <span class="etiqueta">Estación:</span>
-                            <span class="valor">{{ extranjero_principal.deLaEstacion }}</span>
-                        </div>
-            
-                        <div class="col">
-                            <span class="etiqueta">Apellido(s):</span>
-                            <span class="valor">{{ extranjero_principal.apellidoPaternoExtranjero }} {{ extranjero_principal.apellidoMaternoExtranjero }}</span>                
-                            <br>
-                            <span class="etiqueta">Nacionalidad:</span>
-                            <span class="valor">{{ extranjero_principal.nacionalidad }}</span>
-                            <br>
-                            <span class="etiqueta">Fecha de Nacimiento:</span>
-                            <span class="valor">{{ extranjero_principal.fechaNacimiento }}</span>
-                        </div>
-                        <!-- Otros campos de datos -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            
-                <!-- Card con la foto del extranjero -->
-                <div class="col-md-2 d-none d-md-block">
-                  <div class="card">
-                    {% if extranjero_principal.biometrico.fotografiaExtranjero %}
-                    <img src="{{ extranjero_principal.biometrico.fotografiaExtranjero.url }}" class="card-img-top" alt="..." >
-                    {% else %}
-                    <img src="{% static 'img/profile/Hola.jpeg' %}" class="card-img-top" alt="" style="max-width: 200px; height: auto;">
-                    {% endif %}
-                    <div class="card-body text-center" style='background:#9E8364'> 
-                      <p class="card-text" style='color:white'>Foto del Extranjero</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            
-
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
+{% include "includes/datosExtranjero.html" %}
 
 
 <!---------------------- CARD ------------------>
@@ -140,7 +73,7 @@
                 <td>       
             
                     <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
-                    href="{% url 'agregar_acompananteINM' extranjero_principal.id extranjero.id %}"
+                    href="{% url 'agregar_acompananteVP' extranjero_principal.id extranjero.id %}"
                     data-title="Agregar Acompañante" onclick="abrir_modal_edicion(this.href); return false;">
                     <i class="fas fa-plus"></i>
                 </a>
@@ -186,7 +119,7 @@
                             <td>{{ relacion.delAcompanante.nombreExtranjero }}</td>
                             <td>{{ relacion.relacion }}</td>
                             <td>
-                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteINM' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
+                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteVP' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
                                 <i class="fas fa-trash-alt"></i>
                                 </a>                   
                             </td>
@@ -197,7 +130,7 @@
                             <td>{{ relacion.delExtranjero.nombreExtranjero }}</td>
                             <td>{{ relacion.relacion }}</td>
                             <td>
-                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteINM1' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
+                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteVP1' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>             
                             </td>
