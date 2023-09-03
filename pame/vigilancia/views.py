@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView,DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms
+from .forms import BiometricoFormVP
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -1239,7 +1240,7 @@ class createExtranjeroVP(CreateView):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
         if self.object.viajaSolo:
-            return reverse('agregar-biometrico-vp', args=[extranjero_id])
+            return reverse('agregar_biometricoVP', args=[extranjero_id])
         else:
             # return reverse('crearExtranjeroAC', args=[puesta_id])
             return reverse('list-acompanantes-vp', args=[extranjero_id, puesta_id])
@@ -1292,10 +1293,7 @@ class createExtranjeroVP(CreateView):
 
         return context
     
-class AgregarBiometricoVP(CreateView):
-    model = Biometrico
-    form_class = BiometricoFormINM
-    template_name = 'puestaVP/createBiometricoVP.html'  # Cambiar a la ruta correcta
+
 
 class listarAcompanantesVP(ListView):
     model = Extranjero
@@ -1306,13 +1304,13 @@ class listarAcompanantesVP(ListView):
         
         extranjero_principal_id = self.kwargs.get('extranjero_id')
         puesta_id = self.kwargs.get('puesta_id')
-        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
 
         # Obtener datos del extranjero principal
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
 
         # Obtener la lista de extranjeros de la misma puesta
-        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id, estatus ='Activo').exclude(pk=extranjero_principal_id)
+        extranjeros_puesta = Extranjero.objects.filter(deLaPuestaVP_id=puesta_id, estatus ='Activo').exclude(pk=extranjero_principal_id)
 
         # Filtrar extranjeros no relacionados
         extranjeros_no_relacionados = extranjeros_puesta.exclude(
@@ -1331,7 +1329,7 @@ class listarAcompanantesVP(ListView):
         context['relaciones_del_extranjero'] = relaciones_del_extranjero
         context['relaciones_del_acompanante'] = relaciones_del_acompanante
         context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         
         return context
     
@@ -1388,3 +1386,126 @@ class DeleteExtranjeroVP(DeleteView):
         
         return context
    
+
+#-----------------------Agregar Biometricos-------------
+class AgregarBiometricoVP(CreateView):
+    model = Biometrico
+    form_class = BiometricoFormVP
+    template_name = 'puestaVP/createBiometricosVP.html'  # Cambiar a la ruta correcta
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjerosVP', args=[extranjero.deLaPuestaVP.id])
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        initial['Extranjero'] = extranjero
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtén el ID del extranjero del argumento en la URL
+        extranjero_id = self.kwargs.get('extranjero_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaVP
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        return context
+    
+class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_biometrico',
+    }
+    model = Biometrico
+    form_class = BiometricoFormVP
+    template_name = 'puestaVP/editBiometricosVP.html' 
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        return reverse('listarExtranjerosVP', args=[extranjero.deLaPuestaVP.id])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+    # Obtén el ID del extranjero del argumento en el URL
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaVP
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        return context
+    
+class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_extranjero',
+    }
+    model =Extranjero             
+    form_class = extranjeroFormsVP    
+    template_name = 'puestaVP/createAcompananteVP.html' 
+
+    def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+        # extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
+        extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
+
+        return reverse('listAcompanantesVP', args=[extranjero_principal_id, puesta_id])
+    
+
+    def get_initial(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionVP.objects.get(id=puesta_id)
+        initial = super().get_initial()
+
+        # Acceder al usuario autenticado y sus datos en la base de datos
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+            viaja_solo = True
+            initial['viajaSolo']= viaja_solo
+        except Usuario.DoesNotExist:
+            pass
+
+        ultimo_registro = Extranjero.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        initial['numeroExtranjero'] = nuevo_numero
+        return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
+
+    def form_valid(self, form):
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionVP.objects.get(id=puesta_id)
+        estacion = form.cleaned_data['deLaEstacion']
+        if estacion:
+            estacion.capacidad -= 1
+            estacion.save()     
+        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
+        extranjero.puesta = puesta
+        extranjero.save()  #
+        
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        puesta_id = self.kwargs['puesta_id']
+        context['puesta'] = PuestaDisposicionVP.objects.get(id=puesta_id)
+        extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal
+        context['extranjero_principal_id'] = extranjero_principal_id  # Pasa el ID al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+
+        return context

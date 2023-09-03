@@ -2,9 +2,9 @@ from django.urls import path, include
 
 from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1
-from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP
+from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC
 from .views import CalcularTamanoDiscoView
-from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP
+from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP
 from .views import estadisticasPuestaINM
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
@@ -67,8 +67,10 @@ urlpatterns = [
     path('listar-extranjero-vp/<int:puesta_id>', listarExtranjerosVP.as_view(), name='listarExtranjerosVP'),
     path('editar-extranjero-vp/<int:pk>/', EditarExtranjeroVP.as_view(), name='editar-extranjero-vp'),
     path('eliminar-extranjero-vp/<int:pk>/', DeleteExtranjeroVP.as_view(), name='eliminar-extranjero-vp'),
-    path('agregar-biometrico-vp/<int:extranjero_id>/', AgregarBiometricoVP.as_view(), name='agregar-biometrico-vp'),
-    path('listar-acompanantes-vp/<int:extranjero_id>/<int:puesta_id>/', listarAcompanantesVP.as_view(),name='list-acompanantes-vp'),
+    path('agregar-biometrico-vp/<int:extranjero_id>/', AgregarBiometricoVP.as_view(), name='agregar_biometricoVP'),
+    path('listar-acompanantes-vp/<int:extranjero_id>/<int:puesta_id>/', listarAcompanantesVP.as_view(),name='listAcompanantesVP'),
+    path('editar_biometrico-vp/<int:pk>/', EditarBiometricoVP.as_view(), name='editar_biometricoVP'),
+    path('crear-acompanante-vp/<int:puesta_id>/<int:extranjero_principal_id>/', createAcompananteVP.as_view(), name='createAcompananteVP'),
 
 ]
 

@@ -16,41 +16,25 @@
 
 {% block contenido %}
 
-<div class="titulo-general-container">
-    <h1 class="titulo-general">Agregar datos biometricos a Extranjero : {{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</h1>
-</div>
-
-<h1 class="titulo-general">De la puesta : {{ puesta.numeroOficio }} </h1>
+{% include "includes/tituloBiometricos.html" %}
 
 
-
-
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
-    {% csrf_token %}
-    <div class="row">
-
-    <div class="col-sm-6 col-md-6 col-lg-3">
-        {{form.Extranjero|as_crispy_field}}
+<!-- BIOMETRICOS -->
+<div class="card">
+    <div class="card-body">
+        {% include "includes/formBiometricos.html" %}
     </div>
-    <div class="col-sm-6 col-md-6 col-lg-3">
-        {{form.fotografiaExtranjero|as_crispy_field}}
-    </div>
-    <div class="col-sm-6 col-md-6 col-lg-3">
-        {{form.huellaExtranjero|as_crispy_field}}
-    </div>
-    <div class="col-sm-6 col-md-6 col-lg-3">
-        {{form.firmaExtranjero|as_crispy_field}}
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-12">
+          <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+        </div>
+      </div>
     </div>
 </div>
 
+<!-- FIN BIOMETRICOS -->
 
-
-    <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
-    <br>
-
-    <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Guardar despues</a>       
-
-</form>
 {% endblock %}
 
 

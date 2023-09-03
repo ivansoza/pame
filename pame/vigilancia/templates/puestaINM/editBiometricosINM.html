@@ -3,7 +3,7 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
-    <link rel="stylesheet" href="{% static 'css/biometricos.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/biometricos.css' %}"> {% endcomment %}
 
 {% endblock link %}
 
@@ -16,16 +16,28 @@
 
 {% block contenido %}
 
-<div class="titulo-general-container">
-    <h1 class="titulo-general">Editar datos biometricos a Extranjero : {{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</h1>
+{% include "includes/editBiometricos.html" %}
+
+
+<!-- BIOMETRICOS -->
+<div class="card">
+  <div class="card-body">
+      {% include "includes/formBiometricos.html" %}
+  </div>
+  <div class="card-footer">
+    <div class="row">
+      <div class="col-12">
+        <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+      </div>
+    </div>
+  </div>
 </div>
 
-<h1 class="titulo-general">De la puesta : {{ puesta.numeroOficio }} </h1>
+<!-- FIN BIOMETRICOS -->
 
 
 
-
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+{% comment %} <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
     {% csrf_token %}
     <div class="row">
 
@@ -88,14 +100,14 @@
 
     <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>       
 
-</form>
+</form> {% endcomment %}
 {% endblock %}
 
 
 
 {% block script %}
 
-<script src="{% static 'js/biometricos.js' %}"></script>
+{% comment %} <script src="{% static 'js/biometricos.js' %}"></script> {% endcomment %}
 
 
 

@@ -249,10 +249,7 @@ class extranjeroFormsAC(forms.ModelForm):
             'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
              'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
-# class AcompananteForm(forms.ModelForm):
-#     class Meta:
-#         model = Acompanante
-#         fields = ['delAcompanante', 'relacion']
+
 
 class editExtranjeroACForms(forms.ModelForm):
     class Meta:
@@ -333,3 +330,9 @@ class editExtranjeroVPForm(forms.ModelForm):
             'deLaPuestaVP': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
+
+
+class BiometricoFormVP(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = '__all__'  # Incluye todos los campos del modelo

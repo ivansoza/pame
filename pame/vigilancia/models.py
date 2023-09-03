@@ -123,16 +123,14 @@ class Biometrico(models.Model):
         Extranjero, on_delete=models.CASCADE,
         primary_key=True,
     )
-
-    fotografiaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    fotografiaExtranjero = models.FileField(verbose_name="Fotografía del Extranjero:", upload_to='files/', null=True, blank=True)
     fechaHoraFotoCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFotoUpdate = models.DateTimeField(auto_now_add=True)
-
-    huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    huellaExtranjero = models.FileField(verbose_name="Huella del Extranjero:",upload_to='files/', null=True, blank=True)
     fechaHoraHuellaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraHuellaUpdate = models.DateTimeField(auto_now_add=True)
 
-    firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    firmaExtranjero = models.FileField(verbose_name="Firma del Extranjero:",upload_to='files/', null=True, blank=True)
     fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
     

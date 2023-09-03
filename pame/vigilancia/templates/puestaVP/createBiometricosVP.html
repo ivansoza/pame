@@ -1,19 +1,19 @@
+
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
+
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
-    {% comment %} <link rel="stylesheet" href="{% static 'css/biometricos.css' %}"> {% endcomment %}
-
 {% endblock link %}
+
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
-    <i class="fas fa-arrow-left"></i>
+  <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
 {% block contenido %}
-
-{% include "includes/editBiometricos.html" %}
+{% include "includes/tituloBiometricos.html" %}
 
 
 <!-- BIOMETRICOS -->
@@ -24,20 +24,17 @@
     <div class="card-footer">
       <div class="row">
         <div class="col-12">
-          <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+          <a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
         </div>
       </div>
     </div>
 </div>
 
 <!-- FIN BIOMETRICOS -->
-
-
+  
+  
 {% endblock %}
 
-
-
 {% block script %}
-{% comment %} <script src="{% static 'js/biometricos.js' %}"></script> {% endcomment %}
 
 {% endblock script %}
