@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM
 from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC
-from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP
+from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP
 from .views import homePertenencias
 
 urlpatterns = [
@@ -47,7 +47,10 @@ urlpatterns = [
     path('crear-pertenencias-vp/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasViewVP.as_view(), name='crear_pertenenciasVP'),
     path('eliminar-pertenencias-vp/<int:pk>/', DeletePertenenciasVP.as_view(), name='eliminar_pertenenciasVP'),
     path('editar_pertenencias-vp/<int:pk>/', EditarPertenenciasViewVP.as_view(), name='editar_pertenenciasVP'),
-
+    path('ver-pertenencias-valor-vp/<int:inventario_id>/<int:puesta_id>/',ListaPertenenciasValorViewVP.as_view(), name='ver_pertenencias_valor_vp'),
+    path('crear-pertenencias-valor-vp/<int:inventario_id>/<int:puesta_id>/',CrearPertenenciasValoresViewVP.as_view(), name='crear_pertenencias_valor_vp'),
+    path('eliminar-pertenencias-valor-vp/<int:pk>/',DeletePertenenciasValorVP.as_view(), name='eliminar_pertenencias_valor_vp'),
+    path('editar-pertenencias-valor-vo/<int:pk>/',UpdatePertenenciasValorVP.as_view(), name='editar_pertenencias_valor_vp'),
 
 
 ]

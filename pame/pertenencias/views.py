@@ -940,3 +940,95 @@ class EditarPertenenciasViewVP(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadVP'
         return context
+
+class ListaPertenenciasValorViewVP(ListView):
+    model = Valores
+    template_name = 'pertenenciasVP/listPertenenciasValorVP.html'
+
+    def get_queryset(self):
+        inventario_id = self.kwargs['inventario_id']
+        return Valores.objects.filter(delInventario_id=inventario_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadVP'
+        return context
+    
+class CrearPertenenciasValoresViewVP(CreateView):
+    model = Valores
+    form_class = ValoresForm  # Usa tu formulario modificado
+    template_name = 'modals/vp/crearPertenenciasValorVP.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.kwargs['inventario_id']
+        puesta_id = self.kwargs.get('puesta_id')
+        messages.success(self.request, 'Valores agregados con éxito.')
+        return reverse('ver_pertenencias_valor_vp', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadVP'
+        return context
+    
+class DeletePertenenciasValorVP(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_valor',
+    }
+    model = Valores
+    template_name = 'modals/vp/eliminarPertenenciaValorVP.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id
+        messages.success(self.request, 'Valores eliminados con éxito.')
+
+        return reverse('ver_pertenencias_valor_vp', args=[inventario_id, puesta_id])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        
+        return context
+    
+class UpdatePertenenciasValorVP(UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_valor',
+    }
+    model = Valores
+    form_class = ValoresForm 
+    template_name = 'modals/vp/editarPertenenciasValorVP.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
+        return reverse('ver_pertenencias_valor_vp', args=[inventario_id, puesta_id])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        
+        return context
