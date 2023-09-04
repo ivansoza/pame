@@ -6,12 +6,19 @@
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDD22D ">
 {% endblock link %}
 
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
 
 {% block contenido %}
 
-
-<div class="titulo-general-container">
-  <h1 class="titulo-general">Asignar número de Inventario a : {{extranjero_id1}}</h1>
+<div class="titulo-general-container mt-2">
+  <h1 class="titulo-general">Asignar Número de Inventario a : 
+    
+    <span class="puesta-color" >{{extranjero_id1}}</span>
 </div>
 <br>
 

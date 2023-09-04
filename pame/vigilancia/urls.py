@@ -2,8 +2,10 @@ from django.urls import path, include
 
 from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1
-from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP
-
+from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1
+from .views import CalcularTamanoDiscoView
+from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP
+from .views import estadisticasPuestaINM
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
     path('seguridad-responsable/', homeSeguridadResponsable, name='homeSeguridadResponsable'),
@@ -13,6 +15,8 @@ urlpatterns = [
   
     # --------------- PUESTA INM  ---------------------
     path('puesta-inm/', inicioINMList.as_view(), name='homePuestaINM'),
+    path('estadisticas-inm/', estadisticasPuestaINM.as_view(), name='estadisticaINM'),
+
     path('crear-puesta-inm/', createPuestaINM.as_view(), name='crearPuestaINM'),
     path('crear-extranjero-inm/<int:puesta_id>/', createExtranjeroINM.as_view(), name='crearExtranjeroINM'),
     path('listar-extranjero/<int:puesta_id>', listarExtranjeros.as_view(), name='listarExtranjeros'),
@@ -25,6 +29,9 @@ urlpatterns = [
     path('agregar_acompananteINM/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarAcompananteViewINM.as_view(), name='agregar_acompananteINM'),
     path('DeleteAcompananteINM/<int:pk>/', DeleteAcompananteINM.as_view(), name='delete_acompananteINM'),
     path('DeleteAcompananteINM1/<int:pk>/', DeleteAcompananteINM1.as_view(), name='delete_acompananteINM1'),
+    path('csalcular/<int:pk>/', CalcularTamanoDiscoView.as_view(), name='calcular'),
+
+
 
 
 
@@ -51,8 +58,23 @@ urlpatterns = [
 
 
 # ------------------------- PUESTA VOLUNTAD PROPIA ----------------
+
+
     path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
-   #Puesta AC
+    path('puesta-vp/', inicioVPList.as_view(), name='homePuestasVP'),
+    path('crear-puesta-vp/', createPuestaVP.as_view(), name='crearPuestaVP'),
+    path('crear-extranjero-vp/<int:puesta_id>/', createExtranjeroVP.as_view(), name='crearExtranjeroVP'),
+    path('listar-extranjero-vp/<int:puesta_id>', listarExtranjerosVP.as_view(), name='listarExtranjerosVP'),
+    path('editar-extranjero-vp/<int:pk>/', EditarExtranjeroVP.as_view(), name='editar-extranjero-vp'),
+    path('eliminar-extranjero-vp/<int:pk>/', DeleteExtranjeroVP.as_view(), name='eliminar-extranjero-vp'),
+    path('agregar-biometrico-vp/<int:extranjero_id>/', AgregarBiometricoVP.as_view(), name='agregar_biometricoVP'),
+    path('listar-acompanantes-vp/<int:extranjero_id>/<int:puesta_id>/', listarAcompanantesVP.as_view(),name='listAcompanantesVP'),
+    path('editar_biometrico-vp/<int:pk>/', EditarBiometricoVP.as_view(), name='editar_biometricoVP'),
+    path('crear-acompanante-vp/<int:puesta_id>/<int:extranjero_principal_id>/', createAcompananteVP.as_view(), name='createAcompananteVP'),
+    path('agregar_acompanante-VP/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarAcompananteViewVP.as_view(), name='agregar_acompananteVP'),
+    path('DeleteAcompanante-vp/<int:pk>/', DeleteAcompananteVP.as_view(), name='delete_acompananteVP'),
+    path('DeleteAcompanante-vp1/<int:pk>/', DeleteAcompananteVP1.as_view(), name='delete_acompananteVP1'),
+
 
 ]
 

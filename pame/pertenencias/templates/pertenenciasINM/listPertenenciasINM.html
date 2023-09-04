@@ -12,40 +12,9 @@
 
 {% endblock dashboard %}
 {% block contenido %}
-<div class="titulo-general-container">
-    <h1 class="titulo-general">Pertenencias </h1>
-</div>
-<br>
+{% include "includes/tituloPertenencias.html" %}
+{% include "includes/cardPertenencias.html" %}
 
-<h1>Detalles del Inventario</h1>
-   
-   <div class="datos-extranjero-principal">
-    <div class="header">
-        <h2>Datos del extranjero</h2>
-    </div>
-    <div class="contenido">
-        <div class="detalle">
-            <div class="dato">
-                <span class="etiqueta">Nombre:</span>
-                <span class="valor"> {{ inventario.noExtranjero }}</span>
-            </div>
-            <div class="dato">
-                <span class="etiqueta">Estación Migratoria:</span>
-                <span class="valor">{{ inventario.unidadMigratoria }}</span>
-            </div>
-            <div class="dato">
-                <span class="etiqueta">Inventario:</span>
-                <span class="valor"> {{inventario.foloInventario}} </span>
-            </div>
-           
-        </div>
-        <div class="circle-container">
-          <img src="{{inventario.noExtranjero.biometrico.fotografiaExtranjero.url}}" alt="" style="max-width:100%; height: auto;">
-        </div>
-    </div>
-</div>
-
-<h1>Pertenencias del Inventario</h1>
         
 
 <a class='btn btn-custom' href="{% url 'crear_pertenenciasINM' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>

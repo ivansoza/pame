@@ -6,7 +6,7 @@
 />
 {% endblock link %} {% block contenido %}
 
-<div class="titulo-general-container">
+<div class="titulo-general-container mt-2">
   <h1 class="titulo-general">Crear enseres</h1>
 </div>
 <br />
@@ -21,7 +21,15 @@
       {{ form.noExtranjero|as_crispy_field}}
     </div>
     <div class="col-sm-12 col-md-12 col-lg-12">
-      {{form.enseres|as_crispy_field}}
+      {% for value, label in form.enseres.field.choices %}
+       <div class="form-check">
+          <input type="checkbox" name="{{ form.enseres.name }}" value="{{ value }}" class="form-check-input" id="id_enseres_{{ forloop.counter }}">
+          <label class="form-check-label" for="id_enseres_{{ forloop.counter }}">{{ label }}</label>
+       </div>
+      {% endfor %}
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+      <input type="text" name="{{ form.enseresExtras.name }}" id="id_enseresExtras" class="form-control">
     </div>
   </div>
 
@@ -32,6 +40,27 @@
   <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1"
     >Cancelar</a
   >
+  <br>
 </form>
-
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var enseresCheckboxList = document.querySelectorAll('input[name="enseres"]'); // Obtener todas las opciones de checkboxes
+      var enseresExtrasField = document.getElementById('id_enseresExtras');
+  
+      // Ocultar el campo enseresExtras al cargar la página
+      enseresExtrasField.style.display = 'none';
+  
+      // Mostrar u ocultar enseresExtras cuando se cambie la selección
+      enseresCheckboxList.forEach(function(checkbox) {
+          checkbox.addEventListener('change', function() {
+              if (document.querySelector('input[name="enseres"][value="Otros"]:checked')) {
+                  enseresExtrasField.style.display = 'block';
+              } else {
+                  enseresExtrasField.style.display = 'none';
+              }
+          });
+      });
+  });
+  </script>
+  
 {% endblock %}

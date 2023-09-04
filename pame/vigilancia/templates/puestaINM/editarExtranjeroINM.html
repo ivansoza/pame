@@ -3,7 +3,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2ww ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
@@ -12,7 +12,10 @@
 
 {% endblock dashboard %}
 {% block contenido %}
-<div class="titulo-general-container">
+
+
+
+<div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
         Editar datos del extranjero:        
         <span class="puesta-color" >{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</span>
@@ -20,7 +23,7 @@
   </div>
 
 
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+<form method="post" class="card p-3" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">

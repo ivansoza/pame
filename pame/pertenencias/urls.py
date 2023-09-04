@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM
 from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC
-
+from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP
 from .views import homePertenencias
 
 urlpatterns = [
@@ -40,5 +40,14 @@ urlpatterns = [
     path('editar-enseres-ac/<int:pk>/', EditarEnseresViewAC.as_view(), name='editarEnseresAC'),
     path('eliminar-enseres-ac/<int:pk>/', DeleteEnseresAC.as_view(), name='eliminarEnseresAC'),
     path('crear-enseres-ac1/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresModaAC.as_view(), name='crearEnseresModaAC'),
+
+#-----------------------------VP---------------------------
+    path('crear-inventario-vp/<int:extranjero_id>/<int:puesta_id>/', CrearInventarioViewVP.as_view(), name='crear_inventarioVP'),
+    path('ver-pertenencias-vp/<int:inventario_id>/<int:puesta_id>/', ListaPertenenciasViewVP.as_view(), name='ver_pertenenciasVP'),
+    path('crear-pertenencias-vp/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasViewVP.as_view(), name='crear_pertenenciasVP'),
+    path('eliminar-pertenencias-vp/<int:pk>/', DeletePertenenciasVP.as_view(), name='eliminar_pertenenciasVP'),
+    path('editar_pertenencias-vp/<int:pk>/', EditarPertenenciasViewVP.as_view(), name='editar_pertenenciasVP'),
+
+
 
 ]

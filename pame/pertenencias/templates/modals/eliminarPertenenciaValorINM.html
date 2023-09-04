@@ -20,9 +20,9 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <p style="text-align: center;">
-            <img src=" {% static 'img/gh.jpg' %} " style="width: 250px;" class="logo-img">
-        </p>
+        <div style="text-align: center;">
+            <i class="fas fa-trash-alt fa-7x mt-5" style="color: #922E41;"></i>
+        </div>
 
         <form action="{% url 'eliminar_pertenencias_valorINM' pk=object.id %}" method="POST">
             {% csrf_token %}

@@ -2,6 +2,9 @@
 {% load static %}
 {% block link %}
 <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2665gg ">
+
+{% block card %}{% endblock card %}
+
 {% endblock link %}
 
 
@@ -34,7 +37,7 @@
         <div class="icon">
           <i class="fas fa-file-alt"></i>
       </div>
-      <a href="#" class="small-box-footer">
+      <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
           More info <i class="fas fa-arrow-circle-right"></i>
         </a>
        
@@ -52,7 +55,7 @@
         <div class="icon">
           <i class="fas fa-users"></i>
       </div>
-        <a href="#" class="small-box-footer">
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
           More info <i class="fas fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -69,7 +72,7 @@
         <div class="icon">
           <i class="fas fa-female"></i>
       </div>
-        <a href="#" class="small-box-footer">
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
           More info <i class="fas fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -86,7 +89,7 @@
         <div class="icon">
           <i class="fas fa-male"></i>
       </div>
-        <a href="#" class="small-box-footer">
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
           More info <i class="fas fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -104,7 +107,7 @@
   
           <i class="fas fa-check-circle"></i>
         </div>
-        <a href="#" class="small-box-footer">
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
           More info <i class="fas fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -149,6 +152,45 @@
         </tbody>
     </table>
 </div>
+{% for message in messages %}
+{% if message.tags == "success" %}
+  showSuccessNotification("Felicitaciones: {{ message }}");
+{% elif message.tags == "error" %}
+  showErrorNotification("Error: {{ message }}");
+{% endif %}
+{% endfor %}
+
+<button type="button" class="btn btn-success swalDefaultSuccess">
+  Launch Success Toast
+</button>
+
+
+<script>
+   $(function() {
+    var Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    $('.swalDefaultSuccess').click(function() {
+      Toast.fire({
+        icon: 'success',
+        title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+
+  });
+
+</script>
+
+{% for message in messages %}
+{% if message.tags == "success" %}
+  showSuccessNotification("Felicitaciones: {{ message }}");
+{% elif message.tags == "error" %}
+  showErrorNotification("Error: {{ message }}");
+{% endif %}
+{% endfor %}
 
 {% endblock contenido %}
 

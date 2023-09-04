@@ -42,7 +42,14 @@
   <!-- <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"> -->
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
-  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.dsdsSSSSW">
+  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.dsdddsddeeSS222SSW">
+  {% block card %}
+  <link rel="stylesheet" href=" {% static 'css/forms/cards.css' %}?ww">
+
+  {% endblock card %}
+
+
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 
 
@@ -270,9 +277,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{% url 'homePuestasVP' %} " class="nav-link  {% if seccion == 'seguridadVP' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Por voluntad propia</p>
+                  <p>Por Voluntad Propia</p>
                 </a>
               </li>
             </ul>
@@ -360,14 +367,18 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <div class="content-header">
+    <div class="content-header" >
       <div class="container-fluid">
         <div class="row mb-2">
-          <div class="col-sm-6">
-              {% block dashboard %}{% endblock dashboard %}  
+          <div class="col-sm-8">
+              {% block dashboard %}
+              
+              {% endblock dashboard %}  
+
+            
           </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
+          <div class="col-sm-4 editcolor">
+            <ol class="breadcrumb float-sm-right ">
               <li class="breadcrumb-item"><a href="#">Inicio</a></li>
               <li class="breadcrumb-item active">{% block seccion %}{% endblock seccion %}</li>
             </ol>
@@ -457,18 +468,46 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
 
 <script src="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
-    
-    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+    <script>
+      $(function() {
+        setTimeout(function() {
+          var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+    
+          {% for message in messages %}
+            {% if message.tags == "success" %}
+              Toast.fire({
+                icon: 'success',
+                title: '{{ message }}'
+              });
+            {% elif message.tags == "error" %}
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ message }}",
+                footer: '<a href="">Why do I have this issue?</a>'
+              });
+            {% endif %}
+          {% endfor %}
+        }, 500); // 500 milisegundos (medio segundo)
+      });
+    </script>
+    
     
     {% block script  %}
     

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP
 import datetime
 
 class puestDisposicionINMForm(forms.ModelForm):
@@ -148,12 +148,18 @@ class extranjeroFormsInm(forms.ModelForm):
    
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Luis"}),
+
     )
     apellidoPaternoExtranjero = forms.CharField(
         label= "Apellido Paterno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+
     )
     apellidoMaternoExtranjero = forms.CharField(
         label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+
     )
 
     documentoIdentidad = forms.FileField(
@@ -211,12 +217,18 @@ class extranjeroFormsAC(forms.ModelForm):
     
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Luis"}),
+
     )
     apellidoPaternoExtranjero = forms.CharField(
         label= "Apellido Paterno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+
     )
     apellidoMaternoExtranjero = forms.CharField(
         label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+
     )
    
    
@@ -237,10 +249,7 @@ class extranjeroFormsAC(forms.ModelForm):
             'deLaPuestaAC': forms.Select(attrs={'class': 'form-control'}),
              'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
-# class AcompananteForm(forms.ModelForm):
-#     class Meta:
-#         model = Acompanante
-#         fields = ['delAcompanante', 'relacion']
+
 
 class editExtranjeroACForms(forms.ModelForm):
     class Meta:
@@ -258,3 +267,72 @@ class AcompananteForm(forms.ModelForm):
     class Meta:
         model = Acompanante
         fields = ['relacion']
+
+#----------------- formulario puesta Disposicion VP ----------------------------------------------------
+
+class puestaVPForm(forms.ModelForm):
+    class Meta:
+        model = PuestaDisposicionVP
+        fields = '__all__'
+
+class extranjeroFormsVP(forms.ModelForm):
+    fechaNacimiento = forms.DateField(
+        label= "Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+
+    )
+    numeroExtranjero = forms.CharField(
+        label= "Numero:",
+    )
+   
+    nombreExtranjero = forms.CharField(
+        label= "Nombre(s):",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Luis"}),
+
+    )
+    apellidoPaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+
+    )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+
+    )
+
+    documentoIdentidad = forms.FileField(
+        label= "Documento de Identidad:",
+
+    )
+  
+   
+    class Meta:
+        model = Extranjero
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus'] 
+        widgets = {
+            # Otros campos y widgets
+            'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaVP': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
+        }
+
+class editExtranjeroVPForm(forms.ModelForm):
+    class Meta:
+        model = Extranjero
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus'] 
+        widgets = {
+            # Otros campos y widgets
+            #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'deLaPuestaVP': forms.Select(attrs={'class': 'form-control'}),
+            'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
+        }
+
+
+class BiometricoFormVP(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = '__all__'  # Incluye todos los campos del modelo
