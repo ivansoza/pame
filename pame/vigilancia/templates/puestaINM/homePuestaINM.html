@@ -1,9 +1,12 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
 {% block link %}
-<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2665gg ">
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.266jj5gg ">
+<link rel="stylesheet" href=" {% static 'css/datatables/datatables.css' %}?v1.2665fffEEgg ">
 
 {% block card %}{% endblock card %}
+
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.colVis.min.js"></script>
 
 {% endblock link %}
 
@@ -116,42 +119,54 @@
  </div>
 <a class="btn btn-custom mb-3" href=" {% url 'crearPuestaINM' %}">Crear Puesta</a>
 <a class="btn btn-custom1 mb-3" href=" {% url 'homeSeguridadGeneral' %}">Regresar al menu</a>
+
 <div class="table-responsive">
-    <table id="puestasinm-table" class="table table-striped table-bordered display responsive nowrap"
-        style="width:100%">
-        <thead>
-            <tr>
-                <th >Numero Oficio</th>
-                <th >Fecha de Oficio</th>
-                <th >Autoridades</th>
-                <th >Punto Revisión</th>
-                <th >Estación</th>
-                <th style="width: 5%;">Opciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for puesta in puestasinm %}
-            <tr>
-                <td>{{ puesta.numeroOficio }}</td>
-                <td>{{ puesta.fechaOficio }}</td>
-                <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
-                <td>{{ puesta.puntoRevision }}</td>
-                <td>{{ puesta.deLaEstacion }}</td>
-                <td>
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
-                        data-title="Agregar Extranjeros">
-                        <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
-                    </a>
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarExtranjeros' puesta.id %}"
-                        data-title="Ver Extranjeros">
-                        <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table id="example" class="table table-striped table-bordered display responsive nowrap style="width:100%">
+    <thead>
+        <tr>
+          <th >Numero Oficio</th>
+          <th >Fecha de Oficio</th>
+          <th >Autoridades</th>
+          <th >Punto Revisión</th>
+          <th >Estación</th>
+          <th style="width: 5%;">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for puesta in puestasinm %}
+      <tr>
+          <td>{{ puesta.numeroOficio }}</td>
+          <td>{{ puesta.fechaOficio }}</td>
+          <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
+          <td>{{ puesta.puntoRevision }}</td>
+          <td>{{ puesta.deLaEstacion }}</td>
+          <td>
+              <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
+                  data-title="Agregar Extranjeros">
+                  <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
+              </a>
+              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarExtranjeros' puesta.id %}"
+                  data-title="Ver Extranjeros">
+                  <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
+              </a>
+          </td>
+      </tr>
+      {% endfor %}
+      
+    </tbody>
+    <tfoot>
+        <tr>
+          <th >Numero Oficio</th>
+          <th >Fecha de Oficio</th>
+          <th >Autoridades</th>
+          <th >Punto Revisión</th>
+          <th >Estación</th>
+          <th style="width: 5%;">Opciones</th>
+        </tr>
+    </tfoot>
+  </table>
 </div>
+
 {% for message in messages %}
 {% if message.tags == "success" %}
   showSuccessNotification("Felicitaciones: {{ message }}");
@@ -190,29 +205,71 @@
 {% endif %}
 {% endfor %}
 
+
+
+
 {% endblock contenido %}
 
 {% block script %}
 
 
+<script>
+  $(document).ready(function() {
+    new DataTable('#example', {
+      dom: '<"top"fl>rt<"bottom"Bip><"clear">',
+      lengthMenu: [5, 10, 25, 50, 100], // Cambiamos el menú de longitud para incluir 5 entradas
+      pageLength: 5, // Establecemos el número inicial de entradas por página en 5
+      buttons: [
+        {
+          extend: 'copy',
+          text: '<i class="fas fa-copy"></i> Copiar', // Icono de copiar
+        },
+        {
+          extend: 'excel',
+          text: '<i class="fas fa-file-excel"></i> Exportar a Excel', // Icono de exportar a Excel
+        },
+        {
+          extend: 'print',
+          text: '<i class="fas fa-print"></i> Imprimir', // Icono de imprimir
+        },
+        'colvis',
+      ],
+    });
+  });
+</script>
 
 <script>
-    $("#puestasinm-table").DataTable({
-      paging:true,
-      pageLength:10,
-      autoWidth: true,
-      searching : true,
-      bInfo:true,
-      bSort:true,
+  $("#puestasinm-table").DataTable({
+    paging:true,
+    pageLength:10,
+    autoWidth: true,
+    searching : true,
+    bInfo:true,
+    bSort:true,
 
-      "columnDefs": [{
-      "targets":5,
-      
-      
-      }]
-    })
+    "columnDefs": [{
+    "targets":5,
+    
+    
+    }],
 
-  
+    "buttons": [
+      {
+        "extend": "copy",
+        "text": "Copiar",
+        "className": "btn btn-sm btn-icon3 tooltip-link",
+        "title": "Copiar tabla a portapapeles"
+      },
+      {
+        "extend": "print",
+        "text": "Imprimir",
+        "className": "btn btn-sm btn-icon3 tooltip-link",
+        "title": "Imprimir tabla"
+      }
+    ]
+  })
+
+
 </script>
 
 {% comment %} <script>

@@ -28,6 +28,7 @@
 
 
 .dt-buttons {
-    margin-left: 100px !important;
+    /* margin-left: 1px !important; */
+    margin-top: 10px;
 }
 
