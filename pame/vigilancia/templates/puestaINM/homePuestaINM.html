@@ -152,6 +152,45 @@
         </tbody>
     </table>
 </div>
+{% for message in messages %}
+{% if message.tags == "success" %}
+  showSuccessNotification("Felicitaciones: {{ message }}");
+{% elif message.tags == "error" %}
+  showErrorNotification("Error: {{ message }}");
+{% endif %}
+{% endfor %}
+
+<button type="button" class="btn btn-success swalDefaultSuccess">
+  Launch Success Toast
+</button>
+
+
+<script>
+   $(function() {
+    var Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+    $('.swalDefaultSuccess').click(function() {
+      Toast.fire({
+        icon: 'success',
+        title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+      })
+    });
+
+  });
+
+</script>
+
+{% for message in messages %}
+{% if message.tags == "success" %}
+  showSuccessNotification("Felicitaciones: {{ message }}");
+{% elif message.tags == "error" %}
+  showErrorNotification("Error: {{ message }}");
+{% endif %}
+{% endfor %}
 
 {% endblock contenido %}
 
