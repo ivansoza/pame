@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
 from django import forms
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 # Create your views here.
 from django import forms
@@ -87,6 +88,7 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         inventario_id = self.object.id  # Obtiene el ID del inventario recién creado
         puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
+        messages.success(self.request, 'Inventario creado con éxito.')
         return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
 #---------------------------------------------------------
@@ -136,6 +138,7 @@ class CrearEnseresINM(CreateView):
     def get_success_url(self):
         extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Enseres creado con éxito.')
         return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
     
 
@@ -179,9 +182,11 @@ class CrearEnseresModaINM(CreateView):
     template_name = 'modals/inm/crearEnseresModaINM.html'
     
     def get_success_url(self):
-         enseres_id = self.object.noExtranjero.id
-         puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
-         return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Enseres creado con éxito.')
+
+        return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -219,9 +224,11 @@ class EditarEnseresViewINM(UpdateView):
     template_name = 'modals/editarEnseresINM.html'
 
     def get_success_url(self):
-         enseres_id = self.object.noExtranjero.id
-         puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
-         return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Enseres editados con éxito.')
+
+        return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -242,9 +249,10 @@ class DeleteEnseresINM(DeleteView):
     template_name = 'modals/inm/eliminarEnseres.html'
 
     def get_success_url(self):
-         enseres_id = self.object.noExtranjero.id
-         puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
-         return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Enseres eliminados con éxito.')
+        return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -252,7 +260,6 @@ class DeleteEnseresINM(DeleteView):
         context['seccion'] = 'seguridadINM'
         return context
     
-
 class CrearPertenenciasViewINM(CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
@@ -270,7 +277,7 @@ class CrearPertenenciasViewINM(CreateView):
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
         puesta_id = self.kwargs.get('puesta_id')
-
+        messages.success(self.request, 'Pertenencias creadas con éxito.')
         return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
     def get_context_data(self, **kwargs):
@@ -294,6 +301,8 @@ class DeletePertenenciasINM(DeleteView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Pertenencias eliminadas con éxito.')
+
         return reverse_lazy('ver_pertenenciasINM', args=[inventario_id, puesta_id])
 
 
@@ -313,6 +322,8 @@ class EditarPertenenciasViewINM(UpdateView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
+
         return reverse_lazy('ver_pertenenciasINM', args=[inventario_id, puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -329,6 +340,8 @@ class EditarPertenenciasViewAC(UpdateView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
+
         return reverse_lazy('ver_pertenenciasAC', args=[inventario_id, puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -373,7 +386,7 @@ class CrearPertenenciasValoresViewINM(CreateView):
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
         puesta_id = self.kwargs.get('puesta_id')
-
+        messages.success(self.request, 'Valores agregados con éxito.')
         return reverse('ver_pertenencias_valorINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
     def get_context_data(self, **kwargs):
@@ -398,6 +411,7 @@ class UpdatePertenenciasValorINM(UpdateView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
         return reverse('ver_pertenencias_valorINM', args=[inventario_id, puesta_id])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -419,6 +433,8 @@ class UpdatePertenenciasValorAC(UpdateView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
+
         return reverse('ver_pertenencias_valorAC', args=[inventario_id, puesta_id])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -438,6 +454,8 @@ class DeletePertenenciasIValorNM(DeleteView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Valores eliminados con éxito.')
+
         return reverse('ver_pertenencias_valorINM', args=[inventario_id, puesta_id])
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -486,6 +504,7 @@ class CrearInventarioViewAC(CreateView):
     def get_success_url(self):
         inventario_id = self.object.id  # Obtiene el ID del inventario recién creado
         puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
+        messages.success(self.request, 'Inventario creado con éxito.')
         return reverse('ver_pertenenciasAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
 
@@ -528,7 +547,7 @@ class CrearPertenenciasViewAC(CreateView):
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
         puesta_id = self.kwargs.get('puesta_id')
-
+        messages.success(self.request, 'Pertenencias creadas con éxito.')
         return reverse('ver_pertenenciasAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
     def get_context_data(self, **kwargs):
@@ -552,6 +571,7 @@ class DeletePertenenciasAC(DeleteView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Pertenencias eliminadas con éxito.')
         return reverse_lazy('ver_pertenenciasAC', args=[inventario_id, puesta_id])
 
 
@@ -598,7 +618,7 @@ class CrearPertenenciasValoresViewAC(CreateView):
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
         puesta_id = self.kwargs.get('puesta_id')
-
+        messages.success(self.request, 'Valores agregados con éxito.')
         return reverse('ver_pertenencias_valorAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
     def get_context_data(self, **kwargs):
@@ -622,8 +642,8 @@ class DeletePertenenciasValoresAC(DeleteView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Valores eliminadas con éxito.')
         return reverse_lazy('ver_pertenencias_valorAC', args=[inventario_id, puesta_id])
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -631,8 +651,6 @@ class DeletePertenenciasValoresAC(DeleteView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         
         return context
-
-
 
 
 class ListaEnseresViewAC(ListView):
@@ -662,6 +680,7 @@ class CrearEnseresAC(CreateView):
     def get_success_url(self):
         extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Enseres creados con éxito.')
         return reverse('listarExtranjeroAC', args=[extranjero.deLaPuestaAC.id])
     
 
@@ -704,9 +723,10 @@ class EditarEnseresViewAC(UpdateView):
     template_name = 'modals/ac/editarEnseresAC.html'
 
     def get_success_url(self):
-         enseres_id = self.object.noExtranjero.id
-         puesta_id = self.object.noExtranjero.deLaPuestaAC.id
-         return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Enseres editados con éxito.')
+        return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -726,9 +746,10 @@ class DeleteEnseresAC(DeleteView):
     template_name = 'modals/ac/eliminarEnseresAC.html'
 
     def get_success_url(self):
-         enseres_id = self.object.noExtranjero.id
-         puesta_id = self.object.noExtranjero.deLaPuestaAC.id
-         return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Enseres eliminados con éxito.')
+        return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -743,9 +764,10 @@ class CrearEnseresModaAC(CreateView):
     template_name = 'modals/ac/crearEnseresModaAC.html'
     
     def get_success_url(self):
-         enseres_id = self.object.noExtranjero.id
-         puesta_id = self.object.noExtranjero.deLaPuestaAC.id
-         return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaAC.id
+        messages.success(self.request, 'Enseres creados con éxito.')
+        return reverse_lazy('listarEnseresAC', args=[enseres_id, puesta_id])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -826,6 +848,8 @@ class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         inventario_id = self.object.id  # Obtiene el ID del inventario recién creado
         puesta_id = self.kwargs.get('puesta_id')  # Obtiene el ID de la puesta
+        messages.success(self.request, 'Inventario creado con éxito.')
+
         return reverse('ver_pertenenciasVP', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
 class ListaPertenenciasViewVP(ListView):
@@ -864,7 +888,7 @@ class CrearPertenenciasViewVP(CreateView):
     def get_success_url(self):
         inventario_id = self.kwargs['inventario_id']
         puesta_id = self.kwargs.get('puesta_id')
-
+        messages.success(self.request, 'Pertenencias creadas con éxito.')
         return reverse('ver_pertenenciasVP', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
     def get_context_data(self, **kwargs):
@@ -888,8 +912,8 @@ class DeletePertenenciasVP(DeleteView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id
+        messages.success(self.request, 'Pertenencias eliminadas con éxito.')
         return reverse_lazy('ver_pertenenciasVP', args=[inventario_id, puesta_id])
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -907,6 +931,8 @@ class EditarPertenenciasViewVP(UpdateView):
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
+
         return reverse_lazy('ver_pertenenciasVP', args=[inventario_id, puesta_id])
 
     def get_context_data(self, **kwargs):
