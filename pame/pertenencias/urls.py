@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM
 from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC
-from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP
+from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP, ListaEnseresViewUP, CrearEnseresVP, CrearEnseresModalVP, DeleteEnseresVP, EditarEnseresViewVP
 from .views import homePertenencias
 
 urlpatterns = [
@@ -51,6 +51,11 @@ urlpatterns = [
     path('crear-pertenencias-valor-vp/<int:inventario_id>/<int:puesta_id>/',CrearPertenenciasValoresViewVP.as_view(), name='crear_pertenencias_valor_vp'),
     path('eliminar-pertenencias-valor-vp/<int:pk>/',DeletePertenenciasValorVP.as_view(), name='eliminar_pertenencias_valor_vp'),
     path('editar-pertenencias-valor-vo/<int:pk>/',UpdatePertenenciasValorVP.as_view(), name='editar_pertenencias_valor_vp'),
+    path('listar-ensere-vp/<int:extranjero_id>/<int:puesta_id>/', ListaEnseresViewUP.as_view(), name='listar_enseres_vp'),
+    path('crear-enseres-vp/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresVP.as_view(), name='crear_enseres_vp'),
+    path('crear-enseres-vp1/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresModalVP.as_view(), name='crearEnseresModalVP'),
+    path('eliminar-enseres-vp/<int:pk>/', DeleteEnseresVP.as_view(), name='eliminarEnseresVP'),
+    path('editar-enseres-vp/<int:pk>/', EditarEnseresViewVP.as_view(), name='editarEnseresVP'),
 
 
 ]

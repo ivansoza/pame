@@ -50,5 +50,5 @@ class EnseresBasicos(models.Model):
     fechaEntrega = models.DateField(verbose_name='Fecha Entrega', auto_now_add=True)
     horaEntrega = models.DateTimeField(verbose_name='Hora Entrega', auto_now_add=True)
     enseres = MultiSelectField(choices=ENSERES, max_length=200)
-    enseresExtras = models.CharField(max_length=200, verbose_name='Enseres extras', blank=True, null= True)
+    enseresExtras = models.CharField(max_length=200, verbose_name='Enseres extras', blank=True, null= True, default='')
     noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
