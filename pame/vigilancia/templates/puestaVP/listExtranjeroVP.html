@@ -139,7 +139,7 @@
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasVP' first_inventario.id puesta.id%}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Pertenencias de valores">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valor_vp' first_inventario.id puesta.id%}" data-title="Pertenencias de valores">
                     <i class="fas fa-coins"></i>
                 </a>
                 {% endwith %}
@@ -156,24 +156,24 @@
 
                 {% if extranjero.enseresbasicos_set.all %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Ver enseres">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listar_enseres_vp' extranjero.id puesta.id %}" data-title="Ver enseres">
                         <i class="fas fa-shopping-basket"></i>
                     </a>
                 {% endwith %}
                  {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Ver enseres">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_enseres_vp' extranjero.id puesta.id %}" data-title="Ver enseres">
                     <i class="fas fa-shopping-basket"></i>
                 </a>
                 {% endif %}
 
                 {% if extranjero.llamadastelefonicas_set.all %}
                 {% with first_llamada=extranjero.llamadastelefonicas_set.first %}
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadas_vp' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                 <i class="fas fa-phone"></i>
                 </a>
                 {% endwith %}
                 {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-vp'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                 <i class="fas fa-phone"></i>
                 </a>
                 {% endif %}
