@@ -121,12 +121,12 @@
         style="width:100%">
         <thead>
             <tr>
-                <th>Numero Oficio</th>
-                <th>Fecha de Oficio</th>
-                <th>Autoridades</th>
-                <th>Punto Revisión</th>
-                <th>Estacion</th>
-                <th>Opciones</th>
+                <th >Numero Oficio</th>
+                <th >Fecha de Oficio</th>
+                <th >Autoridades</th>
+                <th >Punto Revisión</th>
+                <th >Estación</th>
+                <th style="width: 5%;">Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -193,7 +193,29 @@
 {% endblock contenido %}
 
 {% block script %}
+
+
+
 <script>
+    $("#puestasinm-table").DataTable({
+      paging:true,
+      pageLength:10,
+      autoWidth: true,
+      searching : true,
+      bInfo:true,
+      bSort:true,
+
+      "columnDefs": [{
+      "targets":5,
+      
+      
+      }]
+    })
+
+  
+</script>
+
+{% comment %} <script>
     $(document).ready(function () {
         $('#puestasinm-table').DataTable({
             responsive: true,
@@ -256,6 +278,6 @@
             },
         });
     });
-</script>
+</script> {% endcomment %}
 
 {% endblock script %}
