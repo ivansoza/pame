@@ -1,0 +1,7 @@
+{% for message in messages %}
+{% if message.tags == "success" %}
+  showSuccessNotification("Felicitaciones: {{ message }}");
+{% elif message.tags == "error" %}
+  showErrorNotification("Error: {{ message }}");
+{% endif %}
+{% endfor %}

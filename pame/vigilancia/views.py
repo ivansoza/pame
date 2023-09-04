@@ -19,6 +19,7 @@ from django.contrib.auth import get_user_model
 from catalogos.models import Estacion, Relacion
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.contrib import messages
 
 
 import sys
@@ -185,6 +186,11 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
+    
+    def get_success_url(self):
+        # Agregar una notificación de éxito
+        messages.success(self.request, 'La puesta de disposición se ha creado con éxito.')
+        return super().get_success_url()
 
 class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -192,16 +198,15 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     }
     model =Extranjero             
     form_class = extranjeroFormsInm    
-    template_name = 'puestaINM/crearExtranjeroINM.html' 
-    # success_url = reverse_lazy('homePuestaINM')
-    
+    template_name = 'puestaINM/crearExtranjeroINM.html'     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
         if self.object.viajaSolo:
+            messages.success(self.request, 'Extranjero Creado con Éxito.')
             return reverse('agregar_biometricoINM', args=[extranjero_id])
         else:
-            # return reverse('crearExtranjeroAC', args=[puesta_id])
+            messages.success(self.request, 'Extranjero Creado con Éxito.')
             return reverse('listAcompanantesINM', args=[extranjero_id, puesta_id])
                 
     def get_initial(self):
@@ -293,6 +298,7 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     template_name = 'puestaINM/editarExtranjeroINM.html'
 
     def get_success_url(self):
+        messages.success(self.request, 'Extranjero Editado con Éxito.')
         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
     def form_valid(self, form):
         extranjero = form.save(commit=False)
@@ -332,6 +338,8 @@ class AgregarBiometricoINM(CreateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Biometrico Agregado con Éxito.')
+
         return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
     
     def get_initial(self):
@@ -365,6 +373,7 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Extranjero Editado con Éxito.')
         return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
     
     def get_context_data(self, **kwargs):
@@ -390,6 +399,7 @@ class DeleteExtranjeroINM(DeleteView):
 
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaIMN.id
+        messages.success(self.request, 'Extranjero Eliminado con Éxito.')
         return reverse('listarExtranjeros', args=[puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -449,6 +459,8 @@ class AgregarAcompananteViewINM(CreatePermissionRequiredMixin,CreateView):
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        messages.success(self.request, 'Acompañante Agregado con Éxito.')
+
         return reverse_lazy('listAcompanantesINM', kwargs={'extranjero_id': extranjero_principal.id, 'puesta_id': extranjero_principal.deLaPuestaIMN.id})
     
     def form_valid(self, form):
@@ -477,20 +489,15 @@ class DeleteAcompananteINM(DeleteView):
 
     def get_success_url(self):
         acompanante = self.object
-
-        # Obtener los IDs necesarios
         extranjero_id = acompanante.delExtranjero.id
         puesta_id = acompanante.delExtranjero.deLaPuestaIMN.id
-
-        # Generar la URL con los IDs
+        messages.success(self.request, 'Acompañante Eliminado con Éxito.')
         return reverse_lazy('listAcompanantesINM', args=[extranjero_id, puesta_id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['puesta_id'] = self.object.deLaPuestaIMN.id
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
-        
         return context
 class DeleteAcompananteINM1(DeleteView):
     permission_required = {
@@ -501,12 +508,9 @@ class DeleteAcompananteINM1(DeleteView):
 
     def get_success_url(self):
         acompanante = self.object
-
-        # Obtener los IDs necesarios
         extranjero_id = acompanante.delAcompanante.id
         puesta_id = acompanante.delAcompanante.deLaPuestaIMN.id
-
-        # Generar la URL con los IDs
+        messages.success(self.request, 'Acompañante Eliminado con Éxito.')
         return reverse_lazy('listAcompanantesINM', args=[extranjero_id, puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -527,20 +531,15 @@ class DeleteAcompananteAC(DeleteView):
 
     def get_success_url(self):
         acompanante = self.object
-
-        # Obtener los IDs necesarios
         extranjero_id = acompanante.delExtranjero.id
         puesta_id = acompanante.delExtranjero.deLaPuestaAC.id
-
-        # Generar la URL con los IDs
+        messages.success(self.request, 'Acompañante Eliminado con Éxito.')
         return reverse_lazy('listAcompanantesAC', args=[extranjero_id, puesta_id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['puesta_id'] = self.object.deLaPuestaIMN.id
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
-        
         return context
 class DeleteAcompananteAC1(DeleteView):
     permission_required = {
@@ -551,12 +550,9 @@ class DeleteAcompananteAC1(DeleteView):
 
     def get_success_url(self):
         acompanante = self.object
-
-        # Obtener los IDs necesarios
         extranjero_id = acompanante.delAcompanante.id
         puesta_id = acompanante.delAcompanante.deLaPuestaAC.id
-
-        # Generar la URL con los IDs
+        messages.success(self.request, 'Acompañante Eliminado con Éxito.')
         return reverse_lazy('listAcompanantesAC', args=[extranjero_id, puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -580,25 +576,18 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-        # extranjero_id = self.object.id  
         extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
-
-        # Obtén el ID del extranjero recién creado
-            # return reverse('crearExtranjeroAC', args=[puesta_id])
-
+        messages.success(self.request, 'Extranjero Creado con Éxito.')
         return reverse('listAcompanantesINM', args=[extranjero_principal_id, puesta_id])
         
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
         initial = super().get_initial()
-
-        # Acceder al usuario autenticado y sus datos en la base de datos
         Usuario = get_user_model()
         usuario = self.request.user
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
-            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
             usuario_id = usuario_data.id
             estacion_id = usuario_data.estancia_id
             estacion = Estacion.objects.get(pk=estacion_id)
@@ -686,13 +675,10 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-
-        # Acceder al usuario autenticado y sus datos en la base de datos
         Usuario = get_user_model()
         usuario = self.request.user
         try:
             usuario_data = Usuario.objects.get(username=usuario.username)
-            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
             usuario_id = usuario_data.id
             estacion_id = usuario_data.estancia_id
             estado = usuario_data.estancia.estado.estado
@@ -701,7 +687,6 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
-         # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionAC.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroOficio.split(f'/')[-1]) if ultimo_registro else 0
         nuevo_numero = f'2023/AC/{estacion_id}/{usuario_id}/{ultimo_numero + 1:04d}'
@@ -710,15 +695,14 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         initial['entidadFederativa'] = estado
         initial['dependencia'] = estacionM
         return initial
-
-        
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
-
         return context
+    def get_success_url(self):
+        messages.success(self.request, 'La puesta por autoridad competente se ha creado con éxito.')
+        return super().get_success_url()
     
 class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -732,9 +716,10 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
         if self.object.viajaSolo:
+            messages.success(self.request, 'Extranjero creado con éxito.')
             return reverse('agregar_biometricoAC', args=[extranjero_id])
         else:
-            # return reverse('crearExtranjeroAC', args=[puesta_id])
+            messages.success(self.request, 'Extranjero creado con éxito.')
             return reverse('listAcompanantesAC', args=[extranjero_id, puesta_id])
 
     def get_initial(self):
@@ -843,6 +828,7 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     
 
     def get_success_url(self):
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
         return reverse('listarExtranjeroAC', args=[self.object.deLaPuestaAC.id])
     
     def get_context_data(self, **kwargs):
@@ -864,6 +850,7 @@ class AgregarBiometricoAC(CreateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Biometricos creados con éxito.')
         return reverse('listarExtranjeroAC', args=[extranjero.deLaPuestaAC.id])
     
     def get_initial(self):
@@ -897,13 +884,12 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Biometricos editados con éxito.')
         return reverse('listarExtranjeroAC', args=[extranjero.deLaPuestaAC.id])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-    # Obtén el ID del extranjero del argumento en el URL
         extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
-    # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta = extranjero.deLaPuestaAC
         context['puesta'] = puesta
@@ -921,6 +907,7 @@ class DeleteExtranjeroAC(DeleteView):
     
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaAC.id
+        messages.success(self.request, 'Extranjero eliminado con éxito.')
         return reverse('listarExtranjeroAC', args=[puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -941,9 +928,8 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-        # extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
         extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
-
+        messages.success(self.request, 'Extranjero creado con éxito.')
         return reverse('listAcompanantesAC', args=[extranjero_principal_id, puesta_id])
     
 
@@ -1040,6 +1026,8 @@ class AgregarAcompananteViewAC(CreateView):
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        messages.success(self.request, 'Acompañante agregado con éxito.')
+
         return reverse_lazy('listAcompanantesAC', kwargs={'extranjero_id': extranjero_principal.id, 'puesta_id': extranjero_principal.deLaPuestaAC.id})
     
     def form_valid(self, form):
@@ -1202,6 +1190,9 @@ class createPuestaVP(CreateView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
+    def get_success_url(self):
+        messages.success(self.request, 'La puesta de voluntad propia se ha creado con éxito.')
+        return super().get_success_url()
 
 class listarExtranjerosVP(ListView):
     model = Extranjero
@@ -1234,15 +1225,15 @@ class createExtranjeroVP(CreateView):
     model =Extranjero             
     form_class = extranjeroFormsVP  
     template_name = 'puestaVP/createExtranjeroVP.html' 
-    # success_url = reverse_lazy('homePuestaINM')
     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
         if self.object.viajaSolo:
+            messages.success(self.request, 'Extranjero creado con éxito.')
             return reverse('agregar_biometricoVP', args=[extranjero_id])
         else:
-            # return reverse('crearExtranjeroAC', args=[puesta_id])
+            messages.success(self.request, 'Extranjero creado con éxito.')
             return reverse('list-acompanantes-vp', args=[extranjero_id, puesta_id])
                 
     def get_initial(self):
@@ -1339,6 +1330,8 @@ class EditarExtranjeroVP(UpdateView):
     template_name = 'puestaVP/editExtranjeroVP.html'
 
     def get_success_url(self):
+        messages.success(self.request, 'Extranjero editado creado con éxito.')
+
         return reverse('listarExtranjerosVP', args=[self.object.deLaPuestaVP.id])
     def form_valid(self, form):
         extranjero = form.save(commit=False)
@@ -1376,6 +1369,7 @@ class DeleteExtranjeroVP(DeleteView):
 
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaVP.id
+        messages.success(self.request, 'Extranjero eliminado creado con éxito.')
         return reverse('listarExtranjerosVP', args=[puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -1396,6 +1390,8 @@ class AgregarBiometricoVP(CreateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Biometrico agregado con éxito.')
+
         return reverse('listarExtranjerosVP', args=[extranjero.deLaPuestaVP.id])
     
     def get_initial(self):
@@ -1429,6 +1425,8 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Biometrico editado creado con éxito.')
+
         return reverse('listarExtranjerosVP', args=[extranjero.deLaPuestaVP.id])
     
     def get_context_data(self, **kwargs):
@@ -1454,8 +1452,8 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-        # extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
         extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
+        messages.success(self.request, 'Extranjero creado con éxito.')
 
         return reverse('listAcompanantesVP', args=[extranjero_principal_id, puesta_id])
     
@@ -1514,21 +1512,19 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
 class AgregarAcompananteViewVP(CreateView):
     model = Acompanante
     form_class = AcompananteForm
-    # template_name = 'puestaAC/agregar_acompananteAC.html'
     template_name = 'modal/acompananteVP.html'
 
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        messages.success(self.request, 'Acompañante creado con éxito.')
         return reverse_lazy('listAcompanantesVP', kwargs={'extranjero_id': extranjero_principal.id, 'puesta_id': extranjero_principal.deLaPuestaVP.id})
     
     def form_valid(self, form):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_id = self.kwargs['extranjero_id']
-
         form.instance.delExtranjero_id = extranjero_principal_id
         form.instance.delAcompanante_id = extranjero_id
-
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -1548,12 +1544,10 @@ class DeleteAcompananteVP(DeleteView):
 
     def get_success_url(self):
         acompanante = self.object
-
-        # Obtener los IDs necesarios
         extranjero_id = acompanante.delExtranjero.id
         puesta_id = acompanante.delExtranjero.deLaPuestaVP.id
+        messages.success(self.request, 'Acompañante eliminado con éxito.')
 
-        # Generar la URL con los IDs
         return reverse_lazy('listAcompanantesVP', args=[extranjero_id, puesta_id])
 
     def get_context_data(self, **kwargs):
@@ -1572,12 +1566,9 @@ class DeleteAcompananteVP1(DeleteView):
 
     def get_success_url(self):
         acompanante = self.object
-
-        # Obtener los IDs necesarios
         extranjero_id = acompanante.delAcompanante.id
         puesta_id = acompanante.delAcompanante.deLaPuestaVP.id
-
-        # Generar la URL con los IDs
+        messages.success(self.request, 'Acompañante eliminado con éxito.')
         return reverse_lazy('listAcompanantesVP', args=[extranjero_id, puesta_id])
 
     def get_context_data(self, **kwargs):
