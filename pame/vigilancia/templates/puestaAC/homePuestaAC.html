@@ -113,8 +113,6 @@
   </div>
   <!-- ./col -->
 </div>
-<a class="btn btn-custom mb-3" href="{% url 'crearPuestaAC' %}">Crear Puesta</a>
-<a class="btn btn-custom1 mb-3" href=" {% url 'homeSeguridadGeneral' %}">Regresar al menu</a>
 
 <div class="table-responsive">
     <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
@@ -154,6 +152,25 @@
 
 {% endblock contenido %}
 
+{% block datatable %}
+ {
+    text: 'Crear Puesta',
+    className: 'btn btn-custom mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '{% url 'crearPuestaAC' %}';
+   }
+  },
+  {
+    text: 'Regresar al menu',
+    className: 'btn btn-custom1 mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '{% url 'homeSeguridadGeneral'%}';
+   }
+  },
+  
+{% endblock datatable %}
+
 {% block script %}
-{% include "includes/js/datatables3.js" %}
-{% endblock script %}
+¿{% endblock script %}
