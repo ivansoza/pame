@@ -147,9 +147,6 @@
   </div>
 <!---------------------- CARD ------------------>
 
-<a class="btn btn-custom1 mb-3 " href="{% url 'createAcompananteVP' puesta.id extranjero_principal.id  %}">Crear Extranjero</a>
-<br>
-
 
 
 <a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom mb-4">Volver a la Lista de Puestas</a>
@@ -164,6 +161,23 @@
 </div>
 
 {% endblock contenido %}
+
+{% block datatable %}
+{
+    text: '<i class="fas fa-plus"></i>',
+    className: 'btn btn-custom1 mr-2',
+    action: function (e, dt, node, config) {
+      window.location.href = '{% url 'createAcompananteVP' puesta.id extranjero_principal.id  %}';
+    }
+  },
+  
+{% endblock datatable %}
+
+{% block datatable2 %}
+
+{% endblock datatable2 %}
+
+
 
 
 

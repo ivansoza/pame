@@ -492,6 +492,7 @@
         
         {% endblock datatable %}        
         
+        {% block datatable2 %}
           {extend: 'copy',
           text: '<i class="fas fa-clone"></i>',
           class: 'btn btn-secondary',
@@ -516,6 +517,7 @@
               columns:[0,1,2]
           }
           },
+          {% endblock datatable2 %}
       ],
       "language": {
                   "sProcessing": "Procesando...",
