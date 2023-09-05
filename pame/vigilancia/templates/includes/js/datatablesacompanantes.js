@@ -1,25 +1,42 @@
 <script>
-    $(document).ready(function() {
-      new DataTable('#tabla', {
-        dom: '<"top"fl>rt<"bottom"Bip><"clear">',
-        lengthMenu: [5, 10, 25, 50, 100], // Cambiamos el menú de longitud para incluir 5 entradas
-        pageLength: 5, // Establecemos el número inicial de entradas por página en 5
-        buttons: [
-          {
-            extend: 'copy',
-            text: '<i class="fas fa-copy"></i> Copiar', // Icono de copiar
+  $("#tabla").DataTable({
+      paging: true,
+      lengthMenu: [5, 10, 25, 50, 100], // Cambiamos el menú de longitud para incluir 5 entradas
+      pageLength:5,
+      lengthChange :true,
+      autoWidth: true,
+      searching: true,
+      bInfo: true,
+      bSort: true,
+
+      dom: 'frtip',
+      buttons:[
+          {extend: 'copy',
+          text: '<i class="fas fa-clone"></i>',
+          class: 'btn btn-secondary',
+          titleAttr: 'Copy',
+          exportOptions:{
+              columns:[0,1,2]
+          }
           },
-          {
-            extend: 'excel',
-            text: '<i class="fas fa-file-excel"></i> Exportar a Excel', // Icono de exportar a Excel
+          {extend: 'excel',
+          text: '<i class="fas fa-file-excel"></i>',
+          class: 'btn btn-secondary',
+          titleAttr: 'Excel',
+          exportOptions:{
+              columns:[0,1,2]
+          }
           },
-          {
-            extend: 'print',
-            text: '<i class="fas fa-print"></i> Imprimir', // Icono de imprimir
+          {extend: 'print',
+          text: '<i class="fas fa-print"></i>',
+          class: 'btn btn-secondary',
+          titleAttr: 'Excel',
+          exportOptions:{
+              columns:[0,1,2]
+          }
           },
-          'colvis',
-        ],
-        "language": {
+      ],
+      "language": {
                   "sProcessing": "Procesando...",
                   "sLengthMenu": "Mostrar _MENU_ Registros",
                   "sZeroRecords": "No se encontraron resultados",
@@ -45,8 +62,6 @@
                       "colvis": "Visibilidad"
                   }
               },
-        
-      });
-    });
+
+  });
 </script>
-  
