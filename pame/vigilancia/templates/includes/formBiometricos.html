@@ -3,16 +3,16 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
-      <div class="col-sm-6 col-md-6 col-lg-3">
+      <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
         {{ form.Extranjero|as_crispy_field }}
       </div>
-      <div class="col-sm-6 col-md-6 col-lg-3">
+      <div class="col-sm-6 col-md-6 col-lg-4">
         {{ form.fotografiaExtranjero|as_crispy_field }}
       </div>
-      <div class="col-sm-6 col-md-6 col-lg-3">
+      <div class="col-sm-6 col-md-6 col-lg-4">
         {{ form.huellaExtranjero|as_crispy_field }}
       </div>
-      <div class="col-sm-6 col-md-6 col-lg-3">
+      <div class="col-sm-6 col-md-6 col-lg-4">
         {{ form.firmaExtranjero|as_crispy_field }}
       </div>
     </div>

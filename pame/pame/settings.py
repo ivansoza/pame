@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'vigilancia',
     'salud',
     'juridico',
-
+    'traslados',
     
 ]
 

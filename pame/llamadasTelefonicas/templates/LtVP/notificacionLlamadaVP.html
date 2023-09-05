@@ -1,0 +1,148 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDD22D ">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
+{% block contenido %}
+<style>
+    .container {
+      width: 80%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: white;
+    }
+    
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        flex-direction: row;
+        text-align: left;
+      }
+    
+      .image-container {
+        flex: 1;
+      }
+    
+      .text-container {
+        flex: 2;
+        padding-left: 20px;
+        text-align: left;
+      }
+    }
+    
+    .text {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    
+    .image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    .language-select-box {
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .language-select-box:focus {
+      outline: none;
+      border-color: #66afe9;
+      box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+    }
+    </style>
+    <div class="titulo-general-container">
+        <h1 class="titulo-general">
+            Notificación de Llamada Telefónica           
+        </h1>
+      </div>
+      <br>
+      <br>
+    <div class="container">
+        <div class="content-container">
+          <div class="image-container">
+            <img class="image" src=" {% static 'img/gh.jpg' %} " style="width: 300px;" class="logo-img">        </div>
+        </div>
+          <div class="text-container">
+            <div class="language-select" style="align-items: end;">
+                <label for="language">Select Language:</label>
+                <select id="language" onchange="changeLanguage()"class="language-select-box">
+                  <option value="en">English</option>
+                  <option value="es">Español</option>
+                </select>
+              </div>
+            <div class="text" id="text-content">                
+                <p>Mr or Mrs <strong style="color: rgb(161, 13, 13);">{{nombreCompleto}}</strong>,</p>
+                <p>You are informed that at the {{estancia_extranjero}} you are allowed to make a phone call.</p>
+                <p>Please follow the instructions from the station's personnel to make your call.</p>
+                <p>We appreciate your cooperation.</p>
+                <p>Station Manager : <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
+                <p>Date: <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
+                <a  href="{% url 'ver_llamadas_vp' llamada.id puesta.id %}"class="btn btn-custom">I accept that I have been notified</a>
+           </div>
+        </div>
+      </div>
+
+     <script>
+        function changeLanguage() {
+          const language = document.getElementById('language').value;
+          const textContent = document.getElementById('text-content');
+  
+         if (language === 'en') {
+           textContent.innerHTML = `
+           <p><strong style="color: rgb(161, 13, 13);">{{nombreCompleto}}</strong>,</p>
+                <p>You are informed that at {{estancia_extranjero}} station you are allowed to make a phone call.</p>
+                <p>Please follow the instructions from the station's personnel to make your call.</p>
+                <p>We appreciate your cooperation.</p>
+                <p> <strong>Station Manager :</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
+                <p><strong>Date:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
+                <a  href="{% url 'ver_llamadas_vp' llamada.id puesta.id %}"class="btn btn-custom">I accept that I have been notified</a>
+                `;
+        } else if (language === 'es') {
+           textContent.innerHTML = `
+           <p> <strong style="color: rgb(161, 13, 13);">{{nombreCompleto}}</strong>,</p>
+           <p>Se le informa que en la estación {{estancia_extranjero}} se le permite hacer una llamada telefónica.</p>
+           <p>Por favor, siga las instrucciones del personal de la estación para realizar su llamada.</p>
+           <p>Agradecemos su cooperación.</p>
+           <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
+           <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
+           <a  href="{% url 'ver_llamadas_vp' llamada.id puesta.id %}"class="btn btn-custom">Acepto que he sido notificado</a>
+           `;
+        }      
+      const currentDate = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = currentDate.toLocaleDateString(language, options);
+      document.getElementById('currentDate').textContent = formattedDate;
+    } 
+      changeLanguage();
+    
+    </script>
+{% endblock contenido %}
+
+

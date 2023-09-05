@@ -120,6 +120,11 @@
   }
 
 
+#tabla thead th {
+    background-color: #1E4C40;
+    color: white; /* Cambia el color del texto */
+}
+
 
 #puestaAC-table {
     width: 100%; /* Adjust as needed */
@@ -269,6 +274,8 @@
   top: 0;
   left: 0;
 }
+
+
 
 
 

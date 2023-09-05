@@ -15,7 +15,7 @@
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header custom-header-color">
-            <h2 class="modal-title">Agregar llamada</h2>
+            <h2 class="modal-title">Agregar llamada a: {{nombre_extranjero2}}</h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -23,15 +23,9 @@
         
         {% load crispy_forms_tags %}
 
-        <form id="llamadaForm" action="{% url 'crear_llamada_ac' llamada_id=llamada.id puesta_id=puesta.id%}" method="POST">
+        <form id="llamadaForm" action="{% url 'crear_llamada_vp' llamada_id=llamada.id puesta_id=puesta.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                <div class="titulo-general-container mt-2" >
-                    <h1 class="titulo-general">Llamadas del Extranjero:
-                        <span class="puesta-color" >{{nombre_extranjero2}}</span>
-                
-                    </h1>   
-                </div>
                 <div class="row">
                     <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
                         {{ form.noExtranjero|as_crispy_field}}
@@ -46,8 +40,6 @@
                         {{ form.deseaLlamar|as_crispy_field }}
                     </div>
                 </div>
-                
-                
                 <div id="motivoDiv" {% if form.deseaLlamar.value == 'No' %}style="display: none;"{% endif %}>
                     {{ form.motivo|as_crispy_field }}
                 </div>
@@ -56,8 +48,7 @@
                     {{ form.observaciones|as_crispy_field }}
                 </div>
             </div>
-            
-            <div class="modal-footer">   
+            <div class="modal-footer">
                 <button type="button" class="btn btn-custom1" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom">Confirmar</button>
             </div>

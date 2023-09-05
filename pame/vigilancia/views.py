@@ -298,7 +298,7 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     template_name = 'puestaINM/editarExtranjeroINM.html'
 
     def get_success_url(self):
-        messages.success(self.request, 'Extranjero Editado con Éxito.')
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
     def form_valid(self, form):
         extranjero = form.save(commit=False)
@@ -373,7 +373,7 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        messages.success(self.request, 'Extranjero Editado con Éxito.')
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
         return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
     
     def get_context_data(self, **kwargs):
@@ -1330,7 +1330,7 @@ class EditarExtranjeroVP(UpdateView):
     template_name = 'puestaVP/editExtranjeroVP.html'
 
     def get_success_url(self):
-        messages.success(self.request, 'Extranjero editado creado con éxito.')
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
 
         return reverse('listarExtranjerosVP', args=[self.object.deLaPuestaVP.id])
     def form_valid(self, form):
@@ -1369,7 +1369,7 @@ class DeleteExtranjeroVP(DeleteView):
 
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaVP.id
-        messages.success(self.request, 'Extranjero eliminado creado con éxito.')
+        messages.success(self.request, 'Extranjero eliminado con éxito.')
         return reverse('listarExtranjerosVP', args=[puesta_id])
 
     def get_context_data(self, **kwargs):

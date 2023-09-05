@@ -22,7 +22,7 @@
         </div>
         {% load crispy_forms_tags %}
 
-        <form action="{% url 'crear_pertenencias_valorINM' inventario_id=inventario.id puesta_id=puesta.id%}" method="POST">
+        <form action="{% url 'crear_pertenencias_valor_vp' inventario_id=inventario.id puesta_id=puesta.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
                 <div class="titulo-general-container mt-2" >
@@ -55,4 +55,3 @@
 
     </div>
 </div>
-
