@@ -11,14 +11,22 @@
 
       dom: 'Bfrltip',
       buttons:[
-        {
-            text: 'Crear Extranjero',
-            className: 'btn btn-custom mr-2',
-            action: function (e, dt, node, config) {
+          {
+          text: 'Crear Puesta',
+          className: 'btn btn-custom mr-2',
+          action: function (e, dt, node, config) {
               // Redirigir a la URL relativa a la ubicación actual
-              window.location.href = '#';
-           }
+          window.location.href = '#';
+          }
           },
+          {
+            text: 'Regresar al menu',
+            className: 'btn btn-custom1 mr-2',
+            action: function (e, dt, node, config) {
+                // Redirigir a la URL relativa a la ubicación actual
+            window.location.href = '';
+            }
+            },
           {extend: 'copy',
           text: '<i class="fas fa-clone"></i>',
           class: 'btn btn-secondary',
