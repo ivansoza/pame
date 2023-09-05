@@ -141,6 +141,6 @@ class Biometrico(models.Model):
         verbose_name_plural = 'Biometricos'
 
 class Proceso(models.Model):
-    numeroUnicoProceso = models.IntegerField()
+    numeroUnicoProceso = models.CharField(max_length=50)
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     delResponsable = models.ForeignKey(Responsable, on_delete=models.CASCADE)

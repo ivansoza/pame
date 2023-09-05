@@ -25,8 +25,26 @@
         <form action="{% url 'crear_pertenencias_valor_vp' inventario_id=inventario.id puesta_id=puesta.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
+                <div class="titulo-general-container mt-2" >
+                    <h1 class="titulo-general">Del Inventario:
+                        <span class="puesta-color" >{{inventario.foloInventario}}</span>
+                    </h1>
+                </div>
                 {% csrf_token %}
-                {{ form|crispy }}
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-12">
+                        {{form.descripcion|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-12">
+                        {{form.cantidad|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-12">
+                        {{form.Obsevaciones|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-12" style='visibility: hidden' >
+                        {{form.delInventario|as_crispy_field}}
+                    </div>
+                </div>
             </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-custom1" data-bs-dismiss="modal">Cerrar</button>

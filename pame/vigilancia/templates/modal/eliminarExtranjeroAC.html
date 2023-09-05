@@ -27,10 +27,18 @@
             {% csrf_token %}
             <div class="modal-body">
                 <h2>¿Estás seguro de que deseas eliminar al siguiente extranjero?</h2>
+                <br>
                 <ul>
-                    <li>Nombre: {{ object.nombreExtranjero }}</li>
-                    <li>Apellido Paterno: {{ object.apellidoPaternoExtranjero }}</li>
-                    <!-- Agrega más campos aquí según lo necesario -->
+                    <div>
+                        <h4>Nombre:
+                            <span class="puesta-color" >{{ object.nombreExtranjero }}</span>
+                        </h4>
+                    </div>
+                    <div>
+                        <h4>Apellidos:
+                            <span class="puesta-color" >{{ object.apellidoPaternoExtranjero }} {{object.apellidoMaternoExtranjero}}</span>
+                        </h4>
+                    </div>
                 </ul>
             </div>
             <div class="modal-footer">
