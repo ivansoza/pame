@@ -23,6 +23,8 @@ from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
 
+from traslados.models import SolicitudTraslado
+
 import sys
 import pickle
 
@@ -1601,6 +1603,10 @@ class listarTraslado(ListView):
         return context
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)  # Esto imprimirá todo el contenido POST
+     
+
+
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             estacion_id = request.POST.get('estacion_id')
             try:
@@ -1643,9 +1649,41 @@ class listarTraslado(ListView):
                                      'emailResponsable':'N/A'
 
                                      })
+        
 
         return super().post(request, *args, **kwargs)
 
 
+
+
+
+
+def solicitar_traslado(request):
+    if request.method == 'POST':
+        if 'extranjeros[]' in request.POST and 'estacionDestino' in request.POST:
+            print("Manejando solicitud de traslado")
+            
+            extranjeros = request.POST.getlist('extranjeros[]')
+            estacion_destino_id = request.POST.get('estacionDestino')
+            
+            # Dado que estamos fuera de una vista basada en clases, no puedes usar self.request.user
+            # En lugar de eso, usas directamente request.user
+            estacion_origen = request.user.estancia
+            
+            for id in extranjeros:
+                extranjero = Extranjero.objects.get(pk=id)
+                
+                SolicitudTraslado.objects.create(
+                    extranjero=extranjero,
+                    estacion_origen=estacion_origen,
+                    estacion_destino=Estacion.objects.get(pk=estacion_destino_id),
+                    motivo="Razón del traslado"  # Puedes modificar esto según lo necesites
+                )
+            
+            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.'})
+
+        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.'})
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
