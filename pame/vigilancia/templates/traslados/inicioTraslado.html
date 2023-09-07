@@ -1,0 +1,320 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.ssdds@## ">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="#">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+
+
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Agregar Traslado
+    
+    </h1>
+</div>
+<br>
+<div class="titulo-general-container-card mb-4">
+    <h1 class="titulo-general">Selecciona la estancia:</h1>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <!-- Resto de tus campos y contenido -->
+                
+                <div class="form-group">
+                  <label for="estacion-selector">Selecciona una estación para el traslado:</label>
+                  <select id="estacion-selector" class="form-control">
+                    <option value="">Selecciona una estación</option>
+                    {% for estacion in estaciones %}
+                      <option value="{{ estacion.pk }}">{{ estacion.nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+            </form>
+            <div class="row">
+                <!-- Card con datos del extranjero -->
+                <div class="col-md-10">
+                  <div class="card">
+                     <div class="header">
+                        <h2>Datos de la Estancia:</h2>
+                     </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col">
+                            <span class="etiqueta">Nombre de la estancia:</span>
+                            <span id="estancia-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Calle:</span>
+                            <span id="calle-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Colonia:</span>
+                            <span id="colonia-nombre" class="valor">N/A</span>                
+                        </div>
+            
+                        <div class="col">
+                            <span class="etiqueta">Codigo Postal:</span>
+                            <span id="cp-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Estado:</span>
+                            <span id="estado-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Email:</span>
+                            <span id="email-nombre" class="valor">N/A</span>                
+                        </div>
+
+                        <div class="col">
+                            <span class="etiqueta">Nombre del Responsable:</span>
+                            <span id="responsable-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Telefono del Responsable:</span>
+                            <span id="telResponsable-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Email del Responsable:</span>
+                            <span id="emailResponsable-nombre" class="valor">N/A</span>                
+                            <br>
+                           
+                        </div>
+                        <!-- Otros campos de datos -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Card con la foto del extranjero -->
+                <div class="col-md-2 d-none d-md-block">
+                  <div class="card">
+                    <div class="col-lg">
+                        <!-- small card -->
+                        <div class="small-box bg-success">
+                          <div class="inner">
+                            <h3 id="capacidad-cantidad">N/A</h3>
+                    
+                            <p>Lugares disponibles</p>
+                          </div>
+                          <div class="icon">
+                    
+                            <i class="fas fa-check-circle"></i>
+                          </div>
+                          <a href="#" class="small-box-footer">
+                            More info <i class="fas fa-arrow-circle-right"></i>
+                          </a>
+                        </div>
+                      </div>
+                   
+                  </div>
+                </div>
+              </div>
+            
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% comment %} FIN  {% endcomment %}
+
+<!---------------------- CARD ------------------>
+
+<div class="row">
+    <div class="col">
+        <div class="titulo-general-container-card mb-4">
+            <h1 class="titulo-general">Lista de extranjeros para trasladar</h1>
+        </div>
+
+        
+
+        
+      <div class="card w-100">
+        <div class="card-body">
+          <h5 class="card-title">
+         
+          </h5>
+
+<div class="table-responsive">
+    <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido(s)</th>
+                <th>Nacionalidad</th>
+                <th style="width: 5%;">Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for extranjero in traslado %}
+            <tr>
+                <td>{{ extranjero.nombreExtranjero }}</td>
+                <td>{{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</td>
+                <td>{{ extranjero.nacionalidad }}</td>
+                <td>       
+            
+                    <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
+                    href="#"
+                    data-title="Agregar Acompañante" onclick="abrir_modal_edicion(this.href); return false;">
+                    <i class="fas fa-plus"></i>
+                </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+                
+        </div>
+      </div>
+    </div>
+  
+    <div class="col-sm-1 d-none d-md-flex align-items-center justify-content-center hide-on-small">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fa fa-arrow-right fa-1x" aria-hidden="true"></i>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="col">
+        <div class="titulo-general-container-card mb-4">
+            <h1 class="titulo-general">Extranjeros a trasladar</h1>
+        </div>
+
+        <div class="card w-100">
+          <div class="card-body">
+            <div class="table-responsive">
+                <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Acompañante</th>
+                            <th>Relación</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for relacion in relaciones_del_extranjero %}
+                        <tr>
+                            <td>{{ relacion.delAcompanante.nombreExtranjero }}</td>
+                            <td>{{ relacion.relacion }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteVP' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
+                                <i class="fas fa-trash-alt"></i>
+                                </a>                   
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% for relacion in relaciones_del_acompanante %}
+                        <tr>
+                            <td>{{ relacion.delExtranjero.nombreExtranjero }}</td>
+                            <td>{{ relacion.relacion }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'delete_acompananteVP1' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>             
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+             </div>
+                  
+          </div>
+        </div>
+      </div>
+  </div>
+<!---------------------- CARD ------------------>
+{% endblock contenido %}
+
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $("#estacion-selector").change(function() {
+    var selectedEstacionId = $(this).val();
+    if (selectedEstacionId) {
+      var csrfToken = $("input[name=csrfmiddlewaretoken]").val();  // Obtén el token CSRF del formulario
+      $.ajax({
+        url: '',  // Deja la URL en blanco para enviar la solicitud al mismo punto final
+        type: 'POST',
+        data: {
+          'estacion_id': selectedEstacionId,
+          'csrfmiddlewaretoken': csrfToken  // Agrega el token CSRF a la solicitud
+        },
+        dataType: 'json',
+        success: function(data) {
+          $("#capacidad").text(data.capacidad);
+          $("#capacidad-cantidad").text(data.capacidad);
+          $("#responsable-nombre").text(data.responsable);
+          $("#estado-nombre").text(data.estado);
+          $("#estancia-nombre").text(data.estancia);
+
+          $("#email-nombre").text(data.email);
+          $("#calle-nombre").text(data.calle);
+          $("#no-nombre").text(data.no);
+          $("#cp-nombre").text(data.cp);
+          $("#colonia-nombre").text(data.colonia);
+
+          $("#telResponsable-nombre").text(data.telResponsable);
+          $("#emailResponsable-nombre").text(data.emailResponsable);
+
+
+
+        },
+        error: function() {
+          $("#capacidad").text('Error al cargar la capacidad');
+          $("#capacidad-cantidad").text('Error al cargar la capacidad');
+          $("#responsable-nombre").text('Error al cargar el responsable');
+          $("#estado-nombre").text('Error al cargar el responsable');
+          $("#estancia-nombre").text('Error al cargar el responsable');   
+          
+          $("#email-nombre").text('Error al cargar el responsable');          
+          $("#calle-nombre").text('Error al cargar el responsable');          
+          $("#no-nombre").text('Error al cargar el responsable');          
+          $("#cp-nombre").text('Error al cargar el responsable');          
+          $("#colonia-nombre").text('Error al cargar el responsable');        
+
+          $("#telResponsable-nombre").text('Error al cargar el responsable');          
+          $("#emailResponsable-nombre").text('Error al cargar el responsable');          
+ 
+
+        }
+      });
+    } else {
+      $("#capacidad").text('N/A');
+      $("#capacidad-cantidad").text('N/A');
+      $("#responsable-nombre").text('N/A');
+      $("#estado-nombre").text('N/A');
+      $("#estancia-nombre").text('N/A');
+
+      $("#email-nombre").text('N/A');
+      $("#calle-nombre").text('N/A');
+      $("#no-nombre").text('N/A');
+      $("#cp-nombre").text('N/A');
+      $("#colonia-nombre").text('N/A');
+
+      $("#telResponsable-nombre").text('N/A');
+      $("#emailResponsable-nombre").text('N/A');
+
+
+    }
+  });
+});
+</script>
+
+{% endblock script %}
+

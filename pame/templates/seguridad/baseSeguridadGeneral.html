@@ -288,8 +288,8 @@
 
                     <!--  Traslado -->
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+          <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'traslado' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
                 Traslado
@@ -299,7 +299,7 @@
 
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{% url 'traslado' %}" class="nav-link {% if seccion == 'vertraslado' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Enviar extranjero</p>
                 </a>
