@@ -376,12 +376,19 @@ $("#solicitarTraslado").on("click", function() {
         },
         success: function(response) {
             console.log("Respuesta exitosa al solicitar traslado:", response);
+            if (response.status === 'success' && response.redirect_url) {
+            window.location.href = response.redirect_url;
+        }
 
             // Procesar respuesta del servidor (p. ej., mostrar un mensaje de éxito).
         },
         error: function(error) {
             console.log("Error al solicitar traslado:", error);
+            if (response.status === 'error' && response.redirect_url) {
+            window.location.href = response.redirect_url;
+        }
 
+            
             // Procesar el error (p. ej., mostrar un mensaje de error).
         }
     });

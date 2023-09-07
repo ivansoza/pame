@@ -1598,7 +1598,9 @@ class listarTraslado(ListView):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
-        estaciones = Estacion.objects.all()
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+        estaciones = Estacion.objects.exclude(pk=user_estacion.pk)
         context['estaciones'] = estaciones
         return context
 
@@ -1679,10 +1681,12 @@ def solicitar_traslado(request):
                     estacion_destino=Estacion.objects.get(pk=estacion_destino_id),
                     motivo="Razón del traslado"  # Puedes modificar esto según lo necesites
                 )
-            
-            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.'})
+            messages.success(request, 'Solicitudes de traslado realizadas con éxito.')
+            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('traslado')})
 
-        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.'})
+            # return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.'})
+        messages.error(request, 'Solicitudes de traslado denegada')
+        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.','redirect_url': reverse('traslado')})
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
