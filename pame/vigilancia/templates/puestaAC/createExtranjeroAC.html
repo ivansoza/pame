@@ -96,7 +96,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script>
+    {% comment %} <script>
         $(document).ready(function() {
             $('.datepicker').datepicker({
                 format: 'dd/mm/yyyy',  // Formato de fecha día/mes/año
@@ -105,5 +105,19 @@
                 changeYear: true,
             });
         });
-    </script>
+    </script> {% endcomment %}
+
+    <script>
+        $(document).ready(function(){
+            $('#date').on('input', function(){
+                var value = $(this).val();
+                var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{2})(\d{4})?/, "$1/$2/$3").trim('/');
+        
+                if (newValue !== value || newValue.length > 10) {
+                    $(this).val(newValue.substring(0, 10));
+                }
+            });
+        });
+        </script>
+
 {% endblock script %}

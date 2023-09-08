@@ -110,6 +110,28 @@
         });
     </script>
 
+    {% comment %} <script>
+        $(document).ready(function(){
+            $('#date').keyup(function(){
+                if($(this).val().length == 2 || $(this).val().length == 5){
+                    $(this).val($(this).val() + "/");
+                }
+            });
+        });
+    </script> {% endcomment %}
+
+    <script>
+        $(document).ready(function(){
+            $('#date').on('input', function(){
+                var value = $(this).val();
+                var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{2})(\d{4})?/, "$1/$2/$3").trim('/');
+        
+                if (newValue !== value || newValue.length > 10) {
+                    $(this).val(newValue.substring(0, 10));
+                }
+            });
+        });
+        </script>
 
     
 {% endblock script %}
