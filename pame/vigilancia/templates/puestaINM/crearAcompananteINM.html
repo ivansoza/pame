@@ -11,8 +11,11 @@
 
 
 <div class="titulo-general-container">
-    {% comment %} <h1 class="titulo-general">Agregar Extranjero a Puesta {{ puesta.numeroOficio }}</h1> {% endcomment %}
-</div>
+    <h1 class="titulo-general">
+        Agregar Extranjero a Puesta:
+        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+    </h1>
+  </div>
 
 
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >

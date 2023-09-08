@@ -84,7 +84,6 @@ class Extranjero(models.Model):
     apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno de Extranjero', max_length=50, blank=True)
     apellidoMaternoExtranjero = models.CharField(verbose_name='Apellido Materno de Extranjero', max_length=50, blank=True)
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
-   
     genero = models.IntegerField(verbose_name='Género', choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
     documentoIdentidad = models.FileField(upload_to='files/', verbose_name='Documento de Identidad', null=True, blank=True)
