@@ -26,6 +26,8 @@
 <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
+            <th>Extranjero</th>
+            <th>Estación</th>
             <th>Descripcion</th>
             <th>Cantidad</th>
             <th>Observaciones</th>
@@ -37,6 +39,8 @@
     <tbody>
         {% for pertenencia in object_list %}
         <tr>
+            <td>{{ inventario.noExtranjero }}</td>
+            <td>{{ inventario.unidadMigratoria}}</td>
             <td>{{ pertenencia.descripcion }}</td>
             <td>{{ pertenencia.cantidad }}</td>
             <td>{{ pertenencia.observaciones }}</td>

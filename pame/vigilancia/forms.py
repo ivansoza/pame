@@ -162,10 +162,7 @@ class extranjeroFormsInm(forms.ModelForm):
 
     )
 
-    documentoIdentidad = forms.FileField(
-        label= "Documento de Identidad:",
-
-    )
+   
   
    
     class Meta:

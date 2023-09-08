@@ -1,5 +1,6 @@
 from django.db import models
 from vigilancia.models import Extranjero
+from catalogos.models import Estacion
 from multiselectfield import MultiSelectField
 
 class Inventario(models.Model):
@@ -19,6 +20,8 @@ class Pertenencias(models.Model):
     observaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
 
+
+
     def __str__(self) -> str:
         return '__all__'
     
@@ -29,7 +32,7 @@ class Valores(models.Model):
     cantidad = models.FloatField(verbose_name='Cantidad')
     Obsevaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
-
+    
     def __str__(self) -> str:
         return self.descripcion
     
@@ -46,7 +49,7 @@ ENSERES = (
     ("Otros","Otros"),
 )
 class EnseresBasicos(models.Model):
-    unidadMigratoria = models.CharField(max_length=30, verbose_name='Unidad Migratoria')
+    unidadMigratoria = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación Migratoria')
     fechaEntrega = models.DateField(verbose_name='Fecha Entrega', auto_now_add=True)
     horaEntrega = models.DateTimeField(verbose_name='Hora Entrega', auto_now_add=True)
     enseres = MultiSelectField(choices=ENSERES, max_length=200)
