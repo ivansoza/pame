@@ -82,7 +82,7 @@ class Extranjero(models.Model):
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
     apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno de Extranjero', max_length=50, blank=True)
-    apellidoMaternoExtranjero = models.CharField(verbose_name='Apellido Materno de Extranjero', max_length=50, blank=True)
+    apellidoMaternoExtranjero = models.CharField(verbose_name='Apellido Materno', max_length=50, blank=True, null=True, default=" ")
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
     genero = models.IntegerField(verbose_name='Género', choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')

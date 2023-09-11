@@ -36,7 +36,12 @@
                     </div>
                     <div>
                         <h4>Apellidos:
-                            <span class="puesta-color" >{{ object.apellidoPaternoExtranjero }} {{object.apellidoMaternoExtranjero}}</span>
+                            <span class="puesta-color" >{% if extranjero.apellidoPaternoExtranjero %}
+                                {{ extranjero.apellidoPaternoExtranjero }}
+                            {% endif %}
+                            {% if extranjero.apellidoMaternoExtranjero %}
+                                {{ extranjero.apellidoMaternoExtranjero }}
+                            {% endif %}</span>
                         </h4>
                     </div>
                 </ul>

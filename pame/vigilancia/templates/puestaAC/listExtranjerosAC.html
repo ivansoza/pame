@@ -41,8 +41,7 @@
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Apellido Paterno</th>
-                <th>Apellido Materno</th>
+                <th>Apellido(s)</th>
                 <th>Nacionalidad</th>
                 <th>deLaPuesta</th>
                 <th>Opciones</th>
@@ -53,8 +52,13 @@
             {% for extranjero in extranjeros %}
             <tr>
                 <td>{{ extranjero.nombreExtranjero }}</td>
-                <td>{{ extranjero.apellidoPaternoExtranjero }}</td>
-                <td>{{ extranjero.apellidoMaternoExtranjero }}</td>
+                <td>{{ extranjero.nombreExtranjero }}
+                    {% if extranjero.apellidoPaternoExtranjero %}
+                        {{ extranjero.apellidoPaternoExtranjero }}
+                    {% endif %}
+                    {% if extranjero.apellidoMaternoExtranjero %}
+                        {{ extranjero.apellidoMaternoExtranjero }}
+                    {% endif %}</td>
                 <td>{{ extranjero.nacionalidad }}</td>
                 <td>{{ extranjero.deLaPuestaAC }}</td>
 

@@ -45,7 +45,12 @@
             
                         <div class="col">
                             <span class="etiqueta">Apellido(s):</span>
-                            <span class="valor">{{ inventario.noExtranjero.apellidoPaternoExtranjero }} {{ inventario.noExtranjero.apellidoMaternoExtranjero }}</span>                
+                            <span class="valor">{% if inventario.noExtranjero.apellidoPaternoExtranjero %}
+                                {{ inventario.noExtranjero.apellidoPaternoExtranjero }}
+                               {% endif %}
+                               {% if inventario.noExtranjero.apellidoMaternoExtranjero %}
+                                 {{ inventario.noExtranjero.apellidoMaternoExtranjero }}
+                               {% endif %}</span>                
                             <br>
                             <span class="etiqueta">Nacionalidad:</span>
                             <span class="valor">{{ inventario.noExtranjero.nacionalidad }}</span>

@@ -38,7 +38,14 @@
 <div class="row">
     <div class="col">
         <div class="titulo-general-container-card mb-4">
-            <h1 class="titulo-general">Lista de Acompañantes para: {{ extranjero_principal.nombreExtranjero}} {{ extranjero_principal.apellidoPaternoExtranjero}} {{ extranjero_principal.apellidoMaternoExtranjero}}</h1>
+            <h1 class="titulo-general">Lista de Acompañantes para: {{ extranjero_principal.nombreExtranjero}} 
+                {% if extranjero_principal.apellidoPaternoExtranjero %}
+                        {{ extranjero_principal.apellidoPaternoExtranjero }}
+                    {% endif %}
+                    {% if extranjero_principal.apellidoMaternoExtranjero %}
+                        {{ extranjero_principal.apellidoMaternoExtranjero }}
+                    {% endif %}
+                </h1>
         </div>
 
         
@@ -64,7 +71,12 @@
             {% for extranjero in extranjeros_no_relacionados %}
             <tr>
                 <td>{{ extranjero.nombreExtranjero }}</td>
-                <td>{{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</td>
+                <td>{% if extranjero.apellidoPaternoExtranjero %}
+                    {{ extranjero.apellidoPaternoExtranjero }}
+                {% endif %}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero }}
+                {% endif %}</td>
                 <td>{{ extranjero.nacionalidad }}</td>
                 <td>       
             

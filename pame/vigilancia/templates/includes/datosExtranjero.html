@@ -27,7 +27,14 @@
             
                         <div class="col">
                             <span class="etiqueta">Apellido(s):</span>
-                            <span class="valor">{{ extranjero_principal.apellidoPaternoExtranjero }} {{ extranjero_principal.apellidoMaternoExtranjero }}</span>                
+                            <span class="valor">
+                              {% if extranjero_principal.apellidoPaternoExtranjero %}
+                                {{ extranjero_principal.apellidoPaternoExtranjero }}
+                            {% endif %}
+                            {% if extranjero_principal.apellidoMaternoExtranjero %}
+                                {{ extranjero_principal.apellidoMaternoExtranjero }}
+                            {% endif %}
+                            </span>                
                             <br>
                             <span class="etiqueta">Nacionalidad:</span>
                             <span class="valor">{{ extranjero_principal.nacionalidad }}</span>

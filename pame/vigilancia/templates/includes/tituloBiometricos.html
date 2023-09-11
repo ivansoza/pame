@@ -1,7 +1,13 @@
 <div class="titulo-general-container mt-3">
     <h1 class="titulo-general">
         Agregar Datos Biometricos a Extranjero:
-        <span class="puesta-color" >{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</span>
+        <span class="puesta-color" >{{ extranjero.nombreExtranjero }}  
+            {% if extranjero.apellidoPaternoExtranjero %}
+                                {{ extranjero.apellidoPaternoExtranjero }}
+                            {% endif %}
+                            {% if extranjero.apellidoMaternoExtranjero %}
+                                {{ extranjero.apellidoMaternoExtranjero }}
+                            {% endif %} </span>
     </h1>
 </div>
 <br>
