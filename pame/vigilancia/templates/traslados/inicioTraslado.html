@@ -126,7 +126,7 @@
   </div>
 
 
-  <button id="solicitarTraslado" class="btn btn-custom ">CREAR PUESTA A TRASLADAR</button>
+  <a class="btn btn-custom" id="btnCrearPuesta" href="#">crear puesta</a>
   <BR>
 
 
@@ -405,5 +405,22 @@ $("#solicitarTraslado").on("click", function() {
 
 
 </script>
+
+<script>
+  document.getElementById("btnCrearPuesta").addEventListener("click", function() {
+      // Obtiene el valor seleccionado del dropdown
+      let estacionDestino = document.getElementById("estacion-selector").value;
+      let estacionOrigen = "{{user.estancia.id}}";  // Estación origen desde el contexto del template
+  
+      if(estacionDestino) {
+          // Construye la URL y redirige
+          let url = `{% url 'crear_traslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
+          window.location.href = url;
+      } else {
+          alert("Selecciona una estación destino primero.");
+      }
+  });
+  </script>
+  
 {% endblock script %}
 

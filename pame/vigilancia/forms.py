@@ -2,7 +2,7 @@ from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP
 import datetime
 from django.core.exceptions import ValidationError
-
+from traslados.models import Traslado
 
 class puestDisposicionINMForm(forms.ModelForm):
     numeroOficio = forms.CharField(
@@ -348,3 +348,9 @@ class BiometricoFormVP(forms.ModelForm):
     class Meta:
         model = Biometrico
         fields = '__all__'  # Incluye todos los campos del modelo
+
+
+class TrasladoForm(forms.ModelForm):
+    class Meta:
+        model = Traslado
+        fields = ['numeroUnicoProceso', 'estacion_origen', 'estacion_destino', 'nombreAutoridadEnvia']
