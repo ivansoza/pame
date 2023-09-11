@@ -5,16 +5,46 @@ from vigilancia.models import Proceso, Extranjero
 
 # Create your models here.
 
-class Traslado(models.Model):
-    numeroOficio = models.CharField(max_length=50, verbose_name='Numero de Oficio')
-    fechaOficio = models.DateTimeField(verbose_name='Fecha de Oficio')
-    estacionOrigen = models.CharField(max_length=50, verbose_name='Estación Origen')
-    estacionDestino = models.ForeignKey(Estacion, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Estación Destino')
-    estatus = models.CharField(max_length=50, verbose_name='Estatus')
-    numeroUnicoProceso = models.ForeignKey(Proceso,on_delete=models.CASCADE, verbose_name='Numero Unico Proceso')
+OPCION_STATUS_CHOICES=[
+    [0,'SOLICITUD'],
+    [1,'ACEPTADO'],
+    [2,'RECHAZADO'],
+]
 
-    def __str__(self):
-        return self.numeroOficio
+OPCION_STATUS_TRASLADO_CHOICES=[
+    [0,'ACPTADO'],
+    [1,'RECHAZADO'],
+]
+
+class Traslado(models.Model):
+    numeroUnicoProceso = models.CharField(max_length=50)
+    estacion_origen = models.ForeignKey(Estacion, on_delete=models.CASCADE, related_name='solicitudes_origen1', verbose_name='Estación de Origen')
+    estacion_destino = models.ForeignKey(Estacion, on_delete=models.CASCADE, related_name='solicitudes_destino1', verbose_name='Estación de Destino')
+    fechaSolicitud = models.DateTimeField()
+    fechaAceptacion = models.DateTimeField()
+    fechaTraslado = models.DateTimeField()
+    fechaArrivo = models.DateTimeField()
+    nombreAutoridadEnvia = models.CharField(max_length=100)
+    nombreAutoridadRecibe = models.CharField(max_length=100)
+    responsableEnvia = models.CharField(max_length=100)
+    responsableRecibe = models.CharField(max_length=100)
+    enTraslado = models.BooleanField()
+    status = models.IntegerField(choices=OPCION_STATUS_CHOICES)
+    
+class ExtranjeroTraslado(models.Model):
+    statusTraslado = models.IntegerField(choices=OPCION_STATUS_TRASLADO_CHOICES)
+    delTraslado = models.ForeignKey(Traslado, on_delete=models.CASCADE, null=True, blank=True)
+    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, null=True, blank=True)
+
+
+class Alojamiento(models.Model):
+    numeroOficio = models.CharField(max_length=50)
+    fechaOficio = models.DateTimeField()
+    estacionOrigen = models.ForeignKey(Estacion, on_delete=models.CASCADE, null=True, blank=True)
+    estacionDestino = models.CharField(max_length=50)
+    estatus = models.CharField(max_length=50)
+    numeroUnicoProceso = models.ForeignKey(Proceso,  on_delete=models.CASCADE)
+    acuerdoTraslado = models.FileField(upload_to='files/', null=True, blank=True)
     
 
 class SolicitudTraslado(models.Model):
