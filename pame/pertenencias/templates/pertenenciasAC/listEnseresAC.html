@@ -13,7 +13,16 @@
 {% endblock dashboard %}
 {% block contenido %}
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Enseres </h1>
+    <h1 class="titulo-general">Enseres del Extranjero:
+        <span class="puesta-color" >{{extranjero.nombreExtranjero}} 
+            {% if extranjero.apellidoPaternoExtranjero %}
+                                {{ extranjero.apellidoPaternoExtranjero }}
+                               {% endif %}
+                               {% if extranjero.apellidoMaternoExtranjero %}
+                                 {{ extranjero.apellidoMaternoExtranjero }}
+                               {% endif %}
+        </span>
+    </h1>
 </div>
 <br>
 <div class="row">
@@ -44,7 +53,12 @@
             
                         <div class="col">
                             <span class="etiqueta">Apellido(s):</span>
-                            <span class="valor">{{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</span>                
+                            <span class="valor">{% if extranjero.apellidoPaternoExtranjero %}
+                                {{ extranjero.apellidoPaternoExtranjero }}
+                               {% endif %}
+                               {% if extranjero.apellidoMaternoExtranjero %}
+                                 {{ extranjero.apellidoMaternoExtranjero }}
+                               {% endif %}</span>                
                             <br>
                             <span class="etiqueta">Nacionalidad:</span>
                             <span class="valor">{{ extranjero.nacionalidad }}</span>

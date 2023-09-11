@@ -74,11 +74,8 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
         puesta_id = self.kwargs.get('puesta_id')
         extranjero_id1 = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id1)
-        nExtranjero = extranjero.nombreExtranjero
-        apExtranjero = extranjero.apellidoPaternoExtranjero
-        amExtranjero = extranjero.apellidoMaternoExtranjero
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
-        context['extranjero_id1'] = nExtranjero + " " + apExtranjero+" "+amExtranjero
+        context['extranjero'] = extranjero
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
 
@@ -491,13 +488,11 @@ class CrearInventarioViewAC(CreateView):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero_id1 = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id1)
-        nExtranjero = extranjero.nombreExtranjero
-        apExtranjero = extranjero.apellidoPaternoExtranjero
         puesta_id = self.kwargs.get('puesta_id')
         context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'
-        context['extranjero_id1'] = nExtranjero + "" + apExtranjero
+        context['extranjero'] = extranjero
         context['extranjero_id'] = extranjero_id
         return context
 
@@ -834,11 +829,9 @@ class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
         puesta_id = self.kwargs.get('puesta_id')
         extranjero_id1 = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id1)
-        nExtranjero = extranjero.nombreExtranjero
-        apExtranjero = extranjero.apellidoPaternoExtranjero
-        amExtranjero = extranjero.apellidoMaternoExtranjero
+        
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
-        context['extranjero_id1'] = nExtranjero + " " + apExtranjero+" "+amExtranjero
+        context['extranjero'] = extranjero
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'
 

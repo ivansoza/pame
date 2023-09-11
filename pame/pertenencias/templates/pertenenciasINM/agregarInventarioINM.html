@@ -18,7 +18,15 @@
 <div class="titulo-general-container mt-2">
   <h1 class="titulo-general">Asignar Número de Inventario a : 
     
-    <span class="puesta-color" >{{extranjero_id1}}</span>
+    <span class="puesta-color" >{{extranjero.nombreExtranjero}}
+      {% if extranjero.apellidoPaternoExtranjero %}
+       {{ extranjero.apellidoPaternoExtranjero }}
+      {% endif %}
+      {% if extranjero.apellidoMaternoExtranjero %}
+        {{ extranjero.apellidoMaternoExtranjero }}
+      {% endif %}
+    </span>
+  </h1>
 </div>
 <br>
 
