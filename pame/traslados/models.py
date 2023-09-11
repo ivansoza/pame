@@ -12,7 +12,7 @@ OPCION_STATUS_CHOICES=[
 ]
 
 OPCION_STATUS_TRASLADO_CHOICES=[
-    [0,'ACPTADO'],
+    [0,'ACEPTADO'],
     [1,'RECHAZADO'],
 ]
 
@@ -20,16 +20,19 @@ class Traslado(models.Model):
     numeroUnicoProceso = models.CharField(max_length=50)
     estacion_origen = models.ForeignKey(Estacion, on_delete=models.CASCADE, related_name='solicitudes_origen1', verbose_name='Estación de Origen')
     estacion_destino = models.ForeignKey(Estacion, on_delete=models.CASCADE, related_name='solicitudes_destino1', verbose_name='Estación de Destino')
-    fechaSolicitud = models.DateTimeField()
-    fechaAceptacion = models.DateTimeField()
-    fechaTraslado = models.DateTimeField()
-    fechaArrivo = models.DateTimeField()
+    fechaSolicitud = models.DateTimeField(auto_now_add=True)
+    fecha_aceptacion = models.DateTimeField(null=True, blank=True)  # Permitir null y blank ya que puede no haber sido aceptada aún
+    fecha_traslado = models.DateTimeField(null=True, blank=True)  # Similar al anterior
+    fecha_arrivo = models.DateTimeField(null=True, blank=True)  # S
     nombreAutoridadEnvia = models.CharField(max_length=100)
     nombreAutoridadRecibe = models.CharField(max_length=100)
     responsableEnvia = models.CharField(max_length=100)
     responsableRecibe = models.CharField(max_length=100)
-    enTraslado = models.BooleanField()
-    status = models.IntegerField(choices=OPCION_STATUS_CHOICES)
+    enTraslado = models.BooleanField(default=False)
+    status = models.IntegerField(choices=OPCION_STATUS_CHOICES, default=0)  # Proporcionar un valor predeterminado
+
+    def __str__(self):
+        return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
     
 class ExtranjeroTraslado(models.Model):
     statusTraslado = models.IntegerField(choices=OPCION_STATUS_TRASLADO_CHOICES)
