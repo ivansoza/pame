@@ -159,7 +159,12 @@
                     {% for extranjero in traslado %}
                     <tr data-id="{{ extranjero.id }}">
                         <td>{{ extranjero.nombreExtranjero }}</td>
-                        <td>{{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</td>
+                        <td>{% if extranjero.apellidoPaternoExtranjero %}
+                          {{ extranjero.apellidoPaternoExtranjero }}
+                      {% endif %}
+                      {% if extranjero.apellidoMaternoExtranjero %}
+                          {{ extranjero.apellidoMaternoExtranjero }}
+                      {% endif %}</td>
                         <td>{{ extranjero.nacionalidad }}</td>
                         <td>
                             <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
