@@ -1,0 +1,190 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.266ssjj5gg ">
+
+{% block card %}{% endblock card %}
+
+
+{% endblock link %}
+
+
+
+{% block contenido %}
+<style>
+    /* Personaliza el tamaño de la barra de búsqueda */
+    div.dataTables_wrapper div.dataTables_filter input {
+      width: 300px; /* Cambia el tamaño según tus necesidades */
+    }
+  </style>
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Listado de Solicitud de Translados</h1>
+</div>
+
+<br>
+
+{% comment %} <!-- Small Box (Stat card) -->
+
+<div class="row">
+    <div class="col-lg">
+      <!-- small card -->
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3>{{ puestas_count }}</h3>
+  
+          <p>Puestas</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-file-alt"></i>
+      </div>
+      <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
+          More info <i class="fas fa-arrow-circle-right"></i>
+        </a>
+       
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg">
+      <!-- small card -->
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>{{ extranjeros_total }}</h3>
+  
+          <p>Extranjeros</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-users"></i>
+      </div>
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
+          More info <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg">
+      <!-- small card -->
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>{{mujeres_count}}</h3>
+  
+          <p>Mujeres</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-female"></i>
+      </div>
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
+          More info <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg">
+      <!-- small card -->
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>{{hombres_count}}</h3>
+  
+          <p>Hombres</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-male"></i>
+      </div>
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
+          More info <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="col-lg">
+      <!-- small card -->
+      <div class="small-box bg-primary">
+        <div class="inner">
+          <h3>{{capacidad_actual}}</h3>
+  
+          <p>Lugares disponibles</p>
+        </div>
+        <div class="icon">
+  
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <a href="{% url 'estadisticaINM' %}" class="small-box-footer">
+          More info <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+    <!-- ./col -->
+ </div> {% endcomment %}
+
+
+<div class="table-responsive">
+  <table id="tabla" class="table table-striped table-bordered display responsive nowrap " style="width: 100%;">
+    <thead>
+        <tr>
+            <th >Numero Oficio</th>
+            <th >Estación Origen</th>
+            <th >Estación Destino</th>
+            <th >Punto Revisión</th>
+            <th >Status</th>
+          <th style="width: 5%;">Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for puesta in puestasTraslado %}
+      <tr>
+          <td>{{ puesta.numeroOficio }}</td>
+          <td>{{ puesta.fechaOficio }}</td>
+          <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
+          <td>{{ puesta.puntoRevision }}</td>
+          <td>{{ puesta.deLaEstacion }}</td>
+          <td>
+              <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
+                  data-title="Agregar Extranjeros">
+                  <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
+              </a>
+              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarExtranjeros' puesta.id %}"
+                  data-title="Ver Extranjeros">
+                  <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
+              </a>
+          </td>
+      </tr>
+      {% endfor %}
+      
+    </tbody>
+    <tfoot>
+        <tr>
+          <th >Numero Oficio</th>
+          <th >Estación Origen</th>
+          <th >Estación Destino</th>
+          <th >Punto Revisión</th>
+          <th >Status</th>
+          <th style="width: 5%;">Opciones</th>
+        </tr>
+    </tfoot>
+  </table>
+
+  <br>
+
+</div>
+{% endblock contenido %}
+{% block datatable %}
+ {
+    text: 'Crear Puesta',
+    className: 'btn btn-custom mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '{% url 'crearPuestaINM' %}';
+   }
+  },
+  {
+    text: 'Regresar al menu',
+    className: 'btn btn-custom1 mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '{% url 'homeSeguridadGeneral'%}';
+   }
+  },
+  
+{% endblock datatable %}
+{% block script %}
+{% endblock script %}
