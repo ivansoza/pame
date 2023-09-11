@@ -98,7 +98,7 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
                         <i class="fas fa-tshirt"></i>
                     </a>
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' first_inventario.id  puesta.id%}" data-title="Pertenencias de valores">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' first_inventario.id  puesta.id%}" data-title="Valores">
                         <i class="fas fa-coins"></i>
                     </a>
                     {% endwith %}
@@ -107,19 +107,19 @@
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
                          <i class="fas fa-tshirt"></i>
                     </a>
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Valores">
                         <i class="fas fa-coins"></i>
                     </a>
                     {% endif %}
 
                     {% if extranjero.enseresbasicos_set.all %}
                      {% with first_enseres=extranjero.enseresbasicos_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresAC' extranjero.id puesta.id %}" data-title="Ver enseres">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresAC' extranjero.id puesta.id %}" data-title="Enseres">
                         <i class="fas fa-shopping-basket"></i>
                     </a>
                     {% endwith %}
                     {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresAC' extranjero.id puesta.id %}" data-title="Crear enseres">
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresAC' extranjero.id puesta.id %}" data-title="Enseres">
                      <i class="fas fa-shopping-basket"></i>
                     </a>
                     {% endif %}

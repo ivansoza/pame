@@ -86,9 +86,10 @@
 <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
+            <th>Extranjero</th>
             <th>Unidad Migratoria</th>
-            <th>Fecha y Hora de Entrega</th>
             <th>Enseres</th>
+            <th>Fecha y Hora de Entrega</th>
             <th>Opciones</th>
 
             
@@ -98,9 +99,13 @@
     <tbody>
         {% for enseres in enseresac %}
         <tr>
+            <td>{{ enseres.noExtranjero }}</td>
             <td>{{ enseres.unidadMigratoria }}</td>
+            
+            <td>{{ enseres.enseres }}
+                {{enseres.enseresExtras}}
+            </td>
             <td>{{ enseres.horaEntrega }}</td>
-            <td>{{ enseres.enseres }}</td>
 
             <td>
                <a class="btn btn-sm btn-icon3 tooltip-link"

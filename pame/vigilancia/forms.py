@@ -1,6 +1,8 @@
 from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP
 import datetime
+from django.core.exceptions import ValidationError
+
 
 class puestDisposicionINMForm(forms.ModelForm):
     numeroOficio = forms.CharField(
@@ -38,13 +40,16 @@ class puestDisposicionINMForm(forms.ModelForm):
 
 
     oficioPuesta = forms.FileField(
-         label= "Oficio de Puesta:",
+        label= "Oficio de Puesta:",
+        required=False,
+
          # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
     
     oficioComision = forms.FileField(
-         label= "Oficio de Comisión:",
-         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+        label= "Oficio de Comisión:",
+        required=False,
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
     
     puntoRevision = forms.CharField(
@@ -93,17 +98,21 @@ class puestaDisposicionACForm(forms.ModelForm):
     )
 
     oficioPuesta = forms.FileField(
-         label= "Oficio de Puesta:",
+        label= "Oficio de Puesta:",
+        required=False
+
          # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
 
     oficioComision = forms.FileField(
-         label= "Oficio de Comisión:",
-         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+        label= "Oficio de Comisión:",
+        required=False,
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
 
     puntoRevision = forms.CharField(
         label= "Punto de Revision:",
+
         widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
     )
 
@@ -122,8 +131,10 @@ class puestaDisposicionACForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'placeholder':'Ej: Entidad 1'})
     )
     certificadoMedico = forms.FileField(
-         label= "Certificado Medico:",
-         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
+        label= "Certificado Medico:",
+        required=False,
+
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
     class Meta:
         model = PuestaDisposicionAC
@@ -139,9 +150,22 @@ class puestaDisposicionACForm(forms.ModelForm):
 class extranjeroFormsInm(forms.ModelForm):
     fechaNacimiento = forms.DateField(
         label= "Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+        widget=forms.DateInput(attrs={'type':'text','id':'date','placeholder':"DD/MM/YYYY"}),  # Aquí agregamos el placeholder
+
+        input_formats=['%d/%m/%Y'],  # Establece el formato de entrada
 
     )
+    def clean_fechaNacimiento(self):
+        data = self.cleaned_data['fechaNacimiento']
+        today = datetime.date.today()
+
+        # Calcula la diferencia de edad
+        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
+
+        if age < 18:
+            raise ValidationError('Debes tener al menos 18 años de edad.')
+
+        return data
     numeroExtranjero = forms.CharField(
         label= "Numero:",
     )
@@ -162,10 +186,7 @@ class extranjeroFormsInm(forms.ModelForm):
 
     )
 
-    documentoIdentidad = forms.FileField(
-        label= "Documento de Identidad:",
-
-    )
+   
   
    
     class Meta:
@@ -208,7 +229,9 @@ class extranjeroFormsAC(forms.ModelForm):
 
     fechaNacimiento = forms.DateField(
         label= "Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+        widget=forms.DateInput(attrs={'type':'text','id':'date','placeholder':"DD/MM/YYYY"}),  # Aquí agregamos el placeholder
+
+        # widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
 
     )
     numeroExtranjero = forms.CharField(
@@ -278,7 +301,8 @@ class puestaVPForm(forms.ModelForm):
 class extranjeroFormsVP(forms.ModelForm):
     fechaNacimiento = forms.DateField(
         label= "Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+        # widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+        widget=forms.DateInput(attrs={'type':'text','id':'date','placeholder':"DD/MM/YYYY"}),  # Aquí agregamos el placeholder
 
     )
     numeroExtranjero = forms.CharField(

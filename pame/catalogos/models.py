@@ -51,7 +51,7 @@ class Estacion(models.Model):
     capacidad = models.IntegerField( null=False)
     
     def __str__(self) -> str:
-        return self.nombre
+        return self.nombre 
     
     class Meta:
         verbose_name_plural = "Estaciones"

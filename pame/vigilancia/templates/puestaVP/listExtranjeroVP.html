@@ -129,7 +129,7 @@
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasVP' first_inventario.id puesta.id%}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valor_vp' first_inventario.id puesta.id%}" data-title="Pertenencias de valores">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valor_vp' first_inventario.id puesta.id%}" data-title="Valores">
                     <i class="fas fa-coins"></i>
                 </a>
                 {% endwith %}
@@ -138,7 +138,7 @@
                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Pertenencias de valores">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Valores">
                     <i class="fas fa-coins"></i>
                 </a>
                 {% endif %}
@@ -146,12 +146,12 @@
 
                 {% if extranjero.enseresbasicos_set.all %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listar_enseres_vp' extranjero.id puesta.id %}" data-title="Ver enseres">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listar_enseres_vp' extranjero.id puesta.id %}" data-title="Enseres">
                         <i class="fas fa-shopping-basket"></i>
                     </a>
                 {% endwith %}
                  {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_enseres_vp' extranjero.id puesta.id %}" data-title="Ver enseres">
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_enseres_vp' extranjero.id puesta.id %}" data-title="Enseres">
                     <i class="fas fa-shopping-basket"></i>
                 </a>
                 {% endif %}
