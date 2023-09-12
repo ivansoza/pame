@@ -180,3 +180,31 @@ class TrasladoCreateView(CreateView):
         return initial
 
        
+
+class ListTrasladoDestino(ListView):
+    model = Traslado
+    template_name = "destino/listPuestasArribo.html"
+    context_object_name = 'trasladosRecibidos'
+
+    def get_queryset(self):
+        # Filtrar los traslados por la estación destino del usuario logueado
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+        queryset = Traslado.objects.filter(estacion_destino=user_estacion)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'traslado'  # Ajusta según la página activa en tu navbar
+        context['seccion'] = 'traslado'  # Ajusta según la sección activa
+        
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+
+        traslados_count = self.get_queryset().count() 
+        context['traslados_count'] = traslados_count
+
+        # Si necesitas más datos en el contexto, puedes añadirlos aquí
+        # como lo hiciste en la vista para la estación origen.
+
+        return context

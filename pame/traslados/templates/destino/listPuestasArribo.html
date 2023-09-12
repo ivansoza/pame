@@ -1,0 +1,30 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% block contenido %}
+
+<h2>Traslados Recibidos</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Número Único de Proceso</th>
+            <th>Estación de Origen</th>
+            <th>Fecha de Solicitud</th>
+            <th>Nombre de la Autoridad que Envía</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for traslado in trasladosRecibidos %}
+        <tr>
+            <td>{{ traslado.numeroUnicoProceso }}</td>
+            <td>{{ traslado.estacion_origen }}</td>
+            <td>{{ traslado.fechaSolicitud }}</td>
+            <td>{{ traslado.nombreAutoridadEnvia }}</td>
+            <td>{{ traslado.get_status_display }}</td> <!-- Asume que tienes un método de "get_FOO_display" para mostrar el texto de la opción de choices -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
