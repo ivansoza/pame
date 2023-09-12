@@ -75,7 +75,7 @@ urlpatterns = [
     path('DeleteAcompanante-vp/<int:pk>/', DeleteAcompananteVP.as_view(), name='delete_acompananteVP'),
     path('DeleteAcompanante-vp1/<int:pk>/', DeleteAcompananteVP1.as_view(), name='delete_acompananteVP1'),
 #-----------------------------TRASLADOS---------------------
-    path('seguridad/traslado/', listarTraslado.as_view(), name='traslado'),
+    path('seguridad/<int:traslado_id>/<int:destino_id>/', listarTraslado.as_view(), name='traslado'),
     path('seguridad/solicitar_traslado/', solicitar_traslado, name='solicitar_traslado'),
     path('crear_traslado/<int:origen_id>/<int:destino_id>/', TrasladoCreateView.as_view(), name='crear_traslado'),
 

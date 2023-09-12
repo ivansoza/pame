@@ -1597,105 +1597,24 @@ class listarTraslado(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['navbar'] = 'traslado'  # Cambia esto según la página activa
-        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
+        
+        traslado_id = self.kwargs.get('traslado_id', None)
+        destino_id = self.kwargs.get('destino_id', None)
+        
+        # Obtiene la estación destino con el ID
+        estacion_destino = Estacion.objects.get(pk=destino_id)
+        
+        # Agrega la estación destino al contexto
+        context['estacion_destino'] = estacion_destino
+        
+        context['navbar'] = 'traslado'
+        context['seccion'] = 'vertraslado'
+        
         user_profile = self.request.user
         user_estacion = user_profile.estancia
         estaciones = Estacion.objects.exclude(pk=user_estacion.pk)
         context['estaciones'] = estaciones
         return context
-    def obtener_datos_estacion(self, estacion):
-        try:
-            responsable_nombre = f"{estacion.responsable.nombre} {estacion.responsable.apellidoPat} {estacion.responsable.apellidoMat}"
-            estado_nombre = estacion.estado.estado
-            estancia_nombre = estacion.nombre
-            email_nombre = estacion.email
-            calle_nombre = estacion.calle
-            noext_nombre = estacion.noext
-            cp_nombre = estacion.cp
-            colonia_nombre = estacion.colonia
-            tel_reponsable = estacion.responsable.telefono
-            email_responsable = estacion.responsable.email
-            
-            return {
-                'capacidad': estacion.capacidad,
-                'responsable': responsable_nombre,
-                'estado': estado_nombre,
-                'estancia': estancia_nombre,
-                'email': email_nombre,
-                'calle': calle_nombre,
-                'no': noext_nombre,
-                'cp': cp_nombre,
-                'colonia': colonia_nombre,
-                'telResponsable': tel_reponsable,
-                'emailResponsable': email_responsable
-            }
-        except Estacion.DoesNotExist:
-            return {
-                'capacidad': 'N/A',
-                'responsable': 'N/A',
-                'estado': 'N/A',
-                'estancia': 'N/A',
-                'email': 'N/A',
-                'calle': 'N/A',
-                'no': 'N/A',
-                'cp': 'N/A',
-                'colonia': 'N/A',
-                'telResponsable': 'N/A',
-                'emailResponsable': 'N/A'
-            }
-
-    def post(self, request, *args, **kwargs):
-        print(request.POST)  # Esto imprimirá todo el contenido POST
-     
-
-
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            estacion_id = request.POST.get('estacion_id')
-            try:
-                estacion = Estacion.objects.get(pk=estacion_id)
-                # Obtén el nombre del responsable de la estación
-                responsable_nombre = f"{estacion.responsable.nombre} {estacion.responsable.apellidoPat} {estacion.responsable.apellidoMat}"
-                estado_nombre = estacion.estado.estado  # Accede directamente al nombre del estado
-                estancia_nombre = estacion.nombre
-                email_nombre = estacion.email
-                calle_nombre = estacion.calle
-                noext_nombre = estacion.noext
-                cp_nombre = estacion.cp
-                colonia_nombre = estacion.colonia
-                tel_reponsable = estacion.responsable.telefono
-                email_responsable = estacion.responsable.email
-                
-                return JsonResponse({'capacidad': estacion.capacidad, 
-                                     'responsable': responsable_nombre, 
-                                     'estado': estado_nombre,
-                                     'estancia':estancia_nombre,
-                                     'email':email_nombre,
-                                     'calle':calle_nombre,
-                                     'no':noext_nombre,
-                                     'cp':cp_nombre,
-                                     'colonia':colonia_nombre,
-                                     'telResponsable':tel_reponsable,
-                                     'emailResponsable':email_responsable
-
-                                     })
-            except Estacion.DoesNotExist:
-                return JsonResponse({'capacidad': 'N/A', 
-                                     'responsable': 'N/A',
-                                     'estado':'N/A',
-                                     'estancia':'N/A',
-                                     'email':'N/A',
-                                     'calle':'N/A',
-                                     'no':'N/A',
-                                     'cp':'N/A',
-                                     'colonia':'N/A',
-                                     'telResponsable':'N/A',
-                                     'emailResponsable':'N/A'
-
-                                     })
-        
-
-        return super().post(request, *args, **kwargs)
     
 
 
