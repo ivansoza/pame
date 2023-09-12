@@ -127,7 +127,14 @@
 
 
   <a class="btn btn-custom" id="btnCrearPuesta" href="#">crear puesta</a>
-  <BR>
+
+
+
+    <a class="btn btn-custom" id="btnCrearPuesta2" href="#" data-title="Crear Puesta">
+      Crear Puesta
+  </a>
+  <div class="modal fade" id="crearPuestaModal" role="dialog"></div>
+
 {% endblock contenido %}
 {% block datatable2 %}
 
@@ -136,6 +143,35 @@
 
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+  document.getElementById("btnCrearPuesta2").addEventListener("click", function() {
+    // Obtiene el valor seleccionado del dropdown
+    let estacionDestino = document.getElementById("estacion-selector").value;
+    let estacionOrigen = "{{user.estancia.id}}";  // Estación origen desde el contexto del template
+
+    if(estacionDestino) {
+        // Construye la URL
+        let url = `{% url 'crearTraslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
+
+        // Abre el modal y carga el contenido desde la URL
+        abrir_modal_puesta(url);
+    } else {
+        alert("Selecciona una estación destino primero.");
+    }
+});
+
+function abrir_modal_puesta(url){
+    $('#crearPuestaModal').load(url, function(){
+        $(this).modal('show');
+    });
+}
+
+</script>
+
 <script>
 $(document).ready(function() {
   $("#estacion-selector").change(function() {
