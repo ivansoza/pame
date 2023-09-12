@@ -135,11 +135,11 @@
           <td>{{ puesta.estacion_origen }}</td>
           <td>{{ puesta.estacion_destino}} </td>
           {% if puesta.status == 0 %}
-           <td>Solicitud</td>
+           <td style='color:#9E8364; font-weight: bold;'>Solicitud</td>
           {% elif puesta.status == 1 %} 
-           <td>Aceptado</td> 
+           <td style='color:#2A4B41; font-weight: bold;'>Aceptado</td> 
           {% else %}
-          <td>Rechazado</td> 
+          <td style='color:#85364A; font-weight: bold;'>Rechazado</td> 
           {% endif %}
           <td>
               <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
