@@ -1604,6 +1604,46 @@ class listarTraslado(ListView):
         estaciones = Estacion.objects.exclude(pk=user_estacion.pk)
         context['estaciones'] = estaciones
         return context
+    def obtener_datos_estacion(self, estacion):
+        try:
+            responsable_nombre = f"{estacion.responsable.nombre} {estacion.responsable.apellidoPat} {estacion.responsable.apellidoMat}"
+            estado_nombre = estacion.estado.estado
+            estancia_nombre = estacion.nombre
+            email_nombre = estacion.email
+            calle_nombre = estacion.calle
+            noext_nombre = estacion.noext
+            cp_nombre = estacion.cp
+            colonia_nombre = estacion.colonia
+            tel_reponsable = estacion.responsable.telefono
+            email_responsable = estacion.responsable.email
+            
+            return {
+                'capacidad': estacion.capacidad,
+                'responsable': responsable_nombre,
+                'estado': estado_nombre,
+                'estancia': estancia_nombre,
+                'email': email_nombre,
+                'calle': calle_nombre,
+                'no': noext_nombre,
+                'cp': cp_nombre,
+                'colonia': colonia_nombre,
+                'telResponsable': tel_reponsable,
+                'emailResponsable': email_responsable
+            }
+        except Estacion.DoesNotExist:
+            return {
+                'capacidad': 'N/A',
+                'responsable': 'N/A',
+                'estado': 'N/A',
+                'estancia': 'N/A',
+                'email': 'N/A',
+                'calle': 'N/A',
+                'no': 'N/A',
+                'cp': 'N/A',
+                'colonia': 'N/A',
+                'telResponsable': 'N/A',
+                'emailResponsable': 'N/A'
+            }
 
     def post(self, request, *args, **kwargs):
         print(request.POST)  # Esto imprimirá todo el contenido POST
@@ -1625,6 +1665,7 @@ class listarTraslado(ListView):
                 colonia_nombre = estacion.colonia
                 tel_reponsable = estacion.responsable.telefono
                 email_responsable = estacion.responsable.email
+                
                 return JsonResponse({'capacidad': estacion.capacidad, 
                                      'responsable': responsable_nombre, 
                                      'estado': estado_nombre,
@@ -1655,8 +1696,7 @@ class listarTraslado(ListView):
         
 
         return super().post(request, *args, **kwargs)
-
-
+    
 
 
 

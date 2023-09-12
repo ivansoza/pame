@@ -20,9 +20,7 @@
     </h1>
 </div>
 <br>
-<div class="titulo-general-container-card mb-4">
-    <h1 class="titulo-general">Selecciona la estancia:</h1>
-</div>
+
 
 
 <div class="row">
@@ -156,7 +154,12 @@
         // Abre el modal y carga el contenido desde la URL
         abrir_modal_puesta(url);
     } else {
-        alert("Selecciona una estación destino primero.");
+      Swal.fire({
+            title: '¡Estación destino no seleccionada!',
+            text: 'Por favor, selecciona una estación destino antes de crear el traslado.',
+            icon: 'info',
+            confirmButtonText: 'Ok'
+        });
     }
 });
 
@@ -247,6 +250,7 @@ $(document).ready(function() {
 </script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
   document.getElementById("btnCrearPuesta").addEventListener("click", function() {
