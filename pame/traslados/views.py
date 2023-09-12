@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView,DetailView
 from .models import Traslado, Extranjero
+from vigilancia.models import Estacion
+from django.http import JsonResponse
 from .forms import TrasladoForm
-from catalogos.models import Estacion
-from django.contrib import messages
 from django.urls import reverse_lazy
-from django.contrib.auth import get_user_model
+
 
 # Create your views here.
 class ListTraslado(ListView):
     model = Traslado          
-    template_name = "listPuestasTraslado.html" 
+    template_name = "origen/listPuestasTraslado.html" 
     context_object_name = 'puestasTraslado'
 
     def get_queryset(self):
@@ -63,46 +63,88 @@ class estadisticasPuestaINM(ListView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'traslado'  # Cambia esto según la página activa
         return context
+    
+class listarEstaciones(ListView):
+    model = Extranjero
+    template_name = "origen/selecEstacion.html"
+    context_object_name = 'traslado'
 
-
-class CrearPuestaTranslado(CreateView):
-    model= Traslado
-    form_class = TrasladoForm
-    template_name = 'modals/crearPuestaTraslado.html'
-    success_url = reverse_lazy('crear-traslado')
-
-    def get_initial(self):
-        initial = super().get_initial()
-
-        # Acceder al usuario autenticado y sus datos en la base de datos
-        Usuario = get_user_model()
-        usuario = self.request.user
-        try:
-            usuario_data = Usuario.objects.get(username=usuario.username)
-            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
-            UsuarioId = usuario_data.id
-            estacion_id = usuario_data.estancia_id
-            estacion = Estacion.objects.get(pk=estacion_id)
-            initial['deLaEstacion'] = estacion
-        except Usuario.DoesNotExist:
-            pass
-        # Generar el número con formato automáticamente
-        ultimo_registro = Traslado.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroUnicoProceso.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/Traslado/{estacion_id}/{UsuarioId}/{ultimo_numero + 1:04d}'
-
-        initial['numeroUnicoProceso'] = nuevo_numero
-       
-        return initial
-        
+    def get_queryset(self):
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+        queryset = Extranjero.objects.filter(deLaEstacion=user_estacion, estatus='Activo')
+        return queryset    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
-        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+        estaciones = Estacion.objects.exclude(pk=user_estacion.pk)
+        context['estaciones'] = estaciones
         return context
-    
-    def get_success_url(self):
-        # Agregar una notificación de éxito
-        messages.success(self.request, 'La puesta de traslado se ha creado exitosamente.')
-        return super().get_success_url()
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)  # Esto imprimirá todo el contenido POST
+     
+
+
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            estacion_id = request.POST.get('estacion_id')
+            try:
+                estacion = Estacion.objects.get(pk=estacion_id)
+                # Obtén el nombre del responsable de la estación
+                responsable_nombre = f"{estacion.responsable.nombre} {estacion.responsable.apellidoPat} {estacion.responsable.apellidoMat}"
+                estado_nombre = estacion.estado.estado  # Accede directamente al nombre del estado
+                estancia_nombre = estacion.nombre
+                email_nombre = estacion.email
+                calle_nombre = estacion.calle
+                noext_nombre = estacion.noext
+                cp_nombre = estacion.cp
+                colonia_nombre = estacion.colonia
+                tel_reponsable = estacion.responsable.telefono
+                email_responsable = estacion.responsable.email
+                return JsonResponse({'capacidad': estacion.capacidad, 
+                                     'responsable': responsable_nombre, 
+                                     'estado': estado_nombre,
+                                     'estancia':estancia_nombre,
+                                     'email':email_nombre,
+                                     'calle':calle_nombre,
+                                     'no':noext_nombre,
+                                     'cp':cp_nombre,
+                                     'colonia':colonia_nombre,
+                                     'telResponsable':tel_reponsable,
+                                     'emailResponsable':email_responsable
+
+                                     })
+            except Estacion.DoesNotExist:
+                return JsonResponse({'capacidad': 'N/A', 
+                                     'responsable': 'N/A',
+                                     'estado':'N/A',
+                                     'estancia':'N/A',
+                                     'email':'N/A',
+                                     'calle':'N/A',
+                                     'no':'N/A',
+                                     'cp':'N/A',
+                                     'colonia':'N/A',
+                                     'telResponsable':'N/A',
+                                     'emailResponsable':'N/A'
+
+                                     })
+        
+
+        return super().post(request, *args, **kwargs)
+
+
+class TrasladoCreateView(CreateView):
+    model = Traslado
+    form_class = TrasladoForm
+    template_name = 'origen/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
+    success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['estacion_origen'] = self.kwargs['origen_id']
+        initial['estacion_destino'] = self.kwargs['destino_id']
+        return initial
