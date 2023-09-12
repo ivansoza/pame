@@ -124,7 +124,6 @@
             <th >Numero Oficio</th>
             <th >Estación Origen</th>
             <th >Estación Destino</th>
-            <th >Punto Revisión</th>
             <th >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
@@ -132,11 +131,10 @@
     <tbody>
       {% for puesta in puestasTraslado %}
       <tr>
-          <td>{{ puesta.numeroOficio }}</td>
-          <td>{{ puesta.fechaOficio }}</td>
-          <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
-          <td>{{ puesta.puntoRevision }}</td>
-          <td>{{ puesta.deLaEstacion }}</td>
+          <td>{{ puesta.numeroUnicoProceso }}</td>
+          <td>{{ puesta.estacion_origen }}</td>
+          <td>{{ puesta.estacion_destino}} </td>
+          <td>{{ puesta.status }}</td>
           <td>
               <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
                   data-title="Agregar Extranjeros">
@@ -156,7 +154,6 @@
           <th >Numero Oficio</th>
           <th >Estación Origen</th>
           <th >Estación Destino</th>
-          <th >Punto Revisión</th>
           <th >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
