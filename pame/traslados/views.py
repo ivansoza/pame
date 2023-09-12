@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from .forms import TrasladoForm
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 
 # Create your views here.
@@ -138,29 +139,20 @@ class listarEstaciones(ListView):
         return super().post(request, *args, **kwargs)
 
 
-# class TrasladoCreateView(CreateView):
-#     model = Traslado
-#     form_class = TrasladoForm
-#     template_name = 'origen/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
-#     success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
 
-#     def get_initial(self):
-#         initial = super().get_initial()
-#         initial['estacion_origen'] = self.kwargs['origen_id']
-#         initial['estacion_destino'] = self.kwargs['destino_id']
-#         return initial
 
 class TrasladoCreateView(CreateView):
     model = Traslado
     form_class = TrasladoForm
-    template_name = 'modal/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
-    success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
+    template_name = 'modal/crearPuestaTraslado.html'  
+  
+    def get_success_url(self):
+        destino_id = self.object.estacion_destino_id
+        return reverse('traslado', kwargs={'traslado_id': self.object.pk, 'destino_id': destino_id})
     def form_valid(self, form):
-        # Obtener los valores de origen_id y destino_id de la URL
         origen_id = self.kwargs['origen_id']
         destino_id = self.kwargs['destino_id']
         
-        # Asignar los valores a las instancias de estacion_origen y estacion_destino
         form.instance.estacion_origen_id = origen_id
         form.instance.estacion_destino_id = destino_id
 
