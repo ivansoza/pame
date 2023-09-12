@@ -59,7 +59,7 @@
             <img src=" {% static 'img/icons/iconTRAS.png' %} " alt="Icono de imagen" class="imagen-icono">
           </div>
           <p class="titulo" >VER TRASLADOS</p>
-          <a href="#" class="card-button">Ir</a>
+          <a href="{% url 'listTraslado' %}" class="card-button">Ir</a>
         </div>
       </div>
 
@@ -108,7 +108,7 @@
 
           </div>
           <p class="titulo" >CREAR PUESTA POR TRASLADO</p>
-          <a href="{% url 'traslado' %}" class="card-button">Ir</a>
+          <a href="{% url 'listEstaciones' %}" class="card-button">Ir</a>
         </div>
       </div>
   </div>
