@@ -153,7 +153,7 @@ class listarEstaciones(ListView):
 class TrasladoCreateView(CreateView):
     model = Traslado
     form_class = TrasladoForm
-    template_name = 'modals/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
+    template_name = 'modal/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
     success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
     def form_valid(self, form):
         # Obtener los valores de origen_id y destino_id de la URL
