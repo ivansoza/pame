@@ -20,21 +20,35 @@
         </div>
         {% load crispy_forms_tags %}
 
-        <form action="{% url 'crear-traslado'%}" method="POST">
+        <form id="btnCrearPuesta" href="#"  method="POST">
             {% csrf_token %}
             <div class="modal-body">
                 <h2>Solicitud de Traslado</h2>
                 <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
                 </form>
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom1" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-custom">Confirmar</button>
+                <button type="submit" class="btn btn-custom"> Solicitar Traslado</button>
             </div>
         </form>
         
     </div>
 </div>
 
+<script>
+    document.getElementById("btnCrearPuesta").addEventListener("click", function() {
+        // Obtiene el valor seleccionado del dropdown
+        let estacionDestino = document.getElementById("estacion-selector").value;
+        let estacionOrigen = "{{user.estancia.id}}";  // Estación origen desde el contexto del template
+    
+        if(estacionDestino) {
+            // Construye la URL y redirige
+            let url = `{% url 'crearTraslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
+            window.location.href = url;
+        } else {
+            alert("Selecciona una estación destino primero.");
+        }
+    });
+    </script>

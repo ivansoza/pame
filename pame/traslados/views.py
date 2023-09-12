@@ -5,6 +5,7 @@ from vigilancia.models import Estacion
 from django.http import JsonResponse
 from .forms import TrasladoForm
 from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
 
 
 # Create your views here.
@@ -137,14 +138,53 @@ class listarEstaciones(ListView):
         return super().post(request, *args, **kwargs)
 
 
+# class TrasladoCreateView(CreateView):
+#     model = Traslado
+#     form_class = TrasladoForm
+#     template_name = 'origen/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
+#     success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
+
+#     def get_initial(self):
+#         initial = super().get_initial()
+#         initial['estacion_origen'] = self.kwargs['origen_id']
+#         initial['estacion_destino'] = self.kwargs['destino_id']
+#         return initial
+
 class TrasladoCreateView(CreateView):
     model = Traslado
     form_class = TrasladoForm
-    template_name = 'origen/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
+    template_name = 'modals/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
     success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
+    def form_valid(self, form):
+        # Obtener los valores de origen_id y destino_id de la URL
+        origen_id = self.kwargs['origen_id']
+        destino_id = self.kwargs['destino_id']
+        
+        # Asignar los valores a las instancias de estacion_origen y estacion_destino
+        form.instance.estacion_origen_id = origen_id
+        form.instance.estacion_destino_id = destino_id
 
+        return super().form_valid(form)
     def get_initial(self):
         initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+
+        ultimo_registro = Traslado.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroUnicoProceso.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/TRASLADO/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        initial['numeroUnicoProceso'] = nuevo_numero
         initial['estacion_origen'] = self.kwargs['origen_id']
         initial['estacion_destino'] = self.kwargs['destino_id']
         return initial
+
+       

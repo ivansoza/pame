@@ -125,8 +125,10 @@
     </div>
   </div>
 
+ 
+  <a class="btn btn-custom" id="btnCrearPuesta" href="#" onclick="abrir_modal(this.href); return false;">crear puesta</a>
+  <div class="modal fade" id="eliminarextranjero" role="dialog"></div>
 
-  <a class="btn btn-custom" id="btnCrearPuesta" href="#">crear puesta</a>
   <BR>
 {% endblock contenido %}
 {% block datatable2 %}
@@ -136,6 +138,17 @@
 
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal(url){
+        $('#eliminarextranjero').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
 <script>
 $(document).ready(function() {
   $("#estacion-selector").change(function() {
@@ -225,7 +238,7 @@ $(document).ready(function() {
       if(estacionDestino) {
           // Construye la URL y redirige
           let url = `{% url 'crearTraslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
-          window.location.href = url;
+          abrir_modal(url);
       } else {
           alert("Selecciona una estación destino primero.");
       }
