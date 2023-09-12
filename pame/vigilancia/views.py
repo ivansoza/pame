@@ -30,7 +30,8 @@ import pickle
 
 from django.http import JsonResponse
 from django.views import View
-
+from traslados.models import Traslado
+from .forms import TrasladoForm
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -1691,3 +1692,15 @@ def solicitar_traslado(request):
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
+
+class TrasladoCreateView(CreateView):
+    model = Traslado
+    form_class = TrasladoForm
+    template_name = 'traslados/traslado_form.html'  # Este será el nombre del archivo HTML que crearás a continuación.
+    success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['estacion_origen'] = self.kwargs['origen_id']
+        initial['estacion_destino'] = self.kwargs['destino_id']
+        return initial

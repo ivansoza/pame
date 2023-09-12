@@ -128,107 +128,6 @@
 
   <a class="btn btn-custom" id="btnCrearPuesta" href="#">crear puesta</a>
   <BR>
-
-
-{% comment %} FIN  {% endcomment %}
-
-<!---------------------- CARD ------------------>
-
-<div class="row">
-    <div class="col">
-        <div class="titulo-general-container-card mb-4">
-            <h1 class="titulo-general">Lista de extranjeros para trasladar</h1>
-        </div>
-
-        
-
-        
-      <div class="card w-100">
-        <div class="card-body">
-          <h5 class="card-title">
-         
-          </h5>
-
-          <div class="table-responsive">
-            <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido(s)</th>
-                        <th>Nacionalidad</th>
-                        <th style="width: 5%;">Opciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for extranjero in traslado %}
-                    <tr data-id="{{ extranjero.id }}">
-                        <td>{{ extranjero.nombreExtranjero }}</td>
-                        <td>{% if extranjero.apellidoPaternoExtranjero %}
-                          {{ extranjero.apellidoPaternoExtranjero }}
-                      {% endif %}
-                      {% if extranjero.apellidoMaternoExtranjero %}
-                          {{ extranjero.apellidoMaternoExtranjero }}
-                      {% endif %}</td>
-                        <td>{{ extranjero.nacionalidad }}</td>
-                        <td>
-                            <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
-                               href="#"
-                               data-id="{{ extranjero.id }}"
-                               data-title="Agregar Acompañante">
-                               <i class="fas fa-plus"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-                
-        </div>
-      </div>
-    </div>
-  
-    <div class="col-sm-1 d-none d-md-flex align-items-center justify-content-center hide-on-small">
-        <div class="card">
-          <div class="card-body text-center">
-            <i class="fa fa-arrow-right fa-1x" aria-hidden="true"></i>
-          </div>
-        </div>
-    </div>
-
-
-    <div class="col">
-        <div class="titulo-general-container-card mb-4">
-            <h1 class="titulo-general">Extranjeros a trasladar</h1>
-        </div>
-
-        <div class="card w-100">
-          <div class="card-body">
-            <div class="table-responsive">
-                <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellido(s)</th>
-                            <th>Nacionalidad</th>
-                            <th style="width: 5%;">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Las filas se añadirán dinámicamente aquí con JavaScript -->
-                    </tbody>
-                    
-                </table>
-                <button id="solicitarTraslado" class="btn btn-custom ">Solicitar Traslado</button>
-            </div>
-                  
-          </div>
-        </div>
-      </div>
-  </div>
-<!---------------------- CARD ------------------>
-
-
 {% endblock contenido %}
 {% block datatable2 %}
 
@@ -314,97 +213,8 @@ $(document).ready(function() {
   });
 });
 </script>
-<script>
-    $(document).ready(function() {
-    // Manejar el clic en el icono de agregar
-    $('#tabla tbody').on('click', '.btn-icon3', function(event) {
-        console.log("Botón añadir clickeado en la tablaExtranjeros");
-
-        event.preventDefault();
-        
-        // Clonar la fila seleccionada
-        var fila = $(this).closest('tr').clone();
-        
-        // Añadir un icono de "remover" en lugar del de "agregar"
-        fila.find('.btn-icon3')
-            .removeClass('btn-primary')
-            .addClass('btn-danger')
-            .attr('data-title', 'Remover Acompañante')
-            .find('i').removeClass('fas fa-plus').addClass('fas fa-minus');
-
-        // Añadir la fila a la tabla de traslado
-        $('#puestaAC-table tbody').append(fila);
-        
-        // (Opcional) Esconder la fila original en la tabla de extranjeros
-        $(this).closest('tr').hide();
-    });
-
-    // Manejar el clic en el icono de remover
-    $('#puestaAC-table tbody').on('click', '.btn-icon3', function(event) {
-        console.log("Botón remover clickeado en la tablaTraslado");
-
-        event.preventDefault();
-        
-        // Buscar el ID (o algún identificador único) de la fila
-        var extranjeroId = $(this).data('id');  // Asume que tienes un data-id en tu icono
-
-        // Mostrar de nuevo la fila en la tabla original
-        $('#tabla tr[data-id="' + extranjeroId + '"]').show();
-        
-        // Remover la fila de la tabla de traslado
-        $(this).closest('tr').remove();
-    });
-});
-
-</script>
-
-<script>
-$("#solicitarTraslado").on("click", function() {
-    console.log("Botón #solicitarTraslado clickeado");
-
-    let extranjerosParaTraslado = [];
-
-    // Recopilar todos los IDs de los extranjeros de la tabla 'tablaTraslado'
-    $("#puestaAC-table tbody tr").each(function() {
-        let extranjeroID = $(this).attr("data-id");
-        console.log("Extranjero ID recopilado:", extranjeroID);
-
-        extranjerosParaTraslado.push(extranjeroID);
-    });
-
-    // Envío de información al servidor
-    $.ajax({
-        url: "/seguridad/seguridad/solicitar_traslado/",
-        type: "POST",
-        headers: {
-            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()  // Aquí incluimos el token CSRF
-        },
-        data:  {
-            extranjeros: extranjerosParaTraslado,
-            estacionDestino: $("#estacion-selector").val()  // Enviamos también el ID de la estación destino seleccionada.
-        },
-        success: function(response) {
-            console.log("Respuesta exitosa al solicitar traslado:", response);
-            if (response.status === 'success' && response.redirect_url) {
-            window.location.href = response.redirect_url;
-        }
-
-            // Procesar respuesta del servidor (p. ej., mostrar un mensaje de éxito).
-        },
-        error: function(error) {
-            console.log("Error al solicitar traslado:", error);
-            if (response.status === 'error' && response.redirect_url) {
-            window.location.href = response.redirect_url;
-        }
-
-            
-            // Procesar el error (p. ej., mostrar un mensaje de error).
-        }
-    });
-});
 
 
-</script>
 
 <script>
   document.getElementById("btnCrearPuesta").addEventListener("click", function() {
@@ -414,7 +224,7 @@ $("#solicitarTraslado").on("click", function() {
   
       if(estacionDestino) {
           // Construye la URL y redirige
-          let url = `{% url 'crear_traslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
+          let url = `{% url 'crearTraslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
           window.location.href = url;
       } else {
           alert("Selecciona una estación destino primero.");
@@ -423,4 +233,3 @@ $("#solicitarTraslado").on("click", function() {
   </script>
   
 {% endblock script %}
-

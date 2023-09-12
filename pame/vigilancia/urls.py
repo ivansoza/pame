@@ -5,7 +5,7 @@ from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtra
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1
 from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP
-from .views import estadisticasPuestaINM, solicitar_traslado
+from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
     path('seguridad-responsable/', homeSeguridadResponsable, name='homeSeguridadResponsable'),
@@ -77,6 +77,7 @@ urlpatterns = [
 #-----------------------------TRASLADOS---------------------
     path('seguridad/traslado/', listarTraslado.as_view(), name='traslado'),
     path('seguridad/solicitar_traslado/', solicitar_traslado, name='solicitar_traslado'),
+    path('crear_traslado/<int:origen_id>/<int:destino_id>/', TrasladoCreateView.as_view(), name='crear_traslado'),
 
 
 

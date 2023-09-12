@@ -1,0 +1,23 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}  <!-- No olvides cargar los tags de crispy_forms -->
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.ssdds@## ">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homeSeguridadGeneral' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+
+<h2>Solicitud de Traslado</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+  </form>
+
+{% endblock contenido%}
