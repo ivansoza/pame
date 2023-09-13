@@ -25,7 +25,14 @@
         <tbody>
             {% for extranjero in extranjeros %}
                 <tr>
-                    <td>{{ extranjero.delExtranjero }}</td>
+                    <td>{{ extranjero.delExtranjero }}
+                        {% if extranjero.delExtranjero.apellidoPaternoExtranjero %}
+                        {{ extranjero.delExtranjero.apellidoPaternoExtranjero }}
+                    {% endif %}
+                    {% if extranjero.delExtranjero.apellidoMaternoExtranjero %}
+                        {{ extranjero.delExtranjero.apellidoMaternoExtranjero }}
+                    {% endif %}
+                    </td>
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
                     <td>{{ extranjero.delTraslado.estacion_origen}}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
