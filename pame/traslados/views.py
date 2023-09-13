@@ -1,12 +1,14 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView,DetailView
-from .models import Traslado, Extranjero
+from django.views.generic import CreateView, ListView,DetailView, TemplateView
+from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
 from django.http import JsonResponse
 from .forms import TrasladoForm
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
+
 
 
 # Create your views here.
@@ -208,3 +210,27 @@ class ListTrasladoDestino(ListView):
         # como lo hiciste en la vista para la estación origen.
 
         return context
+    
+class ListaExtranjerosTraslado(ListView):
+    model = ExtranjeroTraslado
+    template_name = "origen/detallesPuestaTraslado.html"
+    context_object_name = 'extranjeros'
+
+    def get_queryset(self):
+        # Obtenemos el ID del traslado desde la URL
+        traslado_id = self.kwargs.get('traslado_id')
+        
+        # Filtramos los extranjeros que comparten el mismo ID de traslado
+        queryset = ExtranjeroTraslado.objects.filter(delTraslado_id=traslado_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado_id = self.kwargs.get('traslado_id')
+        context['traslado_id'] = traslado_id  # Pasamos el ID del traslado al contexto
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
+        return context
+    
+    
+

@@ -1697,10 +1697,10 @@ def procesar_traslado(request):
                 )
 
             messages.success(request, 'Solicitudes de traslado realizadas con éxito.')
-            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('menu')})
+            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('listTraslado')})
 
         messages.error(request, 'Solicitudes de traslado denegada')
-        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.', 'redirect_url': reverse('menu')})
+        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.', 'redirect_url': reverse('listTraslado')})
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 

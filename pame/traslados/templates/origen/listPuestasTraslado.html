@@ -142,15 +142,10 @@
           <td style='color:#85364A; font-weight: bold;'>Rechazado</td> 
           {% endif %}
           <td>
-              <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
-                  data-title="Agregar Extranjeros">
-                  <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
-              </a>
-              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarExtranjeros' puesta.id %}"
-                  data-title="Ver Extranjeros">
-                  <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
-              </a>
-          </td>
+            <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listaExtranjerosTraslado' puesta.id %}" data-title="Ver extranjeros">
+                <i class="fas fa-eye"></i> <!-- Icono Ver Extranjeros -->
+            </a>
+        </td>
       </tr>
       {% endfor %}
       

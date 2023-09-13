@@ -1,0 +1,42 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.266ssjj5gg ">
+
+{% block card %}{% endblock card %}
+
+
+{% endblock link %}
+
+
+
+{% block contenido %}
+<h1>Lista de Extranjeros para el Traslado ID {{ traslado_id }}</h1>
+<table id="tabla" class="table table-striped table-bordered display responsive nowrap " style="width: 100%;">
+    <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Nacionalidad</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <!-- Agrega más encabezados según tus necesidades -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for extranjero in extranjeros %}
+                <tr>
+                    <td>{{ extranjero.delExtranjero }}</td>
+                    <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
+                    <td>{{ extranjero.delTraslado.estacion_origen}}</td>
+                    <td>{{ extranjero.delTraslado.estacion_destino }}</td>
+
+                    <!-- Agrega más columnas según tus necesidades -->
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">No hay extranjeros para este traslado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock contenido%}
