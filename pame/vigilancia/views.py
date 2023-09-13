@@ -24,6 +24,7 @@ from django.core import serializers
 from django.http import JsonResponse
 import json
 from django.db.models import Count
+from datetime import datetime
 
 
 from traslados.models import ExtranjeroTraslado
@@ -183,7 +184,7 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionINM.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroOficio.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/INM/{estacion_id}/{UsuarioId}/{ultimo_numero + 1:04d}'
+        nuevo_numero = f'{datetime.now().year}/INM/{estacion_id}/{UsuarioId}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
         return initial
@@ -238,7 +239,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
 
         ultimo_registro = Extranjero.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
         return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
 
@@ -606,7 +607,7 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
 
         ultimo_registro = Extranjero.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
         return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
 
@@ -696,7 +697,7 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
             pass
         ultimo_registro = PuestaDisposicionAC.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroOficio.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/AC/{estacion_id}/{usuario_id}/{ultimo_numero + 1:04d}'
+        nuevo_numero = f'{datetime.now().year}/AC/{estacion_id}/{usuario_id}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
         initial['entidadFederativa'] = estado
@@ -749,7 +750,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
             pass
         ultimo_registro = Extranjero.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
         viaja_solo = True
         initial['viajaSolo'] = viaja_solo
@@ -960,7 +961,7 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
             pass
         ultimo_registro = Extranjero.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
         viaja_solo = True
         initial['viajaSolo'] = viaja_solo
@@ -1187,7 +1188,7 @@ class createPuestaVP(CreateView):
         # Generar el número con formato automáticamente
         ultimo_registro = PuestaDisposicionVP.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroOficio.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/VP/{estacion_id}/{UsuarioId}/{ultimo_numero + 1:04d}'
+        nuevo_numero = f'{datetime.now().year}/VP/{estacion_id}/{UsuarioId}/{ultimo_numero + 1:04d}'
 
         initial['numeroOficio'] = nuevo_numero
         return initial
@@ -1265,7 +1266,7 @@ class createExtranjeroVP(CreateView):
 
         ultimo_registro = Extranjero.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
         return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
 
@@ -1487,7 +1488,7 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
 
         ultimo_registro = Extranjero.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroExtranjero'] = nuevo_numero
         return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
 
