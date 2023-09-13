@@ -8,3 +8,11 @@ class TrasladoForm(forms.ModelForm):
         widgets={ 
             'numeroUnicoProceso':forms.TextInput(attrs={'readonly':'readonly'}),
         }
+
+
+
+class EstatusTrasladoForm(forms.ModelForm):
+    class Meta:
+        model = Traslado
+        fields = ['status']
+       
