@@ -22,8 +22,10 @@ from django.db.models import Q
 from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
+import json
 
-from traslados.models import SolicitudTraslado
+
+from traslados.models import ExtranjeroTraslado
 
 import sys
 import pickle
@@ -1603,9 +1605,11 @@ class listarTraslado(ListView):
         
         # Obtiene la estación destino con el ID
         estacion_destino = Estacion.objects.get(pk=destino_id)
-        
+        traslado1 = Traslado.objects.get(pk=traslado_id )
         # Agrega la estación destino al contexto
         context['estacion_destino'] = estacion_destino
+        context['traslado1'] = traslado1
+
         
         context['navbar'] = 'traslado'
         context['seccion'] = 'vertraslado'
@@ -1618,33 +1622,30 @@ class listarTraslado(ListView):
     
 
 
-
-
-def solicitar_traslado(request):
+def solicitar_traslado(request, traslado_id):
     if request.method == 'POST':
-        if 'extranjeros[]' in request.POST and 'estacionDestino' in request.POST:
+        if 'extranjeros[]' in request.POST:
             print("Manejando solicitud de traslado")
-            
+
             extranjeros = request.POST.getlist('extranjeros[]')
-            estacion_destino_id = request.POST.get('estacionDestino')
-            
-            # Dado que estamos fuera de una vista basada en clases, no puedes usar self.request.user
-            # En lugar de eso, usas directamente request.user
-            estacion_origen = request.user.estancia
-            
+            traslado_id = self.kwargs.get('traslado_id', None)  # Asume que tienes traslado_id en tu URL kwargs
+
+            # Obtiene el objeto Traslado usando el traslado_id
+            traslado = get_object_or_404(Traslado, pk=traslado_id)
+
+            # Ahora, para cada extranjero, crea una entrada en ExtranjeroTraslado
             for id in extranjeros:
                 extranjero = Extranjero.objects.get(pk=id)
                 
-                SolicitudTraslado.objects.create(
-                    extranjero=extranjero,
-                    estacion_origen=estacion_origen,
-                    estacion_destino=Estacion.objects.get(pk=estacion_destino_id),
-                    motivo="Razón del traslado"  # Puedes modificar esto según lo necesites
+                ExtranjeroTraslado.objects.create(
+                    statusTraslado=0,  # Suponiendo que 0 es el valor por defecto para 'ACEPTADO'
+                    delTraslado=traslado,
+                    delExtranjero=extranjero
                 )
+            
             messages.success(request, 'Solicitudes de traslado realizadas con éxito.')
             return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('traslado')})
 
-            # return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.'})
         messages.error(request, 'Solicitudes de traslado denegada')
         return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.','redirect_url': reverse('traslado')})
 
@@ -1663,3 +1664,32 @@ class TrasladoCreateView(CreateView):
         initial['estacion_origen'] = self.kwargs['origen_id']
         initial['estacion_destino'] = self.kwargs['destino_id']
         return initial
+    
+def procesar_traslado(request):
+    if request.method == "POST":
+        if 'extranjeros[]' in request.POST:
+            print("Manejando solicitud de traslado")
+
+            extranjeros = request.POST.getlist('extranjeros[]')
+            traslado_id = request.POST.get('traslado_id')
+            print("Extranjeros IDs:", extranjeros)
+            print("Traslado ID:", traslado_id)
+            traslado_instance = Traslado.objects.get(pk=traslado_id)
+         
+
+            for id in extranjeros:
+                extranjero = Extranjero.objects.get(pk=id)
+                ExtranjeroTraslado.objects.create(
+                    statusTraslado=0,
+                    delTraslado=traslado_instance,  # Asigna la instancia de Traslado
+                    delExtranjero=extranjero
+                )
+
+            messages.success(request, 'Solicitudes de traslado realizadas con éxito.')
+            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('menu')})
+
+        messages.error(request, 'Solicitudes de traslado denegada')
+        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.', 'redirect_url': reverse('menu')})
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
