@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView,DetailView
+from django.views.generic import CreateView, ListView,DetailView, UpdateView
 from .models import Traslado, Extranjero
 from vigilancia.models import Estacion
 from django.http import JsonResponse
-from .forms import TrasladoForm
+from .forms import TrasladoForm, EstatusTrasladoForm
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -208,3 +208,28 @@ class ListTrasladoDestino(ListView):
         # como lo hiciste en la vista para la estación origen.
 
         return context
+
+
+class EtatusTrasladoUpdate(UpdateView):
+    model = Traslado
+    form_class = EstatusTrasladoForm  # Usa tu formulario modificado
+    template_name = 'modals/editarEnseresINM.html'
+
+    def get_success_url(self):
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Enseres editados con éxito.')
+
+        return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
+    
