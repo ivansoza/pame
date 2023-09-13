@@ -23,6 +23,7 @@ from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
 import json
+from django.db.models import Count
 
 
 from traslados.models import ExtranjeroTraslado
@@ -32,7 +33,7 @@ import pickle
 
 from django.http import JsonResponse
 from django.views import View
-from traslados.models import Traslado
+from traslados.models import Traslado, ExtranjeroTraslado
 from .forms import TrasladoForm
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -1592,10 +1593,20 @@ class listarTraslado(ListView):
     context_object_name = 'traslado'
 
     def get_queryset(self):
+    # Obtener el perfil del usuario logueado y su estación.
         user_profile = self.request.user
         user_estacion = user_profile.estancia
+
+        # Filtrar todos los extranjeros de la estación con estatus 'Activo'.
         queryset = Extranjero.objects.filter(deLaEstacion=user_estacion, estatus='Activo')
-        return queryset    
+
+        # Anotar cada objeto en el queryset con el número de relaciones en ExtranjeroTraslado.
+        queryset = queryset.annotate(num_traslados=Count('extranjerotraslado'))
+
+        # Filtrar por aquellos que no tienen relaciones con ExtranjeroTraslado.
+        queryset = queryset.filter(num_traslados=0)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
