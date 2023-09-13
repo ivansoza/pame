@@ -173,7 +173,7 @@ class TrasladoCreateView(CreateView):
 
         ultimo_registro = Traslado.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroUnicoProceso.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'2023/TRASLADO/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        nuevo_numero = f'2023/TRA/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
         initial['numeroUnicoProceso'] = nuevo_numero
         initial['estacion_origen'] = self.kwargs['origen_id']
         initial['estacion_destino'] = self.kwargs['destino_id']
