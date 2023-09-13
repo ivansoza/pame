@@ -12,7 +12,7 @@
 
 {% block contenido %}
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Listado de Solicitud de Translados</h1>
+    <h1 class="titulo-general">Listado de Solicitud de Traslados</h1>
 </div>
 
 <br>
@@ -39,15 +39,18 @@
                 <a href="#" class="btn btn-icon2">{{ traslado.get_status_display }}</a>
                 
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href=""
-                    data-title="Agregar Extranjeros">
-                    <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
-                </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href=""
+             
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="#"
                     data-title="Ver Extranjeros">
                     <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
                 </a>
-            </td>        </tr>
+
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="#"
+                data-title="Ver Oficio">
+                <i class="fas fa-file-pdf"></i> <!-- Icono Ver Personas -->
+                </a>
+            </td>
+        </tr>
         {% endfor %}
         
       </tbody>
