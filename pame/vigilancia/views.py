@@ -22,16 +22,19 @@ from django.db.models import Q
 from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
+import json
+from django.db.models import Count
 from datetime import datetime
 
-from traslados.models import SolicitudTraslado
+
+from traslados.models import ExtranjeroTraslado
 
 import sys
 import pickle
 
 from django.http import JsonResponse
 from django.views import View
-from traslados.models import Traslado
+from traslados.models import Traslado, ExtranjeroTraslado
 from .forms import TrasladoForm
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -1591,102 +1594,70 @@ class listarTraslado(ListView):
     context_object_name = 'traslado'
 
     def get_queryset(self):
+    # Obtener el perfil del usuario logueado y su estación.
         user_profile = self.request.user
         user_estacion = user_profile.estancia
+
+        # Filtrar todos los extranjeros de la estación con estatus 'Activo'.
         queryset = Extranjero.objects.filter(deLaEstacion=user_estacion, estatus='Activo')
-        return queryset    
+
+        # Anotar cada objeto en el queryset con el número de relaciones en ExtranjeroTraslado.
+        queryset = queryset.annotate(num_traslados=Count('extranjerotraslado'))
+
+        # Filtrar por aquellos que no tienen relaciones con ExtranjeroTraslado.
+        queryset = queryset.filter(num_traslados=0)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['navbar'] = 'traslado'  # Cambia esto según la página activa
-        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
+        
+        traslado_id = self.kwargs.get('traslado_id', None)
+        destino_id = self.kwargs.get('destino_id', None)
+        
+        # Obtiene la estación destino con el ID
+        estacion_destino = Estacion.objects.get(pk=destino_id)
+        traslado1 = Traslado.objects.get(pk=traslado_id )
+        # Agrega la estación destino al contexto
+        context['estacion_destino'] = estacion_destino
+        context['traslado1'] = traslado1
+
+        
+        context['navbar'] = 'traslado'
+        context['seccion'] = 'vertraslado'
+        
         user_profile = self.request.user
         user_estacion = user_profile.estancia
         estaciones = Estacion.objects.exclude(pk=user_estacion.pk)
         context['estaciones'] = estaciones
         return context
-
-    def post(self, request, *args, **kwargs):
-        print(request.POST)  # Esto imprimirá todo el contenido POST
-     
+    
 
 
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            estacion_id = request.POST.get('estacion_id')
-            try:
-                estacion = Estacion.objects.get(pk=estacion_id)
-                # Obtén el nombre del responsable de la estación
-                responsable_nombre = f"{estacion.responsable.nombre} {estacion.responsable.apellidoPat} {estacion.responsable.apellidoMat}"
-                estado_nombre = estacion.estado.estado  # Accede directamente al nombre del estado
-                estancia_nombre = estacion.nombre
-                email_nombre = estacion.email
-                calle_nombre = estacion.calle
-                noext_nombre = estacion.noext
-                cp_nombre = estacion.cp
-                colonia_nombre = estacion.colonia
-                tel_reponsable = estacion.responsable.telefono
-                email_responsable = estacion.responsable.email
-                return JsonResponse({'capacidad': estacion.capacidad, 
-                                     'responsable': responsable_nombre, 
-                                     'estado': estado_nombre,
-                                     'estancia':estancia_nombre,
-                                     'email':email_nombre,
-                                     'calle':calle_nombre,
-                                     'no':noext_nombre,
-                                     'cp':cp_nombre,
-                                     'colonia':colonia_nombre,
-                                     'telResponsable':tel_reponsable,
-                                     'emailResponsable':email_responsable
-
-                                     })
-            except Estacion.DoesNotExist:
-                return JsonResponse({'capacidad': 'N/A', 
-                                     'responsable': 'N/A',
-                                     'estado':'N/A',
-                                     'estancia':'N/A',
-                                     'email':'N/A',
-                                     'calle':'N/A',
-                                     'no':'N/A',
-                                     'cp':'N/A',
-                                     'colonia':'N/A',
-                                     'telResponsable':'N/A',
-                                     'emailResponsable':'N/A'
-
-                                     })
-        
-
-        return super().post(request, *args, **kwargs)
-
-
-
-
-
-
-def solicitar_traslado(request):
+def solicitar_traslado(request, traslado_id):
     if request.method == 'POST':
-        if 'extranjeros[]' in request.POST and 'estacionDestino' in request.POST:
+        if 'extranjeros[]' in request.POST:
             print("Manejando solicitud de traslado")
-            
+
             extranjeros = request.POST.getlist('extranjeros[]')
-            estacion_destino_id = request.POST.get('estacionDestino')
-            
-            # Dado que estamos fuera de una vista basada en clases, no puedes usar self.request.user
-            # En lugar de eso, usas directamente request.user
-            estacion_origen = request.user.estancia
-            
+            traslado_id = self.kwargs.get('traslado_id', None)  # Asume que tienes traslado_id en tu URL kwargs
+
+            # Obtiene el objeto Traslado usando el traslado_id
+            traslado = get_object_or_404(Traslado, pk=traslado_id)
+
+            # Ahora, para cada extranjero, crea una entrada en ExtranjeroTraslado
             for id in extranjeros:
                 extranjero = Extranjero.objects.get(pk=id)
                 
-                SolicitudTraslado.objects.create(
-                    extranjero=extranjero,
-                    estacion_origen=estacion_origen,
-                    estacion_destino=Estacion.objects.get(pk=estacion_destino_id),
-                    motivo="Razón del traslado"  # Puedes modificar esto según lo necesites
+                ExtranjeroTraslado.objects.create(
+                    statusTraslado=0,  # Suponiendo que 0 es el valor por defecto para 'ACEPTADO'
+                    delTraslado=traslado,
+                    delExtranjero=extranjero
                 )
+            
             messages.success(request, 'Solicitudes de traslado realizadas con éxito.')
             return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('traslado')})
 
-            # return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.'})
         messages.error(request, 'Solicitudes de traslado denegada')
         return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.','redirect_url': reverse('traslado')})
 
@@ -1705,3 +1676,32 @@ class TrasladoCreateView(CreateView):
         initial['estacion_origen'] = self.kwargs['origen_id']
         initial['estacion_destino'] = self.kwargs['destino_id']
         return initial
+    
+def procesar_traslado(request):
+    if request.method == "POST":
+        if 'extranjeros[]' in request.POST:
+            print("Manejando solicitud de traslado")
+
+            extranjeros = request.POST.getlist('extranjeros[]')
+            traslado_id = request.POST.get('traslado_id')
+            print("Extranjeros IDs:", extranjeros)
+            print("Traslado ID:", traslado_id)
+            traslado_instance = Traslado.objects.get(pk=traslado_id)
+         
+
+            for id in extranjeros:
+                extranjero = Extranjero.objects.get(pk=id)
+                ExtranjeroTraslado.objects.create(
+                    statusTraslado=0,
+                    delTraslado=traslado_instance,  # Asigna la instancia de Traslado
+                    delExtranjero=extranjero
+                )
+
+            messages.success(request, 'Solicitudes de traslado realizadas con éxito.')
+            return JsonResponse({'status': 'success', 'message': 'Solicitudes de traslado realizadas con éxito.', 'redirect_url': reverse('listTraslado')})
+
+        messages.error(request, 'Solicitudes de traslado denegada')
+        return JsonResponse({'status': 'error', 'message': 'Faltan datos para procesar la solicitud de traslado.', 'redirect_url': reverse('listTraslado')})
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+

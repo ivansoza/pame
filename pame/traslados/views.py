@@ -1,10 +1,16 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView,DetailView
+from django.views.generic import CreateView, ListView,DetailView, TemplateView
+from .models import Traslado, Extranjero, ExtranjeroTraslado
+from django.views.generic import CreateView, ListView,DetailView, UpdateView
 from .models import Traslado, Extranjero
 from vigilancia.models import Estacion
 from django.http import JsonResponse
-from .forms import TrasladoForm
+from .forms import TrasladoForm, EstatusTrasladoForm
 from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from django.shortcuts import get_object_or_404
+
 
 
 # Create your views here.
@@ -137,14 +143,121 @@ class listarEstaciones(ListView):
         return super().post(request, *args, **kwargs)
 
 
+
+
 class TrasladoCreateView(CreateView):
     model = Traslado
     form_class = TrasladoForm
-    template_name = 'origen/crearPuestaTraslado.html'  # Este será el nombre del archivo HTML que crearás a continuación.
-    success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
+    template_name = 'modal/crearPuestaTraslado.html'  
+  
+    def get_success_url(self):
+        destino_id = self.object.estacion_destino_id
+        return reverse('traslado', kwargs={'traslado_id': self.object.pk, 'destino_id': destino_id})
+    def form_valid(self, form):
+        origen_id = self.kwargs['origen_id']
+        destino_id = self.kwargs['destino_id']
+        
+        form.instance.estacion_origen_id = origen_id
+        form.instance.estacion_destino_id = destino_id
 
+        return super().form_valid(form)
     def get_initial(self):
         initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+
+        ultimo_registro = Traslado.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.numeroUnicoProceso.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/TRA/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
+        initial['numeroUnicoProceso'] = nuevo_numero
         initial['estacion_origen'] = self.kwargs['origen_id']
         initial['estacion_destino'] = self.kwargs['destino_id']
         return initial
+
+       
+
+class ListTrasladoDestino(ListView):
+    model = Traslado
+    template_name = "destino/listPuestasArribo.html"
+    context_object_name = 'trasladosRecibidos'
+
+    def get_queryset(self):
+        # Filtrar los traslados por la estación destino del usuario logueado
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+        queryset = Traslado.objects.filter(estacion_destino=user_estacion)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'traslado'  # Ajusta según la página activa en tu navbar
+        context['seccion'] = 'traslado'  # Ajusta según la sección activa
+        
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+
+        traslados_count = self.get_queryset().count() 
+        context['traslados_count'] = traslados_count
+
+        # Si necesitas más datos en el contexto, puedes añadirlos aquí
+        # como lo hiciste en la vista para la estación origen.
+
+        return context
+    
+class ListaExtranjerosTraslado(ListView):
+    model = ExtranjeroTraslado
+    template_name = "origen/detallesPuestaTraslado.html"
+    context_object_name = 'extranjeros'
+
+    def get_queryset(self):
+        # Obtenemos el ID del traslado desde la URL
+        traslado_id = self.kwargs.get('traslado_id')
+        
+        # Filtramos los extranjeros que comparten el mismo ID de traslado
+        queryset = ExtranjeroTraslado.objects.filter(delTraslado_id=traslado_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado_id = self.kwargs.get('traslado_id')
+        context['traslado_id'] = traslado_id  # Pasamos el ID del traslado al contexto
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
+        return context
+    
+    
+
+
+
+class EtatusTrasladoUpdate(UpdateView):
+    model = Traslado
+    form_class = EstatusTrasladoForm  # Usa tu formulario modificado
+    template_name = 'modals/editarEnseresINM.html'
+
+    def get_success_url(self):
+        enseres_id = self.object.noExtranjero.id
+        puesta_id = self.object.noExtranjero.deLaPuestaIMN.id
+        messages.success(self.request, 'Enseres editados con éxito.')
+
+        return reverse_lazy('listarEnseresINM', args=[enseres_id, puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
+        return form
+    

@@ -124,7 +124,6 @@
             <th >Numero Oficio</th>
             <th >Estación Origen</th>
             <th >Estación Destino</th>
-            <th >Punto Revisión</th>
             <th >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
@@ -132,21 +131,21 @@
     <tbody>
       {% for puesta in puestasTraslado %}
       <tr>
-          <td>{{ puesta.numeroOficio }}</td>
-          <td>{{ puesta.fechaOficio }}</td>
-          <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
-          <td>{{ puesta.puntoRevision }}</td>
-          <td>{{ puesta.deLaEstacion }}</td>
+          <td>{{ puesta.numeroUnicoProceso }}</td>
+          <td>{{ puesta.estacion_origen }}</td>
+          <td>{{ puesta.estacion_destino}} </td>
+          {% if puesta.status == 0 %}
+           <td style='color:#9E8364; font-weight: bold;'>Solicitud</td>
+          {% elif puesta.status == 1 %} 
+           <td style='color:#2A4B41; font-weight: bold;'>Aceptado</td> 
+          {% else %}
+          <td style='color:#85364A; font-weight: bold;'>Rechazado</td> 
+          {% endif %}
           <td>
-              <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
-                  data-title="Agregar Extranjeros">
-                  <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
-              </a>
-              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarExtranjeros' puesta.id %}"
-                  data-title="Ver Extranjeros">
-                  <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
-              </a>
-          </td>
+            <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listaExtranjerosTraslado' puesta.id %}" data-title="Ver extranjeros">
+                <i class="fas fa-eye"></i> <!-- Icono Ver Extranjeros -->
+            </a>
+        </td>
       </tr>
       {% endfor %}
       
@@ -156,7 +155,6 @@
           <th >Numero Oficio</th>
           <th >Estación Origen</th>
           <th >Estación Destino</th>
-          <th >Punto Revisión</th>
           <th >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>

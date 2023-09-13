@@ -11,10 +11,7 @@ OPCION_STATUS_CHOICES=[
     [2,'RECHAZADO'],
 ]
 
-OPCION_STATUS_TRASLADO_CHOICES=[
-    [0,'ACEPTADO'],
-    [1,'RECHAZADO'],
-]
+
 
 class Traslado(models.Model):
     numeroUnicoProceso = models.CharField(max_length=50)
@@ -34,6 +31,10 @@ class Traslado(models.Model):
     def __str__(self):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
     
+OPCION_STATUS_TRASLADO_CHOICES=[
+    [0,'ACEPTADO'],
+    [1,'RECHAZADO'],
+]
 class ExtranjeroTraslado(models.Model):
     statusTraslado = models.IntegerField(choices=OPCION_STATUS_TRASLADO_CHOICES)
     delTraslado = models.ForeignKey(Traslado, on_delete=models.CASCADE, null=True, blank=True)

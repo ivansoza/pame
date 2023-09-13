@@ -15,14 +15,11 @@
 
 <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
-        Agregar Traslado
-    
+        Agregar Extranjeros a Traslado
     </h1>
 </div>
 <br>
-<div class="titulo-general-container-card mb-4">
-    <h1 class="titulo-general">Selecciona la estancia:</h1>
-</div>
+
 
 
 <div class="row">
@@ -33,15 +30,7 @@
                 {% csrf_token %}
                 <!-- Resto de tus campos y contenido -->
                 
-                <div class="form-group">
-                  <label for="estacion-selector">Selecciona una estación para el traslado:</label>
-                  <select id="estacion-selector" class="form-control">
-                    <option value="">Selecciona una estación</option>
-                    {% for estacion in estaciones %}
-                      <option value="{{ estacion.pk }}">{{ estacion.nombre }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
+                
 
             </form>
             <div class="row">
@@ -55,35 +44,35 @@
                       <div class="row">
                         <div class="col">
                             <span class="etiqueta">Nombre de la estancia:</span>
-                            <span id="estancia-nombre" class="valor">N/A</span>                
+                            <span class="valor">{{estacion_destino.nombre}}</span>                
                             <br>
                             <span class="etiqueta">Calle:</span>
-                            <span id="calle-nombre" class="valor">N/A</span>                
+                            <span  class="valor">{{estacion_destino.calle}}</span>                
                             <br>
                             <span class="etiqueta">Colonia:</span>
-                            <span id="colonia-nombre" class="valor">N/A</span>                
+                            <span  class="valor">{{estacion_destino.colonia}}</span>                
                         </div>
             
                         <div class="col">
                             <span class="etiqueta">Codigo Postal:</span>
-                            <span id="cp-nombre" class="valor">N/A</span>                
+                            <span class="valor">{{estacion_destino.cp}}</span>                
                             <br>
                             <span class="etiqueta">Estado:</span>
-                            <span id="estado-nombre" class="valor">N/A</span>                
+                            <span class="valor">{{estacion_destino.estado}}</span>                
                             <br>
                             <span class="etiqueta">Email:</span>
-                            <span id="email-nombre" class="valor">N/A</span>                
+                            <span class="valor">{{estacion_destino.email}}</span>                
                         </div>
 
                         <div class="col">
                             <span class="etiqueta">Nombre del Responsable:</span>
-                            <span id="responsable-nombre" class="valor">N/A</span>                
+                            <span  class="valor">{{estacion_destino.responsable}} {{estacion_destino.responsable.apellidoPat}} {{estacion_destino.responsable.apellidoMat}}</span>                
                             <br>
                             <span class="etiqueta">Telefono del Responsable:</span>
-                            <span id="telResponsable-nombre" class="valor">N/A</span>                
+                            <span class="valor">{{estacion_destino.responsable.telefono}}</span>                
                             <br>
                             <span class="etiqueta">Email del Responsable:</span>
-                            <span id="emailResponsable-nombre" class="valor">N/A</span>                
+                            <span  class="valor">{{estacion_destino.responsable.email}}</span>                
                             <br>
                            
                         </div>
@@ -100,7 +89,7 @@
                         <!-- small card -->
                         <div class="small-box bg-success">
                           <div class="inner">
-                            <h3 id="capacidad-cantidad">N/A</h3>
+                            <h3 id="capacidad-cantidad">{{estacion_destino.capacidad}}</h3>
                     
                             <p>Lugares disponibles</p>
                           </div>
@@ -126,8 +115,7 @@
   </div>
 
 
-  <a class="btn btn-custom" id="btnCrearPuesta" href="#">crear puesta</a>
-  <BR>
+  
 
 
 {% comment %} FIN  {% endcomment %}
@@ -227,8 +215,6 @@
       </div>
   </div>
 <!---------------------- CARD ------------------>
-
-
 {% endblock contenido %}
 {% block datatable2 %}
 
@@ -237,82 +223,47 @@
 
 {% block script %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <script>
-$(document).ready(function() {
-  $("#estacion-selector").change(function() {
-    console.log("Cambio detectado en #estacion-selector con valor:", $(this).val());
+  $("#solicitarTraslado").click(function() {
+    let extranjerosParaTraslado = [];
 
-    var selectedEstacionId = $(this).val();
-    if (selectedEstacionId) {
-      var csrfToken = $("input[name=csrfmiddlewaretoken]").val();  // Obtén el token CSRF del formulario
-      $.ajax({
-        url: '',  // Deja la URL en blanco para enviar la solicitud al mismo punto final
-        type: 'POST',
-        data: {
-          'estacion_id': selectedEstacionId,
-          'csrfmiddlewaretoken': csrfToken  // Agrega el token CSRF a la solicitud
-        },
-        dataType: 'json',
-        success: function(data) {
-            console.log("Respuesta exitosa del servidor:", data);
+    // Recolectar todos los IDs de los extranjeros en la tabla de traslado
+    $("#puestaAC-table tbody tr").each(function() {
+      let extranjeroID = $(this).attr("data-id");
+      console.log("Extranjero ID recopilado:", extranjeroID);
 
-          $("#capacidad").text(data.capacidad);
-          $("#capacidad-cantidad").text(data.capacidad);
-          $("#responsable-nombre").text(data.responsable);
-          $("#estado-nombre").text(data.estado);
-          $("#estancia-nombre").text(data.estancia);
-
-          $("#email-nombre").text(data.email);
-          $("#calle-nombre").text(data.calle);
-          $("#no-nombre").text(data.no);
-          $("#cp-nombre").text(data.cp);
-          $("#colonia-nombre").text(data.colonia);
-
-          $("#telResponsable-nombre").text(data.telResponsable);
-          $("#emailResponsable-nombre").text(data.emailResponsable);
-
-
-
-        },
-        error: function() {
-          $("#capacidad").text('Error al cargar la capacidad');
-          $("#capacidad-cantidad").text('Error al cargar la capacidad');
-          $("#responsable-nombre").text('Error al cargar el responsable');
-          $("#estado-nombre").text('Error al cargar el responsable');
-          $("#estancia-nombre").text('Error al cargar el responsable');   
-          
-          $("#email-nombre").text('Error al cargar el responsable');          
-          $("#calle-nombre").text('Error al cargar el responsable');          
-          $("#no-nombre").text('Error al cargar el responsable');          
-          $("#cp-nombre").text('Error al cargar el responsable');          
-          $("#colonia-nombre").text('Error al cargar el responsable');        
-
-          $("#telResponsable-nombre").text('Error al cargar el responsable');          
-          $("#emailResponsable-nombre").text('Error al cargar el responsable');          
- 
-
-        }
-      });
-    } else {
-      $("#capacidad").text('N/A');
-      $("#capacidad-cantidad").text('N/A');
-      $("#responsable-nombre").text('N/A');
-      $("#estado-nombre").text('N/A');
-      $("#estancia-nombre").text('N/A');
-
-      $("#email-nombre").text('N/A');
-      $("#calle-nombre").text('N/A');
-      $("#no-nombre").text('N/A');
-      $("#cp-nombre").text('N/A');
-      $("#colonia-nombre").text('N/A');
-
-      $("#telResponsable-nombre").text('N/A');
-      $("#emailResponsable-nombre").text('N/A');
-
-
-    }
+      extranjerosParaTraslado.push(extranjeroID);
   });
+
+    // Enviar estos IDs al servidor para procesar
+    $.ajax({
+        url: "/seguridad/procesar/traslado/",
+        type: "POST",
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        data: {
+            'extranjeros[]': extranjerosParaTraslado,
+            'traslado_id': {{traslado1.id}},
+
+        },
+        success: function(response) {
+            console.log("Respuesta exitosa al solicitar traslado:", response);
+            if (response.status === 'success' && response.redirect_url) {
+                window.location.href = response.redirect_url;
+            }
+        },
+        error: function(error) {
+            console.log("Error al solicitar traslado:", error);
+            if (error.status === 'error' && error.redirect_url) {
+                window.location.href = error.redirect_url;
+            }
+        }
+    });
 });
+
 </script>
 <script>
     $(document).ready(function() {
@@ -358,69 +309,6 @@ $(document).ready(function() {
 
 </script>
 
-<script>
-$("#solicitarTraslado").on("click", function() {
-    console.log("Botón #solicitarTraslado clickeado");
 
-    let extranjerosParaTraslado = [];
-
-    // Recopilar todos los IDs de los extranjeros de la tabla 'tablaTraslado'
-    $("#puestaAC-table tbody tr").each(function() {
-        let extranjeroID = $(this).attr("data-id");
-        console.log("Extranjero ID recopilado:", extranjeroID);
-
-        extranjerosParaTraslado.push(extranjeroID);
-    });
-
-    // Envío de información al servidor
-    $.ajax({
-        url: "/seguridad/seguridad/solicitar_traslado/",
-        type: "POST",
-        headers: {
-            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()  // Aquí incluimos el token CSRF
-        },
-        data:  {
-            extranjeros: extranjerosParaTraslado,
-            estacionDestino: $("#estacion-selector").val()  // Enviamos también el ID de la estación destino seleccionada.
-        },
-        success: function(response) {
-            console.log("Respuesta exitosa al solicitar traslado:", response);
-            if (response.status === 'success' && response.redirect_url) {
-            window.location.href = response.redirect_url;
-        }
-
-            // Procesar respuesta del servidor (p. ej., mostrar un mensaje de éxito).
-        },
-        error: function(error) {
-            console.log("Error al solicitar traslado:", error);
-            if (response.status === 'error' && response.redirect_url) {
-            window.location.href = response.redirect_url;
-        }
-
-            
-            // Procesar el error (p. ej., mostrar un mensaje de error).
-        }
-    });
-});
-
-
-</script>
-
-<script>
-  document.getElementById("btnCrearPuesta").addEventListener("click", function() {
-      // Obtiene el valor seleccionado del dropdown
-      let estacionDestino = document.getElementById("estacion-selector").value;
-      let estacionOrigen = "{{user.estancia.id}}";  // Estación origen desde el contexto del template
-  
-      if(estacionDestino) {
-          // Construye la URL y redirige
-          let url = `{% url 'crear_traslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
-          window.location.href = url;
-      } else {
-          alert("Selecciona una estación destino primero.");
-      }
-  });
-  </script>
-  
 {% endblock script %}
 
