@@ -12,7 +12,7 @@ from .models import ImagenCarrousel
 def home(request):
     carrousels = ImagenCarrousel.objects.all()
     context = {"carrousels":carrousels}
-    return render(request,'home.html', context)
+    return render(request,'home2.html', context)
 
 def menu(request):
     return render(request, 'menu.html')
