@@ -4,11 +4,11 @@ from PIL import Image, ExifTags
 
 
 class Nacionalidad(models.Model):
-    nombre = models.CharField(max_length=200,verbose_name='Nacionalidad')
+    nombre = models.CharField(max_length=200,verbose_name='País')
     Abreviatura = models.CharField(max_length=200,verbose_name='Abreviatura')
     
     class Meta:
-        verbose_name_plural = "Nacionalidades"
+        verbose_name_plural = "Países"
     
     def __str__(self):
         return self.nombre
@@ -70,6 +70,7 @@ class PuestaDisposicionVP(models.Model):
 OPCION_GENERO_CHOICES=[
     [0,'HOMBRE'],
     [1,'MUJER'],
+    [2, 'NO BINARIO']
 ]
 OPCION_ESTATUS_CHOICES=[
     ('Activo','activo'),
@@ -83,7 +84,7 @@ class Extranjero(models.Model):
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
     apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno de Extranjero', max_length=50, blank=True)
     apellidoMaternoExtranjero = models.CharField(verbose_name='Apellido Materno', max_length=50, blank=True, null=True, default=" ")
-    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
+    nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='País')
     genero = models.IntegerField(verbose_name='Género', choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
     documentoIdentidad = models.FileField(upload_to='files/', verbose_name='Documento de Identidad', null=True, blank=True)
