@@ -1,13 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const elementosCarousel = document.querySelectorAll('.carousel');
-    M.Carousel.init(elementosCarousel, {
-        duration: 120,
-        dist: -80,
-        shift: 5,
-        padding: 5,
-        numVisible: 5,
-        indicators: false,
-        noWrap: false,
-
-    });
-});
+var TrandingSlider = new Swiper('.tranding-slider', {
+    effect: 'coverflow',
+    grabCursor: true,
+    centeredSlides: true,
+    loop: true,
+    slidesPerView: 'auto',
+    coverflowEffect: {
+      rotate: 0,
+      stretch: 0,
+      depth: 100,
+      modifier: 2.5,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    }
+  });
