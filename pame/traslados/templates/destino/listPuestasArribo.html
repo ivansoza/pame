@@ -1,30 +1,71 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.266ssjj5gg ">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homeSeguridadGeneral' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 
 {% block contenido %}
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Listado de Solicitud de Translados</h1>
+</div>
 
-<h2>Traslados Recibidos</h2>
-
-<table class="table">
-    <thead>
-        <tr>
+<br>
+<div class="table-responsive">
+    <table id="tabla" class="table table-striped table-bordered display responsive nowrap " style="width: 100%;">
+      <thead>
+          <tr>
             <th>Número Único de Proceso</th>
             <th>Estación de Origen</th>
             <th>Fecha de Solicitud</th>
             <th>Nombre de la Autoridad que Envía</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
+            <th style="width: 5%;">Status</th>
+            <th style="width: 5%;">Opciones</th>
+          </tr>
+      </thead>
+      <tbody>
         {% for traslado in trasladosRecibidos %}
         <tr>
             <td>{{ traslado.numeroUnicoProceso }}</td>
             <td>{{ traslado.estacion_origen }}</td>
             <td>{{ traslado.fechaSolicitud }}</td>
             <td>{{ traslado.nombreAutoridadEnvia }}</td>
-            <td>{{ traslado.get_status_display }}</td> <!-- Asume que tienes un método de "get_FOO_display" para mostrar el texto de la opción de choices -->
-        </tr>
+            <td>
+                <a href="#" class="btn btn-icon2">{{ traslado.get_status_display }}</a>
+                
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link" href=""
+                    data-title="Agregar Extranjeros">
+                    <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->
+                </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link" href=""
+                    data-title="Ver Extranjeros">
+                    <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
+                </a>
+            </td>        </tr>
         {% endfor %}
-    </tbody>
-</table>
+        
+      </tbody>
+      <tfoot>
+          <tr>
+            <th>Número Único de Proceso</th>
+            <th>Estación de Origen</th>
+            <th>Fecha de Solicitud</th>
+            <th>Nombre de la Autoridad que Envía</th>
+            <th>Status</th>
+            <th style="width: 5%;">Opciones</th>
+          </tr>
+      </tfoot>
+    </table>
+  
+    <br>
+  
+  </div>
+
 
 {% endblock %}

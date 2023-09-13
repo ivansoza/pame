@@ -11,6 +11,13 @@
     overflow: hidden; /* Para que el botón no se desborde */
   }
 
+  .card-traslado {
+
+    width: 100%; /* Ancho igual al tamaño de la altura */
+    height: 270px; /* Altura para hacer las cards cuadradas */
+  }
+
+
   .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -27,10 +34,24 @@
     color: #a98159;
   }
 
-  .card-button {
+  .card-button-traslado {
     margin-top: auto; /* Mueve el botón hacia la parte inferior */
     margin-bottom: 25%;
     background-color: #991F40; /* Fondo transparente */
+    color: white;
+    border-radius: 10%; /* Forma ovalada */
+    padding: 5px 10px; /* Espacio interno del botón */
+    width: 40%; /* Ancho del botón */
+    text-align: center; /* Centra el texto horizontalmente */
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .card-button {
+    margin-top: auto; /* Mueve el botón hacia la parte inferior */
+    margin-bottom: 25%;
+    background-color: #a98159; /* Fondo transparente */
     color: white;
     border-radius: 10%; /* Forma ovalada */
     padding: 5px 10px; /* Espacio interno del botón */
@@ -45,6 +66,11 @@
     color: white;
     background-color: rgba(0, 0, 0, 0.8);
   }
+
+  .card-button-traslado:hover {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
   .titulo-general-container {
     display: flex;
     justify-content: center;
@@ -54,6 +80,17 @@
 
   .titulo-general {
     background-color: #a98159;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    width: 500px; /* Cambia el valor según lo que necesites */
+    font-size: 24px; /* Cambia el tamaño del encabezado h1 */
+    text-align: center; /* Centra el texto horizontalmente */
+    margin-bottom: 20px; /* Agrega espacio inferior */
+  }
+
+  .titulo-general-traslados {
+    background-color: #9F2241;
     padding: 10px;
     border-radius: 5px;
     color: white;
@@ -75,3 +112,6 @@
     max-width: 80px; /* Ajusta el ancho máximo de la imagen según tu preferencia */
     max-height: 80px; /* Ajusta la altura máxima de la imagen según tu preferencia */
   }
+
+
+
