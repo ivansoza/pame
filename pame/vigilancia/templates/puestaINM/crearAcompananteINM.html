@@ -57,16 +57,14 @@
     
         <div class="row">
          
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.documentoIdentidad|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.tipoEstancia|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3" >
-                {{form.estatus|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3" style='display:none'>
+        
+            <div class="col-sm-12 col-md-4 col-lg-4" style='display:none'>
                 {{form.viajaSolo|as_crispy_field}}
             </div>
         </div>

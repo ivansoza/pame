@@ -81,8 +81,7 @@
         {% for extranjero in extranjeros %}
         <tr>
             <td>{{ extranjero.nombreExtranjero }}</td>
-            <td>{{ extranjero.nombreExtranjero }}
-                {% if extranjero.apellidoPaternoExtranjero %}
+            <td>{% if extranjero.apellidoPaternoExtranjero %}
                     {{ extranjero.apellidoPaternoExtranjero }}
                 {% endif %}
                 {% if extranjero.apellidoMaternoExtranjero %}

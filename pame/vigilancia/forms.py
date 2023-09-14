@@ -179,14 +179,15 @@ class extranjeroFormsInm(forms.ModelForm):
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
 
     )
-    
 
-   
-  
-   
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Juarez"}),
+
+    )
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -194,6 +195,7 @@ class extranjeroFormsInm(forms.ModelForm):
             'genero': forms.Select(attrs={'class': 'form-control'}),
             'deLaPuestaIMN': forms.Select(attrs={'class': 'form-control'}),
             'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
+
         }
 
 class editExtranjeroINMForm(forms.ModelForm):
@@ -226,9 +228,21 @@ class extranjeroFormsAC(forms.ModelForm):
         label= "Fecha de Nacimiento:",
         widget=forms.DateInput(attrs={'type':'text','id':'date','placeholder':"DD/MM/YYYY"}),  # Aquí agregamos el placeholder
 
-        # widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
+        input_formats=['%d/%m/%Y'],  # Establece el formato de entrada
 
     )
+    def clean_fechaNacimiento(self):
+        data = self.cleaned_data['fechaNacimiento']
+        today = datetime.date.today()
+
+        # Calcula la diferencia de edad
+        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
+
+        if age < 18:
+            raise ValidationError('Debes tener al menos 18 años de edad.')
+
+        return data
+    
     numeroExtranjero = forms.CharField(
         label= "Numero:",
     )
@@ -243,6 +257,13 @@ class extranjeroFormsAC(forms.ModelForm):
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
 
     )
+
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Juarez"}),
+
+    )
+   
    
    
    
@@ -254,7 +275,7 @@ class extranjeroFormsAC(forms.ModelForm):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC']
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -291,36 +312,49 @@ class puestaVPForm(forms.ModelForm):
 
 class extranjeroFormsVP(forms.ModelForm):
     fechaNacimiento = forms.DateField(
-        label= "Fecha de Nacimiento:",
-        # widget=forms.DateInput(attrs={'type':'text','class':'form-control datepicker', 'id':'datepicker', 'placeholder':"dd/mm/yyyy"}),
-        widget=forms.DateInput(attrs={'type':'text','id':'date','placeholder':"DD/MM/YYYY"}),  # Aquí agregamos el placeholder
-
+        label="Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
+        input_formats=['%d/%m/%Y'],
     )
+
+    def clean_fechaNacimiento(self):
+        data = self.cleaned_data['fechaNacimiento']
+        today = datetime.date.today()
+
+        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
+        
+        if age < 18:
+            raise ValidationError('Debes tener al menos 18 años de edad.')
+        
+        # Agregamos la validación de edad máxima
+        if age > 110:
+            raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
+        
+        return data
+
     numeroExtranjero = forms.CharField(
         label= "Numero:",
     )
-   
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Luis"}),
-
     )
     apellidoPaternoExtranjero = forms.CharField(
         label= "Apellido Paterno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
-
     )
-  
-
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Paterno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
+    )
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
-
     )
   
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
