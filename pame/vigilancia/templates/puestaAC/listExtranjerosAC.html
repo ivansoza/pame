@@ -1,7 +1,7 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDffDff22D ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
    
 
 {% endblock link %}
@@ -18,7 +18,7 @@
   <div class="titulo-general-container">
     <h1 class="titulo-general">
         Lista de Extranjeros para la Puesta:
-        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+        <span class="puesta-color" ><strong>{{ puesta.identificadorProceso }}</strong></span>
     </h1>
   </div>
 
@@ -43,8 +43,11 @@
                 <th>Nombre</th>
                 <th>Apellido(s)</th>
                 <th>Nacionalidad</th>
-                <th>deLaPuesta</th>
-                <th>Opciones</th>
+                <th style="width: 5%;">Opciones</th>
+
+
+
+                
 
             </tr>
         </thead>
@@ -52,15 +55,13 @@
             {% for extranjero in extranjeros %}
             <tr>
                 <td>{{ extranjero.nombreExtranjero }}</td>
-                <td>{{ extranjero.nombreExtranjero }}
-                    {% if extranjero.apellidoPaternoExtranjero %}
+                <td>{% if extranjero.apellidoPaternoExtranjero %}
                         {{ extranjero.apellidoPaternoExtranjero }}
                     {% endif %}
                     {% if extranjero.apellidoMaternoExtranjero %}
                         {{ extranjero.apellidoMaternoExtranjero }}
                     {% endif %}</td>
                 <td>{{ extranjero.nacionalidad }}</td>
-                <td>{{ extranjero.deLaPuestaAC }}</td>
 
                 <td>       
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroAC' extranjero.id %}" data-title="Editar Extranjero">
@@ -128,8 +129,8 @@
                     </a>
                     {% endif %}
                     
-                    {% if extranjero.llamadastelefonicas_set.all %}
-                    {% with first_llamada=extranjero.llamadastelefonicas_set.first %}
+                    {% if extranjero.notificacion_set.all %}
+                    {% with first_notificacion=extranjero.notificacion_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                     <i class="fas fa-phone"></i>
                     </a>

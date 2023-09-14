@@ -1,3 +1,4 @@
+
 {% load static %}
 
 
@@ -26,25 +27,26 @@
             <i class="fas fa-trash-alt fa-7x mt-5" style="color: #922E41;"></i>
         </div>
 
-        <form action="{% url 'eliminar-extranjero-vp' extranjero.id %}" method="POST">
+        <form action="{% url 'eliminarExtranjerosTraslado'  object.id %}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                <h2>¿Estás seguro de que deseas eliminar al siguiente extranjero?</h2>
+                <h2>¿Estás seguro de que deseas eliminar al siguiente extranjero de la puesta de traslado?</h2>
                 <br>
                 <ul>
                     <div>
                         <h4>Nombre:
-                            <span class="puesta-color" >{{ object.nombreExtranjero }}</span>
+                            <span class="puesta-color" >{{ object.delExtranjero.nombreExtranjero }}</span>
                         </h4>
                     </div>
                     <div>
                         <h4>Apellidos:
-                            <span class="puesta-color" >{% if extranjero.apellidoPaternoExtranjero %}
-                                {{ extranjero.apellidoPaternoExtranjero }}
-                            {% endif %}
-                            {% if extranjero.apellidoMaternoExtranjero %}
-                                {{ extranjero.apellidoMaternoExtranjero }}
-                            {% endif %}</span>
+                            <span class="puesta-color" >
+                                {% if object.delExtranjero.apellidoPaternoExtranjero %}
+                                    {{ object.delExtranjero.apellidoPaternoExtranjero }}
+                                {% endif %}
+                                {% if object.delExtranjero.apellidoMaternoExtranjero %}
+                                    {{ object.delExtranjero.apellidoMaternoExtranjero }}
+                                {% endif %}</span>
                         </h4>
                     </div>
                 </ul>

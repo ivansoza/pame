@@ -1,7 +1,7 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
 {% block link %}
-<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.266ssjj5gg ">
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 
 {% block card %}{% endblock card %}
 
@@ -121,22 +121,20 @@
   <table id="tabla" class="table table-striped table-bordered display responsive nowrap " style="width: 100%;">
     <thead>
         <tr>
-          <th >Numero Oficio</th>
+          <th >Numero de Proceso</th>
           <th >Fecha de Oficio</th>
           <th >Autoridades</th>
           <th >Punto Revisión</th>
-          <th >Estación</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
     </thead>
     <tbody>
       {% for puesta in puestasinm %}
       <tr>
-          <td>{{ puesta.numeroOficio }}</td>
+          <td>{{ puesta.identificadorProceso }}</td>
           <td>{{ puesta.fechaOficio }}</td>
           <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
           <td>{{ puesta.puntoRevision }}</td>
-          <td>{{ puesta.deLaEstacion }}</td>
           <td>
               <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
                   data-title="Agregar Extranjeros">
@@ -153,11 +151,10 @@
     </tbody>
     <tfoot>
         <tr>
-          <th >Numero Oficio</th>
+          <th >Numero de Proceso</th>
           <th >Fecha de Oficio</th>
           <th >Autoridades</th>
           <th >Punto Revisión</th>
-          <th >Estación</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
     </tfoot>

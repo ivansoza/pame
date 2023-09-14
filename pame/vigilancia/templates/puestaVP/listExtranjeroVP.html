@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.ssdds@## ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homePuestasVP' %}">
@@ -46,7 +46,7 @@
   <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
         Lista de Extranjeros para la Puesta:
-        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+        <span class="puesta-color" ><strong>{{ puesta.numeroOficio }}</strong></span>
     </h1>
   </div>
 
@@ -74,15 +74,14 @@
             <th>Apellido(s)</th>
             <th>Nacionalidad</th>
             <!-- <th>Puesta</th> -->
-            <th>Opciones</th>
+            <th style="width: 5%;">Opciones</th>
         </tr>
     </thead>
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
             <td>{{ extranjero.nombreExtranjero }}</td>
-            <td>{{ extranjero.nombreExtranjero }}
-                {% if extranjero.apellidoPaternoExtranjero %}
+            <td>{% if extranjero.apellidoPaternoExtranjero %}
                     {{ extranjero.apellidoPaternoExtranjero }}
                 {% endif %}
                 {% if extranjero.apellidoMaternoExtranjero %}
@@ -160,8 +159,8 @@
                 </a>
                 {% endif %}
 
-                {% if extranjero.llamadastelefonicas_set.all %}
-                {% with first_llamada=extranjero.llamadastelefonicas_set.first %}
+                {% if extranjero.notificacion_set.all %}
+                {% with first_notificacion=extranjero.notificacion_set.first %}
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadas_vp' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                 <i class="fas fa-phone"></i>
                 </a>

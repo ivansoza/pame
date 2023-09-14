@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from .views import homeLLamadasTelefonicas, llamadasTelefonicas, ListLlamadas, crearLlamadas, ListLlamadasAC, crearLlamadasAC, crearLlamadas_AC, notificacionLlamadaINM, notificacionLlamadaAC, notificacionLlamadaVP, ListLlamadasVP, crearLlamadasVP
-
+from .views import validarNotificacion, validarNotificacionAC, validarNotificacionVP
 urlpatterns = [
     # path('', homeLLamadasTelefonicas, name="homeLLamadasTelefonicas"),
     # path('llamadas', llamadasTelefonicas.as_view(), name="llamadasTelefonicas"),
@@ -17,6 +17,9 @@ urlpatterns = [
     path('notificar-llamada-vp/<int:llamada_id>/<int:puesta_id>/', notificacionLlamadaVP.as_view(), name='notificar-llamada-vp'),
     path('ver-llamadas-vp/<int:llamada_id>/<int:puesta_id>/', ListLlamadasVP.as_view(), name='ver_llamadas_vp'),
     path('crear-llamada_vp/<int:llamada_id>/<int:puesta_id>/', crearLlamadasVP.as_view(), name='crear_llamada_vp'),
+    path('validar-notificacion/<int:llamada_id>/<int:puesta_id>/', validarNotificacion.as_view(), name='validar_notificacion'),
+    path('validar-notificacion-AC/<int:llamada_id>/<int:puesta_id>/', validarNotificacionAC.as_view(), name='validar-notificacion-ac'),
+    path('validar-notificacion-VP/<int:llamada_id>/<int:puesta_id>/', validarNotificacionAC.as_view(), name='validar-notificacion-vp'),
 
 
 ]

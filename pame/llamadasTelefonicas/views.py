@@ -4,9 +4,9 @@ from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, TemplateView
 from django.views import View
 from catalogos.models import Estacion
-from .models import LlamadasTelefonicas
+from .models import LlamadasTelefonicas, Notificacion
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC, PuestaDisposicionVP
-from .forms import LlamadasTelefonicasForm
+from .forms import LlamadasTelefonicasForm, notifificacionLlamada
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
@@ -163,7 +163,6 @@ class crearLlamadas(CreateView):
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
-        context['nombre_extranjero2'] = nombre_extranjero+" "+ape+" "+ame
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
@@ -450,6 +449,150 @@ class crearLlamadasVP(CreateView):
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
         context['nombre_extranjero2'] = nombre_extranjero+" "+ape+" "+ame
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadVP'
+        return context
+    
+class validarNotificacion(CreateView):
+    template_name = 'modals/notificacionLlamada.html'
+    form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
+    model = Notificacion
+
+    def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta=PuestaDisposicionINM.objects.get(id=puesta_id)
+        return reverse('listarExtranjeros', args=[puesta.id])
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Obtén el ID del extranjero desde la URL
+        llamada_id = self.kwargs.get('llamada_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        
+        # Rellena los campos en initial
+        initial['delExtranjero'] = extranjero        
+        return initial
+
+    def form_valid(self, form):
+        # Asigna la relación al campo noExtranjero
+        llamada_id = self.kwargs.get('llamada_id')
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        extranjero = get_object_or_404(Extranjero, id=llamada_id)
+
+        form.instance.noExtranjero = extranjero
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        ape = llamada.apellidoPaternoExtranjero
+        ame = llamada.apellidoMaternoExtranjero
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+
+class validarNotificacionAC(CreateView):
+    template_name = 'modals/notificacionLlamada.html'
+    form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
+    model = Notificacion
+
+    def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta=PuestaDisposicionAC.objects.get(id=puesta_id)
+        return reverse('listarExtranjeroAC', args=[puesta.id])
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Obtén el ID del extranjero desde la URL
+        llamada_id = self.kwargs.get('llamada_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        
+        # Rellena los campos en initial
+        initial['delExtranjero'] = extranjero        
+        return initial
+
+    def form_valid(self, form):
+        # Asigna la relación al campo noExtranjero
+        llamada_id = self.kwargs.get('llamada_id')
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        extranjero = get_object_or_404(Extranjero, id=llamada_id)
+
+        form.instance.noExtranjero = extranjero
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        ape = llamada.apellidoPaternoExtranjero
+        ame = llamada.apellidoMaternoExtranjero
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+class validarNotificacionVP(CreateView):
+    template_name = 'modals/notificacionLlamada.html'
+    form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
+    model = Notificacion
+
+    def get_success_url(self):
+        puesta_id = self.kwargs['puesta_id']
+        puesta=PuestaDisposicionVP.objects.get(id=puesta_id)
+        return reverse('listarExtranjerosVP', args=[puesta.id])
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Obtén el ID del extranjero desde la URL
+        llamada_id = self.kwargs.get('llamada_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        
+        # Rellena los campos en initial
+        initial['delExtranjero'] = extranjero        
+        return initial
+
+    def form_valid(self, form):
+        # Asigna la relación al campo noExtranjero
+        llamada_id = self.kwargs.get('llamada_id')
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        extranjero = get_object_or_404(Extranjero, id=llamada_id)
+
+        form.instance.noExtranjero = extranjero
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        ape = llamada.apellidoPaternoExtranjero
+        ame = llamada.apellidoMaternoExtranjero
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadVP'
         return context

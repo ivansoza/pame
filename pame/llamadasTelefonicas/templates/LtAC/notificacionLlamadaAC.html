@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDD22D ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id %}">
@@ -103,7 +103,7 @@
                 <p>We appreciate your cooperation.</p>
                 <p>Station Manager : <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p>Date: <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <a  href="{% url 'ver_llamadasAC' llamada.id puesta.id %}"class="btn btn-custom">I accept that I have been notified</a>
+                <a  href="{% url 'validar-notificacion-ac' llamada.id puesta.id %}"class="btn btn-custom" onclick="abrir_modal(this.href); return false;">I accept that I have been notified</a>
            </div>
         </div>
       </div>
@@ -121,7 +121,7 @@
                 <p>We appreciate your cooperation.</p>
                 <p> <strong>Station Manager :</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Date:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <a  href="{% url 'ver_llamadasAC' llamada.id puesta.id %}"class="btn btn-custom">I accept that I have been notified</a>
+                <a  href="{% url 'validar-notificacion-ac' llamada.id puesta.id %}"class="btn btn-custom" onclick="abrir_modal(this.href); return false;">I accept that I have been notified</a>
                 `;
         } else if (language === 'es') {
            textContent.innerHTML = `
@@ -131,7 +131,7 @@
            <p>Agradecemos su cooperación.</p>
            <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
            <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-           <a  href="{% url 'ver_llamadasAC' llamada.id puesta.id %}"class="btn btn-custom">Acepto que he sido notificado</a>
+           <a  href="{% url 'validar-notificacion-ac' llamada.id puesta.id %}"class="btn btn-custom" onclick="abrir_modal(this.href); return false;">Acepto que he sido notificado</a>
            `;
         }      
       const currentDate = new Date();
@@ -142,4 +142,24 @@
       changeLanguage();
     
     </script>
+    <div class="modal fade" id="agregarllamada" role="dialog"></div>
+
 {% endblock contenido %}
+
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal(url){
+        $('#agregarllamada').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
+
+
+{% endblock script %}

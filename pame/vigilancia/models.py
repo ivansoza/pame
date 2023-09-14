@@ -14,6 +14,7 @@ class Nacionalidad(models.Model):
         return self.nombre
 
 class PuestaDisposicionINM(models.Model):
+    identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
     numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
     fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
     nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
@@ -37,6 +38,7 @@ class PuestaDisposicionINM(models.Model):
     
 
 class PuestaDisposicionAC(models.Model):
+    identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
     numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
     fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
     nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
