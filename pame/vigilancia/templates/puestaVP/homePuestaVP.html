@@ -121,7 +121,6 @@
             <tr>
                 <th>Numero Oficio</th>
                 <th>Fecha de Oficio</th>
-                <th>Estación</th>
                 <th style="width: 5%;">Opciones</th>
               </tr>
         </thead>
@@ -130,7 +129,6 @@
                 <tr>
                     <td>{{ puesta.numeroOficio }}</td>
                     <td>{{ puesta.fechaOficio }}</td>
-                    <td>{{ puesta.deLaEstacion }}</td>
                     <td>
                         <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'crearExtranjeroVP' puesta.id %}" data-title="Agregar Extranjeros">
                             <i class="fas fa-user-plus"></i> <!-- Icono Añadir Personas -->

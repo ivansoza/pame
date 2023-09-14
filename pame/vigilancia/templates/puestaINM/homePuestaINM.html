@@ -125,7 +125,6 @@
           <th >Fecha de Oficio</th>
           <th >Autoridades</th>
           <th >Punto Revisión</th>
-          <th >Estación</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
     </thead>
@@ -136,7 +135,6 @@
           <td>{{ puesta.fechaOficio }}</td>
           <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}} </td>
           <td>{{ puesta.puntoRevision }}</td>
-          <td>{{ puesta.deLaEstacion }}</td>
           <td>
               <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroINM' puesta.id%}"
                   data-title="Agregar Extranjeros">
@@ -157,7 +155,6 @@
           <th >Fecha de Oficio</th>
           <th >Autoridades</th>
           <th >Punto Revisión</th>
-          <th >Estación</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
     </tfoot>
