@@ -43,8 +43,7 @@
                 <th>Nombre</th>
                 <th>Apellido(s)</th>
                 <th>Nacionalidad</th>
-                <th>deLaPuesta</th>
-                <th>Opciones</th>
+                <th style="width: 5%;">Opciones</th>
 
             </tr>
         </thead>
@@ -60,7 +59,6 @@
                         {{ extranjero.apellidoMaternoExtranjero }}
                     {% endif %}</td>
                 <td>{{ extranjero.nacionalidad }}</td>
-                <td>{{ extranjero.deLaPuestaAC }}</td>
 
                 <td>       
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroAC' extranjero.id %}" data-title="Editar Extranjero">
