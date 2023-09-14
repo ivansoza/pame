@@ -3,7 +3,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.2 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaAC'%}">
@@ -15,7 +15,7 @@
 <div class="titulo-general-container">
     <h1 class="titulo-general">
         Agregar Extranjero a Puesta:
-        <span class="puesta-color" >{{ puesta.identificadorProceso  }}</span>
+        <span class="puesta-color" ><strong>{{ puesta.identificadorProceso  }}</strong></span>
     </h1>
 </div>
 
