@@ -118,7 +118,7 @@
     <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
         <thead>
             <tr>
-                <th>Numero Oficio</th>
+                <th>Numero de Proceso</th>
                 <th>Fecha de Oficio</th>
                 <th>Autoridades</th>
                 <th>Punto Revisión</th>
@@ -129,7 +129,7 @@
         <tbody>
             {% for puesta in puestaAC %}
                 <tr>
-                    <td>{{ puesta.numeroOficio }}</td>
+                    <td>{{ puesta.identificadorProceso }}</td>
                     <td>{{ puesta.fechaOficio }}</td>
                     <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}}</td>
                     <td>{{ puesta.puntoRevision }}</td>

@@ -19,14 +19,17 @@
     <form id="Puesta" method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{form.numeroOficio|as_crispy_field}}
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.identificadorProceso|as_crispy_field}}
                 <!-- Campo no editable desde la plantilla html -->
                 <script>
-                    document.getElementById('id_numeroOficio').readOnly = true;
+                    document.getElementById('id_identificadorProceso').readOnly = true;
                 </script>
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-6">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.numeroOficio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.fechaOficio|as_crispy_field}}
                 <script>
                     var fechaOficioField = document.getElementById("id_fechaOficio");

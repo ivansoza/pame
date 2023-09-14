@@ -46,7 +46,7 @@
   <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
         Lista de Extranjeros para la Puesta:
-        <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+        <span class="puesta-color" >{{ puesta.identificadorProceso }}</span>
     </h1>
   </div>
 
@@ -167,8 +167,8 @@
                 </a>
                 {% endif %}
 
-                {% if extranjero.llamadastelefonicas_set.all %}
-                {% with first_llamada=extranjero.llamadastelefonicas_set.first %}
+                {% if extranjero.notificacion_set.all %}
+                {% with first_notificacion=extranjero.notificacion_set.first %}
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                 <i class="fas fa-phone"></i>
                 </a>

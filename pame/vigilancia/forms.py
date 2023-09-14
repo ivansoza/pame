@@ -18,7 +18,6 @@ class puestDisposicionINMForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Establecer la fecha actual como valor por defecto
         self.fields['fechaOficio'].initial = datetime.date.today()
-        self.fields['fechaOficio'].widget.attrs['readonly'] = 'readonly'  # Marcar como solo lectura
 
     nombreAutoridadSignaUno = forms.CharField(
         label= "Nombre de Autoridad Asignada 1:",
@@ -54,7 +53,7 @@ class puestDisposicionINMForm(forms.ModelForm):
     
     puntoRevision = forms.CharField(
         label= "Punto de Revision:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
     
     
@@ -113,7 +112,7 @@ class puestaDisposicionACForm(forms.ModelForm):
     puntoRevision = forms.CharField(
         label= "Punto de Revision:",
 
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Punto 1'})
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
 
     dependencia = forms.CharField(
