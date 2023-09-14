@@ -15,19 +15,17 @@
 
 {% block contenido %}
 
-<div class="titulo-general-container">
+<div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
         Editar datos del extranjero:        
-        <span class="puesta-color" >{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</span>
+        <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</strong></span>
     </h1>
-  
 </div>
-<h1 class="subtitulo-general">
-    De la puesta:        
-    <span class="puesta-color" >{{ puesta.numeroOficio }}</span>
-</h1>
+{% comment %} <h1 class="subtitulo-general">
+    De la puesta:<span class="puesta-color" >{{ puesta.numeroOficio }}</span>
+</h1> {% endcomment %}
 
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+<form method="post" class="card p-3 mt-1" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
