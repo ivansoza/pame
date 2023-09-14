@@ -1,0 +1,60 @@
+
+{% load static %}
+
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+
+    
+</style>
+
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Confirmar eliminación</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div style="text-align: center;">
+            <i class="fas fa-trash-alt fa-7x mt-5" style="color: #922E41;"></i>
+        </div>
+
+        <form action="{% url 'eliminarExtranjerosTraslado'  object.id %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <h2>¿Estás seguro de que deseas eliminar al siguiente extranjero de la puesta de traslado?</h2>
+                <br>
+                <ul>
+                    <div>
+                        <h4>Nombre:
+                            <span class="puesta-color" >{{ object.delExtranjero.nombreExtranjero }}</span>
+                        </h4>
+                    </div>
+                    <div>
+                        <h4>Apellidos:
+                            <span class="puesta-color" >
+                                {% if object.delExtranjero.apellidoPaternoExtranjero %}
+                                    {{ object.delExtranjero.apellidoPaternoExtranjero }}
+                                {% endif %}
+                                {% if object.delExtranjero.apellidoMaternoExtranjero %}
+                                    {{ object.delExtranjero.apellidoMaternoExtranjero }}
+                                {% endif %}</span>
+                        </h4>
+                    </div>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom1" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView,DetailView, TemplateView
 from .models import Traslado, Extranjero, ExtranjeroTraslado
-from django.views.generic import CreateView, ListView,DetailView, UpdateView
-from .models import Traslado, Extranjero
+from django.views.generic import CreateView, ListView,DetailView, UpdateView, DeleteView
+from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
 from django.http import JsonResponse
 from .forms import TrasladoForm, EstatusTrasladoForm
@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 
 
@@ -234,9 +235,6 @@ class ListaExtranjerosTraslado(ListView):
         context['seccion'] = 'traslado'  # Cambia esto según la página activa
         return context
     
-    
-
-
 
 class EtatusTrasladoUpdate(UpdateView):
     model = Traslado
@@ -261,3 +259,20 @@ class EtatusTrasladoUpdate(UpdateView):
         form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
         return form
     
+
+class DeleteExtranjeroPuestaTraslado(DeleteView):
+    model = ExtranjeroTraslado
+    template_name = 'modal/eliminarExtranjerodePuestaTraslado.html'
+
+    def get_success_url(self):
+        puesta_id = self.object.delTraslado.id
+        messages.success(self.request, 'Extranjero Eliminado con Éxito de Traslado.')
+        return reverse('listaExtranjerosTraslado', args=[puesta_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado_id = self.kwargs.get('traslado_id')
+        context['traslado_id'] = traslado_id  # Pasamos el ID del traslado al contexto
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+        return context
