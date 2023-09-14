@@ -122,8 +122,8 @@
     <thead>
         <tr>
             <th >Numero Oficio</th>
-            <th >Estación Origen</th>
             <th >Estación Destino</th>
+            <th >Fecha de solicitud</th>
             <th >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
@@ -132,8 +132,8 @@
       {% for puesta in puestasTraslado %}
       <tr>
           <td>{{ puesta.numeroUnicoProceso }}</td>
-          <td>{{ puesta.estacion_origen }}</td>
           <td>{{ puesta.estacion_destino}} </td>
+          <td>{{ puesta.fechaSolicitud }}</td>
           {% if puesta.status == 0 %}
            <td style='color:#9E8364; font-weight: bold;'>Solicitud</td>
           {% elif puesta.status == 1 %} 
@@ -153,8 +153,8 @@
     <tfoot>
         <tr>
           <th >Numero Oficio</th>
-          <th >Estación Origen</th>
           <th >Estación Destino</th>
+          <th >Fecha de solicitud</th>
           <th >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>

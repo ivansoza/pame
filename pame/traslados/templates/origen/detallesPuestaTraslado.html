@@ -17,8 +17,8 @@
             <tr>
                 <th>Nombre</th>
                 <th>Nacionalidad</th>
-                <th>Origen</th>
                 <th>Destino</th>
+                <th>Eliminar</th>
                 <!-- Agrega más encabezados según tus necesidades -->
             </tr>
         </thead>
@@ -34,8 +34,10 @@
                     {% endif %}
                     </td>
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
-                    <td>{{ extranjero.delTraslado.estacion_origen}}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
+                    <td><a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Ver extranjeros">
+                        <i class="fas fa-trash-alt"></i> <!-- Icono Ver Extranjeros -->
+                    </a></td>
 
                     <!-- Agrega más columnas según tus necesidades -->
                 </tr>
@@ -45,5 +47,13 @@
                 </tr>
             {% endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <th>Nombre</th>
+                <th>Nacionalidad</th>
+                <th>Destino</th>
+                <th style="width: 5%;">Opciones</th>
+            </tr>
+        </tfoot>
     </table>
 {% endblock contenido%}
