@@ -175,6 +175,8 @@ class TrasladoCreateView(CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
+        nombre_usuario = usuario.get_full_name()
+        initial['nombreAutoridadEnvia'] = nombre_usuario
 
         ultimo_registro = Traslado.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.numeroUnicoProceso.split(f'/')[-1]) if ultimo_registro else 0

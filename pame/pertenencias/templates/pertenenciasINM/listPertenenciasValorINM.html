@@ -12,9 +12,21 @@
 {% endblock dashboard %}
 {% block contenido %}
 
-{% include "includes/tituloPertenencias.html" %}
-{% include "includes/cardPertenencias.html" %}
+<div class="titulo-general-container mt-2" >
+    <h1 class="titulo-general">Valores a resguardar del Extranjero:
+        <span class="puesta-color" >{{inventario.noExtranjero}} {{inventario.noExtranjero.apellidoPaternoExtranjero}}</span>
 
+    </h1>
+    
+</div>
+<br>
+<div class="titulo-general-container-card mb-4">
+    <h1 class="titulo-general">Del Inventario:
+        <span class="puesta-color" >{{ inventario.foloInventario}} </span>
+    </h1>
+</div>
+
+{% include "includes/cardPertenencias.html" %}
 
 
 <a class='btn btn-custom' href="{% url 'crear_pertenencias_valorINM' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>
