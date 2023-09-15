@@ -18,7 +18,7 @@
 {% block contenido %}
 
 
-<div class="titulo-general-container">
+<div class="titulo-general-container mt-5">
   <h1 class="titulo-general">
       Agregar Extranjero a Puesta:
       <span class="puesta-color" ><strong>{{ puesta.numeroOficio }}</strong></span>
@@ -26,7 +26,7 @@
 </div>
 
 
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+<form method="post" class="card p-3" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         {{ form.puesta.as_hidden }}
@@ -95,16 +95,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    {% comment %} <script>
-        $(document).ready(function() {
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',  // Formato de fecha día/mes/año
-                autoclose: true,
-                changeMonth: true,
-                changeYear: true,
-            });
-        });
-    </script> {% endcomment %}
     <script>
         $(document).ready(function(){
             $('#date').on('input', function(){
