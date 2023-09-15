@@ -1,38 +1,30 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
-
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
-
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
-
-
 {% block contenido %}
-
-<div class="titulo-general-container mt-2">
+<div class="titulo-general-container mt-5">
   <h1 class="titulo-general">Asignar Número de Inventario a : 
-    
-    <span class="puesta-color" >{{extranjero.nombreExtranjero}}
+    <span class="puesta-color" >
+      <strong>{{extranjero.nombreExtranjero}}</strong>
       {% if extranjero.apellidoPaternoExtranjero %}
-       {{ extranjero.apellidoPaternoExtranjero }}
+       <strong>{{ extranjero.apellidoPaternoExtranjero }}</strong>
       {% endif %}
       {% if extranjero.apellidoMaternoExtranjero %}
-        {{ extranjero.apellidoMaternoExtranjero }}
+        <strong>{{ extranjero.apellidoMaternoExtranjero }}</strong>
       {% endif %}
     </span>
   </h1>
 </div>
 <br>
-
-
-<h1></h1>
-  <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+  <form method="post" class="card p-3" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-6">
@@ -42,26 +34,11 @@
               </script>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6">
-                {{form.unidadMigratoria|as_crispy_field}}
-                <script>
-                  document.getElementById('id_unidadMigratoria').readOnly = true;
-              </script>
+              {{form.validacion|as_crispy_field}}
             </div>
           </div>
-         <div class="row">
-          <div class="col-sm-12 col-md-4 col-lg-6">
-            {{form.noExtranjero|as_crispy_field}}
-           
-          </div>
-          <div class="col-sm-12 col-md-6 col-lg-6">
-            {{form.validacion|as_crispy_field}}
-            
-          </div>
-        </div>
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
         <hr>
         <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>
     </form>
-
-
 {% endblock %}

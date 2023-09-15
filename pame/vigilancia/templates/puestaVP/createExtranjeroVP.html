@@ -1,32 +1,22 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
-
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
-
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
   <i class="fas fa-arrow-left"></i>
 </a>
-
 {% endblock dashboard %}
-
-
-
 {% block contenido %}
-
-
-<div class="titulo-general-container">
+<div class="titulo-general-container mt-5">
   <h1 class="titulo-general">
       Agregar Extranjero a Puesta:
       <span class="puesta-color" ><strong>{{ puesta.numeroOficio }}</strong></span>
   </h1>
 </div>
-
-
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+<form method="post" class="card p-3" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         {{ form.puesta.as_hidden }}
@@ -94,30 +84,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    {% comment %} <script>
-        $(document).ready(function() {
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',  // Formato de fecha día/mes/año
-                autoclose: true,
-                changeMonth: true,
-                changeYear: true,
-            });
-        });
-    </script> {% endcomment %}
-    <script>
-        $(document).ready(function(){
-            $('#date').on('input', function(){
-                var value = $(this).val();
-                var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{2})(\d{4})?/, "$1/$2/$3").trim('/');
-        
-                if (newValue !== value || newValue.length > 10) {
-                    $(this).val(newValue.substring(0, 10));
-                }
-            });
-        });
-        </script>
-
-
-    
+<!-- Script para poner la fecha con division %%/%%/%%%%  -->
+{% include "includes/js/fecha.html" %}
 {% endblock script %}
