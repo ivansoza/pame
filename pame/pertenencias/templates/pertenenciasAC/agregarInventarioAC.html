@@ -13,30 +13,9 @@
   <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
-
-
-
 {% block contenido %}
-
-
-<div class="titulo-general-container">
-  <h1 class="titulo-general">Asignar Número de Inventario a : 
-    
-    <span class="puesta-color" >{{extranjero.nombreExtranjero}}
-      {% if extranjero.apellidoPaternoExtranjero %}
-       {{ extranjero.apellidoPaternoExtranjero }}
-      {% endif %}
-      {% if extranjero.apellidoMaternoExtranjero %}
-        {{ extranjero.apellidoMaternoExtranjero }}
-      {% endif %}
-    </span>
-  </h1>
-</div>
-<br>
-
-
-<h1></h1>
-  <form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+{% include "includes/tituloInventario.html" %}
+  <form method="post" class="card p-3" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-6">
@@ -54,6 +33,4 @@
         <hr>
         <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom">Cancelar</a>
     </form>
-
-
 {% endblock %}

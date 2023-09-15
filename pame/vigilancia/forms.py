@@ -179,7 +179,7 @@ class extranjeroFormsInm(forms.ModelForm):
     )
 
     apellidoMaternoExtranjero = forms.CharField(
-        label= "Apellido Paterno:",
+        label= "Apellido Materno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Juarez"}),
 
     )
@@ -271,7 +271,7 @@ class extranjeroFormsAC(forms.ModelForm):
     )
 
     apellidoMaternoExtranjero = forms.CharField(
-        label= "Apellido Paterno:",
+        label= "Apellido Materno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Juarez"}),
 
     )
@@ -367,7 +367,7 @@ class extranjeroFormsVP(forms.ModelForm):
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
     )
     apellidoMaternoExtranjero = forms.CharField(
-        label= "Apellido Paterno:",
+        label= "Apellido Materno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
     )
     documentoIdentidad = forms.FileField(
