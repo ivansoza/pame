@@ -830,7 +830,7 @@ class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
         extranjero_id1 = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id1)
         
-        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
         context['extranjero'] = extranjero
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'
