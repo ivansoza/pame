@@ -227,6 +227,16 @@
 
 <script>
   $("#solicitarTraslado").click(function() {
+    if ($("#puestaAC-table tbody tr").length === 0) {
+      Swal.fire({
+        title: '¡La tabla está vacía!',
+        text: 'No se pueden solicitar traslados porque la tabla está vacía. Agrega al menos un extranjero.',
+        icon: 'info',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#85364A',
+      });
+      return;
+    }
     let extranjerosParaTraslado = [];
 
     // Recolectar todos los IDs de los extranjeros en la tabla de traslado
