@@ -83,7 +83,7 @@
     className: 'btn btn-custom mr-2',
     action: function (e, dt, node, config) {
       // Redirigir a la URL relativa a la ubicación actual
-      window.location.href = '#';
+      window.location.href = '{% url 'traslado' traslado_id estacion_id %}';
    }
   },
   
