@@ -12,7 +12,7 @@
 {% endblock dashboard %}
 {% block contenido %}
 
-<div class="titulo-general-container">
+<div class="titulo-general-container mt-5">
     <h1 class="titulo-general">
         Agregar Extranjero a Puesta:
         <span class="puesta-color" ><strong>{{ puesta.identificadorProceso  }}</strong></span>
@@ -21,7 +21,7 @@
 
 
 
-<form id="extranjeroAC" method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+<form id="extranjeroAC" method="post" class="card p-3 " enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
 
     {% csrf_token %}

@@ -197,6 +197,22 @@ class extranjeroFormsInm(forms.ModelForm):
         }
 
 class editExtranjeroINMForm(forms.ModelForm):
+
+    fechaNacimiento = forms.DateField(
+        label="Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
+        input_formats=['%d/%m/%Y'],
+    )
+
+    def clean_fechaNacimiento(self):
+        data = self.cleaned_data['fechaNacimiento']
+        today = datetime.date.today()
+        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
+        if age < 18:
+            raise ValidationError('Debe de ser mayor de 18 años.')        
+        if age > 110:
+            raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
+        return data
     class Meta:
         model = Extranjero
         fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus'] 
@@ -237,17 +253,7 @@ class extranjeroFormsAC(forms.ModelForm):
         if age > 110:
             raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
         return data
-    def clean_fechaNacimiento(self):
-        data = self.cleaned_data['fechaNacimiento']
-        today = datetime.date.today()
-
-        # Calcula la diferencia de edad
-        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
-
-        if age < 18:
-            raise ValidationError('Debe de ser mayor de 18 años.')
-
-        return data
+  
     
     numeroExtranjero = forms.CharField(
         label= "Numero:",
@@ -293,6 +299,22 @@ class extranjeroFormsAC(forms.ModelForm):
 
 
 class editExtranjeroACForms(forms.ModelForm):
+
+    fechaNacimiento = forms.DateField(
+        label="Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
+        input_formats=['%d/%m/%Y'],
+    )
+
+    def clean_fechaNacimiento(self):
+        data = self.cleaned_data['fechaNacimiento']
+        today = datetime.date.today()
+        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
+        if age < 18:
+            raise ValidationError('Debe de ser mayor de 18 años.')        
+        if age > 110:
+            raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
+        return data
     class Meta:
       model = Extranjero
       fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus']
@@ -366,6 +388,22 @@ class extranjeroFormsVP(forms.ModelForm):
         }
 
 class editExtranjeroVPForm(forms.ModelForm):
+
+    fechaNacimiento = forms.DateField(
+        label="Fecha de Nacimiento:",
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
+        input_formats=['%d/%m/%Y'],
+    )
+
+    def clean_fechaNacimiento(self):
+        data = self.cleaned_data['fechaNacimiento']
+        today = datetime.date.today()
+        age = today.year - data.year - ((today.month, today.day) < (data.month, data.day))
+        if age < 18:
+            raise ValidationError('Debe de ser mayor de 18 años.')        
+        if age > 110:
+            raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
+        return data
     class Meta:
         model = Extranjero
         fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus'] 
