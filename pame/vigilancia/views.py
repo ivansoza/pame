@@ -25,7 +25,9 @@ from django.http import JsonResponse
 import json
 from django.db.models import Count
 from datetime import datetime
-
+from django.utils import timezone
+from datetime import timedelta
+from django.http import HttpResponseRedirect
 
 from traslados.models import ExtranjeroTraslado
 
@@ -340,6 +342,23 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         
         return context
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Obtén el registro que se va a editar
+        registro = self.get_object()
+
+        # Calcula la diferencia de tiempo
+        diferencia = timezone.now() - registro.horaRegistro
+
+        # Define el límite de tiempo permitido para la edición (dos días en este caso)
+        limite_de_tiempo = timedelta(days=1)
+
+        if diferencia > limite_de_tiempo:
+            # Si han pasado más de tres minutos, muestra un mensaje de error y redirige
+            messages.error(request, "No puedes editar este registro después de 1 dia.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirige a la URL actual o a la página de inicio si no se puede determinar la URL actual
+
+        return super().dispatch(request, *args, **kwargs)
     
 class AgregarBiometricoINM(CreateView):
     model = Biometrico
@@ -854,6 +873,22 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
 
         return context    
+    def dispatch(self, request, *args, **kwargs):
+        # Obtén el registro que se va a editar
+        registro = self.get_object()
+
+        # Calcula la diferencia de tiempo
+        diferencia = timezone.now() - registro.horaRegistro
+
+        # Define el límite de tiempo permitido para la edición (dos días en este caso)
+        limite_de_tiempo = timedelta(days=1)
+
+        if diferencia > limite_de_tiempo:
+            # Si han pasado más de tres minutos, muestra un mensaje de error y redirige
+            messages.error(request, "No puedes editar este registro después de 1 dia.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirige a la URL actual o a la página de inicio si no se puede determinar la URL actual
+
+        return super().dispatch(request, *args, **kwargs)
 
 class AgregarBiometricoAC(CreateView):
     model = Biometrico
@@ -1378,6 +1413,22 @@ class EditarExtranjeroVP(UpdateView):
         
         return context
     
+    def dispatch(self, request, *args, **kwargs):
+        # Obtén el registro que se va a editar
+        registro = self.get_object()
+
+        # Calcula la diferencia de tiempo
+        diferencia = timezone.now() - registro.horaRegistro
+
+        # Define el límite de tiempo permitido para la edición (dos días en este caso)
+        limite_de_tiempo = timedelta(days=1)
+
+        if diferencia > limite_de_tiempo:
+            # Si han pasado más de tres minutos, muestra un mensaje de error y redirige
+            messages.error(request, "No puedes editar este registro después de 1 dia.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirige a la URL actual o a la página de inicio si no se puede determinar la URL actual
+
+        return super().dispatch(request, *args, **kwargs)
 class DeleteExtranjeroVP(DeleteView):
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroVP.html'
