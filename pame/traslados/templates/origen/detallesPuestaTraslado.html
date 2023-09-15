@@ -77,6 +77,18 @@
 
 {% endblock contenido%}
 
+{% block datatable %}
+ {
+    text: 'Añadir Extranjero a Traslado',
+    className: 'btn btn-custom mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '#';
+   }
+  },
+  
+{% endblock datatable %}
+
 {% block script %}
 
 
