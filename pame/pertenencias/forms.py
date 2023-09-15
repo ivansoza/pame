@@ -21,6 +21,11 @@ class PertenenciaForm(forms.ModelForm):
             'delInventario': forms.TextInput(attrs={'style': 'display:none;'}),
       }
         
+class EditPertenenciaForm(forms.ModelForm):
+    class Meta:
+        model = Pertenencias
+        fields = ['descripcion','cantidad','observaciones']
+  
         
 
 

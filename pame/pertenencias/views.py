@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP
-from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm
+from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm, EditPertenenciaForm
 from .models import Pertenencias, Inventario, Valores, EnseresBasicos
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -319,7 +319,7 @@ class DeletePertenenciasINM(DeleteView):
     
 class EditarPertenenciasViewINM(UpdateView):
     model = Pertenencias
-    form_class = PertenenciaForm  # Usa tu formulario modificado
+    form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/editPertenenciasINM.html'  # Crea este template
 
     def get_success_url(self):
@@ -337,7 +337,7 @@ class EditarPertenenciasViewINM(UpdateView):
     
 class EditarPertenenciasViewAC(UpdateView):
     model = Pertenencias
-    form_class = PertenenciaForm  # Usa tu formulario modificado
+    form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/editPertenenciasAC.html'  # Crea este template
 
     def get_success_url(self):
@@ -931,7 +931,7 @@ class DeletePertenenciasVP(DeleteView):
 
 class EditarPertenenciasViewVP(UpdateView):
     model = Pertenencias
-    form_class = PertenenciaForm  # Usa tu formulario modificado
+    form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/vp/editPertenenciasVP.html'  # Crea este template
 
     def get_success_url(self):
