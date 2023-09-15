@@ -175,10 +175,25 @@
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link"   href=" {% url 'exit' %}" role="button">
-          Cerrar sesión
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ user.username }}
         </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <!-- Elementos del menú desplegable -->
+          <div class="dropdown-header">
+            <img src="{% static 'img/logo160x16021.png' %}" class="img-circle elevation-2" alt="User Image">
+            <div class="info">
+              <a href="#" class="d-block"><strong>Usuario:</strong>{{ user.username }}</a>
+              <a href="#" class="d-block"><strong>Grupo:</strong>{{ user.groups.first.name }}</a>
+              <a href="#" class="d-block"><strong>Estación</strong>{{ user.estancia }}</a>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'exit' %}">
+            Cerrar sesión
+          </a>
+        </div>
       </li>
     </ul>
   </nav>
