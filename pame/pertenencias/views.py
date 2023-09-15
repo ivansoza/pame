@@ -53,10 +53,16 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
     form_class = InventarioForm
     template_name = 'pertenenciasINM/agregarInventarioINM.html'
 
+
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estaciones = extranjero.deLaEstacion.nombre
         form.instance.noExtranjero_id = extranjero_id
+        form.instance.unidadMigratoria = estaciones
         return super().form_valid(form)
+
+
     def get_initial(self):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -470,8 +476,13 @@ class CrearInventarioViewAC(CreateView):
 
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estaciones = extranjero.deLaEstacion.nombre
         form.instance.noExtranjero_id = extranjero_id
+        form.instance.unidadMigratoria = estaciones
         return super().form_valid(form)
+
+
     def get_initial(self):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -810,7 +821,10 @@ class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
 
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estaciones = extranjero.deLaEstacion.nombre
         form.instance.noExtranjero_id = extranjero_id
+        form.instance.unidadMigratoria = estaciones
         return super().form_valid(form)
     def get_initial(self):
         extranjero_id = self.kwargs['extranjero_id']
@@ -820,7 +834,6 @@ class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
         ultimo_registro = Inventario.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
         nuevo_numero = f'2023/INV/{estaciones_id}/{extranjero_id}/{ultimo_numero + 1:06d}'
-
         return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones}
 
     def get_context_data(self, **kwargs):
