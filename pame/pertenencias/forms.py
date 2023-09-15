@@ -18,8 +18,11 @@ class PertenenciaForm(forms.ModelForm):
         model = Pertenencias
         fields = '__all__'
         widgets = {
+            'descripcion': forms.TextInput(attrs={'placeholder': 'Descripción'}),
+            'cantidad': forms.NumberInput(attrs={'placeholder': 'Cantidad'}),
+            'observaciones': forms.TextInput(attrs={'placeholder': 'Observaciones'}),
             'delInventario': forms.TextInput(attrs={'style': 'display:none;'}),
-      }
+        }
         
 class EditPertenenciaForm(forms.ModelForm):
     class Meta:
