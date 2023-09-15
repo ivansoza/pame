@@ -3,12 +3,15 @@
 {% block link %}
 <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 
-{% block card %}{% endblock card %}
 
 
 {% endblock link %}
 
-
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homeSeguridadGeneral' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 
 {% block contenido %}
 <style>
@@ -135,7 +138,7 @@
           <td>{{ puesta.estacion_destino}} </td>
           <td>{{ puesta.fechaSolicitud }}</td>
           {% if puesta.status == 0 %}
-           <td style='color:#9E8364; font-weight: bold;'>Solicitud</td>
+           <td style='color:#9E8364; font-weight: bold;'><a href="#" class="btn btn-icon2">Solicitud</td>
           {% elif puesta.status == 1 %} 
            <td style='color:#2A4B41; font-weight: bold;'>Aceptado</td> 
           {% else %}

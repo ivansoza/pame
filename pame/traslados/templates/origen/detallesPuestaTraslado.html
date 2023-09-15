@@ -3,15 +3,23 @@
 {% block link %}
 <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 
-{% block card %}{% endblock card %}
 
 
 {% endblock link %}
 
-
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homeSeguridadGeneral' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 
 {% block contenido %}
-<h1>Lista de Extranjeros para el Traslado ID {{ traslado_id }}</h1>
+<div class="titulo-general-container mt-3">
+    <h1 class="titulo-general">
+        Lista de Extranjeros para el Traslado
+        <span class="puesta-color"><strong>{{ identificador }}</strong> </span>
+    </h1>
+</div>
 <table id="tabla" class="table table-striped table-bordered display responsive nowrap " style="width: 100%;">
     <thead>
             <tr>

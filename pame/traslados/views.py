@@ -232,6 +232,9 @@ class ListaExtranjerosTraslado(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         traslado_id = self.kwargs.get('traslado_id')
+        traslado = Traslado.objects.get(pk=traslado_id)
+        inden = traslado.numeroUnicoProceso
+        context['identificador']= inden
         context['traslado_id'] = traslado_id  # Pasamos el ID del traslado al contexto
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'traslado'  # Cambia esto según la página activa
