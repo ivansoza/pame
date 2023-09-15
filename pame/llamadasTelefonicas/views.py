@@ -163,6 +163,7 @@ class crearLlamadas(CreateView):
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
+        context['nombre_extranjero2'] = nombre_extranjero
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
