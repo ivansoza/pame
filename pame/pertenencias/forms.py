@@ -2,16 +2,16 @@ from django import forms
 from .models import Inventario, Pertenencias, Valores, EnseresBasicos
 
 class InventarioForm(forms.ModelForm):
-    unidadMigratoria = forms.CharField(
-         label= "Estación Migratoria" 
-        ) 
+    # unidadMigratoria = forms.CharField(
+    #      label= "Estación Migratoria" 
+    #     ) 
     class Meta:
         model = Inventario
-        fields = '__all__'
+        fields = ['foloInventario', 'validacion']
 
-        widgets = {
-            'noExtranjero': forms.TextInput(attrs={'readonly': 'readonly'}),
-      }
+    #     widgets = {
+    #         'noExtranjero': forms.TextInput(attrs={'readonly': 'readonly'}),
+    #   }
 
 class PertenenciaForm(forms.ModelForm):
     class Meta:
