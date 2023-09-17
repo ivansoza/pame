@@ -40,10 +40,16 @@ class ValoresForm(forms.ModelForm):
             'delInventario': forms.TextInput(attrs={'style': 'visibility:hidden;'}),
       }
 
+
+class EditarValoresForm(forms.ModelForm):
+    class Meta:
+        model = Valores
+        fields = ['descripcion','cantidad','Obsevaciones']
+      
+
+
 class EnseresForm(forms.ModelForm):
     class Meta:
         model = EnseresBasicos
-        fields = '__all__'
-        widgets = {
-            'unidadMigratoria': forms.TextInput(attrs={'readonly': 'readonly'}),
-      }
+        fields = ['enseres','enseresExtras']
+      

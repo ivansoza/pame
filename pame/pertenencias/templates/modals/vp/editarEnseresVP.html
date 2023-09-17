@@ -28,16 +28,13 @@
                 {% csrf_token %}
 
                 <div class="row">
-                    <div class="col-sm-12 col-md-6 col-lg-6">
-                        {{form.unidadMigratoria|as_crispy_field}}
-                    </div>
-                    
-                    <div class="col-sm-12 col-md-6 col-lg-6">
-                        {{form.noExtranjero|as_crispy_field}}
-                    </div>
                     <div class="col-sm-12 col-md-12 col-lg-12">
                         {{form.enseres|as_crispy_field}}
                     </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        {{form.enseresExtras|as_crispy_field}}
+                    </div>
+
                 </div>
                     <!-- Campo no editable desde la plantilla html -->
                

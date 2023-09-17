@@ -13,13 +13,6 @@
 <form method="post" class="card p-3 mt-5" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="row">
-    <div class="col-sm-12 col-md-6 col-lg-6">
-      {{form.unidadMigratoria|as_crispy_field}}
-    </div>
-
-    <div class="col-sm-12 col-md-6 col-lg-6">
-      {{ form.noExtranjero|as_crispy_field}}
-    </div>
     <div class="col-sm-12 col-md-12 col-lg-12">
       {% for value, label in form.enseres.field.choices %}
        <div class="form-check">

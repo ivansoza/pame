@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP
-from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm, EditPertenenciaForm
+from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm, EditPertenenciaForm,EditarValoresForm
 from .models import Pertenencias, Inventario, Valores, EnseresBasicos
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -52,7 +52,6 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenenciasINM/agregarInventarioINM.html'
-
 
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
@@ -154,8 +153,6 @@ class CrearEnseresINM(CreateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
-    
-   
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
@@ -165,19 +162,14 @@ class CrearEnseresINM(CreateView):
         initial['noExtranjero'] = extranjero_id
         return initial
     
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
-    
-
     def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        enseres = form.save(commit=False)
-        enseres.noExtranjero = extranjero
-        enseres.save()
+        estacion = extranjero.deLaEstacion
+        form.instance.unidadMigratoria= estacion
+        form.instance.noExtranjero= extranjero
         return super().form_valid(form)
+
     
 class CrearEnseresModaINM(CreateView):
     model= EnseresBasicos
@@ -211,20 +203,15 @@ class CrearEnseresModaINM(CreateView):
     def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        enseres = form.save(commit=False)
-        enseres.noExtranjero = extranjero
-        enseres.save()
+        estacion = extranjero.deLaEstacion
+        form.instance.unidadMigratoria= estacion
+        form.instance.noExtranjero= extranjero
         return super().form_valid(form)
-    
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
-    
+
 class EditarEnseresViewINM(UpdateView):
     model = EnseresBasicos
     form_class = EnseresForm  # Usa tu formulario modificado
-    template_name = 'modals/editarEnseresINM.html'
+    template_name = 'modals/inm/editarEnseresINM.html'
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -238,11 +225,6 @@ class EditarEnseresViewINM(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
-    
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
     
 class DeleteEnseresINM(DeleteView):
     permission_required = {
@@ -408,7 +390,7 @@ class UpdatePertenenciasValorINM(UpdateView):
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
-    form_class = ValoresForm 
+    form_class = EditarValoresForm 
     template_name = 'modals/editarPertenenciaValorINM.html'
 
     def get_success_url(self):
@@ -429,7 +411,7 @@ class UpdatePertenenciasValorAC(UpdateView):
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
-    form_class = ValoresForm 
+    form_class = EditarValoresForm 
 
     template_name = 'modals/editarPertenenciaValorAC.html'
 
@@ -700,28 +682,14 @@ class CrearEnseresAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-    def get_initial(self):
-        extranjero_id = self.kwargs.get('extranjero_id')
-        initial = super().get_initial()
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        estacion = extranjero.deLaEstacion
-        initial['unidadMigratoria'] = estacion
-        initial['noExtranjero'] = extranjero_id
-        return initial
-    
-
     def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        enseres = form.save(commit=False)
-        enseres.noExtranjero = extranjero
-        enseres.save()
+        estacion = extranjero.deLaEstacion
+        form.instance.unidadMigratoria= estacion
+        form.instance.noExtranjero= extranjero
         return super().form_valid(form)
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
     
 class EditarEnseresViewAC(UpdateView):
     model = EnseresBasicos
@@ -739,10 +707,7 @@ class EditarEnseresViewAC(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadAC'
         return context
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
+
     
 class DeleteEnseresAC(DeleteView):
     permission_required = {
@@ -783,27 +748,13 @@ class CrearEnseresModaAC(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         return context
     
-    def get_initial(self):
-        extranjero_id = self.kwargs.get('extranjero_id')
-        initial = super().get_initial()
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        estacion = extranjero.deLaEstacion
-        initial['unidadMigratoria'] = estacion
-        initial['noExtranjero'] = extranjero_id
-        return initial
-    
-
     def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        enseres = form.save(commit=False)
-        enseres.noExtranjero = extranjero
-        enseres.save()
+        estacion = extranjero.deLaEstacion
+        form.instance.unidadMigratoria= estacion
+        form.instance.noExtranjero= extranjero
         return super().form_valid(form)
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
 #-------------------------------FIN --------------------------------
 
 
@@ -1023,7 +974,7 @@ class UpdatePertenenciasValorVP(UpdateView):
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
-    form_class = ValoresForm 
+    form_class = EditarValoresForm 
     template_name = 'modals/vp/editarPertenenciasValorVP.html'
 
     def get_success_url(self):
@@ -1036,7 +987,7 @@ class UpdatePertenenciasValorVP(UpdateView):
         
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
-        
+
         return context
     
 class ListaEnseresViewUP(ListView):
@@ -1080,30 +1031,13 @@ class CrearEnseresVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-   
-    def get_initial(self):
-        extranjero_id = self.kwargs.get('extranjero_id')
-        initial = super().get_initial()
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        estacion = extranjero.deLaEstacion
-        initial['unidadMigratoria'] = estacion
-        initial['noExtranjero'] = extranjero_id
-        return initial
-    
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
-    
-
     def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
         extranjero = Extranjero.objects.get(id=extranjero_id)
-        enseres = form.save(commit=False)
-        enseres.noExtranjero = extranjero
-        enseres.save()
+        estacion = extranjero.deLaEstacion
+        form.instance.unidadMigratoria= estacion
+        form.instance.noExtranjero= extranjero
         return super().form_valid(form)
-    
 
 
 class CrearEnseresModalVP(CreateView):
@@ -1126,14 +1060,13 @@ class CrearEnseresModalVP(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         return context
     
-    def get_initial(self):
+    def form_valid(self, form):
         extranjero_id = self.kwargs.get('extranjero_id')
-        initial = super().get_initial()
         extranjero = Extranjero.objects.get(id=extranjero_id)
         estacion = extranjero.deLaEstacion
-        initial['unidadMigratoria'] = estacion
-        initial['noExtranjero'] = extranjero_id
-        return initial
+        form.instance.unidadMigratoria= estacion
+        form.instance.noExtranjero= extranjero
+        return super().form_valid(form)
     
 class DeleteEnseresVP(DeleteView):
     permission_required = {
@@ -1171,8 +1104,3 @@ class EditarEnseresViewVP(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadVP'
         return context
-    
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['unidadMigratoria'].widget.attrs['readonly'] = True
-        return form
