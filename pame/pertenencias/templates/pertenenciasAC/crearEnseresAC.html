@@ -6,15 +6,30 @@
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
 
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosAC' puesta.id %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
 
+{% endblock dashboard %}
 {% block contenido %}
 
-
-<div class="titulo-general-container">
-  <h1 class="titulo-general">Asignar Enseres</h1>
+<div class="titulo-general-container mt-3">
+    <h1 class="titulo-general">
+        Asignar Enseres a Extranjero:
+        <span class="puesta-color" >
+            <strong>{{ extranjero.nombreExtranjero }}  
+            {% if extranjero.apellidoPaternoExtranjero %}
+                                {{ extranjero.apellidoPaternoExtranjero }}
+                            {% endif %}
+                            {% if extranjero.apellidoMaternoExtranjero %}
+                                {{ extranjero.apellidoMaternoExtranjero }}
+                            {% endif %}</strong> </span>
+    </h1>
 </div>
-<br>
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
+
+
+<form method="post" class="card p-3" enctype="multipart/form-data" >
     {% csrf_token %}
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12">
