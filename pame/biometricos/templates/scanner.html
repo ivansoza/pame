@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+
+    <head>
+        <meta charset="utf-8">
+        <title>fotos</title>
+    </head>
+
+    <body>
+        <h1>tomar foto</h1>
+        <p id="errorTxt"></p>
+        <div>
+            <video id="theVideo" controls autoplay></video>
+            <canvas id="theCanvas"></canvas>
+        </div>
+        <button id="btnCapture">capturar</button>
+        <button id="btnDownloadImage"> descargar imagen</button>
+        <script type="text/javascript">
+            var videoWidth = 350;
+            var videoHeight = 550;
+            var videoTag = document.getElementById('theVideo');
+            var canvasTag = document.getElementById('theCanvas');
+            var btnCapture = document.getElementById("btnCapture");
+            var btnDownloadImage = document.getElementById("btnDownloadImage");
+            videoTag.setAttribute('width', videoWidth);
+            videoTag.setAttribute('height', videoHeight);
+            canvasTag.setAttribute('width', videoWidth);
+            canvasTag.setAttribute('height', videoHeight);
+            window.onload = () => {
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: {
+                        width: videoWidth,
+                        height: videoHeight
+                    }
+                }).then(stream => {
+                    videoTag.srcObject = stream;
+                }).catch(e => {
+                    document.getElementById('errorTxt').innerHTML = 'ERROR: ' + e.toString();
+                });
+                var canvasContext = canvasTag.getContext('2d');
+                btnCapture.addEventListener("click", () => {
+                    canvasContext.drawImage(videoTag, 0, 0, videoWidth, videoHeight);
+                });
+                btnDownloadImage.addEventListener("click", () => {
+                    var link = document.createElement('a');
+                    link.download = 'capturedImage.png';
+                    link.href = canvasTag.toDataURL();
+                    link.click();
+                });
+            };
+
+            btnDownloadImage.addEventListener("click", async () => {
+                var pdfDoc = await PDFLib.PDFDocument.create();
+                var page = pdfDoc.addPage([videoWidth, videoHeight]);
+                var canvasContext = canvasTag.getContext('2d');
+            
+                // Captura la imagen del canvas y la convierte en una imagen PNG
+                var imageDataUri = canvasTag.toDataURL('image/png');
+                var imageBytes = await fetch(imageDataUri).then((res) => res.arrayBuffer());
+            
+                // Agrega la imagen al documento PDF
+                var pngImage = await pdfDoc.embedPng(imageBytes);
+                page.drawImage(pngImage, {
+                    x: 0,
+                    y: 0,
+                    width: videoWidth,
+                    height: videoHeight,
+                });
+            
+                // Genera un blob de datos para el PDF
+                var pdfBytes = await pdfDoc.save();
+            
+                // Crea un enlace para descargar el PDF
+                var blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.download = 'capturedImage.pdf';
+                link.href = url;
+                link.click();
+            });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+    </body>
+
+</html>
