@@ -16,7 +16,7 @@
 {% block contenido %}
 <div class="titulo-general-container mt-3">
     <h1 class="titulo-general">
-        Lista de Extranjeros para el Traslado
+        Lista de Extranjeros en la Solicitud de Traslado
         <span class="puesta-color"><strong>{{ identificador }}</strong> </span>
     </h1>
 </div>
@@ -75,15 +75,7 @@
 {% endblock contenido%}
 
 {% block datatable %}
- {
-    text: 'Añadir Extranjero a Traslado',
-    className: 'btn btn-custom mr-2',
-    action: function (e, dt, node, config) {
-      // Redirigir a la URL relativa a la ubicación actual
-      window.location.href = '{% url 'traslado' traslado_id estacion_id %}';
-   }
-  },
-  
+
 {% endblock datatable %}
 
 {% block script %}

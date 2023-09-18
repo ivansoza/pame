@@ -283,3 +283,29 @@ class DeleteExtranjeroPuestaTraslado(DeleteView):
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'traslado'  # Cambia esto según la página activa
         return context
+
+class ListaExtranjerosTrasladoDestino(ListView):
+    model = ExtranjeroTraslado
+    template_name = "destino/verExtranjerosTraslado.html"
+    context_object_name = 'extranjeros'
+
+    def get_queryset(self):
+        # Obtenemos el ID del traslado desde la URL
+        traslado_id = self.kwargs.get('traslado_id')
+        
+        # Filtramos los extranjeros que comparten el mismo ID de traslado
+        queryset = ExtranjeroTraslado.objects.filter(delTraslado_id=traslado_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado_id = self.kwargs.get('traslado_id')
+        traslado = Traslado.objects.get(pk=traslado_id)
+        estacion_id = traslado.estacion_origen.id
+        inden = traslado.numeroUnicoProceso
+        context['identificador']= inden
+        context['traslado_id'] = traslado_id 
+        context['estacion_id'] = estacion_id  # Pasamos el ID del traslado al contexto
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+        return context
