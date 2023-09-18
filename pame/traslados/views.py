@@ -309,8 +309,10 @@ class ListaExtranjerosTrasladoDestino(ListView):
         traslado_id = self.kwargs.get('traslado_id')
         traslado = Traslado.objects.get(pk=traslado_id)
         estacion_id = traslado.estacion_origen.id
+        status = traslado.status
         inden = traslado.numeroUnicoProceso
         context['identificador']= inden
+        context['status']= status
         context['traslado_id'] = traslado_id 
         context['estacion_id'] = estacion_id  # Pasamos el ID del traslado al contexto
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
