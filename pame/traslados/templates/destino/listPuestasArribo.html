@@ -20,10 +20,10 @@
     <table id="tabla" class="table table-striped table-bordered display responsive nowrap " style="width: 100%;">
       <thead>
           <tr>
-            <th>Número Único de Proceso</th>
+            <th>No.Único de Proceso</th>
             <th>Estación de Origen</th>
             <th>Fecha de Solicitud</th>
-            <th>Nombre de la Autoridad que Envía</th>
+            <th>Autoridad que Envía</th>
             <th style="width: 5%;">Status</th>
             <th style="width: 5%;">Opciones</th>
           </tr>
@@ -36,10 +36,16 @@
             <td>{{ traslado.fechaSolicitud }}</td>
             <td>{{ traslado.nombreAutoridadEnvia }}</td>
             <td>
-                <a href="#" class="btn btn-icon2">{{ traslado.get_status_display }}</a>
-                
-            <td>
-             
+              <a href="{% url 'editar-status' traslado.id %}" class="btn" 
+                 style="{% if traslado.status == 0 %}background-color: #A3835F; color: #ffffff;{% endif %}
+                        {% if traslado.status == 1 %}background-color: #2A4B41; color: #ffffff;{% endif %}
+                        {% if traslado.status == 2 %}background-color: #873542; color: #ffffff;{% endif %}" 
+                 onclick="abrir_modal_eliminar(this.href); return false;">
+                  {{ traslado.get_status_display }}
+              </a>
+          </td>
+          
+          <td>
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listaExtranjerosTrasladoDestino" traslado.id%}"
                     data-title="Ver Extranjeros">
                     <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
@@ -56,10 +62,10 @@
       </tbody>
       <tfoot>
           <tr>
-            <th>Número Único de Proceso</th>
+            <th>No.Único de Proceso</th>
             <th>Estación de Origen</th>
             <th>Fecha de Solicitud</th>
-            <th>Nombre de la Autoridad que Envía</th>
+            <th>Autoridad que Envía</th>
             <th>Status</th>
             <th style="width: 5%;">Opciones</th>
           </tr>
@@ -70,5 +76,22 @@
   
   </div>
 
+  <div class="modal fade" id="eliminarextranjero" role="dialog">
 
 {% endblock %}
+{% block script %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_eliminar(url){
+        $('#eliminarextranjero').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
+
+{% endblock script %}

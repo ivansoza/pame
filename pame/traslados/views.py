@@ -186,7 +186,12 @@ class TrasladoCreateView(CreateView):
         initial['estacion_destino'] = self.kwargs['destino_id']
         return initial
 
-       
+class cambiarStatus(UpdateView):
+    model = Traslado
+    form_class = EstatusTrasladoForm
+    template_name = 'modal/seleccionarSttausdeTraslado.html'
+    def get_success_url(self):
+        return reverse('traslados_recibidos')
 
 class ListTrasladoDestino(ListView):
     model = Traslado
@@ -203,7 +208,7 @@ class ListTrasladoDestino(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'traslado'  # Ajusta según la página activa en tu navbar
-        context['seccion'] = 'traslado'  # Ajusta según la sección activa
+        context['seccion'] = 'arribo'  # Ajusta según la sección activa
         
         user_profile = self.request.user
         user_estacion = user_profile.estancia
@@ -234,8 +239,10 @@ class ListaExtranjerosTraslado(ListView):
         traslado_id = self.kwargs.get('traslado_id')
         traslado = Traslado.objects.get(pk=traslado_id)
         estacion_id = traslado.estacion_origen.id
+        status = traslado.status
         inden = traslado.numeroUnicoProceso
         context['identificador']= inden
+        context['status']= status
         context['traslado_id'] = traslado_id 
         context['estacion_id'] = estacion_id  # Pasamos el ID del traslado al contexto
         context['navbar'] = 'traslado'  # Cambia esto según la página activa

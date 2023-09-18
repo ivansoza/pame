@@ -44,18 +44,33 @@
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
                     <td>
-                        <a class="btn btn-sm btn-icon3 tooltip-link"
-                         href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}"
-                         data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
-                         <i class="fas fa-trash-alt"></i>
+                        {% if status == 1 %}
+                        <a class="btn btn-sm btn-icon3 tooltip-link" style="display:none"
+                           href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}"
+                           data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
+                           <i class="fas fa-trash-alt"></i>
                         </a>
                         <a class="btn btn-sm btn-icon3 tooltip-link"
-                         href="#"
-                         data-title="Gerar Oficio" >
-                         <i class="fas fa-file-pdf"></i>
+                           href="#"
+                           data-title="Generar Oficio" >
+                           <i class="fas fa-file-pdf"></i>
                         </a>
+                        {% else %}
+                       
+                            <a class="btn btn-sm btn-icon3 tooltip-link"
+                             href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}"
+                             data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
+                             <i class="fas fa-trash-alt"></i>
+                            </a>
+                            <a class="btn btn-sm btn-icon3 tooltip-link"
+                             href="#"
+                             data-title="Gerar Oficio" >
+                             <i class="fas fa-file-pdf"></i>
+                            </a>
+                     
+                        {% endif %}
                     </td>
-
+                    
                     <!-- Agrega más columnas según tus necesidades -->
                 </tr>
            
@@ -75,14 +90,18 @@
 {% endblock contenido%}
 
 {% block datatable %}
- {
+{% if status == 1 %}
+
+{% else %}
+{
     text: 'Añadir Extranjero a Traslado',
     className: 'btn btn-custom mr-2',
     action: function (e, dt, node, config) {
-      // Redirigir a la URL relativa a la ubicación actual
-      window.location.href = '{% url 'traslado' traslado_id estacion_id %}';
-   }
-  },
+        // Redirigir a la URL relativa a la ubicación actual
+        window.location.href = '{% url 'traslado' traslado_id estacion_id %}';
+    }
+},
+{% endif %}
   
 {% endblock datatable %}
 

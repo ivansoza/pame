@@ -45,9 +45,10 @@
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
                     <td>
                         <a class="btn btn-sm btn-icon3 tooltip-link"
-                         href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}"
-                         data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
-                         <i class="fas fa-trash-alt"></i>
+                         {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
+                         href='#'
+                         data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
+                         <i class="fa-solid fa-check"></i>
                         </a>
                         <a class="btn btn-sm btn-icon3 tooltip-link"
                          href="#"
