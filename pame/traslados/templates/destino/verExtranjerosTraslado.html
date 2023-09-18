@@ -44,17 +44,31 @@
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
                     <td>
-                        <a class="btn btn-sm btn-icon3 tooltip-link"
-                         {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
-                         href='#'
-                         data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
-                         <i class="fa-solid fa-check"></i>
-                        </a>
-                        <a class="btn btn-sm btn-icon3 tooltip-link"
-                         href="#"
-                         data-title="Gerar Oficio" >
-                         <i class="fas fa-file-pdf"></i>
-                        </a>
+                        {% if status != 1 %}
+                         <a class="btn btn-sm btn-icon3 tooltip-link" style="display:none"
+                          {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
+                          href='#'
+                           data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
+                          <i class="fa-solid fa-check"></i>
+                         </a>
+                         <a class="btn btn-sm btn-icon3 tooltip-link"
+                          href="#"
+                          data-title="Gerar Oficio" >
+                          <i class="fas fa-file-pdf"></i>
+                         </a>
+                        {% else %}
+                           <a class="btn btn-sm btn-icon3 tooltip-link" 
+                           {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
+                           href='#'
+                           data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
+                           <i class="fa-solid fa-check"></i>
+                          </a>
+                          <a class="btn btn-sm btn-icon3 tooltip-link"
+                           href="#"
+                           data-title="Gerar Oficio" >
+                           <i class="fas fa-file-pdf"></i>
+                          </a>
+                        {% endif %}
                     </td>
 
                     <!-- Agrega más columnas según tus necesidades -->
