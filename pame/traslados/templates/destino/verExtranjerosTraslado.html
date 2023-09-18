@@ -44,7 +44,7 @@
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
                     <td>
-                        {% if status == 1 %}
+                        {% if status != 1 %}
                          <a class="btn btn-sm btn-icon3 tooltip-link" style="display:none"
                           {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
                           href='#'
