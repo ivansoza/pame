@@ -207,7 +207,34 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         # Agregar una notificación de éxito
         messages.success(self.request, 'La puesta de disposición se ha creado con éxito.')
         return super().get_success_url()
-    
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('oficioPuesta')
+        handle_file('oficioComision')
+
+        return super(createPuestaINM, self).form_valid(form)
 
 class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
