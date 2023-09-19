@@ -240,7 +240,8 @@
 {% include "includes/user_menu.html" %}
     
 
-    
+ <div class="sidebar">
+
 
 
       <!-- Sidebar Menu -->
@@ -318,7 +319,7 @@
               </li>
 
               <li class="nav-item">
-                <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'traslado' %}active {% endif %}">
+                <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'aribo' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Arribar extranjeros</p>
                 </a>

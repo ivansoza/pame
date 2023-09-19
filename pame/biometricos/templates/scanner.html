@@ -1,0 +1,105 @@
+{% load static %}
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+    #theCanvas {
+        width: 400px; /* Ancho deseado en píxeles */
+        height: 300px; /* Alto deseado en píxeles */
+    }
+</style>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Tomar Foto</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <video id="theVideo" controls autoplay></video>
+                <canvas id="theCanvas"></canvas>
+            </div>
+         
+            
+        </div>
+        <div class="modal-footer">
+            <button id="btnCapture" disabled class="btn btn-custom" >Capturar Foto</button>
+            <button id="btnSaveAsPNG" disabled class="btn btn-custom2">Guardar en PNG</button>
+
+        </div>
+        <script type="text/javascript">
+            var videoWidth = 350;
+            var videoHeight = 550;
+            var videoTag = document.getElementById('theVideo');
+            var canvasTag = document.getElementById('theCanvas');
+            var btnCapture = document.getElementById("btnCapture");
+            var btnSaveAsPNG = document.getElementById("btnSaveAsPNG");
+            var btnSendToForm = document.getElementById("btnSendToForm");
+            videoTag.setAttribute('width', videoWidth);
+            videoTag.setAttribute('height', videoHeight);
+            canvasTag.setAttribute('width', videoWidth);
+            canvasTag.setAttribute('height', videoHeight);
+            var capturedImageData = null;
+
+            // Verificar si la cámara está disponible
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    videoTag.srcObject = stream;
+                    btnCapture.disabled = false; // Habilitar el botón de captura
+                })
+                .catch(function(error) {
+                    document.getElementById('errorTxt').innerHTML = 'Error al acceder a la cámara: ' + error.toString();
+                });
+
+            // Función para capturar la imagen en el canvas
+            function captureImage() {
+                var canvasContext = canvasTag.getContext('2d');
+                canvasContext.drawImage(videoTag, 0, 0, videoWidth, videoHeight);
+                capturedImageData = canvasTag.toDataURL('image/png');
+                btnSaveAsPNG.disabled = false; // Habilitar el botón de guardar como PNG
+                btnSendToForm.disabled = false; // Habilitar el botón de enviar al formulario
+            }
+
+            // Capturar la imagen al hacer clic en el botón "Capturar Foto"
+            btnCapture.addEventListener("click", () => {
+                captureImage();
+            });
+
+            // Guardar la imagen como PNG al hacer clic en el botón "Guardar en PNG"
+            btnSaveAsPNG.addEventListener("click", () => {
+                if (capturedImageData) {
+                    var link = document.createElement('a');
+                    link.download = 'capturedImage.png';
+                    link.href = capturedImageData;
+                    link.click();
+                } else {
+                    alert('Primero debes capturar una imagen.');
+                }
+            });
+
+            // Redirigir al formulario al hacer clic en el botón "Enviar al Formulario"
+            btnSendToForm.addEventListener("click", () => {
+                if (capturedImageData) {
+                    // Guardar la imagen en LocalStorage para su uso en el formulario
+                    localStorage.setItem('capturedImage', capturedImageData);
+
+                    // Asignar la imagen al campo oficioPuesta del formulario
+                    var oficioPuestaInput = document.getElementById('id_oficioPuesta');
+                    oficioPuestaInput.value = capturedImageData;
+
+                    // Cerrar el modal
+                    $('#captureModal').modal('hide');
+                } else {
+                    alert('Primero debes capturar una imagen.');
+                }
+            });
+        </script>
+    </div>
+</div>

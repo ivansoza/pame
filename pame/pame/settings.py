@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'salud',
     'juridico',
     'traslados',
+    'biometricos',
     
 ]
 
