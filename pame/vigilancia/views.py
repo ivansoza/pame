@@ -41,6 +41,8 @@ from .forms import TrasladoForm
 
 from .helpers import image_to_pdf
 
+import os
+
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -737,23 +739,31 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         return context
     def form_valid(self, form):
         instance = form.save(commit=False)
-        if 'oficioPuesta' in self.request.FILES:
-            instance.oficioPuesta.save(
-                f"oficioPuesta_{instance.id}.pdf",
-                image_to_pdf(self.request.FILES['oficioPuesta'])
-            )
 
-        if 'oficioComision' in self.request.FILES:
-            instance.oficioComision.save(
-                f"oficioComision_{instance.id}.pdf",
-                image_to_pdf(self.request.FILES['oficioComision'])
-            )
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
 
-        if 'certificadoMedico' in self.request.FILES:
-            instance.certificadoMedico.save(
-                f"certificadoMedico_{instance.id}.pdf",
-                image_to_pdf(self.request.FILES['certificadoMedico'])
-            )
+        # Manejo de los archivos
+        handle_file('oficioPuesta')
+        handle_file('oficioComision')
+        handle_file('certificadoMedico')
 
         return super(createPuestaAC, self).form_valid(form)
 
