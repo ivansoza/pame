@@ -1,86 +1,105 @@
-<!DOCTYPE html>
-<html lang="es" dir="ltr">
+{% load static %}
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+    #theCanvas {
+        width: 400px; /* Ancho deseado en píxeles */
+        height: 300px; /* Alto deseado en píxeles */
+    }
+</style>
 
-    <head>
-        <meta charset="utf-8">
-        <title>fotos</title>
-    </head>
-
-    <body>
-        <h1>tomar foto</h1>
-        <p id="errorTxt"></p>
-        <div>
-            <video id="theVideo" controls autoplay></video>
-            <canvas id="theCanvas"></canvas>
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Tomar Foto</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        <button id="btnCapture">capturar</button>
-        <button id="btnDownloadImage"> descargar imagen</button>
+        <div class="modal-body">
+            <div>
+                <video id="theVideo" controls autoplay></video>
+                <canvas id="theCanvas"></canvas>
+            </div>
+         
+            
+        </div>
+        <div class="modal-footer">
+            <button id="btnCapture" disabled class="btn btn-custom" >Capturar Foto</button>
+            <button id="btnSaveAsPNG" disabled class="btn btn-custom2">Guardar en PNG</button>
+
+        </div>
         <script type="text/javascript">
             var videoWidth = 350;
             var videoHeight = 550;
             var videoTag = document.getElementById('theVideo');
             var canvasTag = document.getElementById('theCanvas');
             var btnCapture = document.getElementById("btnCapture");
-            var btnDownloadImage = document.getElementById("btnDownloadImage");
+            var btnSaveAsPNG = document.getElementById("btnSaveAsPNG");
+            var btnSendToForm = document.getElementById("btnSendToForm");
             videoTag.setAttribute('width', videoWidth);
             videoTag.setAttribute('height', videoHeight);
             canvasTag.setAttribute('width', videoWidth);
             canvasTag.setAttribute('height', videoHeight);
-            window.onload = () => {
-                navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: {
-                        width: videoWidth,
-                        height: videoHeight
-                    }
-                }).then(stream => {
+            var capturedImageData = null;
+
+            // Verificar si la cámara está disponible
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
                     videoTag.srcObject = stream;
-                }).catch(e => {
-                    document.getElementById('errorTxt').innerHTML = 'ERROR: ' + e.toString();
+                    btnCapture.disabled = false; // Habilitar el botón de captura
+                })
+                .catch(function(error) {
+                    document.getElementById('errorTxt').innerHTML = 'Error al acceder a la cámara: ' + error.toString();
                 });
+
+            // Función para capturar la imagen en el canvas
+            function captureImage() {
                 var canvasContext = canvasTag.getContext('2d');
-                btnCapture.addEventListener("click", () => {
-                    canvasContext.drawImage(videoTag, 0, 0, videoWidth, videoHeight);
-                });
-                btnDownloadImage.addEventListener("click", () => {
+                canvasContext.drawImage(videoTag, 0, 0, videoWidth, videoHeight);
+                capturedImageData = canvasTag.toDataURL('image/png');
+                btnSaveAsPNG.disabled = false; // Habilitar el botón de guardar como PNG
+                btnSendToForm.disabled = false; // Habilitar el botón de enviar al formulario
+            }
+
+            // Capturar la imagen al hacer clic en el botón "Capturar Foto"
+            btnCapture.addEventListener("click", () => {
+                captureImage();
+            });
+
+            // Guardar la imagen como PNG al hacer clic en el botón "Guardar en PNG"
+            btnSaveAsPNG.addEventListener("click", () => {
+                if (capturedImageData) {
                     var link = document.createElement('a');
                     link.download = 'capturedImage.png';
-                    link.href = canvasTag.toDataURL();
+                    link.href = capturedImageData;
                     link.click();
-                });
-            };
+                } else {
+                    alert('Primero debes capturar una imagen.');
+                }
+            });
 
-            btnDownloadImage.addEventListener("click", async () => {
-                var pdfDoc = await PDFLib.PDFDocument.create();
-                var page = pdfDoc.addPage([videoWidth, videoHeight]);
-                var canvasContext = canvasTag.getContext('2d');
-            
-                // Captura la imagen del canvas y la convierte en una imagen PNG
-                var imageDataUri = canvasTag.toDataURL('image/png');
-                var imageBytes = await fetch(imageDataUri).then((res) => res.arrayBuffer());
-            
-                // Agrega la imagen al documento PDF
-                var pngImage = await pdfDoc.embedPng(imageBytes);
-                page.drawImage(pngImage, {
-                    x: 0,
-                    y: 0,
-                    width: videoWidth,
-                    height: videoHeight,
-                });
-            
-                // Genera un blob de datos para el PDF
-                var pdfBytes = await pdfDoc.save();
-            
-                // Crea un enlace para descargar el PDF
-                var blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                var url = window.URL.createObjectURL(blob);
-                var link = document.createElement('a');
-                link.download = 'capturedImage.pdf';
-                link.href = url;
-                link.click();
+            // Redirigir al formulario al hacer clic en el botón "Enviar al Formulario"
+            btnSendToForm.addEventListener("click", () => {
+                if (capturedImageData) {
+                    // Guardar la imagen en LocalStorage para su uso en el formulario
+                    localStorage.setItem('capturedImage', capturedImageData);
+
+                    // Asignar la imagen al campo oficioPuesta del formulario
+                    var oficioPuestaInput = document.getElementById('id_oficioPuesta');
+                    oficioPuestaInput.value = capturedImageData;
+
+                    // Cerrar el modal
+                    $('#captureModal').modal('hide');
+                } else {
+                    alert('Primero debes capturar una imagen.');
+                }
             });
         </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
-    </body>
-
-</html>
+    </div>
+</div>

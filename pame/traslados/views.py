@@ -316,5 +316,5 @@ class ListaExtranjerosTrasladoDestino(ListView):
         context['traslado_id'] = traslado_id 
         context['estacion_id'] = estacion_id  # Pasamos el ID del traslado al contexto
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
-        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'arribo'  # Cambia esto según la página activa
         return context
