@@ -38,6 +38,9 @@ from django.http import JsonResponse
 from django.views import View
 from traslados.models import Traslado, ExtranjeroTraslado
 from .forms import TrasladoForm
+
+from .helpers import image_to_pdf
+
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -732,6 +735,28 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        if 'oficioPuesta' in self.request.FILES:
+            instance.oficioPuesta.save(
+                f"oficioPuesta_{instance.id}.pdf",
+                image_to_pdf(self.request.FILES['oficioPuesta'])
+            )
+
+        if 'oficioComision' in self.request.FILES:
+            instance.oficioComision.save(
+                f"oficioComision_{instance.id}.pdf",
+                image_to_pdf(self.request.FILES['oficioComision'])
+            )
+
+        if 'certificadoMedico' in self.request.FILES:
+            instance.certificadoMedico.save(
+                f"certificadoMedico_{instance.id}.pdf",
+                image_to_pdf(self.request.FILES['certificadoMedico'])
+            )
+
+        return super(createPuestaAC, self).form_valid(form)
+
     def get_success_url(self):
         messages.success(self.request, 'La puesta por autoridad competente se ha creado con éxito.')
         return super().get_success_url()
