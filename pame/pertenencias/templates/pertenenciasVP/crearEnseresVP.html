@@ -4,22 +4,34 @@
   rel="stylesheet"
   href=" {% static 'css/forms/style.css' %}?v1.223SDDddD22D "
 />
-{% endblock link %} {% block contenido %}
+{% endblock link %} 
 
-<div class="titulo-general-container mt-2">
-  <h1 class="titulo-general">Asignar enseres</h1>
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
+{% block contenido %}
+<div class="titulo-general-container mt-3">
+  <h1 class="titulo-general">
+      Asignar Enseres a Extranjero::
+      <span class="puesta-color" >
+          <strong>{{ extranjero.nombreExtranjero }}  
+          {% if extranjero.apellidoPaternoExtranjero %}
+                              {{ extranjero.apellidoPaternoExtranjero }}
+                          {% endif %}
+                          {% if extranjero.apellidoMaternoExtranjero %}
+                              {{ extranjero.apellidoMaternoExtranjero }}
+                          {% endif %}</strong> </span>
+  </h1>
 </div>
-<br />
-<form method="post" class="card p-3 mt-5" enctype="multipart/form-data">
+
+
+<form method="post" class="card p-3" enctype="multipart/form-data" >
   {% csrf_token %}
   <div class="row">
-    <div class="col-sm-12 col-md-6 col-lg-6">
-      {{form.unidadMigratoria|as_crispy_field}}
-    </div>
-
-    <div class="col-sm-12 col-md-6 col-lg-6">
-      {{ form.noExtranjero|as_crispy_field}}
-    </div>
     <div class="col-sm-12 col-md-12 col-lg-12">
       {% for value, label in form.enseres.field.choices %}
        <div class="form-check">

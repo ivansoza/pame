@@ -19,9 +19,6 @@ class Pertenencias(models.Model):
     cantidad = models.FloatField(verbose_name='Cantidad')
     observaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
-
-
-
     def __str__(self) -> str:
         return '__all__'
     

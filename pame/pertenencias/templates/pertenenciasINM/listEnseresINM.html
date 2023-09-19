@@ -13,16 +13,7 @@
 {% endblock dashboard %}
 {% block contenido %}
 <div class="titulo-general-container mt-2">
-    <h1 class="titulo-general">Enseres del Extranjero:
-        <span class="puesta-color" >{{extranjero.nombreExtranjero}} 
-            {% if extranjero.apellidoPaternoExtranjero %}
-                                {{ extranjero.apellidoPaternoExtranjero }}
-                               {% endif %}
-                               {% if extranjero.apellidoMaternoExtranjero %}
-                                 {{ extranjero.apellidoMaternoExtranjero }}
-                               {% endif %}
-        </span>
-
+    <h1 class="titulo-general">Enseres del Extranjero
     </h1>
 </div>
 <br>
@@ -104,8 +95,6 @@
 <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
-            <th>Extranjero</th>
-            <th>Unidad Migratoria</th>
             <th>Enseres</th>
             <th>Fecha y Hora de Entrega</th>
             <th>Opciones</th>
@@ -114,11 +103,11 @@
     <tbody>
         {% for enseres in enseresinm %}
         <tr>
-            <td>{{ enseres.noExtranjero }}</td>
-            <td>{{ enseres.unidadMigratoria }}</td>
-            
+
             <td>{{ enseres.enseres }}
-                {{enseres.enseresExtras}}
+                {% if enseres.enseresExtras %}
+                     {{enseres.enseresExtras}}
+                {% endif %}
             </td>
             <td>{{ enseres.horaEntrega }}</td>
             <td>

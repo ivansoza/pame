@@ -11,21 +11,7 @@
 
 {% endblock dashboard %}
 {% block contenido %}
-
-<div class="titulo-general-container mt-2" >
-    <h1 class="titulo-general">Valores a resguardar del Extranjero:
-        <span class="puesta-color" >{{inventario.noExtranjero}} {{inventario.noExtranjero.apellidoPaternoExtranjero}}</span>
-
-    </h1>
-    
-</div>
-<br>
-<div class="titulo-general-container-card mb-4">
-    <h1 class="titulo-general">Del Inventario:
-        <span class="puesta-color" >{{ inventario.foloInventario}} </span>
-    </h1>
-</div>
-
+{% include "includes/tituloPertenenciasValor.html" %}
 {% include "includes/cardPertenencias.html" %}
 
 
@@ -37,20 +23,15 @@
 <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
-            <th>Extranjero</th>
-            <th>Estación</th>
             <th>Descripcion</th>
             <th>Cantidad</th>
             <th>Observaciones</th>
             <th>Opciones</th>
-
         </tr>
     </thead>
     <tbody>
         {% for pertenencia in object_list %}
         <tr>
-            <td>{{ inventario.noExtranjero }}</td>
-            <td>{{ pertenencia.unidadMigratoria}}</td>
             <td>{{ pertenencia.descripcion }}</td>
             <td>{{ pertenencia.cantidad }}</td>
             <td>{{ pertenencia.Obsevaciones }}</td>

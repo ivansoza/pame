@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'salud',
     'juridico',
     'traslados',
+    'biometricos',
     
 ]
 
@@ -98,6 +99,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'traslados.context_processors.numero_traslados',
+                'traslados.context_processors.total_notificaciones',
+
             ],
         },
     },

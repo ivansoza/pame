@@ -40,5 +40,6 @@ urlpatterns = [
     path("salud/", include("salud.urls")),
     path("juridico/", include("juridico.urls")),
     path("traslados/", include("traslados.urls")),
+    path("biometricos/", include("biometricos.urls")),
 
 ]

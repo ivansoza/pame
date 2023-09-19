@@ -16,7 +16,7 @@
 {% block contenido %}
 <div class="titulo-general-container mt-3">
     <h1 class="titulo-general">
-        Lista de Extranjeros para el Traslado
+        Lista de Extranjeros en la Solicitud de Traslado
         <span class="puesta-color"><strong>{{ identificador }}</strong> </span>
     </h1>
 </div>
@@ -44,36 +44,33 @@
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
                     <td>
-                        {% if status == 1 %}
-                        <a class="btn btn-sm btn-icon3 tooltip-link" style="display:none"
-                           href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}"
-                           data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
-                           <i class="fas fa-trash-alt"></i>
-                        </a>
-                        <a class="btn btn-sm btn-icon3 tooltip-link"
-                         href="#"
-                         data-title="Generar Oficio" >
-                         <i class="fas fa-file-pdf"></i>
-                           href="#"
-                           data-title="Generar Oficio" >
-                           <i class="fas fa-file-pdf"></i>
-                        </a>
+                        {% if status != 1 %}
+                         <a class="btn btn-sm btn-icon3 tooltip-link" style="display:none"
+                          {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
+                          href='#'
+                           data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
+                          <i class="fa-solid fa-check"></i>
+                         </a>
+                         <a class="btn btn-sm btn-icon3 tooltip-link"
+                          href="#"
+                          data-title="Gerar Oficio" >
+                          <i class="fas fa-file-pdf"></i>
+                         </a>
                         {% else %}
-                       
-                            <a class="btn btn-sm btn-icon3 tooltip-link"
-                             href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}"
-                             data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
-                             <i class="fas fa-trash-alt"></i>
-                            </a>
-                            <a class="btn btn-sm btn-icon3 tooltip-link"
-                             href="#"
-                             data-title="Gerar Oficio" >
-                             <i class="fas fa-file-pdf"></i>
-                            </a>
-                     
+                           <a class="btn btn-sm btn-icon3 tooltip-link" 
+                           {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
+                           href='#'
+                           data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
+                           <i class="fa-solid fa-check"></i>
+                          </a>
+                          <a class="btn btn-sm btn-icon3 tooltip-link"
+                           href="#"
+                           data-title="Gerar Oficio" >
+                           <i class="fas fa-file-pdf"></i>
+                          </a>
                         {% endif %}
                     </td>
-                    
+
                     <!-- Agrega más columnas según tus necesidades -->
                 </tr>
            
@@ -93,19 +90,7 @@
 {% endblock contenido%}
 
 {% block datatable %}
-{% if status == 1 %}
 
-{% else %}
-{
-    text: 'Añadir Extranjero a Traslado',
-    className: 'btn btn-custom mr-2',
-    action: function (e, dt, node, config) {
-        // Redirigir a la URL relativa a la ubicación actual
-        window.location.href = '{% url 'traslado' traslado_id estacion_id %}';
-    }
-},
-{% endif %}
-  
 {% endblock datatable %}
 
 {% block script %}

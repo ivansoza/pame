@@ -67,3 +67,6 @@ class SolicitudTraslado(models.Model):
 
     def __str__(self):
         return f'Solicitud de {self.extranjero} a {self.estacion_destino}'
+    
+
+#pruebaaa

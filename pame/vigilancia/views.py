@@ -202,6 +202,7 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         # Agregar una notificación de éxito
         messages.success(self.request, 'La puesta de disposición se ha creado con éxito.')
         return super().get_success_url()
+    
 
 class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {

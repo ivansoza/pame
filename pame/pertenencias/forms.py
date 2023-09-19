@@ -18,9 +18,17 @@ class PertenenciaForm(forms.ModelForm):
         model = Pertenencias
         fields = '__all__'
         widgets = {
+            'descripcion': forms.TextInput(attrs={'placeholder': 'Descripción'}),
+            'cantidad': forms.NumberInput(attrs={'placeholder': 'Cantidad'}),
+            'observaciones': forms.TextInput(attrs={'placeholder': 'Observaciones'}),
             'delInventario': forms.TextInput(attrs={'style': 'display:none;'}),
-      }
+        }
         
+class EditPertenenciaForm(forms.ModelForm):
+    class Meta:
+        model = Pertenencias
+        fields = ['descripcion','cantidad','observaciones']
+  
         
 
 
@@ -32,10 +40,16 @@ class ValoresForm(forms.ModelForm):
             'delInventario': forms.TextInput(attrs={'style': 'visibility:hidden;'}),
       }
 
+
+class EditarValoresForm(forms.ModelForm):
+    class Meta:
+        model = Valores
+        fields = ['descripcion','cantidad','Obsevaciones']
+      
+
+
 class EnseresForm(forms.ModelForm):
     class Meta:
         model = EnseresBasicos
-        fields = '__all__'
-        widgets = {
-            'unidadMigratoria': forms.TextInput(attrs={'readonly': 'readonly'}),
-      }
+        fields = ['enseres','enseresExtras']
+      
