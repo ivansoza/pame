@@ -13,6 +13,7 @@
 {% block contenido %}
 
 
+
 <div class="titulo-general-container">
     <h1 class="titulo-general">Puesta por Autoridad Competente</h1>
 </div>
@@ -135,6 +136,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="webcamModalLabel">Capturar Foto</h5>
+                    <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -144,6 +147,8 @@
                         <video id="webcam" style="position: absolute; top: 50%; left: 50%; transform: translate(-29%, -50%); min-width: 100%; min-height: 100%; object-fit: cover;" autoplay></video>
                         <!-- Canvas para la imagen capturada, inicialmente transparente -->
                         <canvas id="capturedImage" width="371" height="480" style="position: absolute; top: 0; left: 0; opacity: 0;"></canvas>
+                        <div id="countdown" style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: red; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">5</div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -156,7 +161,11 @@
     </div>
     
     
-    
+    <style>
+        .swal2-popup {
+            margin-top: 0 !important;
+        }
+    </style>
 
 
 <script>
@@ -212,19 +221,36 @@
             // Evento de captura
             document.getElementById('capturarFoto').onclick = function(event) {
                 event.preventDefault();
-    
-                canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                video.style.display = 'none';
-                canvas.style.display = 'block';
-
-                document.getElementById("capturedImage").style.opacity = "1";  // <-- nuevop
-
-    
-                document.getElementById('capturarFoto').style.display = 'none';
-                document.getElementById('confirmarFoto').style.display = 'inline-block';
-                document.getElementById('nuevaFoto').style.display = 'inline-block';
+                
+                // Mostrar el contador y establecer en 5
+                const countdownDiv = document.getElementById('countdown');
+                let count = 5;
+                countdownDiv.textContent = count;
+                countdownDiv.style.display = 'block';
+            
+                const interval = setInterval(() => {
+                    count--;
+                    countdownDiv.textContent = count;
+            
+                    if (count <= 0) {
+                        clearInterval(interval);
+                        
+                        // Capturar la imagen
+                        canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                        video.style.display = 'none';
+                        canvas.style.display = 'block';
+                        document.getElementById("capturedImage").style.opacity = "1"; 
+            
+                        document.getElementById('capturarFoto').style.display = 'none';
+                        document.getElementById('confirmarFoto').style.display = 'inline-block';
+                        document.getElementById('nuevaFoto').style.display = 'inline-block';
+            
+                        // Ocultar el contador
+                        countdownDiv.style.display = 'none';
+                    }
+                }, 1000);
             };
-    
+            
             // Evento para tomar nueva foto
             document.getElementById('nuevaFoto').onclick = function(event) {
                 event.preventDefault();
