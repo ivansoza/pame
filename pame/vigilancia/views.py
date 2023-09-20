@@ -293,10 +293,31 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
         
-        return super().form_valid(form)
-    
-    
+        return super(createExtranjeroINM).form_valid(form)
 
 
     def get_context_data(self, **kwargs):
@@ -307,6 +328,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
 
         return context
+    
 
 class listarExtranjeros(ListView):
     model = Extranjero
