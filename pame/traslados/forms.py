@@ -1,6 +1,6 @@
 
 from django import forms 
-from .models import Traslado
+from .models import Traslado, ExtranjeroTraslado
 class TrasladoForm(forms.ModelForm):
     class Meta:
         model = Traslado
@@ -15,4 +15,8 @@ class EstatusTrasladoForm(forms.ModelForm):
     class Meta:
         model = Traslado
         fields = ['status']
-       
+
+class EstatusTrasladoFormExtranjero(forms.ModelForm):
+    class Meta:
+        model = ExtranjeroTraslado
+        fields = ['statusTraslado']

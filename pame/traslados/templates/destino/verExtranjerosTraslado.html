@@ -68,7 +68,7 @@
                         {% else %}
                            <a class="btn btn-sm btn-icon3 tooltip-link" 
                            {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
-                           href='#'
+                           href='{% url "editar-status-extranjero" extranjero.id%}'
                            data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
                            <i class="fa-solid fa-check"></i>
                           </a>
@@ -95,7 +95,9 @@
             </tr>
         </tfoot>
     </table>
+    
     <div class="modal fade" id="eliminarextranjero" role="dialog">
+        
 
 {% endblock contenido%}
 

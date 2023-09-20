@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView,DetailView, UpdateView, De
 from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
 from django.http import JsonResponse
-from .forms import TrasladoForm, EstatusTrasladoForm
+from .forms import TrasladoForm, EstatusTrasladoForm, EstatusTrasladoFormExtranjero
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -326,3 +326,19 @@ class ListaExtranjerosTrasladoDestino(ListView):
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'arribo'  # Cambia esto según la página activa
         return context
+    
+class cambiarStatusExtranjero(UpdateView):
+    model = ExtranjeroTraslado
+    form_class = EstatusTrasladoFormExtranjero
+    template_name = 'modal/seleccionarSttausdeTraslado1.html'
+
+    def form_valid(self, form):
+        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
+        if 'statusTraslado' in form.changed_data:
+            form.instance.fecha_aceptacion = timezone.now()
+        return super(cambiarStatusExtranjero, self).form_valid(form)
+
+    def get_success_url(self):
+        puesta_id = self.object.delTraslado.id
+        messages.success(self.request, 'Status cambiado.')
+        return reverse('listaExtranjerosTrasladoDestino', args=[puesta_id])
