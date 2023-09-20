@@ -190,6 +190,18 @@
   border-color: #27463e; 
 }
 
+.btn-icon4 {
+  background-color: #6f8092; 
+  color: white; 
+  border-color: #6f8092; 
+}
+
+.btn-icon4:hover {
+  color: white;
+  background-color: #5f6d7d; 
+  border-color: #5f6d7d; 
+}
+
 .tooltip-link {
   position: relative;
   display: inline-block;
