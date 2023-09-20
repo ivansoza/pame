@@ -1,0 +1,44 @@
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+<div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header custom-header-color">
+                <h2 class="modal-title">Capturar Foto</h2>
+                <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                             
+                <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
+            </div>
+            <div class="modal-body">
+                <!-- Contenedor principal -->
+                <div style="width: 371px; height: 480px; position: relative; overflow: hidden; margin: 0 auto;">
+                    <!-- Vídeo de la webcam -->
+                    <video id="webcam"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-29%, -50%); min-width: 100%; min-height: 100%; object-fit: cover;"
+                        autoplay></video>
+                    <!-- Canvas para la imagen capturada, inicialmente transparente -->
+                    <canvas id="capturedImage" width="371" height="480"
+                        style="position: absolute; top: 0; left: 0; opacity: 0;"></canvas>
+                    <div id="countdown"
+                        style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
+                        5</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
+                <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
+                <button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
+            </div>
+        </div>
+    </div>
+</div>

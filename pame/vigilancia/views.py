@@ -878,7 +878,32 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         extranjero.puesta = puesta
         extranjero.save()
 
-        return super().form_valid(form)
+        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        return super().form_valid(form)  # Cambié "createPuestaAC" por "super()"
+    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
@@ -922,27 +947,56 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
     def form_valid(self, form):
-        extranjero = form.save(commit=False)
-        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+        # Guarda el formulario, pero no comitea a la base de datos aún
+        instance = form.save(commit=False)
 
-        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+        # Manejo de archivos
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+
+        # Lógica relacionada con el cambio de estatus
+        old_extranjero = Extranjero.objects.get(pk=instance.pk)  # Obtén el extranjero original antes de modificar
+
+        if old_extranjero.estatus == 'Activo' and instance.estatus == 'Inactivo':
             # Cambio de estatus de Activo a Inactivo
-            estacion = extranjero.deLaEstacion
+            estacion = instance.deLaEstacion
             if estacion:
                 estacion.capacidad += 1
                 estacion.save()
 
-        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+        elif old_extranjero.estatus == 'Inactivo' and instance.estatus == 'Activo':
             # Cambio de estatus de Inactivo a Activo
-            estacion = extranjero.deLaEstacion
+            estacion = instance.deLaEstacion
             if estacion and estacion.capacidad > 0:
                 estacion.capacidad -= 1
                 estacion.save()
 
-        extranjero.save()
+        # Finalmente, guarda la instancia
+        instance.save()
 
         return super().form_valid(form)
-    
+
+        
 
     def get_success_url(self):
         messages.success(self.request, 'Datos del extranjero editados con éxito.')
@@ -1095,10 +1149,41 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
-        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
+        estacion = form.cleaned_data['deLaEstacion']
+        
+        if estacion:
+            estacion.capacidad -= 1
+            estacion.save()
+
+        extranjero = form.save(commit=False)
         extranjero.puesta = puesta
-        extranjero.save()  #
-        return super().form_valid(form)
+        extranjero.save()
+
+        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        return super().form_valid(form)  # Cambié "createPuestaAC" por "super()"
+    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

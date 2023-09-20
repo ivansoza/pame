@@ -281,9 +281,11 @@ class extranjeroFormsAC(forms.ModelForm):
    
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
+        required=False
 
     )
-  
+
+
    
     class Meta:
         model = Extranjero
