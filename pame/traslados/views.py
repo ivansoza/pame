@@ -318,3 +318,36 @@ class ListaExtranjerosTrasladoDestino(ListView):
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'arribo'  # Cambia esto según la página activa
         return context
+    
+# Reportes PDF
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
+
+def render_to_pdf(template_src, extranjero):
+    # Render the HTML template into a PDF
+    html = render_to_string(template_src, {'extranjero': extranjero})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Acuerdo de Traslado - {extranjero.id}.pdf"'
+
+    # Convert HTML to PDF
+    pisa_status = pisa.CreatePDF(html.encode('utf-8'), dest=response, encoding='utf-8')
+
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF: %s' % pisa_status.err, content_type='text/plain')
+
+    return response
+
+def documento_ac(request, extranjero_id):
+    # Obtenemos el objeto Extrajero utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # Specify the template you want to render
+    template_name = "documentos/acuerdoTraslado.html"
+
+    # Render the template into a PDF
+    return render_to_pdf(template_name, extranjero)
+
+def mi_vista(request):
+    return render(request, 'documentos/acuerdoTraslado.html')

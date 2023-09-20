@@ -1,5 +1,7 @@
 from django.urls import path, include
 from .views import ListTraslado, listarEstaciones, TrasladoCreateView, ListTrasladoDestino, ListaExtranjerosTraslado, DeleteExtranjeroPuestaTraslado, ListaExtranjerosTrasladoDestino, cambiarStatus
+from . import views
+
 urlpatterns = [
     
   #ORIGEN --------------------------
@@ -15,6 +17,7 @@ urlpatterns = [
   path('lista-extranjeros-destino/<int:traslado_id>/', ListaExtranjerosTrasladoDestino.as_view(), name='listaExtranjerosTrasladoDestino'),
   path('editar-status/<int:pk>/', cambiarStatus.as_view(), name='editar-status'),
 
-
-
+# Documentos PDF
+  path('reporte-ac/<int:extranjero_id>/', views.documento_ac, name='reporteAC'),
+  path('mi-vista/', views.mi_vista, name='mi_vista'),
 ]
