@@ -298,3 +298,15 @@
   align-items: center;
   gap: 10px; /* Espacio entre el botón y el input */
 }
+
+
+
+/* modals  */
+
+.custom-header-color {
+  background-color: #8B2941;
+  color: white; /* Ajusta el color del texto según tu preferencia */
+}
+.custom-close-button {
+  color: white;
+}
