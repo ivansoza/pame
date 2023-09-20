@@ -20,3 +20,4 @@ class EstatusTrasladoFormExtranjero(forms.ModelForm):
     class Meta:
         model = ExtranjeroTraslado
         fields = ['statusTraslado']
+    
