@@ -1203,7 +1203,7 @@ class AgregarBiometricoAC(CreateView):
            return super().form_valid(form)
         else:
         # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, toma una imagen con un rostro visible.")
           return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
