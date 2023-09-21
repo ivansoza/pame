@@ -18,21 +18,62 @@
 
 {% include "includes/editBiometricos.html" %}
 
+<style>
+  #webcamModal .modal-body {
+      position: relative; /* Asegura que los elementos internos sean posicionados relativos a este contenedor */
+  }
 
+  #rostroCuadro {
+    position: absolute;
+    border: 2px solid red;
+    width: 6cm; /* Ancho de 10 cm */
+    height: 6cm; /* Alto de 10 cm */
+    top: 50%; /* Centrar verticalmente */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
+    z-index: 1; /* Coloca el cuadro sobre el video */
+    pointer-events: none; /* Evita que el cuadro sea interactivo */
+    background-color: rgba(255, 255, 255, 0.5); /* Añade un fondo semi-transparente al cuadro */
+    box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.5); /* Agrega un efecto de sombra roja al cuadro */
+}
+
+#leyenda {
+    position: absolute;
+    top: calc(50% + 5.5cm); /* Coloca la leyenda 5.5cm debajo del cuadro */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Centrar horizontalmente */
+    z-index: 2; /* Coloca la leyenda sobre el cuadro */
+    color: red; /* Color de texto rojo */
+    text-align: center; /* Alinea el texto al centro */
+    font-weight: bold; /* Texto en negrita */
+}
+#countdown {
+  position: absolute;
+  top: 50%; /* Centrar verticalmente */
+  left: 50%; /* Centrar horizontalmente */
+  transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
+  background-color: #20302B;
+  color: white;
+  font-size: 24px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: none;
+  z-index: 3; /* Coloca el contador sobre todo, incluyendo el cuadro */
+}
+</style>
 <!-- BIOMETRICOS -->
 <div class="card">
   <div class="card-body">
       {% include "includes/formBiometricos.html" %}
   </div>
   <div class="card-footer">
-    <div class="row">
-      <div class="col-12">
-        <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+      <div class="row">
+          <div class="col-12">
+              <a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+          </div>
       </div>
-    </div>
   </div>
 </div>
-
 <!-- FIN BIOMETRICOS -->
 <div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
   <div class="modal-dialog modal-lg">
@@ -44,14 +85,17 @@
               </button>
               <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
           </div>
-          <div class="modal-body d-flex justify-content-center align-items-center"> <!-- Agregado flexbox -->
+          <div class="modal-body d-flex justify-content-center align-items-center">
               <div class="capture-container">
                   <!-- Vídeo de la webcam -->
                   <video id="webcam" width="640" height="480" autoplay></video>
                   <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
-                  <div id="countdown"
-                      style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
-                      5</div>
+                  <div id="countdown" style="display: none;">5</div>
+                  <!-- Cuadro para el rostro -->
+                  <div id="rostroCuadro" style="position: absolute; border: 2px solid red; pointer-events: none;">
+                      <p class='leyenda' style="text-align: center; color: red; font-weight: bold;">
+                          Sitúe su rostro dentro del cuadrado para sacar su fotografía</p>
+                  </div>
               </div>
           </div>
           <div class="modal-footer">
