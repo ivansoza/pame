@@ -148,10 +148,10 @@
             <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listaExtranjerosTraslado' puesta.id %}" data-title="Ver extranjeros">
                 <i class="fas fa-eye"></i> <!-- Icono Ver Extranjeros -->
             </a>
-            <a class="btn btn-sm btn-icon4 tooltip-link"  data-toggle="modal"  data-target="#exampleModal" href="#" data-title="Ver detalles">
-              <i class="fas fa-tasks"></i> 
-                    {% comment %} Datos a enviar: puesta.nombreAutoridadEnvia y puesta.fechaSolicitud {% endcomment %}
-            </a>
+            <a class="btn btn-sm btn-icon4 tooltip-link"  data-toggle="modal"  data-target="#exampleModal" href="#" data-title="Ver detalles" 
+            data-nombreautoridad="{{ puesta.nombreAutoridadEnvia }}" data-fechasolicitud="{{ puesta.fechaSolicitud|date:"F j, Y, P" }}">
+            <i class="fas fa-tasks"></i>
+         </a>
         </td>
       </tr>
       
@@ -179,7 +179,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Detalles de Traslado</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -187,22 +187,22 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <input type="text" class="form-control" id="recipient-name">
+            <label for="nombre-autoridad" class="col-form-label">Nombre de Autoridad:</label>
+            <input type="text" class="form-control" id="nombre-autoridad" readonly>
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
+            <label for="fecha-solicitud" class="col-form-label">Fecha de Solicitud:</label>
+            <input type="text" class="form-control" id="fecha-solicitud" readonly>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
+
 {% endblock contenido %}
 {% block datatable %}
  {
@@ -224,4 +224,16 @@
   
 {% endblock datatable %}
 {% block script %}
+
+$(document).on('show.bs.modal', '#exampleModal', function(event) {
+  var button = $(event.relatedTarget);  // Botón que disparó el modal
+  var nombreAutoridad = button.data('nombreautoridad');  // Extraer información del atributo data-
+  var fechaSolicitud = button.data('fechasolicitud');
+
+  // Actualizar el contenido del modal
+  var modal = $(this);
+  modal.find('#recipient-name').val(nombreAutoridad);
+  modal.find('#message-text').val(fechaSolicitud);
+});
+
 {% endblock script %}
