@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.utils import timezone
 
 
 
@@ -190,6 +191,13 @@ class cambiarStatus(UpdateView):
     model = Traslado
     form_class = EstatusTrasladoForm
     template_name = 'modal/seleccionarSttausdeTraslado.html'
+
+    def form_valid(self, form):
+        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
+        if 'status' in form.changed_data:
+            form.instance.fecha_aceptacion = timezone.now()
+        return super(cambiarStatus, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('traslados_recibidos')
 
