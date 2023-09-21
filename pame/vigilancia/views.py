@@ -474,7 +474,41 @@ class AgregarBiometricoINM(CreateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
+    
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
 
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
@@ -501,8 +535,40 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
 
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
 
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -1114,7 +1180,8 @@ class AgregarBiometricoAC(CreateView):
         
         face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         faces = face_cascade.detectMultiScale(img, 1.3, 5)
-        
+        region = None  # Definición inicial de la variable "region"
+
         for (x,y,w,h) in faces:
             margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
             margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
@@ -1127,12 +1194,17 @@ class AgregarBiometricoAC(CreateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        is_success, im_buf_arr = cv2.imencode(".jpg", region)
-        region_bytes = im_buf_arr.tobytes()
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
         
-        form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
 
-        return super().form_valid(form)
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1171,6 +1243,41 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
+    
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 
 class DeleteExtranjeroAC(DeleteView):
     permission_required = {
@@ -1761,6 +1868,41 @@ class AgregarBiometricoVP(CreateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
     
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
+    
 class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
@@ -1788,6 +1930,41 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
+    
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
     
 class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -1998,7 +2175,7 @@ class listarTraslado(ListView):
     
 
 
-def solicitar_traslado(request, traslado_id):
+def solicitar_traslado(request,self, traslado_id):
     if request.method == 'POST':
         if 'extranjeros[]' in request.POST:
             print("Manejando solicitud de traslado")
