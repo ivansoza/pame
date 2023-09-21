@@ -42,6 +42,12 @@ from .forms import TrasladoForm
 from .helpers import image_to_pdf
 
 import os
+import cv2
+import numpy as np
+from django.core.files.base import ContentFile
+from .forms import CompareFacesForm
+import face_recognition
+
 
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -1099,6 +1105,35 @@ class AgregarBiometricoAC(CreateView):
         initial['Extranjero'] = extranjero
         return initial
     
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        is_success, im_buf_arr = cv2.imencode(".jpg", region)
+        region_bytes = im_buf_arr.tobytes()
+        
+        form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Obtén el ID del extranjero del argumento en la URL
@@ -2034,3 +2069,65 @@ def procesar_traslado(request):
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+
+
+
+# def compare_faces(request):
+#     result = None
+
+#     if request.method == "POST":
+#         form = CompareFacesForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             image1 = form.cleaned_data['image1']
+#             image2 = form.cleaned_data['image2']
+
+#             # Convertir las imágenes a arrays
+#             img1_array = face_recognition.load_image_file(image1)
+#             img2_array = face_recognition.load_image_file(image2)
+
+#             # Obtener los encodings
+#             encodings1 = face_recognition.face_encodings(img1_array)
+#             encodings2 = face_recognition.face_encodings(img2_array)
+
+#             if encodings1 and encodings2:  # Verificar que se detectaron rostros
+#                 matches = face_recognition.compare_faces([encodings1[0]], encodings2[0])
+#                 result = matches[0]
+#             else:
+#                 result = "No se detectó rostro en una o ambas imágenes."
+#     else:
+#         form = CompareFacesForm()
+
+#     return render(request, 'compare_faces.html', {'form': form, 'result': result})
+
+def compare_faces(request):
+    result = None
+    similarity = None  # Para guardar la similitud (distancia)
+
+    if request.method == "POST":
+        form = CompareFacesForm(request.POST, request.FILES)
+        if form.is_valid():
+            image1 = form.cleaned_data['image1']
+            image2 = form.cleaned_data['image2']
+
+            # Convertir las imágenes a arrays
+            img1_array = face_recognition.load_image_file(image1)
+            img2_array = face_recognition.load_image_file(image2)
+
+            # Obtener los encodings
+            encodings1 = face_recognition.face_encodings(img1_array)
+            encodings2 = face_recognition.face_encodings(img2_array)
+
+            if encodings1 and encodings2:  # Verificar que se detectaron rostros
+                matches = face_recognition.compare_faces([encodings1[0]], encodings2[0])
+                result = matches[0]
+
+                # Calcular la distancia (similitud)
+                distance = face_recognition.face_distance([encodings1[0]], encodings2[0])
+                similarity = f"Similitud: {100 - distance[0]*100:.2f}%"
+
+            else:
+                result = "No se detectó rostro en una o ambas imágenes."
+    else:
+        form = CompareFacesForm()
+
+    return render(request, 'compare_faces.html', {'form': form, 'result': result, 'similarity': similarity})

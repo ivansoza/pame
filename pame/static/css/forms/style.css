@@ -322,3 +322,15 @@
 .custom-close-button {
   color: white;
 }
+
+
+
+/* imagen  */
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Asegúrate de tener un alto específico si quieres centrarlo verticalmente */
+  height: 150px;  /* Este es un ejemplo, ajústalo según tus necesidades */
+}
