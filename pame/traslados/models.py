@@ -48,7 +48,6 @@ class Alojamiento(models.Model):
     estacionOrigen = models.ForeignKey(Estacion, on_delete=models.CASCADE, null=True, blank=True)
     estacionDestino = models.CharField(max_length=50)
     estatus = models.CharField(max_length=50)
-    numeroUnicoProceso = models.ForeignKey(Proceso,  on_delete=models.CASCADE)
     acuerdoTraslado = models.FileField(upload_to='files/', null=True, blank=True)
     
 
