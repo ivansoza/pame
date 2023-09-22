@@ -3,7 +3,7 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante
+from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView,DetailView
@@ -30,6 +30,7 @@ from datetime import timedelta
 from django.http import HttpResponseRedirect
 
 from traslados.models import ExtranjeroTraslado
+from django.db import transaction
 
 import sys
 import pickle
@@ -294,7 +295,24 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
-        
+        with transaction.atomic():  # Utiliza una transacción para garantizar la consistencia de la base de datos
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
+            extranjero.save()
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{extranjero.id}"
+
+
+            # Crea un proceso asociado al extranjero recién creado
+            proceso = Proceso(
+                delExtranjero=extranjero,
+                consecutivo=extranjero.id,  # Puedes ajustar esto según tus necesidades
+                estacionInicio=estacion,  # Otra información relevante del proceso
+                fechaInicio=extranjero.fechaRegistro,  # Puedes llenar esto según tus necesidades
+                nup=nup
+            )
+            proceso.save()
+
+            instance = form.save(commit=False)
 
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
