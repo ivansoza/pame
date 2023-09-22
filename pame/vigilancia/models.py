@@ -96,7 +96,6 @@ class Extranjero(models.Model):
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta IMN')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta AC')
     deLaPuestaVP = models.ForeignKey(PuestaDisposicionVP, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta VP')
-
     class Meta:
         verbose_name_plural = "Extranjeros" 
     def __str__(self):
@@ -143,6 +142,17 @@ class Biometrico(models.Model):
         verbose_name_plural = 'Biometricos'
 
 class Proceso(models.Model):
-    numeroUnicoProceso = models.CharField(max_length=50)
+    agno = models.DateField(auto_now_add=True)
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
-    delResponsable = models.ForeignKey(Responsable, on_delete=models.CASCADE)
+    consecutivo = models.IntegerField()
+    estacionInicio = models.CharField(max_length=60)
+    estacionFin = models.CharField(max_length=60, blank=True, null=True)
+    fechaInicio = models.DateTimeField(auto_now_add=True)
+    fechaFin = models.DateTimeField(blank=True, null=True)
+    nup = models.CharField(max_length=50)
+
+    @property
+    def only_year(self):
+        return self.agno.strftime('%Y')
+    
+  
