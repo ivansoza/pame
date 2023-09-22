@@ -1203,7 +1203,7 @@ class AgregarBiometricoAC(CreateView):
            return super().form_valid(form)
         else:
         # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, toma una imagen con un rostro visible.")
           return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -1951,6 +1951,7 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
             inicio_y = max(0, y - margen_vertical_arriba)
             fin_x = min(img.shape[1], x + w + margen_horizontal)
             fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+            
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
