@@ -146,6 +146,13 @@ class Proceso(models.Model):
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
     estacionInicio = models.CharField(max_length=60)
-    estacionFin = models.CharField(max_length=60)
+    estacionFin = models.CharField(max_length=60, blank=True, null=True)
     fechaInicio = models.DateTimeField(auto_now_add=True)
-    fechaFin = models.DateTimeField(auto_now_add=True)
+    fechaFin = models.DateTimeField(blank=True, null=True)
+    nup = models.CharField(max_length=50)
+
+    @property
+    def only_year(self):
+        return self.agno.strftime('%Y')
+    
+  
