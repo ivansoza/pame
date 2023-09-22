@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM, PuestaDisposicionAC, Biometrico, PuestaDisposicionVP
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM, PuestaDisposicionAC, Biometrico, PuestaDisposicionVP, Proceso
 
 
 class ExtranjeroAdmin(admin.ModelAdmin):
@@ -19,4 +19,6 @@ admin.site.register(Nacionalidad)
 admin.site.register(Biometrico)
 
 admin.site.register(PuestaDisposicionVP)
+
+admin.site.register(Proceso)
 
