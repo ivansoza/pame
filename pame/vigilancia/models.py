@@ -107,6 +107,20 @@ class Extranjero(models.Model):
             self.deLaEstacion.capacidad += 1
             self.deLaEstacion.save()
         super().delete(*args, **kwargs)
+
+
+class Proceso(models.Model):
+    agno = models.DateField(auto_now_add=True)
+    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    consecutivo = models.IntegerField()
+    estacionInicio = models.CharField(max_length=60)
+    estacionFin = models.CharField(max_length=60)
+    fechaInicio = models.DateTimeField(auto_now_add=True)
+    fechaFin = models.DateTimeField(auto_now_add=True)
+    nup = models.CharField(max_length=60)
+
+
+
         
 class Acompanante(models.Model):
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delExtranjero')
@@ -118,7 +132,6 @@ class Acompanante(models.Model):
 
     class Meta:
         verbose_name_plural = "Acompañantes"
-
 class Biometrico(models.Model):
     Extranjero = models.OneToOneField(
         Extranjero, on_delete=models.CASCADE,
@@ -130,22 +143,13 @@ class Biometrico(models.Model):
     huellaExtranjero = models.FileField(verbose_name="Huella del Extranjero:",upload_to='files/', null=True, blank=True)
     fechaHoraHuellaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraHuellaUpdate = models.DateTimeField(auto_now_add=True)
-
     firmaExtranjero = models.FileField(verbose_name="Firma del Extranjero:",upload_to='files/', null=True, blank=True)
     fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
-    
-
-        
-
     class Meta:
         verbose_name_plural = 'Biometricos'
 
-class Proceso(models.Model):
-    agno = models.DateField(auto_now_add=True)
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
-    consecutivo = models.IntegerField()
-    estacionInicio = models.CharField(max_length=60)
-    estacionFin = models.CharField(max_length=60)
-    fechaInicio = models.DateTimeField(auto_now_add=True)
-    fechaFin = models.DateTimeField(auto_now_add=True)
+class UserFace(models.Model):
+    nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
+    image = models.ImageField(upload_to='user_faces/')
+    face_encoding = models.JSONField()  #
