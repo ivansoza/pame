@@ -125,7 +125,7 @@ class Biometrico(models.Model):
         Extranjero, on_delete=models.CASCADE,
         primary_key=True,
     )
-    fotografiaExtranjero = models.FileField(verbose_name="Fotografía del Extranjero:", upload_to='files/', null=True, blank=True)
+    fotografiaExtranjero = models.ImageField(verbose_name="Fotografía del Extranjero:", upload_to='rostros/', null=True, blank=True)
     fechaHoraFotoCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFotoUpdate = models.DateTimeField(auto_now_add=True)
     huellaExtranjero = models.FileField(verbose_name="Huella del Extranjero:",upload_to='files/', null=True, blank=True)

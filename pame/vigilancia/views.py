@@ -38,6 +38,17 @@ from django.http import JsonResponse
 from django.views import View
 from traslados.models import Traslado, ExtranjeroTraslado
 from .forms import TrasladoForm
+
+from .helpers import image_to_pdf
+
+import os
+import cv2
+import numpy as np
+from django.core.files.base import ContentFile
+from .forms import CompareFacesForm
+import face_recognition
+
+
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -202,7 +213,34 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         # Agregar una notificación de éxito
         messages.success(self.request, 'La puesta de disposición se ha creado con éxito.')
         return super().get_success_url()
-    
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('oficioPuesta')
+        handle_file('oficioComision')
+
+        return super(createPuestaINM, self).form_valid(form)
 
 class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -261,10 +299,31 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
         
         return super().form_valid(form)
-    
-    
 
 
     def get_context_data(self, **kwargs):
@@ -275,6 +334,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
 
         return context
+    
 
 class listarExtranjeros(ListView):
     model = Extranjero
@@ -317,7 +377,29 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     def form_valid(self, form):
         extranjero = form.save(commit=False)
         old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
 
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
         if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
             # Cambio de estatus de Activo a Inactivo
             estacion = extranjero.deLaEstacion
@@ -392,7 +474,41 @@ class AgregarBiometricoINM(CreateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
+    
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
 
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
@@ -419,8 +535,40 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
 
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
 
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -637,11 +785,41 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
-        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
+        estacion = form.cleaned_data['deLaEstacion']
+
+        if estacion:
+            estacion.capacidad -= 1
+            estacion.save()
+
+        extranjero = form.save(commit=False)
         extranjero.puesta = puesta
-        extranjero.save()  #
+        extranjero.save()
+
+        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        return super().form_valid(form) 
         
-        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -732,6 +910,36 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('oficioPuesta')
+        handle_file('oficioComision')
+        handle_file('certificadoMedico')
+
+        return super(createPuestaAC, self).form_valid(form)
+
     def get_success_url(self):
         messages.success(self.request, 'La puesta por autoridad competente se ha creado con éxito.')
         return super().get_success_url()
@@ -794,7 +1002,32 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         extranjero.puesta = puesta
         extranjero.save()
 
-        return super().form_valid(form)
+        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        return super().form_valid(form)  # Cambié "createPuestaAC" por "super()"
+    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
@@ -838,27 +1071,56 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
     form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
     def form_valid(self, form):
-        extranjero = form.save(commit=False)
-        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+        # Guarda el formulario, pero no comitea a la base de datos aún
+        instance = form.save(commit=False)
 
-        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+        # Manejo de archivos
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+
+        # Lógica relacionada con el cambio de estatus
+        old_extranjero = Extranjero.objects.get(pk=instance.pk)  # Obtén el extranjero original antes de modificar
+
+        if old_extranjero.estatus == 'Activo' and instance.estatus == 'Inactivo':
             # Cambio de estatus de Activo a Inactivo
-            estacion = extranjero.deLaEstacion
+            estacion = instance.deLaEstacion
             if estacion:
                 estacion.capacidad += 1
                 estacion.save()
 
-        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+        elif old_extranjero.estatus == 'Inactivo' and instance.estatus == 'Activo':
             # Cambio de estatus de Inactivo a Activo
-            estacion = extranjero.deLaEstacion
+            estacion = instance.deLaEstacion
             if estacion and estacion.capacidad > 0:
                 estacion.capacidad -= 1
                 estacion.save()
 
-        extranjero.save()
+        # Finalmente, guarda la instancia
+        instance.save()
 
         return super().form_valid(form)
-    
+
+        
 
     def get_success_url(self):
         messages.success(self.request, 'Datos del extranjero editados con éxito.')
@@ -909,6 +1171,41 @@ class AgregarBiometricoAC(CreateView):
         initial['Extranjero'] = extranjero
         return initial
     
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, toma una imagen con un rostro visible.")
+          return super().form_invalid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Obtén el ID del extranjero del argumento en la URL
@@ -946,6 +1243,41 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
+    
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 
 class DeleteExtranjeroAC(DeleteView):
     permission_required = {
@@ -1011,10 +1343,41 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
-        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
+        estacion = form.cleaned_data['deLaEstacion']
+        
+        if estacion:
+            estacion.capacidad -= 1
+            estacion.save()
+
+        extranjero = form.save(commit=False)
         extranjero.puesta = puesta
-        extranjero.save()  #
-        return super().form_valid(form)
+        extranjero.save()
+
+        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        return super().form_valid(form)  # Cambié "createPuestaAC" por "super()"
+    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1323,8 +1686,32 @@ class createExtranjeroVP(CreateView):
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
         
         return super().form_valid(form)
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1481,6 +1868,41 @@ class AgregarBiometricoVP(CreateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
     
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
+    
 class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
@@ -1508,6 +1930,42 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
+    
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+            
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:  # Verifica si la región no está vacía
+           is_success, im_buf_arr = cv2.imencode(".jpg", region)
+           region_bytes = im_buf_arr.tobytes()
+        
+           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+
+           return super().form_valid(form)
+        else:
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
     
 class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
@@ -1561,8 +2019,33 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
+        instance = form.save(commit=False)
+
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
         
         return super().form_valid(form)
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1693,7 +2176,7 @@ class listarTraslado(ListView):
     
 
 
-def solicitar_traslado(request, traslado_id):
+def solicitar_traslado(request,self, traslado_id):
     if request.method == 'POST':
         if 'extranjeros[]' in request.POST:
             print("Manejando solicitud de traslado")
@@ -1764,3 +2247,65 @@ def procesar_traslado(request):
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+
+
+
+# def compare_faces(request):
+#     result = None
+
+#     if request.method == "POST":
+#         form = CompareFacesForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             image1 = form.cleaned_data['image1']
+#             image2 = form.cleaned_data['image2']
+
+#             # Convertir las imágenes a arrays
+#             img1_array = face_recognition.load_image_file(image1)
+#             img2_array = face_recognition.load_image_file(image2)
+
+#             # Obtener los encodings
+#             encodings1 = face_recognition.face_encodings(img1_array)
+#             encodings2 = face_recognition.face_encodings(img2_array)
+
+#             if encodings1 and encodings2:  # Verificar que se detectaron rostros
+#                 matches = face_recognition.compare_faces([encodings1[0]], encodings2[0])
+#                 result = matches[0]
+#             else:
+#                 result = "No se detectó rostro en una o ambas imágenes."
+#     else:
+#         form = CompareFacesForm()
+
+#     return render(request, 'compare_faces.html', {'form': form, 'result': result})
+
+def compare_faces(request):
+    result = None
+    similarity = None  # Para guardar la similitud (distancia)
+
+    if request.method == "POST":
+        form = CompareFacesForm(request.POST, request.FILES)
+        if form.is_valid():
+            image1 = form.cleaned_data['image1']
+            image2 = form.cleaned_data['image2']
+
+            # Convertir las imágenes a arrays
+            img1_array = face_recognition.load_image_file(image1)
+            img2_array = face_recognition.load_image_file(image2)
+
+            # Obtener los encodings
+            encodings1 = face_recognition.face_encodings(img1_array)
+            encodings2 = face_recognition.face_encodings(img2_array)
+
+            if encodings1 and encodings2:  # Verificar que se detectaron rostros
+                matches = face_recognition.compare_faces([encodings1[0]], encodings2[0])
+                result = matches[0]
+
+                # Calcular la distancia (similitud)
+                distance = face_recognition.face_distance([encodings1[0]], encodings2[0])
+                similarity = f"Similitud: {100 - distance[0]*100:.2f}%"
+
+            else:
+                result = "No se detectó rostro en una o ambas imágenes."
+    else:
+        form = CompareFacesForm()
+
+    return render(request, 'compare_faces.html', {'form': form, 'result': result, 'similarity': similarity})

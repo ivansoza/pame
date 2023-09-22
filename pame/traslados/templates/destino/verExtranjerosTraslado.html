@@ -8,7 +8,7 @@
 {% endblock link %}
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'homeSeguridadGeneral' %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'traslados_recibidos' %}">
     <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
@@ -26,6 +26,7 @@
                 <th>Nombre</th>
                 <th>Nacionalidad</th>
                 <th>Destino</th>
+                <th>Status</th>
                 <th>Opciones</th>
                 <!-- Agrega más encabezados según tus necesidades -->
             </tr>
@@ -43,6 +44,14 @@
                     </td>
                     <td>{{ extranjero.delExtranjero.nacionalidad }}</td>
                     <td>{{ extranjero.delTraslado.estacion_destino }}</td>
+                    {% if extranjero.statusTraslado  == 0 %}
+                      <td style='color:#9E8364; font-weight: bold;'>Solicitud</td>
+                    {% elif extranjero.statusTraslado  == 1 %} 
+                      <td style='color:#2A4B41; font-weight: bold;'>Aceptado</td> 
+                    {% else %}
+                      <td style='color:#85364A; font-weight: bold;'>Rechazado</td> 
+                    {% endif %}
+
                     <td>
                         {% if status != 1 %}
                          <a class="btn btn-sm btn-icon3 tooltip-link" style="display:none"
@@ -59,7 +68,7 @@
                         {% else %}
                            <a class="btn btn-sm btn-icon3 tooltip-link" 
                            {% comment %} href="{% url 'eliminarExtranjerosTraslado' extranjero.id %}" {% endcomment %}
-                           href='#'
+                           href='{% url "editar-status-extranjero" extranjero.id%}'
                            data-title="Aceptar o Rechazar" onclick="abrir_modal_eliminar(this.href); return false;">
                            <i class="fa-solid fa-check"></i>
                           </a>
@@ -81,11 +90,14 @@
                 <th>Nombre</th>
                 <th>Nacionalidad</th>
                 <th>Destino</th>
+                <th>Status</th>
                 <th style="width: 5%;">Opciones</th>
             </tr>
         </tfoot>
     </table>
+    
     <div class="modal fade" id="eliminarextranjero" role="dialog">
+        
 
 {% endblock contenido%}
 

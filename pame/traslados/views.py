@@ -5,12 +5,13 @@ from django.views.generic import CreateView, ListView,DetailView, UpdateView, De
 from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
 from django.http import JsonResponse
-from .forms import TrasladoForm, EstatusTrasladoForm
+from .forms import TrasladoForm, EstatusTrasladoForm, EstatusTrasladoFormExtranjero
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.utils import timezone
 
 
 
@@ -190,6 +191,13 @@ class cambiarStatus(UpdateView):
     model = Traslado
     form_class = EstatusTrasladoForm
     template_name = 'modal/seleccionarSttausdeTraslado.html'
+
+    def form_valid(self, form):
+        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
+        if 'status' in form.changed_data:
+            form.instance.fecha_aceptacion = timezone.now()
+        return super(cambiarStatus, self).form_valid(form)
+
     def get_success_url(self):
         return reverse('traslados_recibidos')
 
@@ -351,3 +359,19 @@ def documento_ac(request, extranjero_id):
 
 def mi_vista(request):
     return render(request, 'documentos/acuerdoTraslado.html')
+
+class cambiarStatusExtranjero(UpdateView):
+    model = ExtranjeroTraslado
+    form_class = EstatusTrasladoFormExtranjero
+    template_name = 'modal/seleccionarSttausdeTraslado1.html'
+
+    def form_valid(self, form):
+        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
+        if 'statusTraslado' in form.changed_data:
+            form.instance.fecha_aceptacion = timezone.now()
+        return super(cambiarStatusExtranjero, self).form_valid(form)
+
+    def get_success_url(self):
+        puesta_id = self.object.delTraslado.id
+        messages.success(self.request, 'Status cambiado.')
+        return reverse('listaExtranjerosTrasladoDestino', args=[puesta_id])

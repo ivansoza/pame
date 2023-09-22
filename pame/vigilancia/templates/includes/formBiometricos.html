@@ -6,9 +6,20 @@
       <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
         {{ form.Extranjero|as_crispy_field }}
       </div>
+
+
       <div class="col-sm-6 col-md-6 col-lg-4">
-        {{ form.fotografiaExtranjero|as_crispy_field }}
-      </div>
+        <div class="file-input-container">
+            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+            href="{% url 'scanner' %}" class="button-link"
+            onclick="abrir_modal_eliminar(this.href); return false;"
+             data-input-id="id_fotografiaExtranjero">
+            <i class="fas fa-camera"></i> 
+            </a>
+            {{form.fotografiaExtranjero|as_crispy_field}}
+        </div>
+    </div>
+ 
       <div class="col-sm-6 col-md-6 col-lg-4">
         {{ form.huellaExtranjero|as_crispy_field }}
       </div>
@@ -22,3 +33,6 @@
       </div>
     </div>
   </form>
+
+
+
