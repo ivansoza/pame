@@ -14,6 +14,8 @@ from django.contrib import messages
 
 # Create your views here.
 from django import forms
+from .helpers import image_to_pdf
+import os
 
 class PermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -457,12 +459,44 @@ class CrearInventarioViewAC(CreateView):
     template_name = 'pertenenciasAC/agregarInventarioAC.html'
 
     def form_valid(self, form):
+        # Lógica relacionada con el extranjero y estaciones
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
         estaciones = extranjero.deLaEstacion.nombre
         form.instance.noExtranjero_id = extranjero_id
         form.instance.unidadMigratoria = estaciones
-        return super().form_valid(form)
+
+        # Guarda el formulario pero no comitea a la base de datos aún
+        instance = form.save(commit=False)
+
+        # Manejo de archivos
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('validacion')
+
+        # Finalmente, guarda la instancia
+        instance.save()
+
+        return super().form_valid(form)  # Cambié "createPuestaAC" por "super()"
 
 
     def get_initial(self):

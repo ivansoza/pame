@@ -63,8 +63,17 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-4 col-lg-4">
-            {{form.documentoIdentidad|as_crispy_field}}
+            <div class="file-input-container">
+                <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+                href="{% url 'scanner' %}" class="button-link"
+                onclick="abrir_modal_eliminar(this.href); return false;"
+                 data-input-id="id_documentoIdentidad">
+                <i class="fas fa-camera"></i> 
+                </a>
+                {{form.documentoIdentidad|as_crispy_field}}
+            </div>
         </div>
+
         <div class="col-sm-12 col-md-4 col-lg-4">
             {{form.tipoEstancia|as_crispy_field}}
         </div>
@@ -84,6 +93,7 @@
     <a href="{% url 'listAcompanantesAC' extranjero_principal_id puesta.id %}" class="btn btn-custom1">Cancelar</a>   
 
     </form>
+    {% include "includes/camera/modalCamera.html" %}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 {% endblock %}
@@ -97,4 +107,6 @@
 
 <!-- Script para poner la fecha con division %%/%%/%%%%  -->
 {% include "includes/js/fecha.html" %}
+{% include "includes/js/cam/camera.html" %}
+
 {% endblock script %}

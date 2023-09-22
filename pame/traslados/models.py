@@ -32,11 +32,12 @@ class Traslado(models.Model):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
     
 OPCION_STATUS_TRASLADO_CHOICES=[
-    [0,'ACEPTADO'],
-    [1,'RECHAZADO'],
+    [0,'SOLICITUD'],
+    [1,'ACEPTADO'],
+    [2,'RECHAZADO'],
 ]
 class ExtranjeroTraslado(models.Model):
-    statusTraslado = models.IntegerField(choices=OPCION_STATUS_TRASLADO_CHOICES)
+    statusTraslado = models.IntegerField(choices=OPCION_STATUS_TRASLADO_CHOICES, default=0, verbose_name='Status del Exranjero')
     delTraslado = models.ForeignKey(Traslado, on_delete=models.CASCADE, null=True, blank=True)
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, null=True, blank=True)
 

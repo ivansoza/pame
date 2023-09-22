@@ -190,6 +190,18 @@
   border-color: #27463e; 
 }
 
+.btn-icon4 {
+  background-color: #6f8092; 
+  color: white; 
+  border-color: #6f8092; 
+}
+
+.btn-icon4:hover {
+  color: white;
+  background-color: #5f6d7d; 
+  border-color: #5f6d7d; 
+}
+
 .tooltip-link {
   position: relative;
   display: inline-block;
@@ -293,3 +305,32 @@
 
 
 
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre el botón y el input */
+}
+
+
+
+/* modals  */
+
+.custom-header-color {
+  background-color: #8B2941;
+  color: white; /* Ajusta el color del texto según tu preferencia */
+}
+.custom-close-button {
+  color: white;
+}
+
+
+
+/* imagen  */
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Asegúrate de tener un alto específico si quieres centrarlo verticalmente */
+  height: 150px;  /* Este es un ejemplo, ajústalo según tus necesidades */
+}

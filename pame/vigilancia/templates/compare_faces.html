@@ -1,113 +1,89 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
-{% load static %}
-{% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
-    {% comment %} <link rel="stylesheet" href="{% static 'css/biometricos.css' %}"> {% endcomment %}
 
-{% endblock link %}
-{% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id %}">
-    <i class="fas fa-arrow-left"></i>
-</a>
-{% endblock dashboard %}
+
+
+
+
 {% block contenido %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+<div class="row">
+    <div class="col-sm-6 col-md-6 col-lg-4">
+        <div class="file-input-container">
+            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+            href="{% url 'scanner' %}" class="button-link"
+            onclick="abrir_modal_eliminar(this.href); return false;"
+             data-input-id="id_image1">
+            <i class="fas fa-camera"></i> 
+            </a>
+            {{form.image1|as_crispy_field}}
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-4">
+        <div class="file-input-container">
+            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+            href="{% url 'scanner' %}" class="button-link"
+            onclick="abrir_modal_eliminar(this.href); return false;"
+             data-input-id="id_image2">
+            <i class="fas fa-camera"></i> 
+            </a>
+            {{form.image2|as_crispy_field}}
+        </div>
+    </div>
 
-{% include "includes/editBiometricos.html" %}
-
-<style>
-  #webcamModal .modal-body {
-      position: relative; /* Asegura que los elementos internos sean posicionados relativos a este contenedor */
-  }
-
-  #rostroCuadro {
-    position: absolute;
-    border: 2px solid red;
-    width: 6cm; /* Ancho de 10 cm */
-    height: 6cm; /* Alto de 10 cm */
-    top: 50%; /* Centrar verticalmente */
-    left: 50%; /* Centrar horizontalmente */
-    transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
-    z-index: 1; /* Coloca el cuadro sobre el video */
-    pointer-events: none; /* Evita que el cuadro sea interactivo */
-    background-color: rgba(255, 255, 255, 0.5); /* Añade un fondo semi-transparente al cuadro */
-    box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.5); /* Agrega un efecto de sombra roja al cuadro */
-}
-
-#leyenda {
-    position: absolute;
-    top: calc(50% + 5.5cm); /* Coloca la leyenda 5.5cm debajo del cuadro */
-    left: 50%; /* Centrar horizontalmente */
-    transform: translateX(-50%); /* Centrar horizontalmente */
-    z-index: 2; /* Coloca la leyenda sobre el cuadro */
-    color: red; /* Color de texto rojo */
-    text-align: center; /* Alinea el texto al centro */
-    font-weight: bold; /* Texto en negrita */
-}
-#countdown {
-  position: absolute;
-  top: 50%; /* Centrar verticalmente */
-  left: 50%; /* Centrar horizontalmente */
-  transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
-  background-color: #20302B;
-  color: white;
-  font-size: 24px;
-  padding: 10px 20px;
-  border-radius: 5px;
-  display: none;
-  z-index: 3; /* Coloca el contador sobre todo, incluyendo el cuadro */
-}
-</style>
-<!-- BIOMETRICOS -->
-<div class="card">
-  <div class="card-body">
-      {% include "includes/formBiometricos.html" %}
-  </div>
-  <div class="card-footer">
-      <div class="row">
-          <div class="col-12">
-              <a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
-          </div>
-      </div>
-  </div>
 </div>
-<!-- FIN BIOMETRICOS -->
+  
+ 
+    <button type="submit">Comparar rostros</button>
+</form>
+
+{% if result is not None %}
+<h2>Resultado</h2>
+{% if result == True %}
+    <p>¡Las caras coinciden!</p>
+{% elif result == False %}
+    <p>Las caras no coinciden.</p>
+{% else %}
+    <p>{{ result }}</p>
+{% endif %}
+
+{% if similarity %}
+    <h3>{{ similarity }}</h3>
+{% endif %}
+{% endif %}
+
+
 <div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
-  <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-          <div class="modal-header custom-header-color">
-              <h2 class="modal-title">Capturar Foto</h2>
-              <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-              <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
-          </div>
-          <div class="modal-body d-flex justify-content-center align-items-center">
-              <div class="capture-container">
-                  <!-- Vídeo de la webcam -->
-                  <video id="webcam" width="640" height="480" autoplay></video>
-                  <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
-                  <div id="countdown" style="display: none;">5</div>
-                  <!-- Cuadro para el rostro -->
-                  <div id="rostroCuadro" style="position: absolute; border: 2px solid red; pointer-events: none;">
-                      <p class='leyenda' style="text-align: center; color: red; font-weight: bold;">
-                          Sitúe su rostro dentro del cuadrado para sacar su fotografía</p>
-                  </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-              <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
-              <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
-              <button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
-          </div>
-      </div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header custom-header-color">
+                <h2 class="modal-title">Capturar Foto</h2>
+                <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
+            </div>
+            <div class="modal-body d-flex justify-content-center align-items-center"> <!-- Agregado flexbox -->
+                <div class="capture-container">
+                    <!-- Vídeo de la webcam -->
+                    <video id="webcam" width="640" height="480" autoplay></video>
+                    <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
+                    <div id="countdown"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
+                        5</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
+                <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
+                <button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
+            </div>
+        </div>
+    </div>
   </div>
-</div>
-<!-- FIN BIOMETRICOS -->
-
-
-{% endblock %}
-
+  
+{% endblock contenido %}
 
 
 {% block script %}
@@ -115,7 +91,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 
-{% comment %} <script src="{% static 'js/biometricos.js' %}"></script> {% endcomment %}
 <script>
   function resetModal() {
       let video = document.getElementById('webcam');
@@ -240,20 +215,22 @@
               }
           };
       });
+  
       // Cuando el modal se oculta, resetea todo
       $('#webcamModal').on('hidden.bs.modal', function() {
-        let video = document.getElementById('webcam');
-        let canvas = document.getElementById('capturedImage');
-        if (video.srcObject) {
-            video.srcObject.getTracks().forEach(track => track.stop());
-        }
-        video.style.display = 'block';
-        canvas.style.display = 'none';
-        document.getElementById('capturarFoto').style.display = 'inline-block';
-        document.getElementById('confirmarFoto').style.display = 'none';
-        document.getElementById('nuevaFoto').style.display = 'none';
-
-    });
-});
+          let video = document.getElementById('webcam');
+          let canvas = document.getElementById('capturedImage');
+          if (video.srcObject) {
+              video.srcObject.getTracks().forEach(track => track.stop());
+          }
+          video.style.display = 'block';
+          canvas.style.display = 'none';
+          document.getElementById('capturarFoto').style.display = 'inline-block';
+          document.getElementById('confirmarFoto').style.display = 'none';
+          document.getElementById('nuevaFoto').style.display = 'none';
+  
+      });
+  });
 </script>
+
 {% endblock script %}
