@@ -5,7 +5,7 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
+from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView,DetailView
@@ -53,7 +53,8 @@ import time  # Importa el módulo de time
 
 from generales.mixins import HandleFileMixin
 
-
+from django.db import transaction
+from biometricos.models import UserFace1
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -285,10 +286,8 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
             if file:
-                # Se separa el nombre del archivo y la extensión
                 name, ext = os.path.splitext(file.name)
                 
-                # Verifica si el archivo es un PDF
                 if ext.lower() == '.pdf':
                     # Si es un PDF, simplemente lo guarda sin convertir
                     getattr(instance, file_field_name).save(
@@ -460,7 +459,6 @@ class AgregarBiometricoINM(CreateView):
     def form_valid(self, form):
         # Lógica de recorte
         image = form.cleaned_data['fotografiaExtranjero']
-        
         img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
         
@@ -480,17 +478,34 @@ class AgregarBiometricoINM(CreateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+                is_success, im_buf_arr = cv2.imencode(".jpg", region)
+                region_bytes = im_buf_arr.tobytes()
+                
+                # Guarda en el modelo Biometrico
+                biometrico = form.save(commit=False)
+                biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=True)
 
-           return super().form_valid(form)
+                # Calcula el face encoding y guarda en el modelo UserFace1
+                image_path = biometrico.fotografiaExtranjero.path
+                image_array = face_recognition.load_image_file(image_path)
+                face_encodings = face_recognition.face_encodings(image_array)
+
+                if face_encodings:
+
+                    biometrico.face_encoding = face_encodings[0].tolist()
+                    biometrico.save()
+                    # user_face1 = UserFace1(extranjero=biometrico.Extranjero, image=biometrico.fotografiaExtranjero)
+                    user_face1 = UserFace1(extranjero=biometrico.Extranjero)
+
+                    user_face1.face_encoding = face_encodings[0].tolist()
+                    user_face1.save()
+
+                return super().form_valid(form)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+                # Muestra un mensaje al usuario
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
 class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',

@@ -154,6 +154,8 @@ class Biometrico(models.Model):
     fotografiaExtranjero = models.ImageField(verbose_name="Fotografía del Extranjero:", upload_to='rostros/', null=True, blank=True)
     fechaHoraFotoCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFotoUpdate = models.DateTimeField(auto_now_add=True)
+    face_encoding = models.JSONField(blank=True, null=True)  #
+
     huellaExtranjero = models.FileField(verbose_name="Huella del Extranjero:",upload_to='files/', null=True, blank=True)
     fechaHoraHuellaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraHuellaUpdate = models.DateTimeField(auto_now_add=True)

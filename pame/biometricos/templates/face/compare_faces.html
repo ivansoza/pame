@@ -1,79 +1,60 @@
-
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 
-{% load static %}
-{% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
-{% endblock link %}
 
-{% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id %}">
-  <i class="fas fa-arrow-left"></i>
-</a>
-{% endblock dashboard %}
+
+
+
 {% block contenido %}
-{% include "includes/tituloBiometricos.html" %}
-
-
-<style>
-    #webcamModal .modal-body {
-        position: relative; /* Asegura que los elementos internos sean posicionados relativos a este contenedor */
-    }
-  
-    #rostroCuadro {
-      position: absolute;
-      border: 2px solid red;
-      width: 6cm; /* Ancho de 10 cm */
-      height: 6cm; /* Alto de 10 cm */
-      top: 50%; /* Centrar verticalmente */
-      left: 50%; /* Centrar horizontalmente */
-      transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
-      z-index: 1; /* Coloca el cuadro sobre el video */
-      pointer-events: none; /* Evita que el cuadro sea interactivo */
-      background-color: rgba(255, 255, 255, 0.5); /* Añade un fondo semi-transparente al cuadro */
-      box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.5); /* Agrega un efecto de sombra roja al cuadro */
-  }
-  
-  #leyenda {
-      position: absolute;
-      top: calc(50% + 5.5cm); /* Coloca la leyenda 5.5cm debajo del cuadro */
-      left: 50%; /* Centrar horizontalmente */
-      transform: translateX(-50%); /* Centrar horizontalmente */
-      z-index: 2; /* Coloca la leyenda sobre el cuadro */
-      color: red; /* Color de texto rojo */
-      text-align: center; /* Alinea el texto al centro */
-      font-weight: bold; /* Texto en negrita */
-  }
-  #countdown {
-    position: absolute;
-    top: 50%; /* Centrar verticalmente */
-    left: 50%; /* Centrar horizontalmente */
-    transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
-    background-color: #20302B;
-    color: white;
-    font-size: 24px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: none;
-    z-index: 3; /* Coloca el contador sobre todo, incluyendo el cuadro */
-  }
-  </style>
-  <!-- BIOMETRICOS -->
-  <div class="card">
-    <div class="card-body">
-        {% include "includes/formBiometricos.html" %}
-    </div>
-    <div class="card-footer">
-        <div class="row">
-            <div class="col-12">
-                <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
-            </div>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+<div class="row">
+    <div class="col-sm-6 col-md-6 col-lg-4">
+        <div class="file-input-container">
+            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+            href="{% url 'scanner' %}" class="button-link"
+            onclick="abrir_modal_eliminar(this.href); return false;"
+             data-input-id="id_image1">
+            <i class="fas fa-camera"></i> 
+            </a>
+            {{form.image1|as_crispy_field}}
         </div>
     </div>
-  </div>
-  <!-- FIN BIOMETRICOS -->
-  <div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
+    <div class="col-sm-6 col-md-6 col-lg-4">
+        <div class="file-input-container">
+            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+            href="{% url 'scanner' %}" class="button-link"
+            onclick="abrir_modal_eliminar(this.href); return false;"
+             data-input-id="id_image2">
+            <i class="fas fa-camera"></i> 
+            </a>
+            {{form.image2|as_crispy_field}}
+        </div>
+    </div>
+
+</div>
+  
+ 
+    <button type="submit">Comparar rostros</button>
+</form>
+
+{% if result is not None %}
+<h2>Resultado</h2>
+{% if result == True %}
+    <p>¡Las caras coinciden!</p>
+{% elif result == False %}
+    <p>Las caras no coinciden.</p>
+{% else %}
+    <p>{{ result }}</p>
+{% endif %}
+
+{% if similarity %}
+    <h3>{{ similarity }}</h3>
+{% endif %}
+{% endif %}
+
+
+<div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header custom-header-color">
@@ -83,17 +64,14 @@
                 </button>
                 <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
             </div>
-            <div class="modal-body d-flex justify-content-center align-items-center">
+            <div class="modal-body d-flex justify-content-center align-items-center"> <!-- Agregado flexbox -->
                 <div class="capture-container">
                     <!-- Vídeo de la webcam -->
                     <video id="webcam" width="640" height="480" autoplay></video>
                     <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
-                    <div id="countdown" style="display: none;">5</div>
-                    <!-- Cuadro para el rostro -->
-                    <div id="rostroCuadro" style="position: absolute; border: 2px solid red; pointer-events: none;">
-                        <p class='leyenda' style="text-align: center; color: red; font-weight: bold;">
-                            Posiciona el rostro al centro del recuadro para capturar la foto</p>
-                    </div>
+                    <div id="countdown"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
+                        5</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -104,10 +82,8 @@
         </div>
     </div>
   </div>
-
-
-{% endblock %}
-
+  
+{% endblock contenido %}
 
 
 {% block script %}

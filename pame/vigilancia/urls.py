@@ -84,11 +84,7 @@ urlpatterns = [
     
     
     
-    path('compare_faces', compare_faces, name='comparar'),
-    path('create_face/', UserFaceCreateView.as_view(), name='create_user_face'),
-
-    path('search_face/', search_face, name='search_face'),
-
+  
 
 ]
 

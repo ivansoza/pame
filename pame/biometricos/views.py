@@ -1,5 +1,178 @@
 from django.shortcuts import render
-
+from .forms import CompareFacesForm, UserFaceForm
+import os
+import cv2
+import numpy as np
+from django.core.files.base import ContentFile
+from .forms import CompareFacesForm, SearchFaceForm, SearchFaceForm1
+import face_recognition
+import time  # I
+from .models import UserFace, UserFace1
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView,DetailView
+from vigilancia.models import Biometrico
 # Create your views here.
 def scanner(request):
     return render(request, 'scanner.html')
+
+
+
+
+def compare_faces(request):
+    result = None
+    similarity = None  # Para guardar la similitud (distancia)
+
+    if request.method == "POST":
+        form = CompareFacesForm(request.POST, request.FILES)
+        if form.is_valid():
+            image1 = form.cleaned_data['image1']
+            image2 = form.cleaned_data['image2']
+
+            # Convertir las imágenes a arrays
+            img1_array = face_recognition.load_image_file(image1)
+            img2_array = face_recognition.load_image_file(image2)
+
+            # Obtener los encodings
+            encodings1 = face_recognition.face_encodings(img1_array)
+            encodings2 = face_recognition.face_encodings(img2_array)
+
+            if encodings1 and encodings2:  # Verificar que se detectaron rostros
+                matches = face_recognition.compare_faces([encodings1[0]], encodings2[0])
+                result = matches[0]
+
+                # Calcular la distancia (similitud)
+                distance = face_recognition.face_distance([encodings1[0]], encodings2[0])
+                similarity = f"Similitud: {100 - distance[0]*100:.2f}%"
+
+            else:
+                result = "No se detectó rostro en una o ambas imágenes."
+    else:
+        form = CompareFacesForm()
+
+    return render(request, 'face/compare_faces.html', {'form': form, 'result': result, 'similarity': similarity})
+
+
+
+class UserFaceCreateView(CreateView):
+    model = UserFace
+    form_class = UserFaceForm
+    template_name = 'face/guardar_fotos.html'
+    success_url = reverse_lazy('create_user_face')
+    
+    def form_valid(self, form):
+        form.instance.image.save(form.instance.image.name, form.instance.image, save=True)
+        image_path = form.instance.image.path
+
+        # Verificar si la imagen se ha guardado correctamente
+        if os.path.exists(image_path):
+            print(f"Imagen guardada en {image_path}")
+            
+            # Carga la imagen
+            image_array = face_recognition.load_image_file(image_path)
+            
+            # Obtén los encodings de la imagen
+            face_encodings = face_recognition.face_encodings(image_array)
+            
+            if face_encodings:  # Verificar que se detectaron rostros
+                print("Encoding calculado")
+                encoding = face_encodings[0].tolist()
+                
+                # Guarda el encoding en el modelo y guarda el objeto en la base de datos
+                self.object = form.save(commit=False)
+                self.object.face_encoding = encoding
+                self.object.save()
+                
+                print("Objeto guardado exitosamente")
+                return super().form_valid(form)
+            else:
+                print("No se pudo calcular face_encodings")
+        else:
+            print("No se pudo guardar la imagen")
+
+        return self.form_invalid(form)
+
+
+
+
+def search_face(request):
+    result = None
+    
+    if request.method == 'POST':
+        form = SearchFaceForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            start_time = time.time()  # Guarda el tiempo de inicio
+            
+            uploaded_image = form.cleaned_data['image']
+            uploaded_image_array = face_recognition.load_image_file(uploaded_image)
+            uploaded_encoding = face_recognition.face_encodings(uploaded_image_array)
+            
+            if not uploaded_encoding:  # Si no se detectó un rostro
+                result = 'No se detectó rostro en la imagen subida.'
+            else:
+                uploaded_encoding = uploaded_encoding[0]  # Tomar el primer encoding si hay múltiples rostros
+                
+                for user_face in UserFace.objects.all():
+                    saved_encoding = user_face.face_encoding  # El encoding guardado en el modelo
+                    
+                    if not saved_encoding:
+                        continue  # Pasar al siguiente si no hay encoding
+                    
+                    distance = face_recognition.face_distance([saved_encoding], uploaded_encoding)
+                    
+                    if distance < 0.6:  # Puedes ajustar el umbral según tus necesidades
+                        elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                        result = (f'Coincidencia encontrada con {user_face.nombreExtranjero} '
+                                  f'(Distancia: {distance[0]}). '
+                                  f'Tiempo de búsqueda: {elapsed_time:.2f} segundos.')
+                        break  # Salir del bucle si se encuentra una coincidencia
+                else:  # Se ejecuta si no se rompió el bucle (no se encontró coincidencia)
+                    elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                    result = f'No se encontraron coincidencias. Tiempo de búsqueda: {elapsed_time:.2f} segundos.'
+    else:
+        form = SearchFaceForm()
+    
+    return render(request, 'face/search_face.html', {'form': form, 'result': result})
+
+def search_face1(request):
+    result = None
+    matched_image_url = None  # Inicializar con None
+    
+    if request.method == 'POST':
+        form = SearchFaceForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            start_time = time.time()  # Guarda el tiempo de inicio
+            
+            uploaded_image = form.cleaned_data['image']
+            uploaded_image_array = face_recognition.load_image_file(uploaded_image)
+            uploaded_encoding = face_recognition.face_encodings(uploaded_image_array)
+            
+            if not uploaded_encoding:  # Si no se detectó un rostro
+                result = 'No se detectó rostro en la imagen subida.'
+            else:
+                uploaded_encoding = uploaded_encoding[0]  # Tomar el primer encoding si hay múltiples rostros
+                
+                for user_face1 in UserFace1.objects.all():
+                    saved_encoding = user_face1.face_encoding  # El encoding guardado en el modelo
+                
+                    if not saved_encoding:
+                        continue  # Pasar al siguiente si no hay encoding
+                    
+                    distance = face_recognition.face_distance([saved_encoding], uploaded_encoding)
+                    
+                    if distance < 0.5:  # Ajustar el umbral según tus necesidades
+                        elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                        result = (f'Coincidencia encontrada con {user_face1.extranjero} '
+                                  f'(Distancia: {distance[0]}). '
+                                  f'Tiempo de búsqueda: {elapsed_time:.2f} segundos.')
+                        biometrico = Biometrico.objects.get(Extranjero=user_face1.extranjero)
+                        matched_image_url = biometrico.fotografiaExtranjero.url if biometrico.fotografiaExtranjero else None
+                        break  # Salir del bucle si se encuentra una coincidencia
+                else:  # Se ejecuta si no se rompió el bucle (no se encontró coincidencia)
+                    elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                    result = f'No se encontraron coincidencias. Tiempo de búsqueda: {elapsed_time:.2f} segundos.'
+    else:
+        form = SearchFaceForm1()
+    
+    return render(request, 'face/search_face1.html', {'form': form, 'result': result, 'matched_image_url': matched_image_url})
