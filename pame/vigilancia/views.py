@@ -960,14 +960,30 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         
         if estacion:
             estacion.capacidad -= 1
-            estacion.save()
+            estacion.save()     
+        with transaction.atomic():  # Utiliza una transacción para garantizar la consistencia de la base de datos
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
+            extranjero.save()
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{extranjero.id}"
 
-        extranjero = form.save(commit=False)
+
+            # Crea un proceso asociado al extranjero recién creado
+            proceso = Proceso(
+                delExtranjero=extranjero,
+                consecutivo=extranjero.id,  # Puedes ajustar esto según tus necesidades
+                estacionInicio=estacion,  # Otra información relevante del proceso
+                fechaInicio=extranjero.fechaRegistro,  # Puedes llenar esto según tus necesidades
+                nup=nup
+            )
+            proceso.save()
+
+            instance = form.save(commit=False)
+
+        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
-        extranjero.save()
-
-        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
-
+        extranjero.save()  #
+        instance = form.save(commit=False)
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
             if file:
@@ -987,10 +1003,11 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
                         f"{file_field_name}_{instance.id}.pdf",
                         image_to_pdf(file)
                     )
+
         # Manejo de los archivos
         handle_file('documentoIdentidad')
-        return super().form_valid(form)  # Cambié "createPuestaAC" por "super()"
-    
+        
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1649,6 +1666,25 @@ class createExtranjeroVP(CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
+        with transaction.atomic():  # Utiliza una transacción para garantizar la consistencia de la base de datos
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
+            extranjero.save()
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{extranjero.id}"
+
+
+            # Crea un proceso asociado al extranjero recién creado
+            proceso = Proceso(
+                delExtranjero=extranjero,
+                consecutivo=extranjero.id,  # Puedes ajustar esto según tus necesidades
+                estacionInicio=estacion,  # Otra información relevante del proceso
+                fechaInicio=extranjero.fechaRegistro,  # Puedes llenar esto según tus necesidades
+                nup=nup
+            )
+            proceso.save()
+
+            instance = form.save(commit=False)
+
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
