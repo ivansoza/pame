@@ -7,7 +7,7 @@ from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
 
-from .views import compare_faces
+from .views import compare_faces, UserFaceCreateView, search_face
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
     path('seguridad-responsable/', homeSeguridadResponsable, name='homeSeguridadResponsable'),
@@ -81,8 +81,13 @@ urlpatterns = [
     path('seguridad/solicitar_traslado/<int:traslado_id>/', solicitar_traslado, name='solicitar_traslado'),
     path('crear_traslado/<int:origen_id>/<int:destino_id>/', TrasladoCreateView.as_view(), name='crear_traslado'),
     path('procesar/traslado/', procesar_traslado, name='procesar_traslado'),
-    path('compare_faces', compare_faces, name='comparar')
+    
+    
+    
+    path('compare_faces', compare_faces, name='comparar'),
+    path('create_face/', UserFaceCreateView.as_view(), name='create_user_face'),
 
+    path('search_face/', search_face, name='search_face'),
 
 
 ]

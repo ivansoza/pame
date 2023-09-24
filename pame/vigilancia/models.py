@@ -12,6 +12,12 @@ class Nacionalidad(models.Model):
     
     def __str__(self):
         return self.nombre
+    
+# FUNCION PARA ASIGNAR UN NOMBRE DE CARPETA A PARTIR DE LA ESTACION, SU IDENTIFICADOR DE PROCESO Y SU FILE NAME 
+def user_directory_pathINM(instance, filename):
+    estacion = instance.deLaEstacion.identificador if instance.deLaEstacion else 'sin_estacion'
+    identificador_proceso = instance.identificadorProceso if instance.identificadorProceso else 'sin_identificador'
+    return f'{estacion}/PUESTAINM/{identificador_proceso}/{filename}'
 
 class PuestaDisposicionINM(models.Model):
     identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
@@ -21,21 +27,23 @@ class PuestaDisposicionINM(models.Model):
     cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
     nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
     cargoAutoridadSignaDos = models.CharField(verbose_name='Cargo de Autoridad que firma (2)', max_length=100)
-    oficioPuesta = models.FileField(upload_to='files/', verbose_name='Oficio de Puesta', null=True, blank=True)
-    oficioComision = models.FileField(upload_to='files/', verbose_name='Oficio de Comisión', null=True, blank=True)
+    oficioPuesta = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Puesta', null=True, blank=True)
+    oficioComision = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
-
+    
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
-
     def __str__(self):
         return self.numeroOficio
-    
     @property
     def extranjeros(self):
         return self.extranjeros.all()
     
+def user_directory_pathAC(instance, filename):
+    estacion = instance.deLaEstacion.identificador if instance.deLaEstacion else 'sin_estacion'
+    identificador_proceso = instance.identificadorProceso if instance.identificadorProceso else 'sin_identificador'
+    return f'{estacion}/PUESTAC/{identificador_proceso}/{filename}'
 
 class PuestaDisposicionAC(models.Model):
     identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
@@ -45,13 +53,13 @@ class PuestaDisposicionAC(models.Model):
     cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
     nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
     cargoAutoridadSignaDos = models.CharField(verbose_name='Cargo de Autoridad que firma (2)', max_length=100)
-    oficioPuesta = models.FileField(upload_to='files/', verbose_name='Oficio de Puesta', null=True, blank=True)
-    oficioComision = models.FileField(upload_to='files/', verbose_name='Oficio de Comisión', null=True, blank=True)
+    oficioPuesta = models.FileField(upload_to=user_directory_pathAC, verbose_name='Oficio de Puesta', null=True, blank=True)
+    oficioComision = models.FileField(upload_to=user_directory_pathAC, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
     dependencia = models.CharField(verbose_name='Dependencia', max_length=100)
     numeroCarpeta = models.IntegerField(verbose_name='Número de Carpeta')
     entidadFederativa = models.CharField(verbose_name='Entidad Federativa', max_length=100)
-    certificadoMedico = models.FileField(upload_to='files/', verbose_name='Certificado Médico', null=True, blank=True)
+    certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
@@ -108,16 +116,22 @@ class Extranjero(models.Model):
             self.deLaEstacion.save()
         super().delete(*args, **kwargs)
 
-
 class Proceso(models.Model):
     agno = models.DateField(auto_now_add=True)
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
     estacionInicio = models.CharField(max_length=60)
-    estacionFin = models.CharField(max_length=60)
+    estacionFin = models.CharField(max_length=60, blank=True, null=True)
     fechaInicio = models.DateTimeField(auto_now_add=True)
-    fechaFin = models.DateTimeField(auto_now_add=True)
-    nup = models.CharField(max_length=60)
+    fechaFin = models.DateTimeField(blank=True, null=True)
+    nup = models.CharField(max_length=50)
+
+    @property
+    def only_year(self):
+        return self.agno.strftime('%Y')
+    
+  
+
 
 
 
@@ -152,19 +166,9 @@ class Biometrico(models.Model):
 class UserFace(models.Model):
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
     image = models.ImageField(upload_to='user_faces/')
-    face_encoding = models.JSONField()  #
-class Proceso(models.Model):
-    agno = models.DateField(auto_now_add=True)
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
-    consecutivo = models.IntegerField()
-    estacionInicio = models.CharField(max_length=60)
-    estacionFin = models.CharField(max_length=60, blank=True, null=True)
-    fechaInicio = models.DateTimeField(auto_now_add=True)
-    fechaFin = models.DateTimeField(blank=True, null=True)
-    nup = models.CharField(max_length=50)
+    face_encoding = models.JSONField(blank=True, null=True)  #
 
-    @property
-    def only_year(self):
-        return self.agno.strftime('%Y')
-    
-  
+    def __str__(self):
+        return self.nombreExtranjero
+
+
