@@ -1,20 +1,26 @@
-from django.shortcuts import render
-from .forms import CompareFacesForm, UserFaceForm
+# Importaciones de librerías estándar de Python
 import os
-import cv2
-import numpy as np
-from django.core.files.base import ContentFile
-from .forms import CompareFacesForm, SearchFaceForm, SearchFaceForm1
-import face_recognition
-import time  # I
-from .models import UserFace, UserFace1
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView,DetailView
-from vigilancia.models import Biometrico
-# Create your views here.
-def scanner(request):
-    return render(request, 'scanner.html')
+import time
+from io import BytesIO
 
+# Importaciones de librerías externas
+import cv2
+import face_recognition
+import numpy as np
+from PIL import Image
+
+# Importaciones de Django
+from django.core.files.base import ContentFile
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import CreateView, ListView, DetailView
+
+# Importaciones de formularios, modelos y demás elementos locales
+from .forms import CompareFacesForm, UserFaceForm, SearchFaceForm, SearchFaceForm1
+from .models import UserFace, UserFace1
+from vigilancia.models import Biometrico
 
 
 
@@ -176,3 +182,63 @@ def search_face1(request):
         form = SearchFaceForm1()
     
     return render(request, 'face/search_face1.html', {'form': form, 'result': result, 'matched_image_url': matched_image_url})
+
+
+
+@csrf_exempt
+def manejar_imagen(request):
+    """
+    Maneja las peticiones de imágenes para el reconocimiento facial. 
+    """
+
+    if request.method != "POST":
+        # Retorna error si el método de la petición no es POST.
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+    # Obtener la imagen y el ID extranjero de la petición.
+    imagen = request.FILES.get('image')
+    extranjero_id_str = request.POST.get('extranjero_id')
+
+    # Validar el ID extranjero.
+    if extranjero_id_str is None or not extranjero_id_str.isdigit():
+        return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
+
+    extranjero_id = int(extranjero_id_str)
+
+    try:
+        # Obtener el objeto biométrico asociado al ID extranjero.
+        biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+        face_encoding_almacenado = biometrico.face_encoding
+
+        # Convertir la imagen subida a un formato adecuado.
+        imagen_bytes_io = BytesIO(imagen.read())
+        imagen_pil = Image.open(imagen_bytes_io)
+        if imagen_pil.mode != 'RGB':
+            imagen_pil = imagen_pil.convert('RGB')
+
+        imagen_array = np.array(imagen_pil)
+        if not isinstance(imagen_array, np.ndarray):
+            return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+        # Obtener los encodings de la imagen subida.
+        encodings_subido = face_recognition.face_encodings(imagen_array)
+        if not encodings_subido:
+            return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+        # Comparar los encodings obtenidos con los almacenados.
+        uploaded_encoding = encodings_subido[0]
+        tolerance = 0.5  # Puedes ajustar este valor según necesidad.
+        distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+        distance_value = float(distance[0])
+
+        # Retornar el resultado de la comparación.
+        if distance_value < tolerance:
+            similarity_str = f"Similitud: {(1 - distance_value) * 100:.2f}%"
+            return JsonResponse({'match': True, 'similarity': similarity_str, 'distance': distance_value})
+        else:
+            return JsonResponse({'match': False, 'similarity': None, 'distance': distance_value})
+
+    except Biometrico.DoesNotExist:
+        return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
