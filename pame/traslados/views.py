@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView,DetailView, TemplateView
-from .models import Traslado, Extranjero, ExtranjeroTraslado
+from .models import Traslado, Extranjero, ExtranjeroTraslado, SolicitudTraslado
 from django.views.generic import CreateView, ListView,DetailView, UpdateView, DeleteView
 from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
@@ -359,6 +359,42 @@ def documento_ac(request, extranjero_id):
 
 def mi_vista(request):
     return render(request, 'documentos/acuerdoTraslado.html')
+
+from weasyprint import HTML
+
+def generate_pdf(request, extranjero_id):
+    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # OBtener datos a renderizar 
+    nombre_extranjero = extranjero.nombreExtranjero
+    apellidop_extranjero = extranjero.apellidoPaternoExtranjero
+    apellidom_extranjero = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad
+    nombre_estacion = extranjero.deLaEstacion.nombre
+    estado_estacion = extranjero.deLaEstacion.estado
+
+    html_context = {
+        'contexto': 'variables',
+        'nombre_extranjero': nombre_extranjero,
+        'apellidop': apellidop_extranjero,
+        'apellidom': apellidom_extranjero,
+        'nacionalidad': nacionalidad,
+        'nombre_estacion': nombre_estacion,
+        'estado_estacion': estado_estacion,
+    }
+
+    # Crear un objeto HTML a partir de una plantilla o contenido HTML
+    html_content = render_to_string('documentos/acuerdoTraslado.html', html_context)
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="Acuerdo de Traslado {{nombre_extranjero}}.pdf"'
+    return response
 
 class cambiarStatusExtranjero(UpdateView):
     model = ExtranjeroTraslado

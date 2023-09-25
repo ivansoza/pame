@@ -1,9 +1,9 @@
 {% extends "documentos/base.html" %}
 
 {% block content %}
-<p>En la Ciudad de ---,--- siendo las --- horas del dia --- de --- de ---, 
+<p>En la Ciudad de {{ nombre_estacion }}, {{ estado_estacion }} siendo las {{fecha}} horas del dia --- de --- de ---, 
     en el lugar que ocupa la Estación Migratoria del Instituto Nacional de Migración en 
-    --,---, sito en -- de est ciudad, el ---,--- de la Estación Migratoria de ---,--- adscrito
+    --,---, sito en -- de esta ciudad, el ---,--- de la Estación Migratoria de ---,--- adscrito
     a la Delegación Federal del Instituto Nacional de Migración en el Estado de ---, mismo que actúa
     ante la presencia de los testigos de asistencia que al fin firmal de conformidad:
 </p>
@@ -12,7 +12,8 @@
 </p>
 <P>
     Que de las constancias que bran en el presente expediente se desprende en en fecha ---, se decretó
-    la presentación del extranjero ---, de nacionalidad ---, en virtud de que el mismo adecuó su conducta
+    la presentación del extranjero <strong>{{ nombre_extranjero }} {{ apellidop }} {{ apellidom }}</strong>, de nacionalidad <strong>{{ nacionalidad }}</strong>, 
+    en virtud de que el mismo adecuó su conducta
     en la hipóesis prevista en el artículo 144, fracción I de la Ley de Migración, por haber ingresado a
     territorio nacional sin la documentación requeridad para ello, por lo que carece de documentación que 
     acredite su reguilar estancia en el país.
@@ -28,10 +29,10 @@
     Ley de Migración, párrafo cuarto del artículo 23, fracción IV del artículo 26 y artículo 48 del
     Acuerdo por el que se emiten las Normas para el funcionamiento de las Estaciones Migratorias y 
     Estancias Provisionales del Instituto Nacional de Migración, publicado en el Diario Oficial de la 
-    Federación el 08 de noviembre de 2012, </strong>el extranjero <strong>---, </strong> de nacionalidad 
-    <strong>---, </strong> sea trasladado y puesto a disposición de la Dirección General de Control y verificación
+    Federación el 08 de noviembre de 2012, </strong>el extranjero <strong>{{ nombre_extranjero }} {{ apellidop }} {{ apellidom }}</strong>, de nacionalidad 
+    <strong>{{ nacionalidad }}</strong>, sea trasladado y puesto a disposición de la Dirección General de Control y verificación
     a si como a la Dirección de Resoluciones Migratorias para que conforme a sus facultades resuelvan el procedimiento
-    administrativo migratorio del extranjero <strong>---, </strong>lo anterior por lo que se encuentran gestionando la
+    administrativo migratorio del extranjero <strong>{{ nombre_extranjero }} {{ apellidop }} {{ apellidom }}</strong>, lo anterior por lo que se encuentran gestionando la
     consular de dicho extranjero, <strong>y en colaboracón con dicha Dirección en extranjero antes mencionado </strong>
     será trasladado a la  Estación Migratoria de la Delegación Federal del Instituto Nacional de Migración en el 
     Distrito Federal <strong>(---) </strong>para alojamiento y manutención hasta en tanto se resuelva  el 
@@ -90,16 +91,14 @@
 </P>
 <div class="columnas">
     <div class="columna">
-        <h2>LA AUTORIDAD</h2>
-        <div class="firma">
-            <p>Firma del Director</p>
+        <p><strong>LA AUTORIDAD:</strong></p>
+            <p class="firma">Firma del Director <br>
+            ---</p>
         </div>
-    </div>
     <div class="columna">
-        <h2>EL EXTRANJERO</h2>
-        <div class="firma">
-            <p>Firma del Testigo</p>
-        </div>
+        <p><strong>EL EXTRANJERO:</strong></p>
+        <p class="firma">Firma del Testigo <br>
+        ---</p>
     </div>
 </div>
 {% endblock %}
