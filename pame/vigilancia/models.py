@@ -107,7 +107,103 @@ class Extranjero(models.Model):
             self.deLaEstacion.capacidad += 1
             self.deLaEstacion.save()
         super().delete(*args, **kwargs)
-        
+
+estatura_choices = (
+        ('1.70', '1.70 m o más'),
+        ('1.65', '1.65 m - 1.69 m'),
+        ('1.60', '1.60 m - 1.64 m'),
+        ('1.55', '1.55 m - 1.59 m'),
+        ('1.50', '1.50 m - 1.54 m'),
+        ('1.45', '1.45 m - 1.49 m'),
+)
+
+cejas_choices = (
+    ('Pobladas', 'Pobladas'),
+    ('Delgadas', 'Delgadas'),
+    ('Normales', 'Normales'),
+    # Agrega más opciones según sea necesario
+)
+
+nariz_choices = (
+    ('Aguileña', 'Aguileña'),
+    ('Chata', 'Chata'),
+    ('Normal', 'Normal'),
+    # Agrega más opciones según sea necesario
+)
+
+labios_choices = (
+    ('Gruesos', 'Gruesos'),
+    ('Delgados', 'Delgados'),
+    ('Normales', 'Normales'),
+    # Agrega más opciones según sea necesario
+)
+
+tipoCabello_choices = (
+    ('Largo', 'Largo'),
+    ('Corto', 'Corto'),
+    ('Rizado', 'Rizado'),
+    # Agrega más opciones según sea necesario
+)
+
+bigote_choices = (
+    ('Presente', 'Presente'),
+    ('Ausente', 'Ausente'),
+    ('No Aplica', 'No Aplica'),
+    # Agrega más opciones según sea necesario
+)
+
+complexion_choices = (
+    ('Delgada', 'Delgada'),
+    ('Normal', 'Normal'),
+    ('Robusta', 'Robusta'),
+    # Agrega más opciones según sea necesario
+)
+
+frente_choices = (
+    ('Amplia', 'Amplia'),
+    ('Estrecha', 'Estrecha'),
+    ('Normal', 'Normal'),
+    # Agrega más opciones según sea necesario
+)
+
+colorOjos_choices = (
+    ('Azul', 'Azul'),
+    ('Verde', 'Verde'),
+    ('Café', 'Café'),
+    # Agrega más opciones según sea necesario
+)
+
+boca_choices = (
+    ('Grande', 'Grande'),
+    ('Pequeña', 'Pequeña'),
+    ('Normal', 'Normal'),
+    # Agrega más opciones según sea necesario
+)
+
+segnasParticulares_choices = (
+    ('Tatuaje en el brazo', 'Tatuaje en el brazo'),
+    ('Cicatriz en la mejilla', 'Cicatriz en la mejilla'),
+    ('Sin señas particulares', 'Sin señas particulares'),
+    # Agrega más opciones según sea necesario
+)
+class descripcion(models.Model):
+    delExtranjero = models.OneToOneField(
+        Extranjero, on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    estatura = models.CharField(max_length=20, choices=estatura_choices)
+    cejas = models.CharField(max_length=50, choices=cejas_choices)
+    nariz = models.CharField(max_length=50, choices=nariz_choices)
+    labios = models.CharField(max_length=50, choices=labios_choices)
+    tipoCabello = models.CharField(max_length=50, choices=tipoCabello_choices, verbose_name='Tipo de cabello')
+    bigote = models.CharField(max_length=50, blank=True, null=True, choices=bigote_choices)
+    complexion = models.CharField(max_length=50, choices=complexion_choices)
+    frente = models.CharField(max_length=50, choices=frente_choices)
+    colorOjos=models.CharField(max_length=50, verbose_name='Color de Ojos', choices=colorOjos_choices)
+    boca = models.CharField(max_length=50, choices=boca_choices)
+    segnasParticulares = models.CharField(max_length=50, verbose_name='Señas Particulares', choices=segnasParticulares_choices)
+    observaciones = models.CharField(max_length=50)  
+
 class Acompanante(models.Model):
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delExtranjero')
     delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delAcompanante')
@@ -124,7 +220,7 @@ class Biometrico(models.Model):
         Extranjero, on_delete=models.CASCADE,
         primary_key=True,
     )
-    fotografiaExtranjero = models.ImageField(verbose_name="Fotografía del Extranjero:", upload_to='rostros/', null=True, blank=True)
+    fotografiaExtranjero = models.ImageField(verbose_name="Fotografía del Extranjero:", upload_to='rostros/')
     fechaHoraFotoCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFotoUpdate = models.DateTimeField(auto_now_add=True)
     huellaExtranjero = models.FileField(verbose_name="Huella del Extranjero:",upload_to='files/', null=True, blank=True)

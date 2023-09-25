@@ -2,36 +2,110 @@
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="row">
-      <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
-        {{ form.Extranjero|as_crispy_field }}
-      </div>
-
-
-      <div class="col-sm-6 col-md-6 col-lg-4">
-        <div class="file-input-container">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
+            {{ form.Extranjero|as_crispy_field }}
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-4">
+            <div class="file-input-container">
+              <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+              href="{% url 'scanner' %}" class="button-link"
+              onclick="abrir_modal_eliminar(this.href); return false;"
+              data-input-id="id_fotografiaExtranjero">
+              <i class="fas fa-camera"></i> 
+            </a>
+            {{form.fotografiaExtranjero|as_crispy_field}}
+          </div>
+        </div>
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          <div class="file-input-container">
             <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
             href="{% url 'scanner' %}" class="button-link"
             onclick="abrir_modal_eliminar(this.href); return false;"
-             data-input-id="id_fotografiaExtranjero">
-            <i class="fas fa-camera"></i> 
-            </a>
-            {{form.fotografiaExtranjero|as_crispy_field}}
+            data-input-id="id_fotografiaExtranjero">
+            <i class="fas fa-fingerprint"></i>
+          </a>
+          {{ form.huellaExtranjero|as_crispy_field }}
+         </div>
         </div>
-    </div>
- 
-      <div class="col-sm-6 col-md-6 col-lg-4">
-        {{ form.huellaExtranjero|as_crispy_field }}
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          <div class="file-input-container">
+            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+            href="{% url 'scanner' %}" class="button-link"
+            onclick="abrir_modal_eliminar(this.href); return false;"
+            data-input-id="id_fotografiaExtranjero">
+            <i class="fas fa-pencil-alt"></i>
+          </a>
+          {{ form.firmaExtranjero|as_crispy_field }}
+        </div>
+        </div>
       </div>
-      <div class="col-sm-6 col-md-6 col-lg-4">
-        {{ form.firmaExtranjero|as_crispy_field }}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
+          {{ form1.delExtranjero|as_crispy_field}}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{form1.estatura|as_crispy_field}}
+        </div>
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.cejas|as_crispy_field }}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.nariz|as_crispy_field }}
+        </div>
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.labios|as_crispy_field }}
+        </div>
+        
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{form1.tipoCabello|as_crispy_field}}
+        </div>
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.bigote|as_crispy_field }}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.complexion|as_crispy_field }}
+        </div>
+        
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{form1.frente|as_crispy_field}}
+        </div>
+        
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.colorOjos|as_crispy_field }}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.boca|as_crispy_field }}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.segnasParticulares|as_crispy_field }}
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          {{ form1.observaciones|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <button class="btn btn-custom btn-primary btn-block" type="submit">Guardar</button>
+          <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+          
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <button class="btn btn-custom btn-primary btn-block" type="submit">Guardar</button>
-      </div>
-    </div>
+  </div>
+    
   </form>
 
 

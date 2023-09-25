@@ -3,12 +3,12 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso
+from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView,DetailView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms
+from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms,descripcionForms
 from .forms import BiometricoFormVP
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -485,12 +485,25 @@ class AgregarBiometricoINM(CreateView):
         # Obtén el ID del extranjero del argumento en la URL
         extranjero_id = self.kwargs.get('extranjero_id')
         # Obtén la instancia del extranjero correspondiente al ID
+        context['form'] = BiometricoFormINM()
+        context['form1'] = descripcionForms()
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta = extranjero.deLaPuestaIMN
         context['puesta'] = puesta
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM' 
+         # Datos iniciales para el segundo formulario (descripcionForms)
+        biometrico_initial = {
+          'Extranjero': extranjero,
+        # Agrega aquí más campos y sus valores iniciales según tu formulario BiometricoFormINM
+        }
+        context['form'] = BiometricoFormINM(initial=biometrico_initial)
+        descripcion_initial = {
+            'delExtranjero': extranjero,
+        }
+        context['form1'] = descripcionForms(initial=descripcion_initial)
+
         return context
     
     def form_valid(self, form):
@@ -516,17 +529,27 @@ class AgregarBiometricoINM(CreateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
 
-           return super().form_valid(form)
+            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+
+        # Procesar el segundo formulario (descripcionForms)
+        descripcion_form = descripcionForms(self.request.POST)
+        if descripcion_form.is_valid():
+            descripcion = descripcion_form.save(commit=False)
+            # Asigna cualquier relación necesaria para el segundo formulario aquí
+            descripcion.save()
+        else:
+            messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
+        
 class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
@@ -552,6 +575,10 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero)
+        # Pasar el formulario de Descripcion al contexto con la instancia correspondiente
+        context['form1'] = descripcionForms(instance=descripcion_obj)
+
         return context
     def form_valid(self, form):
         # Lógica de recorte
@@ -576,17 +603,30 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
 
-           return super().form_valid(form)
+            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+
+        # Obtén el ID del extranjero del campo oculto
+        extranjero_id = self.request.POST.get('delExtranjero')
+
+        # Modificar el registro de Descripcion relacionado con el extranjero
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero_id)
+        descripcion_form = descripcionForms(self.request.POST, instance=descripcion_obj)
+
+        if descripcion_form.is_valid():
+            descripcion_form.save()
+        else:
+            messages.error(self.request, "Error en el formulario de descripción. Por favor, verifica los datos.")
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
+        
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -1229,29 +1269,51 @@ class AgregarBiometricoAC(CreateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
 
-           return super().form_valid(form)
+            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, toma una imagen con un rostro visible.")
-          return super().form_invalid(form)
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+
+        # Procesar el segundo formulario (descripcionForms)
+        descripcion_form = descripcionForms(self.request.POST)
+        if descripcion_form.is_valid():
+            descripcion = descripcion_form.save(commit=False)
+            # Asigna cualquier relación necesaria para el segundo formulario aquí
+            descripcion.save()
+        else:
+            messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Obtén el ID del extranjero del argumento en la URL
         extranjero_id = self.kwargs.get('extranjero_id')
         # Obtén la instancia del extranjero correspondiente al ID
+        context['form'] = BiometricoFormAC()
+        context['form1'] = descripcionForms()
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta = extranjero.deLaPuestaAC
         context['puesta'] = puesta
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        biometrico_initial = {
+          'Extranjero': extranjero,
+        # Agrega aquí más campos y sus valores iniciales según tu formulario BiometricoFormINM
+        }
+        context['form'] = BiometricoFormAC(initial=biometrico_initial)
+        descripcion_initial = {
+            'delExtranjero': extranjero,
+        }
+        context['form1'] = descripcionForms(initial=descripcion_initial)
+
         return context
 
 class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
@@ -1277,6 +1339,9 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero)
+        # Pasar el formulario de Descripcion al contexto con la instancia correspondiente
+        context['form1'] = descripcionForms(instance=descripcion_obj)
         return context
     
     def form_valid(self, form):
@@ -1302,17 +1367,30 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
 
-           return super().form_valid(form)
+            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+
+        # Obtén el ID del extranjero del campo oculto
+        extranjero_id = self.request.POST.get('delExtranjero')
+
+        # Modificar el registro de Descripcion relacionado con el extranjero
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero_id)
+        descripcion_form = descripcionForms(self.request.POST, instance=descripcion_obj)
+
+        if descripcion_form.is_valid():
+            descripcion_form.save()
+        else:
+            messages.error(self.request, "Error en el formulario de descripción. Por favor, verifica los datos.")
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
+        
 
 class DeleteExtranjeroAC(DeleteView):
     permission_required = {
@@ -1718,25 +1796,6 @@ class createExtranjeroVP(CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
-        with transaction.atomic():  # Utiliza una transacción para garantizar la consistencia de la base de datos
-            extranjero = form.save(commit=False)
-            extranjero.puesta = puesta
-            extranjero.save()
-            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{extranjero.id}"
-
-
-            # Crea un proceso asociado al extranjero recién creado
-            proceso = Proceso(
-                delExtranjero=extranjero,
-                consecutivo=extranjero.id,  # Puedes ajustar esto según tus necesidades
-                estacionInicio=estacion,  # Otra información relevante del proceso
-                fechaInicio=extranjero.fechaRegistro,  # Puedes llenar esto según tus necesidades
-                nup=nup
-            )
-            proceso.save()
-
-            instance = form.save(commit=False)
-
         extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
         extranjero.puesta = puesta
         extranjero.save()  #
@@ -1914,12 +1973,24 @@ class AgregarBiometricoVP(CreateView):
         # Obtén el ID del extranjero del argumento en la URL
         extranjero_id = self.kwargs.get('extranjero_id')
         # Obtén la instancia del extranjero correspondiente al ID
+        context['form'] = BiometricoFormVP()
+        context['form1'] = descripcionForms()
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta = extranjero.deLaPuestaVP
         context['puesta'] = puesta
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        biometrico_initial = {
+          'Extranjero': extranjero,
+        # Agrega aquí más campos y sus valores iniciales según tu formulario BiometricoFormINM
+        }
+        context['form'] = BiometricoFormVP(initial=biometrico_initial)
+        descripcion_initial = {
+            'delExtranjero': extranjero,
+        }
+        context['form1'] = descripcionForms(initial=descripcion_initial)
+
         return context
     
     def form_valid(self, form):
@@ -1945,17 +2016,26 @@ class AgregarBiometricoVP(CreateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
 
-           return super().form_valid(form)
+            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+
+        # Procesar el segundo formulario (descripcionForms)
+        descripcion_form = descripcionForms(self.request.POST)
+        if descripcion_form.is_valid():
+            descripcion = descripcion_form.save(commit=False)
+            # Asigna cualquier relación necesaria para el segundo formulario aquí
+            descripcion.save()
+        else:
+            messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
     
 class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
@@ -1983,6 +2063,9 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero)
+        # Pasar el formulario de Descripcion al contexto con la instancia correspondiente
+        context['form1'] = descripcionForms(instance=descripcion_obj)
         return context
     
     def form_valid(self, form):
@@ -2009,17 +2092,29 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
-        if region is not None and region.size > 0:  # Verifica si la región no está vacía
-           is_success, im_buf_arr = cv2.imencode(".jpg", region)
-           region_bytes = im_buf_arr.tobytes()
-        
-           form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
 
-           return super().form_valid(form)
+            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
         else:
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+
+        # Obtén el ID del extranjero del campo oculto
+        extranjero_id = self.request.POST.get('delExtranjero')
+
+        # Modificar el registro de Descripcion relacionado con el extranjero
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero_id)
+        descripcion_form = descripcionForms(self.request.POST, instance=descripcion_obj)
+
+        if descripcion_form.is_valid():
+            descripcion_form.save()
+        else:
+            messages.error(self.request, "Error en el formulario de descripción. Por favor, verifica los datos.")
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
     
 class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
