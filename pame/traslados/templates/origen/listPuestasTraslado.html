@@ -134,15 +134,21 @@
 {% endblock datatable %}
 {% block script %}
 
-$(document).on('show.bs.modal', '#exampleModal', function(event) {
-  var button = $(event.relatedTarget);  // Botón que disparó el modal
-  var nombreAutoridad = button.data('nombreautoridad');  // Extraer información del atributo data-
-  var fechaSolicitud = button.data('fechasolicitud');
-
-  // Actualizar el contenido del modal
-  var modal = $(this);
-  modal.find('#recipient-name').val(nombreAutoridad);
-  modal.find('#message-text').val(fechaSolicitud);
+$(document).ready(function(){
+  $('#exampleModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget); // Botón que activó el modal
+      var nombreAutoridad = button.data('nombreautoridad'); // Extraer la información de los atributos data-*
+      var fechaSolicitud = button.data('fechasolicitud');
+      
+      // Si necesitas más campos, repite el proceso aquí
+      
+      // Actualizar los campos del modal con los valores extraídos
+      var modal = $(this);
+      modal.find('#nombre-autoridad').val(nombreAutoridad);
+      modal.find('#fecha-solicitud').val(fechaSolicitud);
+      
+      // Si agregas más campos, asegúrate de actualizarlos aquí también
+  });
 });
 
 {% endblock script %}

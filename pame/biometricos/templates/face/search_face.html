@@ -1,0 +1,18 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+
+{% block contenido %}
+
+<h2>Buscar Rostro</h2>
+  
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Buscar</button>
+</form>
+
+{% if result %}
+  <p>{{ result }}</p>
+{% endif %}
+
+{% endblock contenido %}

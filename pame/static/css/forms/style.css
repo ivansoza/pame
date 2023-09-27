@@ -108,6 +108,32 @@
     
 }
 
+/* uso sin permisos  */
+.btn-custom5 {
+  background-color: #902F4A; /* Cambia el color de fondo */
+  color: white; /* Cambia el color del texto */
+  border-color: #902F4A;  /* Cambia el color del borde */
+}
+
+.btn-custom5:hover{
+  color: white;
+  background-color: #7C2540; /* Cambia el color de fondo al pasar el cursor */
+  border-color: #7C2540; /* Cambia el color del borde al pasar el cursor */
+  
+}
+
+.btn-verified {
+  background-color: #902F4A !important;
+  color: white !important;
+  border-color:#902F4A !important;
+}
+
+.btn-verified:hover{
+  background-color: #7C2540 !important;
+  color: white !important;
+  border-color:#7C2540 !important;
+}
+
 .btn-custom2 {
   background-color: #2A4B41; /* Cambia el color de fondo */
   color: white; /* Cambia el color del texto */
@@ -206,6 +232,16 @@
   position: relative;
   display: inline-block;
 }
+
+
+.btn-unverified {
+  background-color: grey !important;
+  color: white;
+  border-color:grey !important;
+  cursor: not-allowed  !important;
+
+}
+
 
 .tooltip-link::after {
   content: attr(data-title);
