@@ -167,7 +167,7 @@ def search_face1(request):
                     
                     distance = face_recognition.face_distance([saved_encoding], uploaded_encoding)
                     
-                    if distance < 0.5:  # Ajustar el umbral según tus necesidades
+                    if distance < 0.4:  # Ajustar el umbral según tus necesidades
                         elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
                         result = (f'Coincidencia encontrada con {user_face1.extranjero} '
                                   f'(Distancia: {distance[0]}). '
