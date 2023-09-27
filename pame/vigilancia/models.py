@@ -16,7 +16,7 @@ class Nacionalidad(models.Model):
 class PuestaDisposicionINM(models.Model):
     identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
     numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
-    fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
+    fechaOficio = models.DateTimeField(verbose_name='Fecha de Oficio',auto_now_add=True)
     nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
     cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
     nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
@@ -28,9 +28,10 @@ class PuestaDisposicionINM(models.Model):
 
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
+        ordering = ['-fechaOficio']
 
     def __str__(self):
-        return self.numeroOficio
+        return self.identificadorProceso
     
     @property
     def extranjeros(self):

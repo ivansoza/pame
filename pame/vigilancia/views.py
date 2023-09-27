@@ -28,6 +28,7 @@ from datetime import datetime
 from django.utils import timezone
 from datetime import timedelta
 from django.http import HttpResponseRedirect
+from django.db.models import F
 
 from traslados.models import ExtranjeroTraslado
 from django.db import transaction
@@ -166,11 +167,6 @@ class estadisticasPuestaINM(ListView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
     
-    
-
-
-
-
 class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicioninm',
@@ -295,20 +291,36 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
-        with transaction.atomic():  # Utiliza una transacción para garantizar la consistencia de la base de datos
+        with transaction.atomic():
             extranjero = form.save(commit=False)
             extranjero.puesta = puesta
             extranjero.save()
-            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{extranjero.id}"
 
+            # Verifica si ya existe un extranjero con el mismo nombre (sin apellidos) en cualquier estación
+            nombre = extranjero.nombreExtranjero
+            extranjeros_con_mismo_nombre = Extranjero.objects.filter(nombreExtranjero=nombre)
+
+            if extranjeros_con_mismo_nombre.exists():
+                # Intenta obtener el último proceso asociado al extranjero si existe
+                try:
+                    ultimo_proceso = extranjeros_con_mismo_nombre.latest('fechaRegistro').proceso_set.latest('fechaInicio')
+                    ultimo_consecutivo = ultimo_proceso.consecutivo
+                except Proceso.DoesNotExist:
+                    ultimo_consecutivo = 0
+
+                nuevo_consecutivo = ultimo_consecutivo + 1
+            else:
+                nuevo_consecutivo = 1
+
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
 
             # Crea un proceso asociado al extranjero recién creado
             proceso = Proceso(
-                delExtranjero=extranjero,
-                consecutivo=extranjero.id,  # Puedes ajustar esto según tus necesidades
-                estacionInicio=estacion,  # Otra información relevante del proceso
-                fechaInicio=extranjero.fechaRegistro,  # Puedes llenar esto según tus necesidades
-                nup=nup
+              delExtranjero=extranjero,
+              consecutivo=nuevo_consecutivo,
+              estacionInicio=estacion,
+              fechaInicio=extranjero.fechaRegistro,
+              nup=nup
             )
             proceso.save()
 
