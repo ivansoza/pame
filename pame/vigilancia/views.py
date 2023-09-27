@@ -1,9 +1,12 @@
+from pathlib import Path
 from typing import Any
+from django import forms
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion
+from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView,DetailView
@@ -31,7 +34,6 @@ from django.http import HttpResponseRedirect
 from django.db.models import F
 
 from traslados.models import ExtranjeroTraslado
-from django.db import transaction
 
 import sys
 import pickle
@@ -39,7 +41,7 @@ import pickle
 from django.http import JsonResponse
 from django.views import View
 from traslados.models import Traslado, ExtranjeroTraslado
-from .forms import TrasladoForm
+from .forms import TrasladoForm, UserFaceForm
 
 from .helpers import image_to_pdf
 
@@ -47,10 +49,14 @@ import os
 import cv2
 import numpy as np
 from django.core.files.base import ContentFile
-from .forms import CompareFacesForm
+from .forms import CompareFacesForm, SearchFaceForm
 import face_recognition
+import time  # Importa el módulo de time
 
+from generales.mixins import HandleFileMixin
 
+from django.db import transaction
+from biometricos.models import UserFace1
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -167,6 +173,11 @@ class estadisticasPuestaINM(ListView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
     
+    
+
+
+
+
 class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicioninm',
@@ -207,36 +218,13 @@ class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
         return context
     
     def get_success_url(self):
-        # Agregar una notificación de éxito
         messages.success(self.request, 'La puesta de disposición se ha creado con éxito.')
         return super().get_success_url()
+    
     def form_valid(self, form):
-        instance = form.save(commit=False)
-
-        def handle_file(file_field_name):
-            file = self.request.FILES.get(file_field_name)
-            if file:
-                # Se separa el nombre del archivo y la extensión
-                name, ext = os.path.splitext(file.name)
-                
-                # Verifica si el archivo es un PDF
-                if ext.lower() == '.pdf':
-                    # Si es un PDF, simplemente lo guarda sin convertir
-                    getattr(instance, file_field_name).save(
-                        f"{file_field_name}_{instance.id}.pdf",
-                        file
-                    )
-                else:
-                    # Si no es un PDF, lo convierte a PDF antes de guardar
-                    getattr(instance, file_field_name).save(
-                        f"{file_field_name}_{instance.id}.pdf",
-                        image_to_pdf(file)
-                    )
-
-        # Manejo de los archivos
-        handle_file('oficioPuesta')
-        handle_file('oficioComision')
-
+        instance = form.save()  
+        self.handle_file(instance,'oficioPuesta')
+        self.handle_file(instance,'oficioComision')
         return super(createPuestaINM, self).form_valid(form)
 
 class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
@@ -333,10 +321,8 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
             if file:
-                # Se separa el nombre del archivo y la extensión
                 name, ext = os.path.splitext(file.name)
                 
-                # Verifica si el archivo es un PDF
                 if ext.lower() == '.pdf':
                     # Si es un PDF, simplemente lo guarda sin convertir
                     getattr(instance, file_field_name).save(
@@ -521,7 +507,6 @@ class AgregarBiometricoINM(CreateView):
     def form_valid(self, form):
         # Lógica de recorte
         image = form.cleaned_data['fotografiaExtranjero']
-        
         img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
         
@@ -541,27 +526,35 @@ class AgregarBiometricoINM(CreateView):
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
+       
         if region is not None and region.size > 0:
-            is_success, im_buf_arr = cv2.imencode(".jpg", region)
-            region_bytes = im_buf_arr.tobytes()
+                is_success, im_buf_arr = cv2.imencode(".jpg", region)
+                region_bytes = im_buf_arr.tobytes()
+                
+                # Guarda en el modelo Biometrico
+                biometrico = form.save(commit=False)
+                biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=True)
 
-            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+                # Calcula el face encoding y guarda en el modelo UserFace1
+                image_path = biometrico.fotografiaExtranjero.path
+                image_array = face_recognition.load_image_file(image_path)
+                face_encodings = face_recognition.face_encodings(image_array)
+
+                if face_encodings:
+
+                    biometrico.face_encoding = face_encodings[0].tolist()
+                    biometrico.save()
+                    # user_face1 = UserFace1(extranjero=biometrico.Extranjero, image=biometrico.fotografiaExtranjero)
+                    user_face1 = UserFace1(extranjero=biometrico.Extranjero)
+
+                    user_face1.face_encoding = face_encodings[0].tolist()
+                    user_face1.save()
+
+                return super().form_valid(form)
         else:
-            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-            return super().form_invalid(form)
-
-        # Procesar el segundo formulario (descripcionForms)
-        descripcion_form = descripcionForms(self.request.POST)
-        if descripcion_form.is_valid():
-            descripcion = descripcion_form.save(commit=False)
-            # Asigna cualquier relación necesaria para el segundo formulario aquí
-            descripcion.save()
-        else:
-            messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
-            return super().form_invalid(form)
-
-        return super().form_valid(form)
-        
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+          return super().form_invalid(form)
 class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
@@ -639,6 +632,11 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
 
         return super().form_valid(form)
         
+
+        
+
+
+
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -943,7 +941,7 @@ class inicioACList(ListView):
 
         return context
     
-class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
+class createPuestaAC(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicionac',
     }
@@ -980,34 +978,12 @@ class createPuestaAC(CreatePermissionRequiredMixin,CreateView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
+    
     def form_valid(self, form):
-        instance = form.save(commit=False)
-
-        def handle_file(file_field_name):
-            file = self.request.FILES.get(file_field_name)
-            if file:
-                # Se separa el nombre del archivo y la extensión
-                name, ext = os.path.splitext(file.name)
-                
-                # Verifica si el archivo es un PDF
-                if ext.lower() == '.pdf':
-                    # Si es un PDF, simplemente lo guarda sin convertir
-                    getattr(instance, file_field_name).save(
-                        f"{file_field_name}_{instance.id}.pdf",
-                        file
-                    )
-                else:
-                    # Si no es un PDF, lo convierte a PDF antes de guardar
-                    getattr(instance, file_field_name).save(
-                        f"{file_field_name}_{instance.id}.pdf",
-                        image_to_pdf(file)
-                    )
-
-        # Manejo de los archivos
-        handle_file('oficioPuesta')
-        handle_file('oficioComision')
-        handle_file('certificadoMedico')
-
+        instance = form.save() 
+        self.handle_file(instance,'oficioPuesta')
+        self.handle_file(instance,'oficioComision')
+        self.handle_file(instance,'certificadoMedico')
         return super(createPuestaAC, self).form_valid(form)
 
     def get_success_url(self):
@@ -1297,8 +1273,9 @@ class AgregarBiometricoAC(CreateView):
             # Asigna cualquier relación necesaria para el segundo formulario aquí
             descripcion.save()
         else:
-            messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
-            return super().form_invalid(form)
+        # Muestra un mensaje al usuario
+          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, toma una imagen con un rostro visible.")
+          return super().form_invalid(form)
 
         return super().form_valid(form)
         
@@ -2100,7 +2077,6 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
             inicio_y = max(0, y - margen_vertical_arriba)
             fin_x = min(img.shape[1], x + w + margen_horizontal)
             fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
-            
                 
             region = img[inicio_y:fin_y, inicio_x:fin_x]
 
@@ -2470,3 +2446,86 @@ def compare_faces(request):
         form = CompareFacesForm()
 
     return render(request, 'compare_faces.html', {'form': form, 'result': result, 'similarity': similarity})
+
+
+
+class UserFaceCreateView(CreateView):
+    model = UserFace
+    form_class = UserFaceForm
+    template_name = 'face_recognition/guardar_fotos.html'
+    success_url = reverse_lazy('create_user_face')
+    
+    def form_valid(self, form):
+        form.instance.image.save(form.instance.image.name, form.instance.image, save=True)
+        image_path = form.instance.image.path
+
+        # Verificar si la imagen se ha guardado correctamente
+        if os.path.exists(image_path):
+            print(f"Imagen guardada en {image_path}")
+            
+            # Carga la imagen
+            image_array = face_recognition.load_image_file(image_path)
+            
+            # Obtén los encodings de la imagen
+            face_encodings = face_recognition.face_encodings(image_array)
+            
+            if face_encodings:  # Verificar que se detectaron rostros
+                print("Encoding calculado")
+                encoding = face_encodings[0].tolist()
+                
+                # Guarda el encoding en el modelo y guarda el objeto en la base de datos
+                self.object = form.save(commit=False)
+                self.object.face_encoding = encoding
+                self.object.save()
+                
+                print("Objeto guardado exitosamente")
+                return super().form_valid(form)
+            else:
+                print("No se pudo calcular face_encodings")
+        else:
+            print("No se pudo guardar la imagen")
+
+        return self.form_invalid(form)
+
+
+
+
+def search_face(request):
+    result = None
+    
+    if request.method == 'POST':
+        form = SearchFaceForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            start_time = time.time()  # Guarda el tiempo de inicio
+            
+            uploaded_image = form.cleaned_data['image']
+            uploaded_image_array = face_recognition.load_image_file(uploaded_image)
+            uploaded_encoding = face_recognition.face_encodings(uploaded_image_array)
+            
+            if not uploaded_encoding:  # Si no se detectó un rostro
+                result = 'No se detectó rostro en la imagen subida.'
+            else:
+                uploaded_encoding = uploaded_encoding[0]  # Tomar el primer encoding si hay múltiples rostros
+                
+                for user_face in UserFace.objects.all():
+                    saved_encoding = user_face.face_encoding  # El encoding guardado en el modelo
+                    
+                    if not saved_encoding:
+                        continue  # Pasar al siguiente si no hay encoding
+                    
+                    distance = face_recognition.face_distance([saved_encoding], uploaded_encoding)
+                    
+                    if distance < 0.6:  # Puedes ajustar el umbral según tus necesidades
+                        elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                        result = (f'Coincidencia encontrada con {user_face.nombreExtranjero} '
+                                  f'(Distancia: {distance[0]}). '
+                                  f'Tiempo de búsqueda: {elapsed_time:.2f} segundos.')
+                        break  # Salir del bucle si se encuentra una coincidencia
+                else:  # Se ejecuta si no se rompió el bucle (no se encontró coincidencia)
+                    elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                    result = f'No se encontraron coincidencias. Tiempo de búsqueda: {elapsed_time:.2f} segundos.'
+    else:
+        form = SearchFaceForm()
+    
+    return render(request, 'face_recognition/search_face.html', {'form': form, 'result': result})

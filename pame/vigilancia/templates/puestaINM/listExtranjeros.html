@@ -49,17 +49,7 @@
         <span class="puesta-color" ><strong>{{ puesta.identificadorProceso }}</strong></span>
     </h1>
   </div>
-
-
-
-
-
-
-
 <br>
-
-
-
 <div class="table-responsive">
     
     <!-- <form method="get" id="filtro-form">
@@ -136,13 +126,13 @@
                 </a>
                 {% if extranjero.inventario_set.all  %}
                 {% with first_inventario=extranjero.inventario_set.first %}
-
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id %}" data-title="Pertenencias">
                     <i class="fas fa-tshirt"></i>
                 </a>
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Valores">
                     <i class="fas fa-coins"></i>
                 </a>
+                
                 {% endwith %}
 
                 {% else %}
@@ -179,7 +169,6 @@
                 </a>
                 {% endif %}
 
-                {% comment %} <a href="{% url 'calcular' extranjero.id %}">calcular</a> {% endcomment %}
             </td>
         </tr>
        
@@ -195,13 +184,8 @@
 
 <!-- Modal para eliminar el extranjero  -->
 <div class="modal fade" id="eliminarextranjero" role="dialog">
-
 </div>
-
-
-
 {% endblock contenido %}
-
 {% block datatable %}
 
  {
@@ -214,13 +198,8 @@
   },
   
 {% endblock datatable %}
-
-
 {% block script %}
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script type="text/javascript">
     var $ = jQuery.noConflict();
     function abrir_modal_eliminar(url){
@@ -228,7 +207,6 @@
             $(this).modal('show');
         })
     }
-    
 </script>
 
 <script>

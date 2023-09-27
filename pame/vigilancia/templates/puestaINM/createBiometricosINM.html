@@ -64,8 +64,15 @@
 <!-- BIOMETRICOS -->
 
       {% include "includes/formBiometricos.html" %}
-
-
+  </div>
+  <div class="card-footer">
+      <div class="row">
+          <div class="col-12">
+              <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+          </div>
+      </div>
+  </div>
+</div>
 <!-- FIN BIOMETRICOS -->
 <div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
   <div class="modal-dialog modal-lg">
