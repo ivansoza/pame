@@ -1,4 +1,5 @@
 from django import forms
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, descripcion
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace
 import datetime
 from django.core.exceptions import ValidationError
@@ -433,6 +434,12 @@ class TrasladoForm(forms.ModelForm):
 class CompareFacesForm(forms.Form):
     image1 = forms.ImageField(label='Primera imagen')
     image2 = forms.ImageField(label='Segunda imagen')
+
+
+class descripcionForms(forms.ModelForm):
+    class Meta:
+        model=descripcion
+        fields='__all__'
 
 class UserFaceForm(forms.ModelForm):
     class Meta:
