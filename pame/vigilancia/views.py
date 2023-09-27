@@ -632,9 +632,7 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
 
         return super().form_valid(form)
         
-        # Muestra un mensaje al usuario
-          messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-          return super().form_invalid(form)
+
         
 
 
