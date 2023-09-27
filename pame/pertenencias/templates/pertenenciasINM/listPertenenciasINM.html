@@ -227,9 +227,10 @@
                                         isVerified = false;
                                         localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
                                     }, 300000);
-                                    Toast.fire({
+                                    Swal.fire({
                                         icon: 'success',
-                                        title: '¡Coincidencia exitosa!'
+                                        title: '¡Coincidencia Exitosa!',
+                                        text: data.similarity 
                                     });
 
                                 } else {
