@@ -74,7 +74,6 @@
 </div>
 <div class="modal fade" id="editartpertenencia" role="dialog">
 
-    
 </div>
 
 <div class="modal fade" id="eliminarextranjero" role="dialog">
@@ -213,7 +212,8 @@
                                         Swal.fire({
                                             icon: 'success',
                                             title: '¡Coincidencia Exitosa!',
-                                            text: data.similarity 
+                                            confirmButtonColor: '#2A4B41',
+
                                         });
                                         document.querySelectorAll('.btn-unverified').forEach(function(btn) {
                                             btn.classList.remove('btn-unverified');
@@ -226,7 +226,6 @@
                                         Swal.fire({
                                             icon: 'warning',
                                             title: '¡No hay coincidencia!',
-                                            text: data.similarity, 
                                             confirmButtonText: 'Ok',
                                             confirmButtonColor: '#2A4B41',
 
