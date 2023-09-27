@@ -1,9 +1,9 @@
 {% extends "documentos/base.html" %}
 
 {% block content %}
-<p>En la Ciudad de {{ nombre_estacion }}, {{ estado_estacion }} siendo las {{fecha}} horas del dia --- de --- de ---, 
+<p>En la Ciudad de {{ nombre_estacion }}, {{ estado_estacion }} siendo las {{ hora|date:"H" }} horas del dia {{ dia }} de {{ mes }} de {{ anio }}, 
     en el lugar que ocupa la Estación Migratoria del Instituto Nacional de Migración en 
-    --,---, sito en -- de esta ciudad, el ---,--- de la Estación Migratoria de ---,--- adscrito
+    {{ nombre_estacion }}, {{ estado_estacion }}, sito en {{ calle }} {{ noExt }} de esta ciudad, el ---,--- de la Estación Migratoria de ---,--- adscrito
     a la Delegación Federal del Instituto Nacional de Migración en el Estado de ---, mismo que actúa
     ante la presencia de los testigos de asistencia que al fin firmal de conformidad:
 </p>

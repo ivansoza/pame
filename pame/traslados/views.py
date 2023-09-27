@@ -366,6 +366,25 @@ def generate_pdf(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
 
+    # Obtener el objeto Traslado 
+    traslado = ExtranjeroTraslado.objects.filter(delExtranjero=extranjero).first()
+
+    # Definir el mapeo de los nombres de los meses en español
+    nombres_meses_espanol = {
+        'January': 'enero',
+        'February': 'febrero',
+        'March': 'marzo',
+        'April': 'abril',
+        'May': 'mayo',
+        'June': 'junio',
+        'July': 'julio',
+        'August': 'agosto',
+        'September': 'septiembre',
+        'October': 'octubre',
+        'November': 'noviembre',
+        'December': 'diciembre',
+    }
+
     # OBtener datos a renderizar 
     nombre_extranjero = extranjero.nombreExtranjero
     apellidop_extranjero = extranjero.apellidoPaternoExtranjero
@@ -373,6 +392,13 @@ def generate_pdf(request, extranjero_id):
     nacionalidad = extranjero.nacionalidad
     nombre_estacion = extranjero.deLaEstacion.nombre
     estado_estacion = extranjero.deLaEstacion.estado
+    calle = extranjero.deLaEstacion.calle
+    noExt = extranjero.deLaEstacion.noext
+    hora = traslado.delTraslado.fechaSolicitud
+    dia = traslado.delTraslado.fechaSolicitud.strftime('%d')
+    mes = traslado.delTraslado.fechaSolicitud.strftime('%B')
+    mes_espanol = nombres_meses_espanol.get(mes, mes)
+    anio = traslado.delTraslado.fechaSolicitud.strftime('%Y')
 
     html_context = {
         'contexto': 'variables',
@@ -382,6 +408,12 @@ def generate_pdf(request, extranjero_id):
         'nacionalidad': nacionalidad,
         'nombre_estacion': nombre_estacion,
         'estado_estacion': estado_estacion,
+        'calle': calle,
+        'noExt': noExt,
+        'hora': hora,
+        'dia': dia,
+        'mes': mes_espanol,
+        'anio': anio,
     }
 
     # Crear un objeto HTML a partir de una plantilla o contenido HTML
