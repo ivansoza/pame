@@ -265,6 +265,9 @@ class Biometrico(models.Model):
     class Meta:
         verbose_name_plural = 'Biometricos'
 
+    def __str__(self):
+        return str(self.Extranjero.nombreExtranjero) 
+    
 class UserFace(models.Model):
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
     image = models.ImageField(upload_to='user_faces/')
