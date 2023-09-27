@@ -1,0 +1,24 @@
+#rostroCuadro {
+    position: absolute;
+    border: 2px solid red;
+    width: 6cm; /* Ancho de 10 cm */
+    height: 6cm; /* Alto de 10 cm */
+    top: 50%; /* Centrar verticalmente */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
+    z-index: 1; /* Coloca el cuadro sobre el video */
+    pointer-events: none; /* Evita que el cuadro sea interactivo */
+    background-color: rgba(255, 255, 255, 0.5); /* Añade un fondo semi-transparente al cuadro */
+    box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.5); /* Agrega un efecto de sombra roja al cuadro */
+}
+
+#leyenda {
+    position: absolute;
+    top: calc(50% + 5.5cm); /* Coloca la leyenda 5.5cm debajo del cuadro */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Centrar horizontalmente */
+    z-index: 2; /* Coloca la leyenda sobre el cuadro */
+    color: red; /* Color de texto rojo */
+    text-align: center; /* Alinea el texto al centro */
+    font-weight: bold; /* Texto en negrita */
+}
