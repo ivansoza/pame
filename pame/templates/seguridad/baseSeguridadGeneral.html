@@ -488,7 +488,9 @@
     
 <script>
   $("#tabla").DataTable({
-      "order": [[0, "desc"]],
+    {% block filtro %}
+
+    {% endblock filtro %}
       paging: true,
       lengthMenu: [5, 10, 25, 50, 100], // Cambiamos el menú de longitud para incluir 5 entradas
       pageLength:5,

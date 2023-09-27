@@ -374,7 +374,7 @@ class listarExtranjeros(ListView):
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
         estado = self.request.GET.get('estado_filtrado', 'activo') 
-        queryset = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id)
+        queryset = Extranjero.objects.filter(deLaPuestaIMN_id=puesta_id).order_by('nombreExtranjero')
 
         if estado == 'activo':
             queryset = queryset.filter(estatus='Activo')
