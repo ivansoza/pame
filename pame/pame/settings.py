@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     'multiselectfield',
     'actuaciones',
-    'acuerdoInicio',
+    'acuerdos',
     'amparo',
     'catalogos',
     'certificadoMedico',
