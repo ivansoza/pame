@@ -624,24 +624,28 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
         if region is not None and region.size > 0:
             is_success, im_buf_arr = cv2.imencode(".jpg", region)
             region_bytes = im_buf_arr.tobytes()
-
-            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+            
+            biometrico = form.save(commit=False)
+            biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+            
+            # Actualiza el face_encoding del objeto Biometrico
+            image_path = biometrico.fotografiaExtranjero.path
+            image_array = face_recognition.load_image_file(image_path)
+            face_encodings = face_recognition.face_encodings(image_array)
+            
+            if face_encodings:
+                biometrico.face_encoding = face_encodings[0].tolist()
+                biometrico.save()
+                
+                # Actualiza o crea el objeto UserFace1 correspondiente
+                user_face1, created = UserFace1.objects.update_or_create(
+                    extranjero=biometrico.Extranjero,
+                    defaults={'face_encoding': face_encodings[0].tolist()}
+                )
         else:
             messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
             return super().form_invalid(form)
-
-        # Obtén el ID del extranjero del campo oculto
-        extranjero_id = self.request.POST.get('delExtranjero')
-
-        # Modificar el registro de Descripcion relacionado con el extranjero
-        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero_id)
-        descripcion_form = descripcionForms(self.request.POST, instance=descripcion_obj)
-
-        if descripcion_form.is_valid():
-            descripcion_form.save()
-        else:
-            messages.error(self.request, "Error en el formulario de descripción. Por favor, verifica los datos.")
-            return super().form_invalid(form)
+    
 
         return super().form_valid(form)
         
