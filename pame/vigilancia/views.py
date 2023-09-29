@@ -178,7 +178,7 @@ class estadisticasPuestaINM(ListView):
 
 
 
-class createPuestaINM(CreatePermissionRequiredMixin,CreateView):
+class createPuestaINM(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicioninm',
     }

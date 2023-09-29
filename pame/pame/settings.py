@@ -27,7 +27,7 @@ DEBUG = True
 
 #Despliegue en AMAZON
 # ALLOWED_HOSTS = ["3.17.57.188"]
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
