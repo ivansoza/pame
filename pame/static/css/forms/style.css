@@ -98,7 +98,7 @@
 .btn-custom1 {
     background-color: #A3825F; /* Cambia el color de fondo */
     color: white; /* Cambia el color del texto */
-    border-color: #902F4A; /* Cambia el color del borde */
+    border-color: #A3825F; /* Cambia el color del borde */
 }
 
 .btn-custom1:hover{
@@ -121,6 +121,19 @@
   border-color: #7C2540; /* Cambia el color del borde al pasar el cursor */
   
 }
+.btn-custom6 {
+  background-color: #A3825F; /* Cambia el color de fondo */
+  color: white; /* Cambia el color del texto */
+  border-color: #A3825F;  /* Cambia el color del borde */
+}
+
+.btn-custom6:hover{
+  color: white;
+  background-color: #8c7051; /* Cambia el color de fondo al pasar el cursor */
+  border-color: #8c7051; /* Cambia el color del borde al pasar el cursor */
+  
+}
+
 
 .btn-verified {
   background-color: #902F4A !important;

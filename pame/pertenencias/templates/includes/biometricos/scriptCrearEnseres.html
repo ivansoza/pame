@@ -2,7 +2,7 @@
     let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
     let isVerified = verifiedObj.time && 
         verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
-        verifiedObj.inventarioId === '{{ inventario }}' && 
+        verifiedObj.puestaId === '{{ puesta_id }}' && 
         (new Date().getTime() - verifiedObj.time) < 300000;
     
     if (isVerified) {
@@ -98,7 +98,7 @@
     
                             let formData = new FormData();
                             var extranjeroId = '{{ extranjero_id }}';  // Accediendo al ID del Extranjero en JavaScript
-                            var inventarioId = '{{ inventario }}';  // Accediendo al ID del Extranjero en JavaScript
+                            var puestaId = '{{ puesta_id }}';  // Accediendo al ID del Extranjero en JavaScript
 
                             formData.append('image', file);  // Adjunta la imagen al formulario
                             formData.append('extranjero_id', extranjeroId);  // Añade el id del Extranjero al FormData
@@ -116,7 +116,7 @@
                                         localStorage.setItem('verifiedTime', JSON.stringify({ 
                                             time: new Date().getTime(), 
                                             extranjeroId: '{{ extranjero_id }}',
-                                            inventarioId: '{{ inventario }}',
+                                            puestaId: '{{ puesta_id }}',
                                         }));
                                         
                                         setTimeout(() => {
@@ -198,8 +198,13 @@
             event.preventDefault();
 
             if (isVerified) {
-                let url = btn.getAttribute('href');
-                abrir_modal(url);
+                let btnGuardar = document.getElementById('btnGuardar');
+                    if (btnGuardar) {
+                        let form = btnGuardar.closest('form'); // Encuentra el formulario contenedor más cercano.
+                        if (form) {
+                            form.submit(); // Realiza el envío del formulario.
+                        }
+                    }
                 document.querySelectorAll('.btn-verified').forEach(function(btn) {
                     btn.remove();
                 });

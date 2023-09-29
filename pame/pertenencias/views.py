@@ -163,6 +163,9 @@ class CrearEnseresINM(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
+        context['extranjero_id'] = extranjero_id
+        context['puesta_id'] = puesta_id
+
         return context
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
