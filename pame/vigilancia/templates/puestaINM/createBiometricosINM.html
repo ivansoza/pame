@@ -166,37 +166,19 @@
               });
   
           // Evento de captura
-          document.getElementById('capturarFoto').onclick = function(event) {
-              event.preventDefault();
-              
-              // Mostrar el contador y establecer en 5
-              const countdownDiv = document.getElementById('countdown');
-              let count = 5;
-              countdownDiv.textContent = count;
-              countdownDiv.style.display = 'block';
-          
-              const interval = setInterval(() => {
-                  count--;
-                  countdownDiv.textContent = count;
-          
-                  if (count <= 0) {
-                      clearInterval(interval);
-                      
-                      // Capturar la imagen
-                      canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                      video.style.display = 'none';
-                      canvas.style.display = 'block';
-                      document.getElementById("capturedImage").style.opacity = "1"; 
-          
-                      document.getElementById('capturarFoto').style.display = 'none';
-                      document.getElementById('confirmarFoto').style.display = 'inline-block';
-                      document.getElementById('nuevaFoto').style.display = 'inline-block';
-          
-                      // Ocultar el contador
-                      countdownDiv.style.display = 'none';
-                  }
-              }, 1000);
-          };
+            document.getElementById('capturarFoto').onclick = function(event) {
+                        event.preventDefault();
+
+                        // Capturar la imagen inmediatamente sin temporizador
+                        canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                        video.style.display = 'none';
+                        canvas.style.display = 'block';
+                        document.getElementById("capturedImage").style.opacity = "1";
+
+                        document.getElementById('capturarFoto').style.display = 'none';
+                        document.getElementById('confirmarFoto').style.display = 'inline-block';
+                        document.getElementById('nuevaFoto').style.display = 'inline-block';
+            };
           
           // Evento para tomar nueva foto
           document.getElementById('nuevaFoto').onclick = function(event) {
