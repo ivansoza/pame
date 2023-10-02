@@ -242,3 +242,48 @@ def manejar_imagen(request):
         return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def search_face2(request):
+    result = None
+    matched_image_url = None  # Inicializar con None
+    
+    if request.method == 'POST':
+        form = SearchFaceForm1(request.POST, request.FILES)
+        
+        if form.is_valid():
+            start_time = time.time()  # Guarda el tiempo de inicio
+            
+            uploaded_image = form.cleaned_data['image']
+            uploaded_image_array = face_recognition.load_image_file(uploaded_image)
+            uploaded_encoding = face_recognition.face_encodings(uploaded_image_array)
+            
+            if not uploaded_encoding:  # Si no se detectó un rostro
+                result = 'No se detectó rostro en la imagen subida.'
+            else:
+                uploaded_encoding = uploaded_encoding[0]  # Tomar el primer encoding si hay múltiples rostros
+                
+                for user_face1 in UserFace1.objects.all():
+                    saved_encoding = user_face1.face_encoding  # El encoding guardado en el modelo
+                
+                    if not saved_encoding:
+                        continue  # Pasar al siguiente si no hay encoding
+                    
+                    distance = face_recognition.face_distance([saved_encoding], uploaded_encoding)
+                    
+                    if distance < 0.4:  # Ajustar el umbral según tus necesidades
+                        elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                        result = (f'Coincidencia encontrada con {user_face1.extranjero} '
+                                  f'(Distancia: {distance[0]}). '
+                                  f'Tiempo de búsqueda: {elapsed_time:.2f} segundos.')
+                        biometrico = Biometrico.objects.get(Extranjero=user_face1.extranjero)
+                        matched_image_url = biometrico.fotografiaExtranjero.url if biometrico.fotografiaExtranjero else None
+                        break  # Salir del bucle si se encuentra una coincidencia
+                else:  # Se ejecuta si no se rompió el bucle (no se encontró coincidencia)
+                    elapsed_time = time.time() - start_time  # Calcula el tiempo transcurrido
+                    result = f'No se encontraron coincidencias. Tiempo de búsqueda: {elapsed_time:.2f} segundos.'
+    else:
+        form = SearchFaceForm1()
+    
+    return render(request, 'face/search_face1.html', {'form': form, 'result': result, 'matched_image_url': matched_image_url})  
+
+    

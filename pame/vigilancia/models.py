@@ -215,26 +215,27 @@ class descripcion(models.Model):
     segnasParticulares = models.CharField(max_length=50, verbose_name='Señas Particulares', choices=segnasParticulares_choices)
     observaciones = models.CharField(max_length=50)  
 
-
-class Proceso(models.Model):
+class NoProceso(models.Model):
     agno = models.DateField(auto_now_add=True)
-    delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
-    estacionInicio = models.CharField(max_length=60)
-    estacionFin = models.CharField(max_length=60, blank=True, null=True)
-    fechaInicio = models.DateTimeField(auto_now_add=True)
-    fechaFin = models.DateTimeField(blank=True, null=True)
-    nup = models.CharField(max_length=50)
+    nup = models.CharField(max_length=50, primary_key=True)
+
+    def __str__(self):
+       return self.nup
 
     @property
     def only_year(self):
         return self.agno.strftime('%Y')
+
+class Proceso(models.Model):
+    estacionInicio = models.CharField(max_length=60)
+    estacionFin = models.CharField(max_length=60, blank=True, null=True)
+    fechaInicio = models.DateTimeField(auto_now_add=True)
+    fechaFin = models.DateTimeField(blank=True, null=True)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
     
-  
-
-
-
-
+    
         
 class Acompanante(models.Model):
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delExtranjero')
