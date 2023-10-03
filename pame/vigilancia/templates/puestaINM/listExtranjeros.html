@@ -9,12 +9,7 @@
     <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
-
 {% block contenido %}
-
-
-
-
 <style>
     /* Personaliza el tamaño de la barra de búsqueda */
     div.dataTables_wrapper div.dataTables_filter input {
@@ -86,21 +81,26 @@
                     {{ extranjero.apellidoMaternoExtranjero }}
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }}</td>
-            <!-- Eliminar numero de puesta en la tabla  -->
-            <!-- <td>{{ extranjero.deLaPuestaIMN }}</td> --> 
-
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroINM' extranjero.id %}" data-title="Editar Extranjero">
-                    <i class="fas fa-edit"></i>
-                </a>
+                <!-- INICIO DE ICONO DE LLAMADA  -->
+                {% if extranjero.notificacion_set.all %}
+                {% with first_notificacion=extranjero.notificacion_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                {% endwith %}
+                {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                {% endif %}
+                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="#" data-title="Derechos y Obligaciones">
+                        <i class="fas fa-balance-scale"></i>
+                    </a>
 
-
-                <a class="btn btn-sm btn-icon3 tooltip-link"
-                href="{% url 'eliminarExtranjeroINM' extranjero.id %}"
-                data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
-                <i class="fas fa-trash-alt"></i>
-                </a>
-
+                <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
                         <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
@@ -121,30 +121,32 @@
                     </a>
                 {% endif %}
 
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
-                    <i class="fas fa-handshake"></i>
-                </a>
+                <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
+                        <i class="fas fa-handshake"></i>
+                    </a>
                 {% if extranjero.inventario_set.all  %}
+                <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id %}" data-title="Pertenencias">
-                    <i class="fas fa-tshirt"></i>
-                </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Valores">
-                    <i class="fas fa-coins"></i>
-                </a>
-                
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id %}" data-title="Pertenencias">
+                        <i class="fas fa-tshirt"></i>
+                    </a>
+
+                <!-- INICIO DE AGREGAR ENSERES -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Valores">
+                        <i class="fas fa-coins"></i>
+                    </a>
                 {% endwith %}
-
                 {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias">
-                    <i class="fas fa-tshirt"></i>
-                </a>
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Valores">
-                    <i class="fas fa-coins"></i>
-                </a>
+                <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias">
+                        <i class="fas fa-tshirt"></i>
+                    </a>
+                <!-- INICIO CREAR INVENTARIO ENSERES -->
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Valores">
+                        <i class="fas fa-coins"></i>
+                    </a>
                 {% endif %}
-
-
                 {% if extranjero.enseresbasicos_set.all %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
@@ -152,26 +154,22 @@
                     </a>
                 {% endwith %}
                  {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
-                    <i class="fas fa-shopping-basket"></i>
-                </a>
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
+                        <i class="fas fa-shopping-basket"></i>
+                    </a>
                 {% endif %}
-
-                {% if extranjero.notificacion_set.all %}
-                {% with first_notificacion=extranjero.notificacion_set.first %}
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                <i class="fas fa-phone"></i>
-                </a>
-                {% endwith %}
-                {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                <i class="fas fa-phone"></i>
-                </a>
-                {% endif %}
-
+                <!-- INICIO DE EDITAR EXTRANJERO -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroINM' extranjero.id %}" data-title="Editar Extranjero">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                <!-- INICIO DE ELIMINAR EXTRANJERO -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="{% url 'eliminarExtranjeroINM' extranjero.id %}"
+                    data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
             </td>
         </tr>
-       
         {% endfor %}
     </tbody>
 </table>

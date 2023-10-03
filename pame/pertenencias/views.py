@@ -163,6 +163,9 @@ class CrearEnseresINM(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
+        context['extranjero_id'] = extranjero_id
+        context['puesta_id'] = puesta_id
+
         return context
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
@@ -359,6 +362,7 @@ class ListaPertenenciasValorViewINM(ListView):
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
         puesta_id = self.kwargs.get('puesta_id')
+        context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 

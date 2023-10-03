@@ -3,6 +3,8 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
+
 {% endblock link %}
 
 {% block dashboard %}
@@ -12,10 +14,7 @@
 
 {% endblock dashboard %}
 {% block contenido %}
-<div class="titulo-general-container mt-2">
-    <h1 class="titulo-general">Enseres del Extranjero
-    </h1>
-</div>
+{% include "includes/titulos/tituloEnseres.html" %}
 <br>
 <div class="row">
     <div class="col-md-12">
@@ -25,7 +24,6 @@
             <div class="row">
                 <!-- Card con datos del extranjero -->
                 <div class="col-md-10">
-            
                   <div class="card">
                      <div class="header">
                         <h2>Datos del Extranjero </h2>
@@ -88,6 +86,14 @@
     </div>
   </div>
 
+
+<!-- FINGERPRINT ICONO  -->
+<a class='btn btn-verified tooltip-link' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   data-title="Verifica extranjero" >
+   <i class="fas fa-fingerprint"></i>
+</a>
 
 <a class='btn btn-custom' href="{% url 'crearEnseresModaINM' extranjero.id puesta.id %}" onclick="abrir_modal_agregar(this.href); return false;" >Agregar Enseres</a>
 <hr>
