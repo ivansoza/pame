@@ -87,21 +87,26 @@
                 {% if extranjero.apellidoMaternoExtranjero %}
                     {{ extranjero.apellidoMaternoExtranjero }}
                 {% endif %}</td>
-            <td>{{ extranjero.nacionalidad }}</td>
-            <!-- Eliminar numero de puesta en la tabla  -->
-            <!-- <td>{{ extranjero.deLaPuestaIMN }}</td> --> 
+            <td>{{ extranjero.nacionalidad }}</td> 
 
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar-extranjero-vp' extranjero.id%}" data-title="Editar Extranjero">
-                    <i class="fas fa-edit"></i>
-                </a>
-
-
-                <a class="btn btn-sm btn-icon3 tooltip-link"
-                href="{% url 'eliminar-extranjero-vp'  extranjero.id%}"
-                data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
-                <i class="fas fa-trash-alt"></i>
-                </a>
+                <!-- NOTIFICACION DE LLAMADA  -->
+                {% if extranjero.notificacion_set.all %}
+                {% with first_notificacion=extranjero.notificacion_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadas_vp' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                {% endwith %}
+                {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-vp'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                {% endif %}
+                 <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                 <a class="btn btn-sm btn-icon3 tooltip-link"
+                 href="#" data-title="Derechos y Obligaciones">
+                     <i class="fas fa-balance-scale"></i>
+                 </a>
 
                 {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
@@ -159,19 +164,18 @@
                 </a>
                 {% endif %}
 
-                {% if extranjero.notificacion_set.all %}
-                {% with first_notificacion=extranjero.notificacion_set.first %}
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadas_vp' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                <i class="fas fa-phone"></i>
+                <!-- BOTON DE EDITAR -->
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar-extranjero-vp' extranjero.id%}" data-title="Editar Extranjero">
+                    <i class="fas fa-edit"></i>
                 </a>
-                {% endwith %}
-                {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-vp'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                <i class="fas fa-phone"></i>
+                <!-- BOTON DE ELIMINAR -->
+                <a class="btn btn-sm btn-icon3 tooltip-link"
+                href="{% url 'eliminar-extranjero-vp'  extranjero.id%}"
+                data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
+                <i class="fas fa-trash-alt"></i>
                 </a>
-                {% endif %}
 
-                {% comment %} <a href="{% url 'calcular' extranjero.id %}">calcular</a> {% endcomment %}
+               
             </td>
         </tr>
        

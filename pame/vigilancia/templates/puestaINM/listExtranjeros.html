@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
@@ -10,34 +10,7 @@
 </a>
 {% endblock dashboard %}
 {% block contenido %}
-<style>
-    /* Personaliza el tamaño de la barra de búsqueda */
-    div.dataTables_wrapper div.dataTables_filter input {
-      width: 300px; /* Cambia el tamaño según tus necesidades */
-    }
-    #filtro-form {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-      }
-      
-      #filtro-form label {
-        margin-right: 10px;
-      }
-      
-      #filtro-form select {
-        padding: 5px;
-      }
-      
-      #filtro-form button {
-        padding: 5px 10px;
-        margin-left:10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
-  </style>
+
   <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
         Lista de Extranjeros para la Puesta:
