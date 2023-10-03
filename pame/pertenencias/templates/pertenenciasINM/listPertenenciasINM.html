@@ -6,15 +6,18 @@
     <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 
 {% endblock link %}
-
 {% block dashboard %}
+<!-- FLECHA DE BACK  -->
+
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
 {% endblock dashboard %}
 {% block contenido %}
+<!-- TITULO PERTENENCIAS -->
 {% include "includes/tituloPertenencias.html" %}
+<!-- CARD PERTENENCIAS -->
 {% include "includes/cardPertenencias.html" %}
 
 <a class='btn btn-verified tooltip-link' 

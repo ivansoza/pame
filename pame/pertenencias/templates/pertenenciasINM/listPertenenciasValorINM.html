@@ -15,13 +15,14 @@
 {% block contenido %}
 {% include "includes/tituloPertenenciasValor.html" %}
 {% include "includes/cardPertenencias.html" %}
-<!-- Fingerprint icono  -->
+<!-- FINGERPRINT ICONO  -->
 <a class='btn btn-verified tooltip-link' 
    data-bs-toggle="tooltip" 
    data-bs-placement="top" 
    data-title="Verifica extranjero" >
    <i class="fas fa-fingerprint"></i>
 </a>
+
 <a class='btn btn-custom btn-unverified' href="{% url 'crear_pertenencias_valorINM' inventario_id=inventario.id puesta_id=puesta.id%}" >Agregar Pertenencias</a>
 
 <br>
