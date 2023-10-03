@@ -4,7 +4,6 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
-    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 
 {% endblock link %}
 {% block dashboard %}
@@ -22,18 +21,10 @@
     </h1>
   </div>
 <br>
-<!-- BOTON PARA VERIFICAR EXTRANJERO  -->
-<a class='btn btn-verified tooltip-link' 
-   data-bs-toggle="tooltip" 
-   data-bs-placement="top" 
-   data-title="Verifica extranjero" >
-   <i class="fas fa-fingerprint"></i>
-</a>
-<br>
 
 <!-- FORMULARIO DE EDICION DEL EXTRANJERO  -->
 
-<form method="post" class="card p-3 mt-2" enctype="multipart/form-data" >
+<form method="post" class="card p-3" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
@@ -103,7 +94,6 @@
   
     </form>    
     {% include "includes/camera/modalCamera.html" %}
-    {% include "includes/camera/modalCameraBiometrico.html" %}
 
 
 {% endblock %}
@@ -116,7 +106,6 @@
 <!-- Script para poner la fecha con division %%/%%/%%%%  -->
 {% include "includes/js/fecha.html" %}
 {% include "includes/js/cam/camera.html" %}
-{% include "includes/js/cam/scriptBiometricoEdit.html" %}
 
     
 {% endblock script %}
