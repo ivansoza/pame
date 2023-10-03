@@ -2,9 +2,9 @@ from django.urls import path, include
 
 from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1, EditarExtranjeroINMProceso
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1, EditarExtranjeroACProceso
-from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1
+from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1, EditarExtranjeroVPProceso
 from .views import CalcularTamanoDiscoView, listarTraslado
-from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2
+from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
 
 from .views import compare_faces, UserFaceCreateView, search_face
@@ -78,6 +78,8 @@ urlpatterns = [
     path('agregar_acompanante-VP/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarAcompananteViewVP.as_view(), name='agregar_acompananteVP'),
     path('DeleteAcompanante-vp/<int:pk>/', DeleteAcompananteVP.as_view(), name='delete_acompananteVP'),
     path('DeleteAcompanante-vp1/<int:pk>/', DeleteAcompananteVP1.as_view(), name='delete_acompananteVP1'),
+    path('editarExtranjeroVPproceso/<int:pk>/<int:puesta_id>/', EditarExtranjeroVPProceso.as_view(), name='editarExtranjeroVPproceso'),
+
 #-----------------------------TRASLADOS---------------------
     path('seguridad/<int:traslado_id>/<int:destino_id>/', listarTraslado.as_view(), name='traslado'),
     path('seguridad/solicitar_traslado/<int:traslado_id>/', solicitar_traslado, name='solicitar_traslado'),
@@ -87,6 +89,8 @@ urlpatterns = [
     
     path('manejar_imagen/', manejar_imagen, name='manejar_imagen'),
     path('manejar_imagen2/', manejar_imagen2, name='manejar_imagen2'),
+    path('manejar_imagen3/', manejar_imagen3, name='manejar_imagen3'),
+
 
   
 
