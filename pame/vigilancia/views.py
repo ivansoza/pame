@@ -271,12 +271,13 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         except Usuario.DoesNotExist:
             pass
 
-        ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'{numero_identificador_puesta}/{ultimo_numero + 1:06d}'
-        initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
+        with transaction.atomic():
+         ultimo_registro = Extranjero.objects.select_for_update().order_by('-id').first()
+         ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
+         nuevo_numero = f'{numero_identificador_puesta}/{ultimo_numero + 1:06d}'
+         initial['numeroExtranjero'] = nuevo_numero
 
+        return {'deLaPuestaIMN': puesta, 'deLaEstacion': estacion, 'numeroExtranjero': nuevo_numero, 'viajaSolo': viaja_solo}
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
@@ -284,7 +285,6 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
-
         with transaction.atomic():
             extranjero = form.save(commit=False)
             extranjero.puesta = puesta
@@ -474,6 +474,8 @@ class EditarExtranjeroINMProceso(CreatePermissionRequiredMixin,UpdateView):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionINM.objects.get(id=puesta_id)
         initial['deLaPuestaIMN']=puesta
+        initial['deLaPuestaVP']=None
+        initial['deLaPuestaAC'] =None
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -491,10 +493,9 @@ class EditarExtranjeroINMProceso(CreatePermissionRequiredMixin,UpdateView):
     def form_valid(self, form):
         extranjero = form.save(commit=False)
         old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
-         # Obtén el ID de la nueva puesta de la URL
         puesta_id = self.request.GET.get('puesta_id', None)
 
-        # Asigna el ID de la nueva puesta al campo deLaPuestaIMN
+      
         if puesta_id:
             extranjero.deLaPuestaIMN_id = puesta_id
 
@@ -1382,6 +1383,8 @@ class EditarExtranjeroACProceso(CreatePermissionRequiredMixin,UpdateView):
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)
         initial['deLaPuestaAC']=puesta
+        initial['deLaPuestaIMN']=None
+        initial['deLaPuestaVP']=None
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -1404,7 +1407,7 @@ class EditarExtranjeroACProceso(CreatePermissionRequiredMixin,UpdateView):
 
         # Asigna el ID de la nueva puesta al campo deLaPuestaIMN
         if puesta_id:
-            extranjero.deLaPuestaIMN_id = puesta_id
+            extranjero.deLaPuestaAC_id = puesta_id
 
         with transaction.atomic():
             # Cálculo del nuevo consecutivo
@@ -2165,7 +2168,31 @@ class EditarExtranjeroVP(UpdateView):
         return reverse('listarExtranjerosVP', args=[self.object.deLaPuestaVP.id])
     def form_valid(self, form):
         extranjero = form.save(commit=False)
-        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)
+          # Obtén el extranjero original antes de modificar
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
 
         if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
             # Cambio de estatus de Activo a Inactivo
@@ -2209,6 +2236,129 @@ class EditarExtranjeroVP(UpdateView):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirige a la URL actual o a la página de inicio si no se puede determinar la URL actual
 
         return super().dispatch(request, *args, **kwargs)
+
+class EditarExtranjeroVPProceso(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+         'perm1': 'vigilancia.change_extranjero',
+    }
+    model = Extranjero
+    form_class = editExtranjeroVPForm
+    template_name = 'puestaVP/editExtranjeroVP.html'
+    def get_initial(self):
+        initial = super().get_initial()
+        puesta_id = self.kwargs['puesta_id']
+        puesta = PuestaDisposicionVP.objects.get(id=puesta_id)
+        initial['deLaPuestaVP']=puesta
+        initial['deLaPuestaAC'] =None
+        initial['deLaPuestaIMN'] =None
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            # Obtener la instancia de Estacion correspondiente al ID de la estación del usuario
+            estacion_id = usuario_data.estancia_id
+            estacion = Estacion.objects.get(pk=estacion_id)
+            initial['deLaEstacion'] = estacion
+        except Usuario.DoesNotExist:
+            pass
+        return initial
+    def get_success_url(self):
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
+        return reverse('listarExtranjerosVP', args=[self.object.deLaPuestaVP.id])
+    def form_valid(self, form):
+        extranjero = form.save(commit=False)
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+         # Obtén el ID de la nueva puesta de la URL
+        puesta_id = self.request.GET.get('puesta_id', None)
+
+        # Asigna el ID de la nueva puesta al campo deLaPuestaIMN
+        if puesta_id:
+            extranjero.deLaPuestaVP_id = puesta_id
+
+        with transaction.atomic():
+            # Cálculo del nuevo consecutivo
+            extranjeros_con_mismo_id = Extranjero.objects.filter(id=extranjero.id)
+            if extranjeros_con_mismo_id.exists():
+                # Obtén el último proceso asociado al extranjero si existe
+                try:
+                    ultimo_proceso = extranjeros_con_mismo_id.latest('fechaRegistro').noproceso_set.latest('consecutivo')
+                    nuevo_consecutivo = ultimo_proceso.consecutivo + 1
+                except NoProceso.DoesNotExist:
+                    nuevo_consecutivo = 1
+            else:
+                nuevo_consecutivo = 1
+
+            # Crea un registro en la tabla NoProceso
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
+            no_proceso = NoProceso(
+                agno=extranjero.fechaRegistro,
+                extranjero=extranjero,
+                consecutivo=nuevo_consecutivo,
+                nup=nup
+            )
+            no_proceso.save()
+
+            # Crea un registro en la tabla Proceso
+            proceso = Proceso(
+                estacionInicio=extranjero.deLaEstacion,
+                fechaInicio=extranjero.fechaRegistro,
+                nup=no_proceso  # Establece la relación con el registro de NoProceso recién creado
+            )
+            proceso.save()
+           
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+            # Cambio de estatus de Activo a Inactivo
+            estacion = extranjero.deLaEstacion
+            if estacion:
+                estacion.capacidad += 1
+                estacion.save()
+
+        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+            # Cambio de estatus de Inactivo a Activo
+            estacion = extranjero.deLaEstacion
+            if estacion and estacion.capacidad > 0:
+                estacion.capacidad -= 1
+                estacion.save()
+
+        extranjero.save()
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        puesta_id = self.kwargs['puesta_id']
+        puesta = get_object_or_404(PuestaDisposicionVP, id=puesta_id)
+
+        context['form'].fields['deLaPuestaVP'].initial = puesta
+        context['puesta'] = puesta
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        
+        return context
+    
 class DeleteExtranjeroVP(DeleteView):
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroVP.html'
@@ -2943,6 +3093,67 @@ def manejar_imagen2(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@csrf_exempt
+def manejar_imagen3(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        puesta_id = request.POST.get('puesta_id')  # Obtén el puesta_id desde los datos del formulario
+
+
+        try:
+            # Conversion de la imagen subida
+            imagen_bytes_io = BytesIO(imagen.read())
+            imagen_pil = Image.open(imagen_bytes_io)
+
+            if imagen_pil.mode != 'RGB':
+                imagen_pil = imagen_pil.convert('RGB')
+
+            imagen_array = np.array(imagen_pil)
+
+            if not isinstance(imagen_array, np.ndarray):
+                return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+            # Obteniendo los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen_array)
+
+            if not encodings_subido:
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+            uploaded_encoding = encodings_subido[0]
+            tolerance = 0.5  # Puedes ajustar este valor
+
+            # Buscar similitud en todas las imágenes almacenadas
+            similar_face_id = None
+
+            for biometrico in Biometrico.objects.all():
+                face_encoding_almacenado = biometrico.face_encoding
+
+                if not face_encoding_almacenado:
+                    continue
+
+                distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+                distance_value = float(distance[0])
+
+                if distance_value < tolerance:
+                    # Si se encuentra una coincidencia, guarda el ID del registro correspondiente
+                    similar_face_id = biometrico.Extranjero_id
+                    
+                    
+                    break  # No es necesario buscar más si se encuentra una coincidencia
+
+            if similar_face_id is not None:
+                    puesta_id = request.POST.get('puesta_id')
+                    redirect_url = reverse('editarExtranjeroVPproceso', args=[similar_face_id, puesta_id])
+                    return JsonResponse({'match': True, 'extranjero_id': similar_face_id, 'redirect_url': redirect_url})
+            else:
+                # Si no se encontraron coincidencias
+                return JsonResponse({'match': False})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
 def compare_faces(request):
     if request.method == "POST":
         imagen = request.FILES.get('image')
