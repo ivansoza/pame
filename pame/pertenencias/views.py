@@ -640,6 +640,9 @@ class ListaPertenenciasValorViewAC(ListView):
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'
+        context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
+        context['inventario'] = inventario
+
         return context
     
 class CrearPertenenciasValoresViewAC(CreateView):
@@ -970,6 +973,7 @@ class ListaPertenenciasValorViewVP(ListView):
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'
+        context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
         return context
     
 class CrearPertenenciasValoresViewVP(CreateView):

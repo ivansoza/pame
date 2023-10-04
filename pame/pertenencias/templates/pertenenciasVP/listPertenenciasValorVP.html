@@ -3,6 +3,8 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
+
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
@@ -15,11 +17,17 @@
 
 {% include "includes/tituloPertenenciasValor.html" %}
 {% include "includes/cardPertenencias.html" %}
-   
-
-
-<a class='btn btn-custom' href="{% url 'crear_pertenencias_valor_vp' inventario_id=inventario.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Pertenencias</a>
-
+<!-- FINGERPRINT ICONO  -->
+<a class='btn btn-verified tooltip-link' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   data-title="Verifica extranjero" >
+   <i class="fas fa-fingerprint"></i>
+</a>
+<a class='btn btn-custom btn-unverified' 
+    href="{% url 'crear_pertenencias_valor_vp' inventario_id=inventario.id puesta_id=puesta.id%}"  >
+    Agregar Pertenencias
+</a>
 <br>
 <br>
 
@@ -27,7 +35,7 @@
     <thead>
         <tr>
           
-            <th>Descripcion</th>
+            <th>Descripción</th>
             <th>Cantidad</th>
             <th>Observaciones</th>
             <th>Opciones</th>
@@ -42,14 +50,14 @@
             <td>{{ pertenencia.Obsevaciones }}</td>
             <td>
 
-                <a class="btn btn-sm btn-icon3 tooltip-link"
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
                 href="{% url 'editar_pertenencias_valor_vp' pertenencia.id  %}"
-                data-title="Editar Valor" onclick="abrir_modal_editar(this.href); return false;">
+                data-title="Editar Valor" >
                 <i class="fas fa-edit"></i>
                </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link"
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
                     href="{% url 'eliminar_pertenencias_valor_vp' pertenencia.id %}"
-                    data-title="Eliminar Pertenencia" onclick="abrir_modal(this.href); return false;">
+                    data-title="Eliminar Pertenencia" >
                     <i class="fas fa-trash-alt"></i>
                     </a>
     
@@ -61,7 +69,7 @@
 </table>
 
 <hr>
-<a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom">Volver</a>
+<a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom5">Volver</a>
 
 <div class="modal fade" id="agregarpertenencia" role="dialog">
 
@@ -77,11 +85,15 @@
 
 </div>
 
+{% include "includes/biometricos/videoBiometricos.html" %}
+
 {% endblock contenido %}
 
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% include "includes/biometricos/scriptBiometricoValor.html" %}
+
 
 <script type="text/javascript">
     var $ = jQuery.noConflict();
