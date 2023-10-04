@@ -1,0 +1,258 @@
+<script>
+    let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
+    let isVerified = verifiedObj.time && 
+                     verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
+                     verifiedObj.puestaId1 === '{{ puesta_id }}' && 
+
+                     (new Date().getTime() - verifiedObj.time) < 300000;
+    
+    if (isVerified) {
+        // También debemos establecer un nuevo temporizador para manejar el caso en que la página no se recargue
+        setTimeout(() => {
+            isVerified = false;
+            localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
+            bloquearBotones();
+
+        }, 300000 - (new Date().getTime() - verifiedObj.time));
+        // Lo elimina
+        document.querySelectorAll('.btn-verified').forEach(function(btn) {
+            btn.remove();
+        });
+
+        document.querySelectorAll('.btn-unverified').forEach(function(btn) {
+            btn.classList.remove('btn-unverified');
+        });
+        
+    }else {
+        document.querySelectorAll('.btn-verified').forEach(function(btn) {
+            btn.addEventListener('click', function(event) {
+                event.preventDefault();
+                let modal = new bootstrap.Modal(document.getElementById('webcamModal'), {
+                    keyboard: false
+                });
+        
+                let video = document.getElementById('webcam');
+                let canvas = document.getElementById('capturedImage');
+
+                // Muestra el modal
+                resetModal();
+                modal.show();
+                // Solicita permiso para acceder a la webcam
+                navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    // Si se ha resuelto la promesa con éxito, registra en la consola.
+                    console.log("Acceso a la webcam concedido.");
+                    
+                    // Asume que tienes una variable 'video' referenciando tu elemento <video> en el HTML.
+                    if (video) {
+                        video.srcObject = stream; // Asigna el stream de media obtenido a la propiedad srcObject del elemento <video>.
+                        video.play(); // Comienza a reproducir el video.
+                    } else {
+                        console.error("Error: El elemento <video> no está definido.");
+                    }
+                })
+                .catch(function (error) {
+                    // Si hay un error (promesa rechazada), registra el error en la consola.
+                    console.error("Error accediendo a la webcam: ", error);
+                    console.log("Asegúrate de haber concedido los permisos necesarios para acceder a la webcam.");
+                });
+
+                document.getElementById('capturarFoto').onclick = function(event) {
+                        event.preventDefault();
+
+                        // Capturar la imagen inmediatamente sin temporizador
+                        canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                        video.style.display = 'none';
+                        canvas.style.display = 'block';
+                        document.getElementById("capturedImage").style.opacity = "1";
+
+                        document.getElementById('capturarFoto').style.display = 'none';
+                        document.getElementById('confirmarFoto').style.display = 'inline-block';
+                        document.getElementById('nuevaFoto').style.display = 'inline-block';
+                    };
+
+
+                    document.getElementById('nuevaFoto').onclick = function(event) {
+                        event.preventDefault();
+                        canvas.style.display = 'none';
+                        video.style.display = 'block';
+    
+                        document.getElementById("capturedImage").style.opacity = "0";
+    
+                        document.getElementById('capturarFoto').style.display = 'inline-block';
+                        document.getElementById('confirmarFoto').style.display = 'none';
+                        document.getElementById('nuevaFoto').style.display = 'none';
+    
+                        if (video.srcObject) {
+                            video.srcObject.getTracks().forEach(track => track.stop());
+                        }
+                        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                            video.srcObject = stream;
+                        });
+                    };
+
+
+                    document.getElementById('confirmarFoto').onclick = function(event) {
+                        event.preventDefault();
+                        canvas.toBlob(function(blob) {
+                            let file = new File([blob], "foto_webcam.png", {type: "image/png"});
+    
+                            let formData = new FormData();
+                            var puestaId1 = '{{ puesta_id }}';  // Accediendo al ID del Extranjero en JavaScript
+                            var extranjeroId = '{{ extranjero_id }}';  // Accediendo al ID del Extranjero en JavaScript
+    
+                            formData.append('image', file);  // Adjunta la imagen al formulario
+                            formData.append('extranjero_id', extranjeroId);  // Añade el id del Extranjero al FormData
+    
+                            $.ajax({
+                                url: '/pertenencias/manejar_imagen/',
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                headers: {'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()},
+                                success: function(data) {
+                                    if (data.match) {
+                                        isVerified = true; // Cambiar el estado a verificado
+                                        localStorage.setItem('verifiedTime', JSON.stringify({ 
+                                            time: new Date().getTime(), 
+                                            puestaId1: '{{ puesta_id }}',
+                                            extranjeroId: '{{ extranjero_id }}' 
+                                        }));
+                                        
+                                        setTimeout(() => {
+                                            isVerified = false;
+                                            localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
+                                        }, 300000);
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '¡Coincidencia Exitosa!',
+                                            confirmButtonColor: '#2A4B41',
+
+                                        });
+                                        document.querySelectorAll('.btn-unverified').forEach(function(btn) {
+                                            btn.classList.remove('btn-unverified');
+                                        });
+                                        document.querySelectorAll('.btn-verified').forEach(function(btn) {
+                                            btn.remove();
+                                        });
+    
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: '¡No hay coincidencia!',
+                                            confirmButtonText: 'Ok',
+                                            confirmButtonColor: '#2A4B41',
+
+                                            
+                                        });
+                                    }
+                                },
+                                error: function(error) {
+                                    console.error('Error al enviar la imagen:', error.responseText);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: '¡Rostro no localizado!',
+                                        confirmButtonColor: '#2A4B41',
+
+                                    });
+                                }
+                            });
+    
+                            modal.hide();
+                            if (video.srcObject) {
+                                video.srcObject.getTracks().forEach(track => track.stop());
+                            }
+                        }, 'image/png');
+                    };
+    
+
+            });
+        });
+
+    }
+    function resetModal() {
+        let video = document.getElementById('webcam');
+        let canvas = document.getElementById('capturedImage');
+
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+        }
+
+        video.removeAttribute('src');
+        video.load();
+
+        video.style.display = 'block'; // Mostrar video
+        canvas.style.display = 'none'; // Ocultar canvas
+
+        document.getElementById('capturarFoto').style.display = 'inline-block';
+        document.getElementById('confirmarFoto').style.display = 'none';
+        document.getElementById('nuevaFoto').style.display = 'none';
+    }
+
+
+
+
+    document.querySelectorAll('.btn-custom, .btn-icon3').forEach(function(btn) {
+        btn.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            if (isVerified) {
+                let url = btn.getAttribute('href');
+                abrir_modal(url);
+                document.querySelectorAll('.btn-verified').forEach(function(btn) {
+                    btn.remove();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: '¡Verifica el Usuario para acceder!',
+                    showCancelButton: true, // Esto hará visible el botón de cancelar
+                    confirmButtonText: 'Ok',
+                    cancelButtonText: 'Verificar', // Este será tu botón adicional
+                    cancelButtonColor: '#85364A',
+                    confirmButtonColor: '#2A4B41',
+                    // Ejemplo de color rojo, reemplaza por el color que prefieras
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Aquí puedes colocar el código que se ejecutará cuando se presione el botón "Ok"
+                        console.log('Se presionó el botón Ok');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        // Aquí puedes colocar el código que se ejecutará solo si se presiona el botón "Verificar"
+                        console.log('Se presionó el botón Verificar');
+                        document.querySelectorAll('.btn-verified').forEach(function(btn) {
+                            btn.click(); // Esto desencadenará el evento de clic en cada botón con la clase 'btn-verified'
+                        });
+                    } else {
+                        // Aquí puedes manejar otros casos de dismiss, como hacer clic fuera del SweetAlert
+                        console.log('SweetAlert fue cerrado por otra razón');
+                    }
+                });
+            }
+        });
+    });
+
+    $('#webcamModal').on('hidden.bs.modal', function() {
+        let video = document.getElementById('webcam');
+        let canvas = document.getElementById('capturedImage');
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+        }
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+        document.getElementById('capturarFoto').style.display = 'inline-block';
+        document.getElementById('confirmarFoto').style.display = 'none';
+        document.getElementById('nuevaFoto').style.display = 'none';
+    });
+
+
+    function bloquearBotones() {
+        document.querySelectorAll('.btn-verified').forEach(function(btn) {
+            btn.add(); // Agregar botones de nuevo, o cambiar a estado bloqueado
+        });
+        document.querySelectorAll('.btn-unverified').forEach(function(btn) {
+            btn.classList.add('btn-unverified');
+        });
+    }
+</script>

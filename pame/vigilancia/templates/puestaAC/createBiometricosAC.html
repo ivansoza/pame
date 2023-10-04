@@ -16,75 +16,93 @@
 {% include "includes/tituloBiometricos.html" %}
 
 
-
 <style>
-  .modal-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-.capture-container {
-    position: relative;
-    width: 640px;
-    height: 480px;
-}
-
-#webcam, #capturedImage {
+    #webcamModal .modal-body {
+        position: relative; /* Asegura que los elementos internos sean posicionados relativos a este contenedor */
+    }
+  
+    #rostroCuadro {
+      position: absolute;
+      border: 2px solid red;
+      width: 6cm; /* Ancho de 10 cm */
+      height: 6cm; /* Alto de 10 cm */
+      top: 50%; /* Centrar verticalmente */
+      left: 50%; /* Centrar horizontalmente */
+      transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
+      z-index: 1; /* Coloca el cuadro sobre el video */
+      pointer-events: none; /* Evita que el cuadro sea interactivo */
+      background-color: rgba(255, 255, 255, 0.5); /* Añade un fondo semi-transparente al cuadro */
+      box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.5); /* Agrega un efecto de sombra roja al cuadro */
+  }
+  
+  #leyenda {
+      position: absolute;
+      top: calc(50% + 5.5cm); /* Coloca la leyenda 5.5cm debajo del cuadro */
+      left: 50%; /* Centrar horizontalmente */
+      transform: translateX(-50%); /* Centrar horizontalmente */
+      z-index: 2; /* Coloca la leyenda sobre el cuadro */
+      color: red; /* Color de texto rojo */
+      text-align: center; /* Alinea el texto al centro */
+      font-weight: bold; /* Texto en negrita */
+  }
+  #countdown {
     position: absolute;
-    top: 0;
-    left: 0;
-}
-
-
-</style>
-
-<!-- BIOMETRICOS -->
-<div class="card">
-    <div class="card-body">
-        {% include "includes/formBiometricos.html" %}
-    </div>
-    <div class="card-footer">
-      <div class="row">
-        <div class="col-12">
-            <a href="{% url 'listarExtranjeroAC' puesta.id %}"  class="btn btn-custom1 btn-block">Guardar después</a>       
+    top: 50%; /* Centrar verticalmente */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translate(-50%, -50%); /* Ajustar para centrar completamente */
+    background-color: #20302B;
+    color: white;
+    font-size: 24px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    z-index: 3; /* Coloca el contador sobre todo, incluyendo el cuadro */
+  }
+  </style>
+  <!-- BIOMETRICOS -->
+  
+    {% include "includes/formBiometricos.html" %}
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <a href="{% url 'listarExtranjeroAC' puesta.id %}" class="btn btn-custom1 btn-block">Guardar después</a>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-</div>
-
-
-
-
-<div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
-  <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-          <div class="modal-header custom-header-color">
-              <h2 class="modal-title">Capturar Foto</h2>
-              <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-              <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
-          </div>
-          <div class="modal-body d-flex justify-content-center align-items-center"> <!-- Agregado flexbox -->
-              <div class="capture-container">
-                  <!-- Vídeo de la webcam -->
-                  <video id="webcam" width="640" height="480" autoplay></video>
-                  <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
-                  <div id="countdown"
-                      style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
-                      5</div>
-              </div>
-          </div>
-          <div class="modal-footer">
-              <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
-              <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
-              <button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
-          </div>
-      </div>
+  <!-- FIN BIOMETRICOS -->
+  <div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header custom-header-color">
+                <h2 class="modal-title">Capturar Foto</h2>
+                <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span id="timerSpan" style="margin-left: 10px; display: none;">5</span>
+            </div>
+            <div class="modal-body d-flex justify-content-center align-items-center">
+                <div class="capture-container">
+                    <!-- Vídeo de la webcam -->
+                    <video id="webcam" width="640" height="480" autoplay></video>
+                    <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
+                    <div id="countdown" style="display: none;">5</div>
+                    <!-- Cuadro para el rostro -->
+                    <div id="rostroCuadro" style="position: absolute; border: 2px solid red; pointer-events: none;">
+                        <p class='leyenda' style="text-align: center; color: red; font-weight: bold;">
+                            Posiciona el rostro al centro del recuadro para capturar la foto</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
+                <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
+                <button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
+            </div>
+        </div>
+    </div>
   </div>
-</div>
 
 
 {% endblock %}

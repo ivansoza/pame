@@ -3,21 +3,9 @@
 {% load static %}
 {% block link %}
 <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.266ssjj5sssgg ">
-
 {% block card %}{% endblock card %}
-
-
 {% endblock link %}
-
-
-
 {% block contenido %}
-<style>
-    /* Personaliza el tamaño de la barra de búsqueda */
-    div.dataTables_wrapper div.dataTables_filter input {
-      width: 300px; /* Cambia el tamaño según tus necesidades */
-    }
-  </style>
 
 <div class="titulo-general-container">
     <h1 class="titulo-general">Puestas por Instituto Nacional de Migración</h1>
@@ -165,6 +153,11 @@
 
 </div>
 {% endblock contenido %}
+{% block filtro %}
+"order": [[0, "desc"]],
+
+{% endblock filtro %}
+
 {% block datatable %}
  {
     text: 'Crear Puesta',

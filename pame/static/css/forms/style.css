@@ -98,7 +98,7 @@
 .btn-custom1 {
     background-color: #A3825F; /* Cambia el color de fondo */
     color: white; /* Cambia el color del texto */
-    border-color: #902F4A; /* Cambia el color del borde */
+    border-color: #A3825F; /* Cambia el color del borde */
 }
 
 .btn-custom1:hover{
@@ -106,6 +106,45 @@
     background-color: #8c7051; /* Cambia el color de fondo al pasar el cursor */
     border-color: #8c7051; /* Cambia el color del borde al pasar el cursor */
     
+}
+
+/* uso sin permisos  */
+.btn-custom5 {
+  background-color: #902F4A; /* Cambia el color de fondo */
+  color: white; /* Cambia el color del texto */
+  border-color: #902F4A;  /* Cambia el color del borde */
+}
+
+.btn-custom5:hover{
+  color: white;
+  background-color: #7C2540; /* Cambia el color de fondo al pasar el cursor */
+  border-color: #7C2540; /* Cambia el color del borde al pasar el cursor */
+  
+}
+.btn-custom6 {
+  background-color: #A3825F; /* Cambia el color de fondo */
+  color: white; /* Cambia el color del texto */
+  border-color: #A3825F;  /* Cambia el color del borde */
+}
+
+.btn-custom6:hover{
+  color: white;
+  background-color: #8c7051; /* Cambia el color de fondo al pasar el cursor */
+  border-color: #8c7051; /* Cambia el color del borde al pasar el cursor */
+  
+}
+
+
+.btn-verified {
+  background-color: #902F4A !important;
+  color: white !important;
+  border-color:#902F4A !important;
+}
+
+.btn-verified:hover{
+  background-color: #7C2540 !important;
+  color: white !important;
+  border-color:#7C2540 !important;
 }
 
 .btn-custom2 {
@@ -206,6 +245,16 @@
   position: relative;
   display: inline-block;
 }
+
+
+.btn-unverified {
+  background-color: grey !important;
+  color: white;
+  border-color:grey !important;
+  cursor: not-allowed  !important;
+
+}
+
 
 .tooltip-link::after {
   content: attr(data-title);
@@ -334,3 +383,33 @@
   /* Asegúrate de tener un alto específico si quieres centrarlo verticalmente */
   height: 150px;  /* Este es un ejemplo, ajústalo según tus necesidades */
 }
+
+
+
+/* Cambiar el buscador de datatables */
+
+div.dataTables_wrapper div.dataTables_filter input {
+  width: 300px; /* Cambia el tamaño según tus necesidades */
+}
+#filtro-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+#filtro-form label {
+    margin-right: 10px;
+  }
+  
+#filtro-form select {
+    padding: 5px;
+  }
+  
+#filtro-form button {
+    padding: 5px 10px;
+    margin-left:10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }

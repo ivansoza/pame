@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP
@@ -11,11 +12,18 @@ from django.shortcuts import redirect
 from django import forms
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
-
+from vigilancia.models import Biometrico
 # Create your views here.
 from django import forms
 from .helpers import image_to_pdf
 import os
+import face_recognition
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.views.decorators.csrf import csrf_exempt
+
+from io import BytesIO
+from PIL import Image  # Asegúrate de importar Image de PIL o Pillow
+import numpy as np 
 
 class PermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -109,7 +117,9 @@ class ListaPertenenciasViewINM(ListView):
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
         puesta_id = self.kwargs.get('puesta_id')
+        context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['puesta_id']=puesta_id
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
@@ -130,6 +140,9 @@ class ListaEnseresViewINM(ListView):
         puesta_id = self.kwargs.get('puesta_id')
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
+        context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
+
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
         return context
@@ -154,6 +167,9 @@ class CrearEnseresINM(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
+        context['extranjero_id'] = extranjero_id
+        context['puesta_id'] = puesta_id
+
         return context
     def get_initial(self):
         extranjero_id = self.kwargs.get('extranjero_id')
@@ -350,6 +366,7 @@ class ListaPertenenciasValorViewINM(ListView):
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
         puesta_id = self.kwargs.get('puesta_id')
+        context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
@@ -1138,3 +1155,102 @@ class EditarEnseresViewVP(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadVP'
         return context
+
+@csrf_exempt
+def manejar_imagen(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)
+
+        try:
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            face_encoding_almacenado = biometrico.face_encoding
+
+            # Conversion de la imagen subida
+            imagen_bytes_io = BytesIO(imagen.read())
+            imagen_pil = Image.open(imagen_bytes_io)
+
+            if imagen_pil.mode != 'RGB':
+                imagen_pil = imagen_pil.convert('RGB')
+
+            imagen_array = np.array(imagen_pil)
+
+            if not isinstance(imagen_array, np.ndarray):
+                return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+            # Obteniendo los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen_array)
+
+            if not encodings_subido:
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+            uploaded_encoding = encodings_subido[0]
+            tolerance = 0.5  # Puedes ajustar este valor
+
+            distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+            distance_value = float(distance[0])
+            
+            if distance_value < tolerance:
+                similarity_str = f"Similitud: {(1 - distance_value) * 100:.2f}%"
+                return JsonResponse({'match': True, 'similarity': similarity_str, 'distance': distance_value})
+            else:
+                return JsonResponse({'match': False, 'similarity': None, 'distance': distance_value})
+
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def compare_faces(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+
+        # Verifica si el extranjero_id es None o si no es un número válido
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)  # Convertir a entero
+        print(type(extranjero_id))  # <class 'int'>
+        print(extranjero_id)  
+        try:
+            # Obtener el objeto Biometrico asociado con el Extranjero_id
+      # Debería ser un número entero válido
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            # ...
+
+            # Cargar face_encoding almacenado
+            face_encoding_almacenado = biometrico.face_encoding
+
+            # Convertir imagen subida a formato que face_recognition puede entender
+            imagen = face_recognition.load_image_file(InMemoryUploadedFile(imagen))
+
+            # Obtener los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen)
+            
+            if not encodings_subido:  # Verificar que se detectaron rostros en la imagen subida
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+            
+            # Comparar face_encoding_subido con face_encoding_almacenado
+            matches = face_recognition.compare_faces([face_encoding_almacenado], encodings_subido[0])
+            
+            # También puedes calcular la distancia si lo necesitas
+            distance = face_recognition.face_distance([face_encoding_almacenado], encodings_subido[0])
+            similarity = f"Similitud: {100 - distance[0]*100:.2f}%"
+            
+            return JsonResponse({'match': matches[0], 'similarity': similarity})
+        
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)

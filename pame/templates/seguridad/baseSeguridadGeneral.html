@@ -488,6 +488,9 @@
     
 <script>
   $("#tabla").DataTable({
+    {% block filtro %}
+
+    {% endblock filtro %}
       paging: true,
       lengthMenu: [5, 10, 25, 50, 100], // Cambiamos el menú de longitud para incluir 5 entradas
       pageLength:5,
@@ -501,7 +504,7 @@
       {% endblock dom %}
       buttons:[
         {% block datatable %}
-        
+
         
         {% endblock datatable %}        
         
@@ -560,6 +563,7 @@
               },
 
   });
+  
 </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 
