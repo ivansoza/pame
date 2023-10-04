@@ -164,9 +164,7 @@ class extranjeroFormsInm(forms.ModelForm):
             raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
         return data
     
-    numeroExtranjero = forms.CharField(
-        label= "Numero:",
-    )
+  
    
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",

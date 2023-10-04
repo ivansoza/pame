@@ -92,7 +92,7 @@ OPCION_ESTATUS_CHOICES=[
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro', auto_now_add=True)
     horaRegistro = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
-    numeroExtranjero = models.CharField(verbose_name='Número de Extranjero', max_length=25, unique=True)
+    numeroExtranjero = models.CharField(verbose_name='Número de Extranjero', max_length=25, null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
     apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno de Extranjero', max_length=50, blank=True)
@@ -107,6 +107,15 @@ class Extranjero(models.Model):
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta IMN')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta AC')
     deLaPuestaVP = models.ForeignKey(PuestaDisposicionVP, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta VP')
+    def save(self, *args, **kwargs):
+    # Si el númeroExtranjero no está establecido, asigna un valor único basado en el ID del registro.
+     if not self.numeroExtranjero:
+        base_value = str(self.id)
+        self.numeroExtranjero = base_value
+
+     super(Extranjero, self).save(*args, **kwargs)
+
+   
     class Meta:
         verbose_name_plural = "Extranjeros" 
     def __str__(self):
