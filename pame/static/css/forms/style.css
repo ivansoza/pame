@@ -383,3 +383,33 @@
   /* Asegúrate de tener un alto específico si quieres centrarlo verticalmente */
   height: 150px;  /* Este es un ejemplo, ajústalo según tus necesidades */
 }
+
+
+
+/* Cambiar el buscador de datatables */
+
+div.dataTables_wrapper div.dataTables_filter input {
+  width: 300px; /* Cambia el tamaño según tus necesidades */
+}
+#filtro-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+#filtro-form label {
+    margin-right: 10px;
+  }
+  
+#filtro-form select {
+    padding: 5px;
+  }
+  
+#filtro-form button {
+    padding: 5px 10px;
+    margin-left:10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }

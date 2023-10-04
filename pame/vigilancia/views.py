@@ -1631,51 +1631,56 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
         return context
     
     def form_valid(self, form):
-        # Lógica de recorte
-        image = form.cleaned_data['fotografiaExtranjero']
-        
-        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
-        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-        
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(img, 1.3, 5)
-        region = None  # Definición inicial de la variable "region"
+            # Lógica de recorte
+            image = form.cleaned_data['fotografiaExtranjero']
+            
+            img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            faces = face_cascade.detectMultiScale(img, 1.3, 5)
+            region = None  # Definición inicial de la variable "region"
 
-        for (x,y,w,h) in faces:
-            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
-            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
-            margen_horizontal = int(0.2 * w)
+            for (x,y,w,h) in faces:
+                margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+                margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+                margen_horizontal = int(0.2 * w)
+                    
+                inicio_x = max(0, x - margen_horizontal)
+                inicio_y = max(0, y - margen_vertical_arriba)
+                fin_x = min(img.shape[1], x + w + margen_horizontal)
+                fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                    
+                region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+            if region is not None and region.size > 0:
+                is_success, im_buf_arr = cv2.imencode(".jpg", region)
+                region_bytes = im_buf_arr.tobytes()
                 
-            inicio_x = max(0, x - margen_horizontal)
-            inicio_y = max(0, y - margen_vertical_arriba)
-            fin_x = min(img.shape[1], x + w + margen_horizontal)
-            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                biometrico = form.save(commit=False)
+                biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
                 
-            region = img[inicio_y:fin_y, inicio_x:fin_x]
+                # Actualiza el face_encoding del objeto Biometrico
+                image_path = biometrico.fotografiaExtranjero.path
+                image_array = face_recognition.load_image_file(image_path)
+                face_encodings = face_recognition.face_encodings(image_array)
+                
+                if face_encodings:
+                    biometrico.face_encoding = face_encodings[0].tolist()
+                    biometrico.save()
+                    
+                    # Actualiza o crea el objeto UserFace1 correspondiente
+                    user_face1, created = UserFace1.objects.update_or_create(
+                        extranjero=biometrico.Extranjero,
+                        defaults={'face_encoding': face_encodings[0].tolist()}
+                    )
+            else:
+                messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+                return super().form_invalid(form)
+        
 
-        if region is not None and region.size > 0:
-            is_success, im_buf_arr = cv2.imencode(".jpg", region)
-            region_bytes = im_buf_arr.tobytes()
-
-            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
-        else:
-            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-            return super().form_invalid(form)
-
-        # Obtén el ID del extranjero del campo oculto
-        extranjero_id = self.request.POST.get('delExtranjero')
-
-        # Modificar el registro de Descripcion relacionado con el extranjero
-        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero_id)
-        descripcion_form = descripcionForms(self.request.POST, instance=descripcion_obj)
-
-        if descripcion_form.is_valid():
-            descripcion_form.save()
-        else:
-            messages.error(self.request, "Error en el formulario de descripción. Por favor, verifica los datos.")
-            return super().form_invalid(form)
-
-        return super().form_valid(form)
+            return super().form_valid(form)
+        
         
 
 class DeleteExtranjeroAC(DeleteView):
@@ -2427,48 +2432,65 @@ class AgregarBiometricoVP(CreateView):
         return context
     
     def form_valid(self, form):
-        # Lógica de recorte
-        image = form.cleaned_data['fotografiaExtranjero']
+    # Lógica de recorte
+     image = form.cleaned_data['fotografiaExtranjero']
+     img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+     img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+    
+     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+     faces = face_cascade.detectMultiScale(img, 1.3, 5)
+     region = None  # Definición inicial de la variable "region"
+
+     for (x,y,w,h) in faces:
+        margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+        margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+        margen_horizontal = int(0.2 * w)
+            
+        inicio_x = max(0, x - margen_horizontal)
+        inicio_y = max(0, y - margen_vertical_arriba)
+        fin_x = min(img.shape[1], x + w + margen_horizontal)
+        fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+            
+        region = img[inicio_y:fin_y, inicio_x:fin_x]
+    
+     if region is not None and region.size > 0:
+        is_success, im_buf_arr = cv2.imencode(".jpg", region)
+        region_bytes = im_buf_arr.tobytes()
         
-        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
-        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-        
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(img, 1.3, 5)
-        region = None  # Definición inicial de la variable "region"
+        # Guarda en el modelo Biometrico
+        biometrico = form.save(commit=False)
+        biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=True)
 
-        for (x,y,w,h) in faces:
-            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
-            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
-            margen_horizontal = int(0.2 * w)
-                
-            inicio_x = max(0, x - margen_horizontal)
-            inicio_y = max(0, y - margen_vertical_arriba)
-            fin_x = min(img.shape[1], x + w + margen_horizontal)
-            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
-                
-            region = img[inicio_y:fin_y, inicio_x:fin_x]
+        # Calcula el face encoding y guarda en el modelo UserFace1
+        image_path = biometrico.fotografiaExtranjero.path
+        image_array = face_recognition.load_image_file(image_path)
+        face_encodings = face_recognition.face_encodings(image_array)
 
-        if region is not None and region.size > 0:
-            is_success, im_buf_arr = cv2.imencode(".jpg", region)
-            region_bytes = im_buf_arr.tobytes()
+        if face_encodings:
+            biometrico.face_encoding = face_encodings[0].tolist()
+            biometrico.save()
+            user_face1 = UserFace1(extranjero=biometrico.Extranjero)
+            user_face1.face_encoding = face_encodings[0].tolist()
+            user_face1.save()
+     else:
+        # Muestra un mensaje al usuario
+        messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+        return super().form_invalid(form)
+    
+    # Procesa el segundo formulario (DescripcionForm)
+     descripcion_form = descripcionForms(self.request.POST)
+    
+     if descripcion_form.is_valid():
+        descripcion = descripcion_form.save(commit=False)
+        # Asigna cualquier relación necesaria para el segundo formulario aquí
+        # Por ejemplo, si necesitas relacionar con el biometrico
+        descripcion.biometrico = biometrico  # Asegúrate de ajustar esto según tu modelo real
+        descripcion.save()
+     else:
+        messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
+        return super().form_invalid(form)
 
-            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
-        else:
-            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-            return super().form_invalid(form)
-
-        # Procesar el segundo formulario (descripcionForms)
-        descripcion_form = descripcionForms(self.request.POST)
-        if descripcion_form.is_valid():
-            descripcion = descripcion_form.save(commit=False)
-            # Asigna cualquier relación necesaria para el segundo formulario aquí
-            descripcion.save()
-        else:
-            messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
-            return super().form_invalid(form)
-
-        return super().form_valid(form)
+     return super().form_valid(form)
     
 class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
@@ -2502,51 +2524,56 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
         return context
     
     def form_valid(self, form):
-        # Lógica de recorte
-        image = form.cleaned_data['fotografiaExtranjero']
-        
-        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
-        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-        
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        faces = face_cascade.detectMultiScale(img, 1.3, 5)
-        region = None  # Definición inicial de la variable "region"
+            # Lógica de recorte
+            image = form.cleaned_data['fotografiaExtranjero']
+            
+            img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            faces = face_cascade.detectMultiScale(img, 1.3, 5)
+            region = None  # Definición inicial de la variable "region"
 
-        for (x,y,w,h) in faces:
-            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
-            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
-            margen_horizontal = int(0.2 * w)
+            for (x,y,w,h) in faces:
+                margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+                margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+                margen_horizontal = int(0.2 * w)
+                    
+                inicio_x = max(0, x - margen_horizontal)
+                inicio_y = max(0, y - margen_vertical_arriba)
+                fin_x = min(img.shape[1], x + w + margen_horizontal)
+                fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                    
+                region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+            if region is not None and region.size > 0:
+                is_success, im_buf_arr = cv2.imencode(".jpg", region)
+                region_bytes = im_buf_arr.tobytes()
                 
-            inicio_x = max(0, x - margen_horizontal)
-            inicio_y = max(0, y - margen_vertical_arriba)
-            fin_x = min(img.shape[1], x + w + margen_horizontal)
-            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                biometrico = form.save(commit=False)
+                biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
                 
-            region = img[inicio_y:fin_y, inicio_x:fin_x]
+                # Actualiza el face_encoding del objeto Biometrico
+                image_path = biometrico.fotografiaExtranjero.path
+                image_array = face_recognition.load_image_file(image_path)
+                face_encodings = face_recognition.face_encodings(image_array)
+                
+                if face_encodings:
+                    biometrico.face_encoding = face_encodings[0].tolist()
+                    biometrico.save()
+                    
+                    # Actualiza o crea el objeto UserFace1 correspondiente
+                    user_face1, created = UserFace1.objects.update_or_create(
+                        extranjero=biometrico.Extranjero,
+                        defaults={'face_encoding': face_encodings[0].tolist()}
+                    )
+            else:
+                messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+                return super().form_invalid(form)
+        
 
-        if region is not None and region.size > 0:
-            is_success, im_buf_arr = cv2.imencode(".jpg", region)
-            region_bytes = im_buf_arr.tobytes()
-
-            form.instance.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
-        else:
-            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
-            return super().form_invalid(form)
-
-        # Obtén el ID del extranjero del campo oculto
-        extranjero_id = self.request.POST.get('delExtranjero')
-
-        # Modificar el registro de Descripcion relacionado con el extranjero
-        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero_id)
-        descripcion_form = descripcionForms(self.request.POST, instance=descripcion_obj)
-
-        if descripcion_form.is_valid():
-            descripcion_form.save()
-        else:
-            messages.error(self.request, "Error en el formulario de descripción. Por favor, verifica los datos.")
-            return super().form_invalid(form)
-
-        return super().form_valid(form)
+            return super().form_valid(form)
+        
     
 class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
     permission_required = {
