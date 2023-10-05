@@ -45,6 +45,9 @@ from vigilancia.models import Extranjero
 class TipoAcuerdo(models.Model):
     tipo = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.tipo
+
 class Acuerdo(models.Model):
     delAcuerdo = models.ForeignKey(TipoAcuerdo, on_delete=models.CASCADE)
     fechaAcuerdo = models.DateField()
@@ -80,3 +83,11 @@ class Acuerdo(models.Model):
     estacionDestino_traslado = models.CharField(max_length=50, null=True, blank = True)
     motivo_traslado = models.TextField(null=True, blank = True)
     documentoAcuerdo= models.FileField(upload_to='files/', null=True, blank=True)
+
+class PDFGenerado(models.Model):
+    documento = models.CharField(max_length=255)
+    # Ruta donde se van a guardar los pdf generados por primera vez
+    ruta = models.FileField(upload_to='files/') 
+
+    def __str__(self):
+        return self.documento

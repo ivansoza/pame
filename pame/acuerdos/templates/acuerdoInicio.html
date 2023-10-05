@@ -1,0 +1,64 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
+{% endblock link %}
+
+{% block titulo %}Acuerdos Inicio {% endblock titulo %}
+
+{% block contenido  %}
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Extranjeros para generar Acuerdo de Inicio
+    </h1>
+</div>
+
+<div class="table-responsive">
+    <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>No. Único de Proceso</th>
+                <th>Nombre(s)</th>
+                <th>Apellido(s)</th>
+                <th>Nacionalidad</th>
+                <th style="width: 5%;">Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in extranjeros %}
+            <tr>
+                <td></td>
+                <td>{{ e.nombreExtranjero }}</td>
+                <td>{{ e.apellidoPaternoExtranjero }} {{ e.apellidoMaternoExtranjero }}</td>
+                <td>{{ e.nacionalidad }}</td>
+                <td align="center">
+                    {% if pdf_exists %}
+                        <!-- Si el PDF existe -->
+                        <a class="btn btn-sm btn-icon3 tooltip-link btn-generado"
+                            href="{% url 'generarPdf' extranjero_id=e.id %}" target="_blank"
+                            data-title='Generar Oficio'>
+                            <i class="fas fa-file-excel"></i>
+                        </a>
+                    {% else %}
+                        <!-- Si el PDF no existe -->
+                        <a class="btn btn-sm btn-icon1 tooltip-link btn-no-generado"
+                            href="{% url 'generarPdf' extranjero_id=e.id %}" target="_blank"
+                            data-title='Generar Oficio'>
+                            <i class="fas fa-file-pdf"></i>
+                        </a>
+                    {% endif %}
+                </td>                         
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+<h6>Comprobacion de Extranjeros con existencia de pdf generados</h6>
+    <!-- Utiliza un solo bucle para iterar sobre extranjeros_pdf -->
+    {% for e, pdf_exists in extranjeros_pdf %}
+        <p>PDF existencia para extranjero {{e.id}}: {{ pdf_exists }}</p>
+    {% endfor %}
+{% endblock contenido  %}

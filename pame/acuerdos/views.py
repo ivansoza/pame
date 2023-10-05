@@ -1,75 +1,67 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from vigilancia.models import Extranjero
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from weasyprint import HTML
 from django.template.loader import render_to_string
+from django.views.generic import ListView
+from vigilancia.models import Extranjero
+import os
 
-def homeAcuerdoInicio(request):
-    return render(request,"homeAcuerdoInicio.html")
+def homeAcuerdo(request):
+    return render(request,"acuerdoInicio.html")
+
+class acuerdo_inicio(ListView):
+    template_name = 'acuerdoInicio.html'
+
+    def get(self, request):
+        extranjeros = Extranjero.objects.filter(estatus='Activo')
+        # extranjeros = Extranjero.objects.all() # Obtiene todos los extranjeros 
+        
+        # Calcular si el PDF existe para cada extranjero
+        pdf_existencia = [(extranjero, pdf_exist(extranjero.id)) for extranjero in extranjeros]
+
+        context = {
+            'extranjeros': extranjeros,
+            'extranjeros_pdf': pdf_existencia
+            }
+        return render(request, self.template_name, context)
+    
+def pdf_exist(extranjero_id):
+    nombre_pdf = f"AcuerdoUno_{extranjero_id}.pdf"
+    ubicacion_pdf = os.path.join("pame/media/files", nombre_pdf)
+    exists = os.path.exists(ubicacion_pdf)
+    print(f"PDF para extranjero {extranjero_id}: {exists}")
+    print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
+    return exists
 
 def generate_pdf(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
 
-    # Obtener el objeto Traslado 
-    # traslado = ExtranjeroTraslado.objects.filter(delExtranjero=extranjero).first()
+    # Obtener el nombre del archivo PDF
+    nombre_pdf = f"AcuerdoUno_{extranjero.id}.pdf"
+    ubicacion_pdf = os.path.abspath(os.path.join("pame/media/files", nombre_pdf))
 
-    # Definir el mapeo de los nombres de los meses en español
-    nombres_meses_espanol = {
-        'January': 'enero',
-        'February': 'febrero',
-        'March': 'marzo',
-        'April': 'abril',
-        'May': 'mayo',
-        'June': 'junio',
-        'July': 'julio',
-        'August': 'agosto',
-        'September': 'septiembre',
-        'October': 'octubre',
-        'November': 'noviembre',
-        'December': 'diciembre',
-    }
+    # Verificar si el archivo PDF ya existe en la ubicación
+    if not os.path.exists(ubicacion_pdf):
+        # Si el archivo no existe, procede a generarlo y guardarlo
+        html_context = {
+            'contexto': 'variables',
+        }
 
-    # OBtener datos a renderizar 
-    nombre_extranjero = extranjero.nombreExtranjero
-    apellidop_extranjero = extranjero.apellidoPaternoExtranjero
-    apellidom_extranjero = extranjero.apellidoMaternoExtranjero
-    nacionalidad = extranjero.nacionalidad
-    nombre_estacion = extranjero.deLaEstacion.nombre
-    estado_estacion = extranjero.deLaEstacion.estado
-    calle = extranjero.deLaEstacion.calle
-    noExt = extranjero.deLaEstacion.noext
-    # hora = traslado.delTraslado.fechaSolicitud
-    # dia = traslado.delTraslado.fechaSolicitud.strftime('%d')
-    # mes = traslado.delTraslado.fechaSolicitud.strftime('%B')
-    # mes_espanol = nombres_meses_espanol.get(mes, mes)
-    # anio = traslado.delTraslado.fechaSolicitud.strftime('%Y')
+        # Crear un objeto HTML a partir de una plantilla o contenido HTML
+        html_content = render_to_string('documentos/acuerdoTraslado.html', html_context)
+        html = HTML(string=html_content)
 
-    html_context = {
-        'contexto': 'variables',
-        'nombre_extranjero': nombre_extranjero,
-        'apellidop': apellidop_extranjero,
-        'apellidom': apellidom_extranjero,
-        'nacionalidad': nacionalidad,
-        'nombre_estacion': nombre_estacion,
-        'estado_estacion': estado_estacion,
-        'calle': calle,
-        'noExt': noExt,
-        # 'hora': hora,
-        # 'dia': dia,
-        # 'mes': mes_espanol,
-        # 'anio': anio,
-    }
+        # Generar el PDF
+        pdf_bytes = html.write_pdf()
 
-    # Crear un objeto HTML a partir de una plantilla o contenido HTML
-    html_content = render_to_string('documentos/acuerdoTraslado.html', html_context)
-    html = HTML(string=html_content)
+        # Guardar el PDF en el Servidor
+        with open(ubicacion_pdf, "wb") as pdf_file:
+            pdf_file.write(pdf_bytes)
 
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="Acuerdo de Traslado {{nombre_extranjero}}.pdf"'
+    # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
+    response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
     return response
