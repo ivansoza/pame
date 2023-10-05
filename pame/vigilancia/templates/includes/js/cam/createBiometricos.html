@@ -1,6 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
 
 <script>
     function resetModal() {
@@ -53,47 +50,29 @@
                 });
     
             // Evento de captura
-            document.getElementById('capturarFoto').onclick = function(event) {
-                event.preventDefault();
-                
-                // Mostrar el contador y establecer en 5
-                const countdownDiv = document.getElementById('countdown');
-                let count = 5;
-                countdownDiv.textContent = count;
-                countdownDiv.style.display = 'block';
-            
-                const interval = setInterval(() => {
-                    count--;
-                    countdownDiv.textContent = count;
-            
-                    if (count <= 0) {
-                        clearInterval(interval);
-                        
-                        // Capturar la imagen
-                        canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                        video.style.display = 'none';
-                        canvas.style.display = 'block';
-                        document.getElementById("capturedImage").style.opacity = "1"; 
-            
-                        document.getElementById('capturarFoto').style.display = 'none';
-                        document.getElementById('confirmarFoto').style.display = 'inline-block';
-                        document.getElementById('nuevaFoto').style.display = 'inline-block';
-            
-                        // Ocultar el contador
-                        countdownDiv.style.display = 'none';
-                    }
-                }, 1000);
-            };
+              document.getElementById('capturarFoto').onclick = function(event) {
+                          event.preventDefault();
+  
+                          // Capturar la imagen inmediatamente sin temporizador
+                          canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                          video.style.display = 'none';
+                          canvas.style.display = 'block';
+                          document.getElementById("capturedImage").style.opacity = "1";
+  
+                          document.getElementById('capturarFoto').style.display = 'none';
+                          document.getElementById('confirmarFoto').style.display = 'inline-block';
+                          document.getElementById('nuevaFoto').style.display = 'inline-block';
+              };
             
             // Evento para tomar nueva foto
             document.getElementById('nuevaFoto').onclick = function(event) {
                 event.preventDefault();
                 canvas.style.display = 'none';
                 video.style.display = 'block';
-
+  
                 document.getElementById("capturedImage").style.opacity = "0";  // <-- Aquí
-
-
+  
+  
                 document.getElementById('capturarFoto').style.display = 'inline-block';
                 document.getElementById('confirmarFoto').style.display = 'none';
                 document.getElementById('nuevaFoto').style.display = 'none';
@@ -139,10 +118,8 @@
             document.getElementById('capturarFoto').style.display = 'inline-block';
             document.getElementById('confirmarFoto').style.display = 'none';
             document.getElementById('nuevaFoto').style.display = 'none';
-            document.getElementById('capturarFoto1').style.display = 'inline-block';
-            document.getElementById('confirmarFoto1').style.display = 'none';
-            document.getElementById('nuevaFoto1').style.display = 'none';
     
         });
     });
-</script>
+  </script>
+  

@@ -21,9 +21,7 @@
         <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</strong></span>
     </h1>
 </div>
-{% comment %} <h1 class="subtitulo-general">
-    De la puesta:<span class="puesta-color" >{{ puesta.numeroOficio }}</span>
-</h1> {% endcomment %}
+
 
 <form method="post" class="card p-3 mt-1" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
@@ -63,7 +61,7 @@
     
         <div class="row">
          
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 <div class="file-input-container">
                     <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
                      class="button-link"
@@ -74,10 +72,10 @@
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.tipoEstancia|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3" >
+            <div class="col-sm-12 col-md-4 col-lg-3" >
                 {{form.estatus|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">

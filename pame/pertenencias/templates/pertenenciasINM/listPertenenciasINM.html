@@ -3,18 +3,21 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDDdssdss22D ">
+        <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
     <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 
 {% endblock link %}
-
 {% block dashboard %}
+<!-- FLECHA DE BACK  -->
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
 {% endblock dashboard %}
 {% block contenido %}
+<!-- TITULO PERTENENCIAS -->
 {% include "includes/tituloPertenencias.html" %}
+<!-- CARD PERTENENCIAS -->
 {% include "includes/cardPertenencias.html" %}
 
 <a class='btn btn-verified tooltip-link' 
@@ -23,25 +26,23 @@
    data-title="Verifica extranjero" >
    <i class="fas fa-fingerprint"></i>
 </a>
+<!-- BOTON PARA CREAR UNA PERTENENCIA -->
 <a class='btn btn-custom btn-unverified' 
    data-bs-toggle="tooltip" 
    data-bs-placement="top" 
    href="{% url 'crear_pertenenciasINM' inventario.id puesta.id%}">
    Agregar Pertenencias
 </a>
-
-
 <br>
 <br>
 
 <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
-            <th>Descripcion</th>
+            <th>Descripción</th>
             <th>Cantidad</th>
             <th>Observaciones</th>
             <th>Opciones</th>
-
         </tr>
     </thead>
     <tbody>

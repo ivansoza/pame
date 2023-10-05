@@ -15,14 +15,18 @@
 {% block contenido %}
 {% include "includes/tituloPertenenciasValor.html" %}
 {% include "includes/cardPertenencias.html" %}
-
+<!-- FINGERPRINT ICONO  -->
 <a class='btn btn-verified tooltip-link' 
    data-bs-toggle="tooltip" 
    data-bs-placement="top" 
    data-title="Verifica extranjero" >
    <i class="fas fa-fingerprint"></i>
 </a>
-<a class='btn btn-custom btn-unverified' href="{% url 'crear_pertenencias_valorINM' inventario_id=inventario.id puesta_id=puesta.id%}" >Agregar Pertenencias</a>
+
+<a class='btn btn-custom btn-unverified' 
+    href="{% url 'crear_pertenencias_valorINM' inventario_id=inventario.id puesta_id=puesta.id%}" >
+    Agregar Pertenencias
+</a>
 
 <br>
 <br>
@@ -48,13 +52,12 @@
                 href="{% url 'editar_pertenencias_valorINM' pertenencia.id  %}"
                 data-title="Editar Valor" >
                 <i class="fas fa-edit"></i>
-               </a>
+                </a>
                 <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified "
                     href="{% url 'eliminar_pertenencias_valorINM' pertenencia.id %}"
                     data-title="Eliminar Pertenencia" >
                     <i class="fas fa-trash-alt"></i>
                     </a>
-    
                 </td>
         </tr>
         {% endfor %}

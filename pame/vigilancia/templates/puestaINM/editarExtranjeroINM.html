@@ -4,24 +4,25 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+
 {% endblock link %}
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
-  <i class="fas fa-arrow-left"></i>
-</a>
-
+    <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+    <i class="fas fa-arrow-left"></i>
+    </a>
 {% endblock dashboard %}
 {% block contenido %}
 
-
-
+<!-- TITULO DE LA PLANTILLA -->
 <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
         Editar datos del extranjero:        
         <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</strong></span>
     </h1>
   </div>
+<br>
 
+<!-- FORMULARIO DE EDICION DEL EXTRANJERO  -->
 
 <form method="post" class="card p-3" enctype="multipart/form-data" >
     <h1>Datos del extranjero</h1>
@@ -60,7 +61,7 @@
         </div>
     
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 <div class="file-input-container">
                     <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
                      class="button-link"
@@ -71,10 +72,10 @@
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.tipoEstancia|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3" >
+            <div class="col-sm-12 col-md-4 col-lg-3" >
                 {{form.estatus|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
@@ -87,16 +88,13 @@
                 {{form.deLaPuestaIMN|as_crispy_field}}
             </div>
         </div>
-
-
-
-            {% comment %} <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}"> {% endcomment %}
         <button class="btn btn-primary float-end btn-custom" type="submit">Guardar</button>
         <br>
         <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>
   
     </form>    
     {% include "includes/camera/modalCamera.html" %}
+
 
 {% endblock %}
 

@@ -164,9 +164,7 @@ class extranjeroFormsInm(forms.ModelForm):
             raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
         return data
     
-    numeroExtranjero = forms.CharField(
-        label= "Numero:",
-    )
+  
    
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
@@ -216,7 +214,7 @@ class editExtranjeroINMForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus','deLaPuestaAC','deLaPuestaVP'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -320,7 +318,7 @@ class editExtranjeroACForms(forms.ModelForm):
         return data
     class Meta:
       model = Extranjero
-      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus']
+      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus','deLaPuestaIMN','deLaPuestaVP']
       widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -409,7 +407,7 @@ class editExtranjeroVPForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus','deLaPuestaIMN','deLaPuestaAC'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
