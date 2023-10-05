@@ -254,9 +254,7 @@ class extranjeroFormsAC(forms.ModelForm):
         return data
   
     
-    numeroExtranjero = forms.CharField(
-        label= "Numero:",
-    )
+ 
     
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
@@ -356,9 +354,7 @@ class extranjeroFormsVP(forms.ModelForm):
             raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
         return data
 
-    numeroExtranjero = forms.CharField(
-        label= "Numero:",
-    )
+  
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Luis"}),
