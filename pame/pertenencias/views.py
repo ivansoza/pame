@@ -714,6 +714,8 @@ class ListaEnseresViewAC(ListView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'
+        context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
+        context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         return context
     
 class CrearEnseresAC(CreateView):
@@ -736,6 +738,8 @@ class CrearEnseresAC(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadAC'
+        context['extranjero_id'] = extranjero_id
+        context['puesta_id'] = puesta_id
         return context
     
     def form_valid(self, form):
@@ -1066,6 +1070,8 @@ class ListaEnseresViewUP(ListView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'
+        context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
+        context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         return context
     
 class CrearEnseresVP(CreateView):
@@ -1088,6 +1094,8 @@ class CrearEnseresVP(CreateView):
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadVP'
+        context['extranjero_id'] = extranjero_id
+        context['puesta_id'] = puesta_id
         return context
     
     def form_valid(self, form):
