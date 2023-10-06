@@ -990,11 +990,7 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
         except Usuario.DoesNotExist:
             pass
 
-        ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
-        initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
+        return {'deLaPuestaIMN': puesta, 'deLaEstacion':estacion, 'viajaSolo':viaja_solo} 
 
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -1005,12 +1001,52 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
             estacion.capacidad -= 1
             estacion.save()
 
-        extranjero = form.save(commit=False)
-        extranjero.puesta = puesta
-        extranjero.save()
+        nuevo_consecutivo = 1   
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
+            estacion = Estacion.objects.get(pk=estacion_id)
+            numero_identificador = estacion.identificador
+        except Usuario.DoesNotExist:
+            pass
+        with transaction.atomic():
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
 
-        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+            # Guarda el objeto para obtener un ID asignado
+            extranjero.save()
 
+            # Asigna el númeroExtranjero basado en el ID del registro
+            year_actual = extranjero.fechaRegistro.year  # Obtiene el año actual
+            nomenclatura = usuario_data.estancia.identificador  # Tu nomenclatura personalizada
+            numero_extranjero = f"{year_actual}/{nomenclatura}/{extranjero.id}"
+            extranjero.numeroExtranjero = numero_extranjero
+
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
+
+            # Crea un registro en la tabla NoProceso
+            no_proceso = NoProceso(
+                agno=extranjero.fechaRegistro,
+                extranjero=extranjero,
+                consecutivo=nuevo_consecutivo,
+                nup=nup
+            )
+            no_proceso.save()
+
+            # Crea un registro en la tabla Proceso
+            proceso = Proceso(
+                estacionInicio=estacion,
+                fechaInicio=extranjero.fechaRegistro,
+                nup=no_proceso  # Establece la relación con el registro de NoProceso recién creado
+            )
+            proceso.save()
+
+            instance = form.save(commit=False)
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
             if file:
@@ -1173,13 +1209,9 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
-        ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'{numero_identificador_puesta}/{ultimo_numero + 1:06d}'
-        initial['numeroExtranjero'] = nuevo_numero
         viaja_solo = True
         initial['viajaSolo'] = viaja_solo
-        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo': viaja_solo } 
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'viajaSolo': viaja_solo } 
      
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -1189,14 +1221,31 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
+        nuevo_consecutivo = 1   
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
+            estacion = Estacion.objects.get(pk=estacion_id)
+            numero_identificador = estacion.identificador
+        except Usuario.DoesNotExist:
+            pass
         with transaction.atomic():
             extranjero = form.save(commit=False)
             extranjero.puesta = puesta
+
+            # Guarda el objeto para obtener un ID asignado
             extranjero.save()
 
-            # Establece el consecutivo como 1 por defecto
-            nuevo_consecutivo = 1
-
+            # Asigna el númeroExtranjero basado en el ID del registro
+            year_actual = extranjero.fechaRegistro.year  # Obtiene el año actual
+            nomenclatura = usuario_data.estancia.identificador  # Tu nomenclatura personalizada
+            numero_extranjero = f"{year_actual}/{nomenclatura}/{extranjero.id}"
+            extranjero.numeroExtranjero = numero_extranjero
             nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
 
             # Crea un registro en la tabla NoProceso
@@ -1736,13 +1785,9 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
             initial['deLaEstacion'] = estacion
         except Usuario.DoesNotExist:
             pass
-        ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
-        initial['numeroExtranjero'] = nuevo_numero
         viaja_solo = True
         initial['viajaSolo'] = viaja_solo
-        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo': viaja_solo } 
+        return {'deLaPuestaAC': puesta, 'deLaEstacion':estacion,'viajaSolo': viaja_solo } 
      
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -1752,12 +1797,52 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()
+        nuevo_consecutivo = 1   
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
+            estacion = Estacion.objects.get(pk=estacion_id)
+            numero_identificador = estacion.identificador
+        except Usuario.DoesNotExist:
+            pass
+        with transaction.atomic():
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
 
-        extranjero = form.save(commit=False)
-        extranjero.puesta = puesta
-        extranjero.save()
+            # Guarda el objeto para obtener un ID asignado
+            extranjero.save()
 
-        instance = extranjero  # Ya que extranjero es la instancia que acabas de guardar
+            # Asigna el númeroExtranjero basado en el ID del registro
+            year_actual = extranjero.fechaRegistro.year  # Obtiene el año actual
+            nomenclatura = usuario_data.estancia.identificador  # Tu nomenclatura personalizada
+            numero_extranjero = f"{year_actual}/{nomenclatura}/{extranjero.id}"
+            extranjero.numeroExtranjero = numero_extranjero
+
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
+
+            # Crea un registro en la tabla NoProceso
+            no_proceso = NoProceso(
+                agno=extranjero.fechaRegistro,
+                extranjero=extranjero,
+                consecutivo=nuevo_consecutivo,
+                nup=nup
+            )
+            no_proceso.save()
+
+            # Crea un registro en la tabla Proceso
+            proceso = Proceso(
+                estacionInicio=estacion,
+                fechaInicio=extranjero.fechaRegistro,
+                nup=no_proceso  # Establece la relación con el registro de NoProceso recién creado
+            )
+            proceso.save()
+
+            instance = form.save(commit=False)
 
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
@@ -2073,12 +2158,7 @@ class createExtranjeroVP(CreateView):
             initial['viajaSolo']= viaja_solo
         except Usuario.DoesNotExist:
             pass
-
-        ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'{numero_identificador_puesta}/{ultimo_numero + 1:06d}'
-        initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
+        return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'viajaSolo':viaja_solo} 
 
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -2087,9 +2167,33 @@ class createExtranjeroVP(CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
-        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
-        extranjero.puesta = puesta
-        extranjero.save()  #
+        nuevo_consecutivo = 1   
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
+            estacion = Estacion.objects.get(pk=estacion_id)
+            numero_identificador = estacion.identificador
+        except Usuario.DoesNotExist:
+            pass
+        with transaction.atomic():
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
+
+            # Guarda el objeto para obtener un ID asignado
+            extranjero.save()
+
+            # Asigna el númeroExtranjero basado en el ID del registro
+            year_actual = extranjero.fechaRegistro.year  # Obtiene el año actual
+            nomenclatura = usuario_data.estancia.identificador  # Tu nomenclatura personalizada
+            numero_extranjero = f"{year_actual}/{nomenclatura}/{extranjero.id}"
+            extranjero.numeroExtranjero = numero_extranjero
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
+
         instance = form.save(commit=False)
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
@@ -2611,11 +2715,7 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
         except Usuario.DoesNotExist:
             pass
 
-        ultimo_registro = Extranjero.objects.order_by('-id').first()
-        ultimo_numero = int(ultimo_registro.numeroExtranjero.split(f'/')[-1]) if ultimo_registro else 0
-        nuevo_numero = f'{datetime.now().year}/EXT/{estacion_id}/{usuario_id}/{ultimo_numero + 1:06d}'
-        initial['numeroExtranjero'] = nuevo_numero
-        return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'numeroExtranjero':nuevo_numero, 'viajaSolo':viaja_solo} 
+        return {'deLaPuestaVP': puesta, 'deLaEstacion':estacion, 'viajaSolo':viaja_solo} 
 
     def form_valid(self, form):
         puesta_id = self.kwargs['puesta_id']
@@ -2624,10 +2724,52 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()     
-        extranjero = form.save(commit=False)  # Crea una instancia de Extranjero sin guardarla en la base de datos
-        extranjero.puesta = puesta
-        extranjero.save()  #
-        instance = form.save(commit=False)
+        nuevo_consecutivo = 1   
+        Usuario = get_user_model()
+        usuario = self.request.user
+        try:
+            usuario_data = Usuario.objects.get(username=usuario.username)
+            usuario_id = usuario_data.id
+            estacion_id = usuario_data.estancia_id
+            estado = usuario_data.estancia.estado.estado
+            estacionM = usuario_data.estancia.nombre
+            estacion = Estacion.objects.get(pk=estacion_id)
+            numero_identificador = estacion.identificador
+        except Usuario.DoesNotExist:
+            pass
+        with transaction.atomic():
+            extranjero = form.save(commit=False)
+            extranjero.puesta = puesta
+
+            # Guarda el objeto para obtener un ID asignado
+            extranjero.save()
+
+            # Asigna el númeroExtranjero basado en el ID del registro
+            year_actual = extranjero.fechaRegistro.year  # Obtiene el año actual
+            nomenclatura = usuario_data.estancia.identificador  # Tu nomenclatura personalizada
+            numero_extranjero = f"{year_actual}/{nomenclatura}/{extranjero.id}"
+            extranjero.numeroExtranjero = numero_extranjero
+
+            nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
+
+            # Crea un registro en la tabla NoProceso
+            no_proceso = NoProceso(
+                agno=extranjero.fechaRegistro,
+                extranjero=extranjero,
+                consecutivo=nuevo_consecutivo,
+                nup=nup
+            )
+            no_proceso.save()
+
+            # Crea un registro en la tabla Proceso
+            proceso = Proceso(
+                estacionInicio=estacion,
+                fechaInicio=extranjero.fechaRegistro,
+                nup=no_proceso  # Establece la relación con el registro de NoProceso recién creado
+            )
+            proceso.save()
+
+            instance = form.save(commit=False)
 
         def handle_file(file_field_name):
             file = self.request.FILES.get(file_field_name)
@@ -3230,3 +3372,22 @@ def compare_faces(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+
+class ResumenViewINM(DetailView):
+    model = Extranjero
+    template_name = 'puestaINM/resumenExtranjeroINM.html'
+    context_object_name = 'extranjero'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero = self.object
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        context['puesta'] = extranjero.deLaPuestaIMN
+        return context 
+
+
+    
+  

@@ -11,6 +11,12 @@ OPCION_STATUS_CHOICES=[
     [2,'RECHAZADO'],
 ]
 
+TRASLADO_STATUS_CHOICES = (
+    (0, 'No iniciado'),  # No ha iniciado el traslado aún
+    (1, 'Inicio del Traslado'),
+    (2, 'En Traslado'),
+    (3, 'Llegada'),
+)
 
 
 class Traslado(models.Model):
@@ -27,6 +33,9 @@ class Traslado(models.Model):
     responsableRecibe = models.CharField(max_length=100)
     enTraslado = models.BooleanField(default=False)
     status = models.IntegerField(choices=OPCION_STATUS_CHOICES, default=0)  # Proporcionar un valor predeterminado
+    motivo_rechazo = models.TextField(null=True, blank=True)
+    status_traslado = models.IntegerField(choices=TRASLADO_STATUS_CHOICES, default=0)
+
 
     def __str__(self):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
