@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1, EditarExtranjeroINMProceso
+from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1, EditarExtranjeroINMProceso, ResumenViewINM
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1, EditarExtranjeroACProceso
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1, EditarExtranjeroVPProceso
 from .views import CalcularTamanoDiscoView, listarTraslado
@@ -33,6 +33,8 @@ urlpatterns = [
     path('DeleteAcompananteINM1/<int:pk>/', DeleteAcompananteINM1.as_view(), name='delete_acompananteINM1'),
     path('csalcular/<int:pk>/', CalcularTamanoDiscoView.as_view(), name='calcular'),
     path('editarExtranjeroINMproceso/<int:pk>/<int:puesta_id>/', EditarExtranjeroINMProceso.as_view(), name='editarExtranjeroINMproceso'),
+    path('resumenINM/<int:pk>/', ResumenViewINM.as_view(), name='resumenINM'),
+
 
 
 
