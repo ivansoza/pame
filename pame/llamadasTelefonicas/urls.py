@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from .views import homeLLamadasTelefonicas, llamadasTelefonicas, ListLlamadas, crearLlamadas, ListLlamadasAC, crearLlamadasAC, crearLlamadas_AC, notificacionLlamadaINM, notificacionLlamadaAC, notificacionLlamadaVP, ListLlamadasVP, crearLlamadasVP
-from .views import validarNotificacion, validarNotificacionAC, validarNotificacionVP
+from .views import validarNotificacion, validarNotificacionAC, validarNotificacionVP, manejar_imagen
 urlpatterns = [
     # path('', homeLLamadasTelefonicas, name="homeLLamadasTelefonicas"),
     # path('llamadas', llamadasTelefonicas.as_view(), name="llamadasTelefonicas"),
@@ -19,7 +19,7 @@ urlpatterns = [
     path('crear-llamada_vp/<int:llamada_id>/<int:puesta_id>/', crearLlamadasVP.as_view(), name='crear_llamada_vp'),
     path('validar-notificacion/<int:llamada_id>/<int:puesta_id>/', validarNotificacion.as_view(), name='validar_notificacion'),
     path('validar-notificacion-AC/<int:llamada_id>/<int:puesta_id>/', validarNotificacionAC.as_view(), name='validar-notificacion-ac'),
-    path('validar-notificacion-VP/<int:llamada_id>/<int:puesta_id>/', validarNotificacionAC.as_view(), name='validar-notificacion-vp'),
-
+    path('validar-notificacion-VP/<int:llamada_id>/<int:puesta_id>/', validarNotificacionVP.as_view(), name='validar-notificacion-vp'),
+    path('manejar_imagen/', manejar_imagen, name='manejar_imagen'),
 
 ]

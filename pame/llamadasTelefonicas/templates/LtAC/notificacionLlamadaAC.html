@@ -11,154 +11,405 @@
 {% endblock dashboard %}
 {% block contenido %}
 <style>
-    .container {
-      width: 80%;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      justify-content: space-between;
-      flex-direction: column;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background-color: white;
-    }
-    
-    .header {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    
-    @media (min-width: 768px) {
-      .container {
-        flex-direction: row;
-        text-align: left;
-      }
-    
-      .image-container {
-        flex: 1;
-      }
-    
-      .text-container {
-        flex: 2;
-        padding-left: 20px;
-        text-align: left;
-      }
-    }
-    
-    .text {
-      font-size: 18px;
-      line-height: 1.6;
-    }
-    
-    .image {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-    .language-select-box {
-      padding: 5px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: white;
-      color: #333;
-      cursor: pointer;
-    }
-
-    .language-select-box:focus {
-      outline: none;
-      border-color: #66afe9;
-      box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
-    }
-    </style>
-    <div class="titulo-general-container">
-        <h1 class="titulo-general">
-            Notificación de Llamada Telefónica           
-        </h1>
-      </div>
-      <br>
-      <br>
-    <div class="container">
-        <div class="content-container">
-          <div class="image-container">
-            <img class="image" src=" {% static 'img/gh.jpg' %} " style="width: 300px;" class="logo-img">        </div>
-        </div>
-          <div class="text-container">
-            <div class="language-select" style="align-items: end;">
-                <label for="language">Select Language:</label>
-                <select id="language" onchange="changeLanguage()"class="language-select-box">
-                  <option value="en">English</option>
-                  <option value="es">Español</option>
-                </select>
-              </div>
-            <div class="text" id="text-content">                
-                <p>Mr or Mrs <strong style="color: rgb(161, 13, 13);">{{nombreCompleto}}</strong>,</p>
-                <p>You are informed that at the {{estancia_extranjero}} you are allowed to make a phone call.</p>
-                <p>Please follow the instructions from the station's personnel to make your call.</p>
-                <p>We appreciate your cooperation.</p>
-                <p>Station Manager : <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
-                <p>Date: <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <a  href="{% url 'validar-notificacion-ac' llamada.id puesta.id %}"class="btn btn-custom" onclick="abrir_modal(this.href); return false;">I accept that I have been notified</a>
-           </div>
-        </div>
-      </div>
-
-     <script>
-        function changeLanguage() {
-          const language = document.getElementById('language').value;
-          const textContent = document.getElementById('text-content');
+  .container {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: white;
+  }
   
-         if (language === 'en') {
-           textContent.innerHTML = `
-           <p><strong style="color: rgb(161, 13, 13);">{{nombreCompleto}}</strong>,</p>
-                <p>You are informed that at {{estancia_extranjero}} station you are allowed to make a phone call.</p>
-                <p>Please follow the instructions from the station's personnel to make your call.</p>
-                <p>We appreciate your cooperation.</p>
-                <p> <strong>Station Manager :</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
-                <p><strong>Date:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <a  href="{% url 'validar-notificacion-ac' llamada.id puesta.id %}"class="btn btn-custom" onclick="abrir_modal(this.href); return false;">I accept that I have been notified</a>
-                `;
-        } else if (language === 'es') {
-           textContent.innerHTML = `
-           <p> <strong style="color: rgb(161, 13, 13);">{{nombreCompleto}}</strong>,</p>
-           <p>Se le informa que en la estación {{estancia_extranjero}} se le permite hacer una llamada telefónica.</p>
-           <p>Por favor, siga las instrucciones del personal de la estación para realizar su llamada.</p>
-           <p>Agradecemos su cooperación.</p>
-           <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
-           <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-           <a  href="{% url 'validar-notificacion-ac' llamada.id puesta.id %}"class="btn btn-custom" onclick="abrir_modal(this.href); return false;">Acepto que he sido notificado</a>
-           `;
-        }      
+  .header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      flex-direction: row;
+      text-align: left;
+    }
+  
+    .image-container {
+      flex: 1;
+    }
+  
+    .text-container {
+      flex: 2;
+      padding-left: 20px;
+      text-align: left;
+    }
+  }
+  
+  .text {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  .image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .language-select-box {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+  }
+
+  .language-select-box:focus {
+    outline: none;
+    border-color: #66afe9;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+  }
+  </style>
+  <div class="titulo-general-container">
+      <h1 class="titulo-general">
+          Notificación de Llamada Telefónica           
+      </h1>
+    </div>
+    <br>
+    <div class="container">
+      <div class="content-container">
+          <div class="image-container">
+              <img class="image" src="{% static 'img/gh.jpg' %}" style="width: 300px;" class="logo-img">
+          </div>
+      </div>
+      <div class="text-container">
+          <div class="text" id="text-content" style="text-align: justify;">
+              <p>Sr(a)<strong style="color: rgb(161, 13, 13);"> {{nombreCompleto}}</strong>,</p>
+              <p>Se le informa que en cumplimiento a lo establecido en los artículos, 109 fraccíon Vll de la Ley de Migración; 226 fracción lX, 232 fracción lV y 237 del 
+                  Reglamento de la Ley de Migración; 18 y 24 fracción lX del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias 
+                  Provisionales del Instituto Nacional de Migración, se levanta la presente:</p>
+              <p style="text-align: center;"><strong>Constancia de llamada telefónica</strong></p>
+              <p>Por favor, siga las instrucciones del personal de la estación, agradecemos su cooperación.</p>
+              <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
+              <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
+              <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a>
+          </div>
+      </div>
+  </div>
+  
+  <script>
       const currentDate = new Date();
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      const formattedDate = currentDate.toLocaleDateString(language, options);
+      const formattedDate = currentDate.toLocaleDateString('es-ES', options); // Cambia 'es-ES' al código de tu idioma
       document.getElementById('currentDate').textContent = formattedDate;
-    } 
-      changeLanguage();
-    
-    </script>
-    <div class="modal fade" id="agregarllamada" role="dialog"></div>
+  </script>
+  
+      
+  
+  
+<div class="modal fade" id="agregarllamada" role="dialog"></div>
 
+
+<div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Capturar Foto</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <span id="timerSpan" style="margin-left: 10px; display: none;">3</span>
+        </div>
+        <div class="modal-body d-flex justify-content-center align-items-center">
+            <div class="capture-container">
+                <video id="webcam" width="640" height="480" autoplay></video>
+                <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
+                <div id="countdown"
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
+                    5</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
+            <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
+            <button id="nuevaFoto" class=" btn btn-custom1">Tomar nueva foto</button>
+        </div>
+    </div>
+</div>
+</div>
 {% endblock contenido %}
 
 {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+<script>
+let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
+let isVerified = verifiedObj.time && 
+    verifiedObj.puestaId === '{{ puesta_id }}' && 
+    verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
+    (new Date().getTime() - verifiedObj.time) < 30;
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+if (isVerified) {
+    // También debemos establecer un nuevo temporizador para manejar el caso en que la página no se recargue
+    setTimeout(() => {
+        isVerified = false;
+        localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
+        bloquearBotones();
+
+    }, 30 - (new Date().getTime() - verifiedObj.time));
+    // Lo elimina
+   
+    
+
+    
+}else {
+    document.querySelectorAll('.btn-verified').forEach(function(btn) {
+        btn.addEventListener('click', function(event) {
+            event.preventDefault();
+            let modal = new bootstrap.Modal(document.getElementById('webcamModal'), {
+                keyboard: false
+            });
+    
+            let video = document.getElementById('webcam');
+            let canvas = document.getElementById('capturedImage');
+
+            // Muestra el modal
+            resetModal();
+            modal.show();
+            // Solicita permiso para acceder a la webcam
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                // Si se ha resuelto la promesa con éxito, registra en la consola.
+                console.log("Acceso a la webcam concedido.");
+                
+                // Asume que tienes una variable 'video' referenciando tu elemento <video> en el HTML.
+                if (video) {
+                    video.srcObject = stream; // Asigna el stream de media obtenido a la propiedad srcObject del elemento <video>.
+                    video.play(); // Comienza a reproducir el video.
+                } else {
+                    console.error("Error: El elemento <video> no está definido.");
+                }
+            })
+            .catch(function (error) {
+                // Si hay un error (promesa rechazada), registra el error en la consola.
+                console.error("Error accediendo a la webcam: ", error);
+                console.log("Asegúrate de haber concedido los permisos necesarios para acceder a la webcam.");
+            });
+
+            document.getElementById('capturarFoto').onclick = function(event) {
+                    event.preventDefault();
+
+                    // Capturar la imagen inmediatamente sin temporizador
+                    canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                    video.style.display = 'none';
+                    canvas.style.display = 'block';
+                    document.getElementById("capturedImage").style.opacity = "1";
+
+                    document.getElementById('capturarFoto').style.display = 'none';
+                    document.getElementById('confirmarFoto').style.display = 'inline-block';
+                    document.getElementById('nuevaFoto').style.display = 'inline-block';
+                };
+
+
+                document.getElementById('nuevaFoto').onclick = function(event) {
+                    event.preventDefault();
+                    canvas.style.display = 'none';
+                    video.style.display = 'block';
+
+                    document.getElementById("capturedImage").style.opacity = "0";
+
+                    document.getElementById('capturarFoto').style.display = 'inline-block';
+                    document.getElementById('confirmarFoto').style.display = 'none';
+                    document.getElementById('nuevaFoto').style.display = 'none';
+
+                    if (video.srcObject) {
+                        video.srcObject.getTracks().forEach(track => track.stop());
+                    }
+                    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                        video.srcObject = stream;
+                    });
+                };
+
+
+                document.getElementById('confirmarFoto').onclick = function(event) {
+                    event.preventDefault();
+                    canvas.toBlob(function(blob) {
+                        let file = new File([blob], "foto_webcam.png", {type: "image/png"});
+
+                        let formData = new FormData();
+                        var puestaId = '{{ puesta_id }}';  // Accediendo al ID del Extranjero en JavaScript
+                        var extranjeroId = '{{ llamada_id }}';  // Accediendo al ID del Extranjero en JavaScript
+                        formData.append('image', file);  // Adjunta la imagen al formulario
+                        formData.append('llamada_id', extranjeroId);  // Añade el id del Extranjero al FormData
+
+                        $.ajax({
+                            url: '/llamadas-telefonicas/manejar_imagen/',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            headers: {'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()},
+                            success: function(data) {
+                                if (data.match) {
+                                    isVerified = true; // Cambiar el estado a verificado
+                                    localStorage.setItem('verifiedTime', JSON.stringify({ 
+                                        time: new Date().getTime(), 
+                                        puestaId: '{{ puesta_id }}',
+                                        extranjeroId: '{{ extranjero_id }}',
+
+                                    }));
+                                    
+                                    setTimeout(() => {
+                                        isVerified = false;
+                                        localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
+                                    }, 300000);
+                                    Swal.fire({
+                                      icon: 'success',
+                                      title: '¡Coincidencia Exitosa!',
+                                      confirmButtonText: 'Aceptar',
+                                      confirmButtonColor: '#20302B',
+                                      reverseButtons: true,
+                                  }).then((result) => {
+                                      if (result.isConfirmed) {
+                                          abrir_modal("{% url 'validar-notificacion-ac' llamada.id puesta.id %}");
+
+
+                                      }
+                                  });
+                                   
+
+                                } else {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: '¡No hay coincidencia!',
+                                        confirmButtonText: 'Ok',
+                                        confirmButtonColor: '#2A4B41',
+
+                                        
+                                    });
+                                }
+                            },
+                            error: function(error) {
+                                console.error('Error al enviar la imagen:', error.responseText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: '¡Rostro no localizado!',
+                                    confirmButtonColor: '#2A4B41',
+
+                                });
+                            }
+                        });
+
+                        modal.hide();
+                        if (video.srcObject) {
+                            video.srcObject.getTracks().forEach(track => track.stop());
+                        }
+                    }, 'image/png');
+                };
+
+
+        });
+    });
+
+}
+function resetModal() {
+    let video = document.getElementById('webcam');
+    let canvas = document.getElementById('capturedImage');
+
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+    video.removeAttribute('src');
+    video.load();
+
+    video.style.display = 'block'; // Mostrar video
+    canvas.style.display = 'none'; // Ocultar canvas
+
+    document.getElementById('capturarFoto').style.display = 'inline-block';
+    document.getElementById('confirmarFoto').style.display = 'none';
+    document.getElementById('nuevaFoto').style.display = 'none';
+}
+
+
+
+
+document.querySelectorAll('.btn-custom, .btn-icon3').forEach(function(btn) {
+    btn.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        if (isVerified) {
+          
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: '¡Verifica el Usuario para acceder!',
+                showCancelButton: true, // Esto hará visible el botón de cancelar
+                confirmButtonText: 'Ok',
+                cancelButtonText: 'Verificar', // Este será tu botón adicional
+                cancelButtonColor: '#85364A',
+                confirmButtonColor: '#2A4B41',
+                // Ejemplo de color rojo, reemplaza por el color que prefieras
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Aquí puedes colocar el código que se ejecutará cuando se presione el botón "Ok"
+                    console.log('Se presionó el botón Ok');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Aquí puedes colocar el código que se ejecutará solo si se presiona el botón "Verificar"
+                    console.log('Se presionó el botón Verificar');
+                    document.querySelectorAll('.btn-verified').forEach(function(btn) {
+                        btn.click(); // Esto desencadenará el evento de clic en cada botón con la clase 'btn-verified'
+                    });
+                } else {
+                    // Aquí puedes manejar otros casos de dismiss, como hacer clic fuera del SweetAlert
+                    console.log('SweetAlert fue cerrado por otra razón');
+                }
+            });
+        }
+    });
+});
+
+$('#webcamModal').on('hidden.bs.modal', function() {
+    let video = document.getElementById('webcam');
+    let canvas = document.getElementById('capturedImage');
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+    video.style.display = 'block';
+    canvas.style.display = 'none';
+    document.getElementById('capturarFoto').style.display = 'inline-block';
+    document.getElementById('confirmarFoto').style.display = 'none';
+    document.getElementById('nuevaFoto').style.display = 'none';
+});
+
+
+function bloquearBotones() {
+    document.querySelectorAll('.btn-verified').forEach(function(btn) {
+        btn.add(); // Agregar botones de nuevo, o cambiar a estado bloqueado
+    });
+    document.querySelectorAll('.btn-unverified').forEach(function(btn) {
+        btn.classList.add('btn-unverified');
+    });
+}
+</script>
+{% include "includes/js/fecha.html" %}
+{% include "includes/js/cam/camera.html" %}
 
 
 <script type="text/javascript">
-    var $ = jQuery.noConflict();
-    function abrir_modal(url){
-        $('#agregarllamada').load(url, function(){
-            $(this).modal('show');
-        })
-    }
-    
+  var $ = jQuery.noConflict();
+  function abrir_modal(url){
+      $('#agregarllamada').load(url, function(){
+          $(this).modal('show');
+      })
+  }
+  
 </script>
 
 
