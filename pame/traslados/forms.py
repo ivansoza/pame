@@ -14,7 +14,7 @@ class TrasladoForm(forms.ModelForm):
 class EstatusTrasladoForm(forms.ModelForm):
     class Meta:
         model = Traslado
-        fields = ['status']
+        fields = ['status', 'nombreAutoridadRecibe']
 
 class EstatusTrasladoFormExtranjero(forms.ModelForm):
     class Meta:

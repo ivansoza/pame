@@ -3372,3 +3372,22 @@ def compare_faces(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+
+class ResumenViewINM(DetailView):
+    model = Extranjero
+    template_name = 'puestaINM/resumenExtranjeroINM.html'
+    context_object_name = 'extranjero'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero = self.object
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        context['puesta'] = extranjero.deLaPuestaIMN
+        return context 
+
+
+    
+  

@@ -54,13 +54,14 @@
           <td style='color:#85364A; font-weight: bold;'>Rechazado</td> 
           {% endif %}
           <td>
+            <!-- Icono Ver Extranjeros -->
             <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listaExtranjerosTraslado' puesta.id %}" data-title="Ver extranjeros">
-                <i class="fas fa-eye"></i> <!-- Icono Ver Extranjeros -->
+                <i class="fas fa-eye"></i> 
             </a>
-            <a class="btn btn-sm btn-icon4 tooltip-link"  data-toggle="modal"  data-target="#exampleModal" href="#" data-title="Ver detalles" 
-            data-nombreautoridad="{{ puesta.nombreAutoridadEnvia }}" data-fechasolicitud="{{ puesta.fechaSolicitud|date:"F j, Y, P" }}">
-            <i class="fas fa-tasks"></i>
-         </a>
+            <!-- Icono para ver el seguimiento -->
+            <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'seguimientoPuesta' puesta.id %}" data-title="Ver seguimiento">
+              <i class="fas fa-chart-bar"></i>
+            </a>
         </td>
       </tr>
       
