@@ -54,13 +54,14 @@
           <td style='color:#85364A; font-weight: bold;'>Rechazado</td> 
           {% endif %}
           <td>
+            <!-- Icono Ver Extranjeros -->
             <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listaExtranjerosTraslado' puesta.id %}" data-title="Ver extranjeros">
-                <i class="fas fa-eye"></i> <!-- Icono Ver Extranjeros -->
+                <i class="fas fa-eye"></i> 
             </a>
-            <a class="btn btn-sm btn-icon4 tooltip-link"  data-toggle="modal"  data-target="#exampleModal" href="#" data-title="Ver detalles" 
-            data-nombreautoridad="{{ puesta.nombreAutoridadEnvia }}" data-fechasolicitud="{{ puesta.fechaSolicitud|date:"F j, Y, P" }}">
-            <i class="fas fa-tasks"></i>
-         </a>
+            <!-- Icono para ver el seguimiento -->
+            <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'seguimientoPuesta' puesta.id %}" data-title="Ver seguimiento">
+              <i class="fas fa-chart-bar"></i>
+            </a>
         </td>
       </tr>
       
@@ -82,36 +83,6 @@
   <br>
 
 </div>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Detalles de Traslado</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="nombre-autoridad" class="col-form-label">Nombre de Autoridad:</label>
-            <input type="text" class="form-control" id="nombre-autoridad" readonly>
-          </div>
-          <div class="form-group">
-            <label for="fecha-solicitud" class="col-form-label">Fecha de Solicitud:</label>
-            <input type="text" class="form-control" id="fecha-solicitud" readonly>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 {% endblock contenido %}
 {% block datatable %}
  {
@@ -134,21 +105,5 @@
 {% endblock datatable %}
 {% block script %}
 
-$(document).ready(function(){
-  $('#exampleModal').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget); // Botón que activó el modal
-      var nombreAutoridad = button.data('nombreautoridad'); // Extraer la información de los atributos data-*
-      var fechaSolicitud = button.data('fechasolicitud');
-      
-      // Si necesitas más campos, repite el proceso aquí
-      
-      // Actualizar los campos del modal con los valores extraídos
-      var modal = $(this);
-      modal.find('#nombre-autoridad').val(nombreAutoridad);
-      modal.find('#fecha-solicitud').val(fechaSolicitud);
-      
-      // Si agregas más campos, asegúrate de actualizarlos aquí también
-  });
-});
 
 {% endblock script %}

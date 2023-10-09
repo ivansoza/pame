@@ -193,13 +193,31 @@ class cambiarStatus(UpdateView):
     template_name = 'modal/seleccionarSttausdeTraslado.html'
 
     def form_valid(self, form):
-        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
-        if 'status' in form.changed_data:
+        # Si el estatus cambió a ACEPTADO
+        if 'status' in form.changed_data and form.instance.status == 1: 
             form.instance.fecha_aceptacion = timezone.now()
+            form.instance.nombreAutoridadRecibe = self.request.user.get_full_name()
+
+        # Si el estatus cambió a RECHAZADO
+        if 'status' in form.changed_data and form.instance.status == 2:  
+            form.instance.fecha_rechazo = timezone.now()
+            # El motivo_rechazo se capturará directamente desde el formulario
+        
         return super(cambiarStatus, self).form_valid(form)
+
 
     def get_success_url(self):
         return reverse('traslados_recibidos')
+    def get_initial(self):
+            initial = super().get_initial()
+            
+            # Obtener el nombre completo del usuario actual
+            nombre_usuario = self.request.user.get_full_name()
+            
+            # Establecer ese nombre como valor inicial para 'nombreAutoridadRecibe'
+            initial['nombreAutoridadRecibe'] = nombre_usuario
+            
+            return initial
 
 class ListTrasladoDestino(ListView):
     model = Traslado
@@ -443,3 +461,29 @@ class cambiarStatusExtranjero(UpdateView):
         puesta_id = self.object.delTraslado.id
         messages.success(self.request, 'Status cambiado.')
         return reverse('listaExtranjerosTrasladoDestino', args=[puesta_id])
+    
+
+class seguimientoPuesta(DetailView):
+    model = Traslado
+    template_name = "origen/seguimientoPuesta.html" 
+    context_object_name = 'Traslado'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado = self.object
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+ # Cambia esto según la página activa
+        return context 
+    
+class seguimientoPuestaDestino(DetailView):
+    model = Traslado
+    template_name = "destino/seguimientoPuestaDestino.html" 
+    context_object_name = 'Traslado'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado = self.object
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'arribo'  # Cambia esto según la página activa
+        return context 
