@@ -22,6 +22,43 @@
 	width:100%;
 	margin-top:-40px
 }
+#progress-bar-container li.stepRechazado:before {
+    content:" ";
+    display:block;
+    margin:auto;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:solid 2px #ff0000; /* rojo para rechazado */
+    transition:all ease 0.3s;
+}
+
+#progress-bar-container li.stepRechazado.active:before {
+    background: #ff0000; /* relleno rojo para el estado activo de rechazado */
+}
+
+#progress-bar-container li.stepRechazado {
+    list-style:none;
+    float:left;
+    width:16.66%; /* Se reduce el ancho ya que ahora hay 6 estados en lugar de 5 */
+    text-align:center;
+    color:#aaa;
+    text-transform:uppercase;
+    font-size:11px;
+    cursor:pointer;
+    font-weight:700;
+    transition:all ease 0.2s;
+    vertical-align:bottom;
+    height:60px;
+    position:relative;
+}
+
+#progress-bar-container li.stepRechazado .step-inner {
+    position:absolute;
+    width:100%;
+    bottom:0;
+    font-size: 14px;
+}
 
 #progress-bar-container li:before {
 	content:" ";
@@ -115,6 +152,10 @@
 	transition:all ease 0.9s;
 }
 
+#progress-bar-container #line-progress.rechazado {
+    background-color: red;
+}
+
 #progress-content-section {
 	width:90%;
 	margin: auto;
@@ -157,6 +198,7 @@
     pointer-events: none;  /* Deshabilita todos los eventos de ratón */
     opacity: 0.5;          /* Hace el paso semi-transparente */
 }
+
 
 
 @keyframes FadeInUp {

@@ -24,9 +24,13 @@
         </div>
      
         {% load crispy_forms_tags %}
-        <form action="{% url 'editar-status'  object.id %}" method="POST">
+        <form action="{% url 'editar-status'  object.id %}" method="POST" id="cambio-status-form">
             {% csrf_token %}
-            {{ form|crispy }}
+            {{ form.status|as_crispy_field }}
+            {{ form.nombreAutoridadRecibe|as_crispy_field }}
+            <div id="motivo-rechazo-wrapper">
+                {{ form.motivo_rechazo|as_crispy_field }}
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom2">Confirmar</button>
@@ -34,3 +38,22 @@
         </form>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        // Función para mostrar/ocultar el campo de motivo en función del estado seleccionado.
+        function toggleMotivoRechazoField() {
+            if ($("#id_status").val() == "2") {  // Asumiendo que 2 es el valor para RECHAZADO
+                $("#motivo-rechazo-wrapper").show();
+            } else {
+                $("#motivo-rechazo-wrapper").hide();
+            }
+        }
+
+        // Llamar a la función al cargar la página.
+        toggleMotivoRechazoField();
+
+        // Llamar a la función cada vez que cambie el estado.
+        $("#id_status").change(toggleMotivoRechazoField);
+    });
+</script>

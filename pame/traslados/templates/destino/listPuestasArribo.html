@@ -36,13 +36,19 @@
             <td>{{ traslado.fechaSolicitud }}</td>
             <td>{{ traslado.nombreAutoridadEnvia }}</td>
             <td>
-              <a href="{% url 'editar-status' traslado.id %}" class="btn" 
-                 style="{% if traslado.status == 0 %}background-color: #A3835F; color: #ffffff;{% endif %}
-                        {% if traslado.status == 1 %}background-color: #2A4B41; color: #ffffff;{% endif %}
-                        {% if traslado.status == 2 %}background-color: #873542; color: #ffffff;{% endif %}" 
-                 onclick="abrir_modal_eliminar(this.href); return false;">
-                  {{ traslado.get_status_display }}
-              </a>
+              {% if traslado.status == 0 %}  <!-- Si es SOLICITUD, permitimos cambios -->
+                  <a href="{% url 'editar-status' traslado.id %}" class="btn" 
+                     style="background-color: #A3835F; color: #ffffff;"
+                     onclick="abrir_modal_eliminar(this.href); return false;">
+                      {{ traslado.get_status_display }}
+                  </a>
+              {% else %}  <!-- Si es ACEPTADO o RECHAZADO, mostramos solo el estado sin permitir cambios -->
+                  <span class="btn" 
+                        style="{% if traslado.status == 1 %}background-color: #2A4B41; color: #ffffff;{% endif %}
+                               {% if traslado.status == 2 %}background-color: #873542; color: #ffffff;{% endif %}">
+                      {{ traslado.get_status_display }}
+                  </span>
+              {% endif %}
           </td>
           
           <td>

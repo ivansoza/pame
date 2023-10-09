@@ -129,7 +129,8 @@ class ListLlamadas(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
-
+        context['extranjero_id'] = llamada_id  # ID del extranjero
+        context['puesta_id'] = llamada.deLaPuestaIMN.id  
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
@@ -226,6 +227,8 @@ class ListLlamadasAC(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         folio = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id') 
+        context['extranjero_id'] = llamada_id  # ID del extranjero
+        context['puesta_id'] = llamada.deLaPuestaAC.id  
         context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
@@ -452,7 +455,8 @@ class ListLlamadasVP(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
-
+        context['extranjero_id'] = llamada_id  # ID del extranjero
+        context['puesta_id'] = llamada.deLaPuestaVP.id
         context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero

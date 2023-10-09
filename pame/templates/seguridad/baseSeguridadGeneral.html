@@ -351,14 +351,23 @@
           <!-- Fin  Alojamiento -->
           <!--   Extranjeros -->
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
+          <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'extranjeros' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-user-friends"></i>
               <p>
-                Ver Extranjeros
+                Extranjeros
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ver Extranjeros</p>
+                </a>
+              </li>
+            </ul>
 
           </li>
 
