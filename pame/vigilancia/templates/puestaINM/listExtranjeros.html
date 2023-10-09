@@ -55,6 +55,12 @@
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
+
+                 <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                 <a class="btn btn-sm btn-icon3 tooltip-link"
+                 href="#" data-title="Derechos y Obligaciones">
+                     <i class="fas fa-balance-scale"></i>
+                 </a>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.tiene_notificacion %}
                   <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
@@ -65,37 +71,9 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% endif %}
-                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
+               
 
-                <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
-                {% if extranjero.biometrico %}
-                    {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
-                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
-                            <i class="fas fa-fingerprint"></i>
-                        </a>
-                    {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
-                        <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
-                            <i class="fas fa-fingerprint"></i>
-                        </a>
-                    {% else %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
-                            <i class="fas fa-fingerprint"></i>
-                        </a>
-                    {% endif %}
-                {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'agregar_biometricoINM' extranjero.id %}" data-title="Agregar Datos Biométricos">
-                        <i class="fas fa-fingerprint"></i>
-                    </a>
-                {% endif %}
-
-                <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
-                        <i class="fas fa-handshake"></i>
-                    </a>
+         
                 {% if extranjero.inventario_set.all  %}
                 <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
@@ -118,6 +96,31 @@
                         <i class="fas fa-coins"></i>
                     </a>
                 {% endif %}
+                       <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
+                       {% if extranjero.biometrico %}
+                       {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
+                           <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
+                               <i class="fas fa-fingerprint"></i>
+                           </a>
+                       {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
+                           <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
+                               <i class="fas fa-fingerprint"></i>
+                           </a>
+                       {% else %}
+                           <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'editar_biometricoINM' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
+                               <i class="fas fa-fingerprint"></i>
+                           </a>
+                       {% endif %}
+                   {% else %}
+                       <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'agregar_biometricoINM' extranjero.id %}" data-title="Agregar Datos Biométricos">
+                           <i class="fas fa-fingerprint"></i>
+                       </a>
+                   {% endif %}
+   
+                   <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
+                       <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
+                           <i class="fas fa-handshake"></i>
+                       </a>
                 {% if extranjero.tiene_enseres %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
@@ -139,11 +142,10 @@
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                <!-- BOTON DE RESUMEN GENERAL -->
+                {% comment %} <!-- BOTON DE RESUMEN GENERAL -->
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'resumenINM' extranjero.id%}" data-title="Resumen General">
                     <i class="fas fa-chart-bar"></i>
-                </a>
-
+                </a> {% endcomment %}
             </td>
         </tr>
         {% endfor %}

@@ -65,6 +65,13 @@
                 <td>{{ extranjero.nacionalidad }}</td>
 
                 <td>       
+
+                    <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="#" data-title="Derechos y Obligaciones">
+                        <i class="fas fa-balance-scale"></i>
+                    </a>
+
                     <!-- ICONO DE LLAMADA -->
                     {% if extranjero.tiene_notificacion %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
@@ -75,14 +82,28 @@
                     <i class="fas fa-phone"></i>
                     </a>
                     {% endif %}
-                    <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
-
+               
                  
-                {% if extranjero.biometrico %}
+                
+                    {% if extranjero.inventario_set.all  %}
+                    {% with first_inventario=extranjero.inventario_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
+                        <i class="fas fa-tshirt"></i>
+                    </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' first_inventario.id  puesta.id%}" data-title="Valores">
+                        <i class="fas fa-coins"></i>
+                    </a>
+                    {% endwith %}
+
+                    {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
+                         <i class="fas fa-tshirt"></i>
+                    </a>
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Valores">
+                        <i class="fas fa-coins"></i>
+                    </a>
+                    {% endif %}
+                    {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoAC' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
                         <i class="fas fa-fingerprint"></i>
@@ -106,24 +127,6 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesAC' extranjero.id puesta.id%}" data-title="Acompańante">
                         <i class="fas fa-handshake"></i>
                     </a>
-                    {% if extranjero.inventario_set.all  %}
-                    {% with first_inventario=extranjero.inventario_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
-                        <i class="fas fa-tshirt"></i>
-                    </a>
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' first_inventario.id  puesta.id%}" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
-                    {% endwith %}
-
-                    {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
-                         <i class="fas fa-tshirt"></i>
-                    </a>
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
-                    {% endif %}
 
                     {% if extranjero.tiene_enseres %}
                     {% with first_enseres=extranjero.enseresbasicos_set.first %}
