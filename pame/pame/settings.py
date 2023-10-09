@@ -27,9 +27,7 @@ DEBUG = True
 
 #Despliegue en AMAZON
 # ALLOWED_HOSTS = ["3.17.57.188"]
-# ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['fe50-187-189-23-215.ngrok-free.app', 'localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = ['*']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
@@ -48,7 +46,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     'multiselectfield',
     'actuaciones',
-    'acuerdoInicio',
+    'acuerdos',
     'amparo',
     'catalogos',
     'certificadoMedico',
@@ -66,8 +64,6 @@ INSTALLED_APPS = [
     'juridico',
     'traslados',
     'biometricos',
-    'corsheaders',
-    # PARA HABILITAR 
     
 ]
 
@@ -86,14 +82,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    "https://fe50-187-189-23-215.ngrok-free.app",
-    # Otras URLs permitidas
-]
-CSRF_TRUSTED_ORIGINS = ['https://fe50-187-189-23-215.ngrok-free.app']
 
 ROOT_URLCONF = 'pame.urls'
 AUTH_USER_MODEL = 'usuarios.Usuario'
