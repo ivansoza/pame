@@ -21,73 +21,23 @@
 </div>
 <br>
 
-<div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-body">
-          
-            <div class="row">
-                <!-- Card con datos del extranjero -->
-                <div class="col-md-10">
-            
-                  <div class="card">
-                     <div class="header">
-                        <h2>Datos del Extranjero </h2>
-                     </div>
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col">
-                            <span class="etiqueta">Nombre(s):</span>
-                            <span class="valor">{{ nombre_extranjero }}</span>
-                            <br>
-                            <span class="etiqueta">Numero de Extranjero:</span>
-                            <span class="valor">{{ llamada.numeroExtranjero }}</span>
-                            <br>
-                            <span class="etiqueta">Estación:</span>
-                            <span class="valor">{{ llamada.deLaEstacion }}</span>
-                        </div>
-            
-                        <div class="col">
-                            <span class="etiqueta">Apellido(s):</span>
-                            <span class="valor">{{ apellido_paterno }} {{ apellido_materno }}</span>                
-                            <br>
-                            <span class="etiqueta">Nacionalidad:</span>
-                            <span class="valor">{{ llamada.nacionalidad }}</span>
-                            <br>
-                            <span class="etiqueta">Fecha de Nacimiento:</span>
-                            <span class="valor">{{ llamada.fechaNacimiento }}</span>
-                        </div>
-                        <!-- Otros campos de datos -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            
-                <!-- Card con la foto del extranjero -->
-                <div class="col-md-2 d-none d-md-block">
-                  <div class="card">
-                    {% if llamada.biometrico.fotografiaExtranjero %}
-                    <img src="{{llamada.biometrico.fotografiaExtranjero.url}}" class="card-img-top" alt="..." >
-                    {% else %}
-                    <img src="{% static 'img/profile/Hola.jpeg' %}" class="card-img-top" alt="" style="max-width: 200px; height: auto;">
-                    {% endif %}
-                    <div class="card-body text-center" style='background:#9E8364'> 
-                      <p class="card-text" style='color:white'>Foto del Extranjero</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            
+{% include "includes/tituloLlamada.html" %}
 
 
-        </div>
-      </div>
-    </div>
-  </div>
+<a class='btn btn-verified tooltip-link' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   data-title="Verifica extranjero" >
+   <i class="fas fa-fingerprint"></i>
+</a>
 
+<a class='btn btn-custom btn-unverified' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   href="{% url 'crear_llamada_vp' llamada_id=llamada.id puesta_id=puesta.id%}">
+   Agregar Llamada
+</a>
 
-
-<a class="btn btn-custom" href="{% url 'crear_llamada_vp' llamada_id=llamada.id puesta_id=puesta.id%}" onclick="abrir_modal(this.href); return false;">Agregar Llamada</a>
 
 <br>
 <br>
@@ -115,14 +65,14 @@
     </tbody>
 </table>
 {{ objetos.fechaHoraLlamada }}
-<a class="btn btn-custom" href="#">Imprimir Documento</a>
-<a class="btn btn-custom" href="#">Digitalizar Documento</a>
+<a class="btn btn-custom6" href="#">Imprimir Documento</a>
+<a class="btn btn-custom6" href="#">Digitalizar Documento</a>
 
 <br>
 <br>
 
 
-<a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom1">Volver</a>       
+<a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom5">Volver</a>       
 
 
 <div class="modal fade" id="agregarllamada" role="dialog">
