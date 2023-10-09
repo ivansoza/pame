@@ -224,10 +224,17 @@ class descripcion(models.Model):
     segnasParticulares = models.CharField(max_length=50, verbose_name='Señas Particulares', choices=segnasParticulares_choices)
     observaciones = models.CharField(max_length=50)  
 
+STATUS_PROCESO_CHOICES= (
+    ('Activo', 'Activo'),
+    ('Suspendido', 'Suspendido'),
+    ('Cerrado', 'Cerrado'),
+    # Agrega más opciones según sea necesario
+)
 class NoProceso(models.Model):
     agno = models.DateField(auto_now_add=True)
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
+    status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
     nup = models.CharField(max_length=50, primary_key=True)
 
     def __str__(self):

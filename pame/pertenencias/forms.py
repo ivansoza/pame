@@ -51,5 +51,5 @@ class EditarValoresForm(forms.ModelForm):
 class EnseresForm(forms.ModelForm):
     class Meta:
         model = EnseresBasicos
-        fields = ['enseres','enseresExtras']
+        fields = ['enseres','enseresExtras','nup']
       

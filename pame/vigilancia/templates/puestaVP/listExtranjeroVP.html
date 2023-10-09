@@ -91,12 +91,10 @@
 
             <td>
                 <!-- NOTIFICACION DE LLAMADA  -->
-                {% if extranjero.notificacion_set.all %}
-                {% with first_notificacion=extranjero.notificacion_set.first %}
+                {% if extranjero.tiene_notificacion %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadas_vp' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                         <i class="fas fa-phone"></i>
                     </a>
-                {% endwith %}
                 {% else %}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-vp'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                         <i class="fas fa-phone"></i>
@@ -152,7 +150,7 @@
                 {% endif %}
 
 
-                {% if extranjero.enseresbasicos_set.all %}
+                {% if extranjero.tiene_enseres %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listar_enseres_vp' extranjero.id puesta.id %}" data-title="Enseres">
                         <i class="fas fa-shopping-basket"></i>
