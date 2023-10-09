@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.views.generic import ListView
 from vigilancia.models import Extranjero
 import os
+from operator import itemgetter
 
 def homeAcuerdo(request):
     return render(request,"acuerdoInicio.html")
@@ -21,8 +22,11 @@ class acuerdo_inicio(ListView):
         # Calcular si el PDF existe para cada extranjero
         pdf_existencia = [(extranjero, pdf_exist(extranjero.id)) for extranjero in extranjeros]
 
+        # Ordenar la lista en función de pdf_exists (False primero)
+        extranjeros_ordenados = sorted(pdf_existencia, key=lambda x: x[1])
+
         context = {
-            'extranjeros': extranjeros,
+            'extranjeros': [extranjero for extranjero, _ in extranjeros_ordenados],
             'extranjeros_pdf': pdf_existencia
             }
         return render(request, self.template_name, context)
