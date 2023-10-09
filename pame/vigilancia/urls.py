@@ -6,6 +6,7 @@ from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,ad
 from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
+from .views import listarExtranjerosEstacion
 
 from .views import compare_faces, UserFaceCreateView, search_face
 urlpatterns = [
@@ -34,14 +35,6 @@ urlpatterns = [
     path('csalcular/<int:pk>/', CalcularTamanoDiscoView.as_view(), name='calcular'),
     path('editarExtranjeroINMproceso/<int:pk>/<int:puesta_id>/', EditarExtranjeroINMProceso.as_view(), name='editarExtranjeroINMproceso'),
     path('resumenINM/<int:pk>/', ResumenViewINM.as_view(), name='resumenINM'),
-
-
-
-
-
-
-
-
     # --------------- PUESTA AC  ---------------------
     path('puesta-ac/', inicioACList.as_view(), name='homePuestaAC'),
     path('crear-puesta-ac/', createPuestaAC.as_view(), name='crearPuestaAC'),
@@ -64,8 +57,6 @@ urlpatterns = [
 
 
 # ------------------------- PUESTA VOLUNTAD PROPIA ----------------
-
-
     path('seguridad/puesta-vp/', homePuestaVP, name='homePuestaVP'),
     path('puesta-vp/', inicioVPList.as_view(), name='homePuestasVP'),
     path('crear-puesta-vp/', createPuestaVP.as_view(), name='crearPuestaVP'),
@@ -89,12 +80,16 @@ urlpatterns = [
     path('procesar/traslado/', procesar_traslado, name='procesar_traslado'),
     
     
+
     path('manejar_imagen/', manejar_imagen, name='manejar_imagen'),
     path('manejar_imagen2/', manejar_imagen2, name='manejar_imagen2'),
     path('manejar_imagen3/', manejar_imagen3, name='manejar_imagen3'),
 
 
-  
+# Listar extranjeros de forma global por estacion 
+
+
+    path('listar-extranjero-dd/', listarExtranjerosEstacion.as_view(), name='listarExtranjerosEstacion'),
 
 ]
 
