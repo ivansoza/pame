@@ -171,7 +171,7 @@
 
     document.getElementById('tomarFotoBtn').addEventListener('click', function() {
         if (isVerified) {
-            let url = btn.getAttribute('href');
+            let url = btn.getAttribute('#');
             abrir_modal(url);
         } else {
             let modal = new bootstrap.Modal(document.getElementById('webcamModal'), {

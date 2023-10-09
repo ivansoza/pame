@@ -20,6 +20,7 @@ import os
 import face_recognition
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Max
 
 from io import BytesIO
 from PIL import Image  # Asegúrate de importar Image de PIL o Pillow
@@ -131,8 +132,14 @@ class ListaEnseresViewINM(ListView):
     context_object_name = 'enseresinm'
     def get_queryset(self):
         extranjero_id= self.kwargs['extranjero_id']
-        return EnseresBasicos.objects.filter(noExtranjero=extranjero_id)
-    
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+
+        ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+
+        # Filtra las llamadas que tengan el último nup registrado del extranjero
+        queryset = EnseresBasicos.objects.filter(noExtranjero=extranjero_id, nup__consecutivo=ultimo_nup)
+        
+        return queryset    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id= self.kwargs['extranjero_id']
@@ -175,6 +182,11 @@ class CrearEnseresINM(CreateView):
         extranjero_id = self.kwargs.get('extranjero_id')
         initial = super().get_initial()
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
         estacion = extranjero.deLaEstacion
         initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
@@ -214,6 +226,11 @@ class CrearEnseresModaINM(CreateView):
         initial = super().get_initial()
         extranjero = Extranjero.objects.get(id=extranjero_id)
         estacion = extranjero.deLaEstacion
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
         initial['unidadMigratoria'] = estacion
         initial['noExtranjero'] = extranjero_id
         return initial
@@ -243,6 +260,19 @@ class EditarEnseresViewINM(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        initial['unidadMigratoria'] = estacion
+        initial['noExtranjero'] = extranjero_id
+        return initial
     
 class DeleteEnseresINM(DeleteView):
     permission_required = {
@@ -703,7 +733,14 @@ class ListaEnseresViewAC(ListView):
     context_object_name = 'enseresac'
     def get_queryset(self):
         extranjero_id= self.kwargs['extranjero_id']
-        return EnseresBasicos.objects.filter(noExtranjero=extranjero_id)
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+
+        ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+
+        # Filtra las llamadas que tengan el último nup registrado del extranjero
+        queryset = EnseresBasicos.objects.filter(noExtranjero=extranjero_id, nup__consecutivo=ultimo_nup)
+        
+        return queryset    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -749,6 +786,19 @@ class CrearEnseresAC(CreateView):
         form.instance.unidadMigratoria= estacion
         form.instance.noExtranjero= extranjero
         return super().form_valid(form)
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
+        initial['noExtranjero'] = extranjero_id
+        return initial
 
     
 class EditarEnseresViewAC(UpdateView):
@@ -767,6 +817,19 @@ class EditarEnseresViewAC(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadAC'
         return context
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        initial['unidadMigratoria'] = estacion
+        initial['noExtranjero'] = extranjero_id
+        return initial
 
     
 class DeleteEnseresAC(DeleteView):
@@ -815,6 +878,19 @@ class CrearEnseresModaAC(CreateView):
         form.instance.unidadMigratoria= estacion
         form.instance.noExtranjero= extranjero
         return super().form_valid(form)
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estacion = extranjero.deLaEstacion
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        initial['unidadMigratoria'] = estacion
+        initial['noExtranjero'] = extranjero_id
+        return initial
 #-------------------------------FIN --------------------------------
 
 
@@ -1059,7 +1135,14 @@ class ListaEnseresViewUP(ListView):
     context_object_name = 'enseresvp'
     def get_queryset(self):
         extranjero_id= self.kwargs['extranjero_id']
-        return EnseresBasicos.objects.filter(noExtranjero=extranjero_id)
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+
+        ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+
+        # Filtra las llamadas que tengan el último nup registrado del extranjero
+        queryset = EnseresBasicos.objects.filter(noExtranjero=extranjero_id, nup__consecutivo=ultimo_nup)
+        
+        return queryset  
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1105,6 +1188,19 @@ class CrearEnseresVP(CreateView):
         form.instance.unidadMigratoria= estacion
         form.instance.noExtranjero= extranjero
         return super().form_valid(form)
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
+        initial['noExtranjero'] = extranjero_id
+        return initial
 
 
 class CrearEnseresModalVP(CreateView):
@@ -1134,6 +1230,19 @@ class CrearEnseresModalVP(CreateView):
         form.instance.unidadMigratoria= estacion
         form.instance.noExtranjero= extranjero
         return super().form_valid(form)
+    def get_initial(self):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        initial = super().get_initial()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        estacion = extranjero.deLaEstacion
+        initial['unidadMigratoria'] = estacion
+        initial['noExtranjero'] = extranjero_id
+        return initial
     
 class DeleteEnseresVP(DeleteView):
     permission_required = {
@@ -1171,6 +1280,7 @@ class EditarEnseresViewVP(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadVP'
         return context
+    
 
 @csrf_exempt
 def manejar_imagen(request):

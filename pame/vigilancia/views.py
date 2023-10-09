@@ -38,7 +38,8 @@ import time
 from io import BytesIO
 from traslados.models import ExtranjeroTraslado
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+from llamadasTelefonicas.models import Notificacion
+from pertenencias.models import EnseresBasicos
 import sys
 import pickle
 
@@ -279,7 +280,8 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         if estacion:
             estacion.capacidad -= 1
             estacion.save()  
-        nuevo_consecutivo = 1   
+        nuevo_consecutivo = 1  
+        status_default = 'Activo' 
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -312,6 +314,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status = status_default,
                 nup=nup
             )
             no_proceso.save()
@@ -377,14 +380,37 @@ class listarExtranjeros(ListView):
 
     
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        puesta_id = self.kwargs['puesta_id']
-        puesta = PuestaDisposicionINM.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
-        context['puesta'] = puesta
-        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
-        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
-        
-        return context
+     context = super().get_context_data(**kwargs)
+     puesta_id = self.kwargs['puesta_id']
+     puesta = PuestaDisposicionINM.objects.get(id=puesta_id)  
+
+     for extranjero in context['extranjeros']:
+        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+        tiene_notificacion = False
+
+        if ultimo_nup:
+            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+            if notificacion:
+                tiene_notificacion = True
+
+        extranjero.tiene_notificacion = tiene_notificacion
+
+     for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_enseres = False
+
+            if ultimo_nup:
+                enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
+                if enseres:
+                    tiene_enseres = True
+
+            extranjero.tiene_enseres = tiene_enseres
+
+     context['puesta'] = puesta
+     context['navbar'] = 'seguridad'
+     context['seccion'] = 'seguridadINM'
+
+     return context
      
 class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
@@ -522,6 +548,7 @@ class EditarExtranjeroINMProceso(CreatePermissionRequiredMixin,UpdateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status = 'Activo',
                 nup=nup
             )
             no_proceso.save()
@@ -779,10 +806,6 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
         return super().form_valid(form)
         
 
-        
-
-
-
 class DeleteExtranjeroINM(DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
@@ -1001,7 +1024,9 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
             estacion.capacidad -= 1
             estacion.save()
 
-        nuevo_consecutivo = 1   
+        nuevo_consecutivo = 1  
+        status_default = 'Activo' 
+ 
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -1034,6 +1059,7 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status = status_default,
                 nup=nup
             )
             no_proceso.save()
@@ -1222,6 +1248,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
             estacion.capacidad -= 1
             estacion.save()     
         nuevo_consecutivo = 1   
+        status_proceso = 'Activo'
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -1253,6 +1280,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status = status_proceso,
                 nup=nup
             )
             no_proceso.save()
@@ -1328,6 +1356,26 @@ class listarExtranjerosAC(ListView):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionAC.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
+        for extranjero in context['extranjeros']:
+         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+         tiene_notificacion = False
+
+         if ultimo_nup:
+            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+            if notificacion:
+                tiene_notificacion = True
+
+         extranjero.tiene_notificacion = tiene_notificacion
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_enseres = False
+
+            if ultimo_nup:
+                enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
+                if enseres:
+                    tiene_enseres = True
+
+            extranjero.tiene_enseres = tiene_enseres
         context['puesta'] = puesta
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
@@ -1481,6 +1529,7 @@ class EditarExtranjeroACProceso(CreatePermissionRequiredMixin,UpdateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status='Activado',
                 nup=nup
             )
             no_proceso.save()
@@ -1798,6 +1847,7 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
             estacion.capacidad -= 1
             estacion.save()
         nuevo_consecutivo = 1   
+        status_proceso ='Activo'
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -1830,6 +1880,7 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status = status_proceso,
                 nup=nup
             )
             no_proceso.save()
@@ -2117,6 +2168,26 @@ class listarExtranjerosVP(ListView):
         context = super().get_context_data(**kwargs)
         puesta_id = self.kwargs['puesta_id']
         puesta = PuestaDisposicionVP.objects.get(id=puesta_id)  # Asegúrate de reemplazar 'Puesta' con el nombre correcto de tu modelo
+        for extranjero in context['extranjeros']:
+         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+         tiene_notificacion = False
+
+         if ultimo_nup:
+            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+            if notificacion:
+                tiene_notificacion = True
+
+         extranjero.tiene_notificacion = tiene_notificacion
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_enseres = False
+
+            if ultimo_nup:
+                enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
+                if enseres:
+                    tiene_enseres = True
+
+            extranjero.tiene_enseres = tiene_enseres
         context['puesta'] = puesta
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
@@ -2168,6 +2239,7 @@ class createExtranjeroVP(CreateView):
             estacion.capacidad -= 1
             estacion.save()     
         nuevo_consecutivo = 1   
+        status_proceso = 'Activo'
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -2193,6 +2265,32 @@ class createExtranjeroVP(CreateView):
             numero_extranjero = f"{year_actual}/{nomenclatura}/{extranjero.id}"
             extranjero.numeroExtranjero = numero_extranjero
             nup = f"{extranjero.fechaRegistro.year}-{extranjero.id}-{nuevo_consecutivo}"
+
+            # Crea un registro en la tabla NoProceso
+            no_proceso = NoProceso(
+                agno=extranjero.fechaRegistro,
+                extranjero=extranjero,
+                consecutivo=nuevo_consecutivo,
+                status = status_proceso,
+                nup=nup
+            )
+            no_proceso.save()
+
+            # Crea un registro en la tabla Proceso
+            proceso = Proceso(
+                estacionInicio=estacion,
+                fechaInicio=extranjero.fechaRegistro,
+                nup=no_proceso  # Establece la relación con el registro de NoProceso recién creado
+            )
+            proceso.save()
+
+            # Crea un registro en la tabla Proceso
+            proceso = Proceso(
+                estacionInicio=estacion,
+                fechaInicio=extranjero.fechaRegistro,
+                nup=no_proceso  # Establece la relación con el registro de NoProceso recién creado
+            )
+            proceso.save()
 
         instance = form.save(commit=False)
         def handle_file(file_field_name):
@@ -2407,6 +2505,7 @@ class EditarExtranjeroVPProceso(CreatePermissionRequiredMixin,UpdateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status='Activado',
                 nup=nup
             )
             no_proceso.save()
@@ -2725,6 +2824,7 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
             estacion.capacidad -= 1
             estacion.save()     
         nuevo_consecutivo = 1   
+        status_proceso = 'Activo'
         Usuario = get_user_model()
         usuario = self.request.user
         try:
@@ -2757,6 +2857,7 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
                 agno=extranjero.fechaRegistro,
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
+                status = status_proceso,
                 nup=nup
             )
             no_proceso.save()

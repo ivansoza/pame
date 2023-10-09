@@ -1,5 +1,5 @@
 from django.db import models
-from vigilancia.models import Extranjero
+from vigilancia.models import Extranjero, NoProceso
 from catalogos.models import Estacion
 from multiselectfield import MultiSelectField
 
@@ -52,3 +52,4 @@ class EnseresBasicos(models.Model):
     enseres = MultiSelectField(choices=ENSERES, max_length=200)
     enseresExtras = models.CharField(max_length=200, verbose_name='Enseres extras', blank=True, null= True, default='')
     noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)

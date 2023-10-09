@@ -56,12 +56,10 @@
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
-                {% if extranjero.notificacion_set.all %}
-                {% with first_notificacion=extranjero.notificacion_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                {% if extranjero.tiene_notificacion %}
+                  <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                         <i class="fas fa-phone"></i>
                     </a>
-                {% endwith %}
                 {% else %}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                         <i class="fas fa-phone"></i>
@@ -120,7 +118,7 @@
                         <i class="fas fa-coins"></i>
                     </a>
                 {% endif %}
-                {% if extranjero.enseresbasicos_set.all %}
+                {% if extranjero.tiene_enseres %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
                         <i class="fas fa-shopping-basket"></i>
