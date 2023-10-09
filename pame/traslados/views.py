@@ -193,12 +193,18 @@ class cambiarStatus(UpdateView):
     template_name = 'modal/seleccionarSttausdeTraslado.html'
 
     def form_valid(self, form):
-        # Aquí verificamos si el status ha cambiado a 'ACEPTADO' y, de ser así, ajustamos la fecha de aceptación
-        # y el nombre del responsable que acepta.
-        if 'status' in form.changed_data and form.instance.status == 1:  # 1 es el valor para 'ACEPTADO'
+        # Si el estatus cambió a ACEPTADO
+        if 'status' in form.changed_data and form.instance.status == 1: 
             form.instance.fecha_aceptacion = timezone.now()
             form.instance.nombreAutoridadRecibe = self.request.user.get_full_name()
+
+        # Si el estatus cambió a RECHAZADO
+        if 'status' in form.changed_data and form.instance.status == 2:  
+            form.instance.fecha_rechazo = timezone.now()
+            # El motivo_rechazo se capturará directamente desde el formulario
+        
         return super(cambiarStatus, self).form_valid(form)
+
 
     def get_success_url(self):
         return reverse('traslados_recibidos')
@@ -359,6 +365,19 @@ class cambiarStatusExtranjero(UpdateView):
 class seguimientoPuesta(DetailView):
     model = Traslado
     template_name = "origen/seguimientoPuesta.html" 
+    context_object_name = 'Traslado'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado = self.object
+        context['navbar'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+ # Cambia esto según la página activa
+        return context 
+    
+class seguimientoPuestaDestino(DetailView):
+    model = Traslado
+    template_name = "destino/seguimientoPuestaDestino.html" 
     context_object_name = 'Traslado'
 
     def get_context_data(self, **kwargs):

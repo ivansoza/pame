@@ -19,7 +19,7 @@
 {% block contenido %}
 <!-- TITULO GENERAL DE LA PLANTILLA -->
 <div class="titulo-general-container mt-2" >
-    <h1 class="titulo-general">Seguimiento de la Puesta Traslado</h1> 
+    <h1 class="titulo-general">Seguimiento de la Puesta a Recibir</h1> 
 </div>
 <br>
 <!-- CARD PARA SABER LOS DATOS DEL EXTRANJERO -->
@@ -33,25 +33,25 @@
                     <div class="process-wrapper">
                         <div id="progress-bar-container">
                             <ul>
-                                <li class="step step01 active clickable">
+                                <li class="step step01 active">
                                     <div class="step-inner">SOLICITUD</div>
                                 </li>
-                                <li class="step step02 {% if not Traslado.fecha_aceptacion %}blocked{% else %}clickable{% endif %}">
+                                <li class="step step02 {% if not Traslado.fecha_aceptacion %}blocked{% endif %}">
                                     <div class="step-inner">ACEPTACIÓN</div>
                                 </li>
-                                <li class="step step03 {% if Traslado.status_traslado < 1 %}blocked{% else %}clickable{% endif %}">
+                                <li class="step step03 {% if not Traslado.fecha_aceptacion %}blocked{% endif %}">
                                     <div class="step-inner">INICIO DEL TRASLADO</div>
                                 </li>
-                                <li class="step step04 {% if Traslado.status_traslado < 2 %}blocked{% else %}clickable{% endif %}">
+                                <li class="step step04 {% if not Traslado.fecha_aceptacion %}blocked{% endif %}">
                                     <div class="step-inner">EN TRASLADO</div>
                                 </li>
-                                <li class="step step05 {% if Traslado.status_traslado < 3 %}blocked{% else %}clickable{% endif %}">
+                                <li class="step step05 {% if not Traslado.fecha_aceptacion %}blocked{% endif %}">
                                     <div class="step-inner">LLEGADA</div>
                                 </li>
                             </ul>
 
                             <div id="line">
-                                <div id="line-progress" {% if Traslado.status == 2 %}class="rechazado"{% endif %}></div>
+                                <div id="line-progress"></div>
                             </div>
                         </div>
 
@@ -99,73 +99,72 @@
 {% block script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script>
-    $(document).ready(function() {
+ <script>
     
-        $(".clickable").click( function() {
-            $(this).addClass("active").prevAll(".clickable").addClass("active");
-            $(this).nextAll().removeClass("active");
-        });
-    
-        $(".step01.clickable").click( function() {
-            $("#line-progress").css("width", "5%");
-            $(".discovery").addClass("active").siblings().removeClass("active");
-        });
-    
-        $(".step02.clickable").click( function() {
-            $("#line-progress").css("width", "25%");
-            $(".strategy").addClass("active").siblings().removeClass("active");
-        });
-    
-        $(".step03.clickable").click( function() {
-            $("#line-progress").css("width", "50%");
-            $(".creative").addClass("active").siblings().removeClass("active");
-        });
-    
-        $(".step04.clickable").click( function() {
-            $("#line-progress").css("width", "75%");
-            $(".production").addClass("active").siblings().removeClass("active");
-        });
-    
-        $(".step05.clickable").click( function() {
-            $("#line-progress").css("width", "100%");
-            $(".analysis").addClass("active").siblings().removeClass("active");
-        });
-    
-        // Inicialización basada en el estado actual del objeto Traslado.
-        var estadoActual = {{ Traslado.status }};
-        var estadoTrasladoActual = {{ Traslado.status_traslado }};
-    
-        switch (estadoActual) {
-            case 0:
-                $(".step01").trigger('click');
-                break;
+    $(".step").click( function() {
+	$(this).addClass("active").prevAll().addClass("active");
+	$(this).nextAll().removeClass("active");
+});
+
+$(".step01").click( function() {
+	$("#line-progress").css("width", "5%");
+	$(".discovery").addClass("active").siblings().removeClass("active");
+});
+
+$(".step02").click( function() {
+	$("#line-progress").css("width", "25%");
+	$(".strategy").addClass("active").siblings().removeClass("active");
+});
+
+$(".step03").click( function() {
+	$("#line-progress").css("width", "50%");
+	$(".creative").addClass("active").siblings().removeClass("active");
+});
+
+$(".step04").click( function() {
+	$("#line-progress").css("width", "75%");
+	$(".production").addClass("active").siblings().removeClass("active");
+});
+
+$(".step05").click( function() {
+	$("#line-progress").css("width", "100%");
+	$(".analysis").addClass("active").siblings().removeClass("active");
+});
+
+$(document).ready(function() {
+    // Chequea el estado de Traslado y activa el paso correspondiente.
+    var estadoActual = {{ Traslado.status }};
+    var estadoTrasladoActual = {{ Traslado.status_traslado }};
+
+    switch (estadoActual) {
+        case 0:
+            $(".step01").trigger('click');
+            break;
+        case 1:
+            $(".step02").trigger('click');
+            break;
+        case 2:
+            // Aquí, la solicitud fue rechazada. No avanzar el "progress bar" más allá de la solicitud.
+            break;
+    }
+
+    if (estadoActual == 1) {  // Solo si la solicitud fue aceptada
+        switch (estadoTrasladoActual) {
             case 1:
-                $(".step02").trigger('click');
+                $(".step03").trigger('click');
                 break;
             case 2:
-                // Aquí, la solicitud fue rechazada. No avanzar el "progress bar" más allá de la solicitud.
+                $(".step04").trigger('click');
+                break;
+            case 3:
+                $(".step05").trigger('click');
                 break;
         }
-    
-        if (estadoActual == 1) {  // Solo si la solicitud fue aceptada
-            switch (estadoTrasladoActual) {
-                case 1:
-                    $(".step03").trigger('click');
-                    break;
-                case 2:
-                    $(".step04").trigger('click');
-                    break;
-                case 3:
-                    $(".step05").trigger('click');
-                    break;
-            }
-        }
-    
-    });
-    
-    </script>
-    
+    }
+});
+
+</script>
+
 
 
 

@@ -27,6 +27,7 @@ class Traslado(models.Model):
     fecha_aceptacion = models.DateTimeField(null=True, blank=True)  # Permitir null y blank ya que puede no haber sido aceptada aún
     fecha_traslado = models.DateTimeField(null=True, blank=True)  # Similar al anterior
     fecha_arrivo = models.DateTimeField(null=True, blank=True)  # S
+    fecha_rechazo = models.DateTimeField(null=True, blank=True)  
     nombreAutoridadEnvia = models.CharField(max_length=100)
     nombreAutoridadRecibe = models.CharField(max_length=100)
     responsableEnvia = models.CharField(max_length=100)
