@@ -1,0 +1,82 @@
+{% load static %}
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white;
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+<!-- Bootstrap CSS -->
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Notificación de Llamada</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        {% load crispy_forms_tags %}
+
+        <form id="llamadaForm" action="{% url 'validar-notificacion-vp' llamada_id=llamada.id puesta_id=puesta.id%}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        {{ form.deseaLlamar|as_crispy_field}}
+                    </div>
+                    <div id="motivoDiv">
+                        {{ form.motivoNoLlamada|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    {{ form.firmaExtranjero|as_crispy_field }}
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    {{ form.huellaExtranjero|as_crispy_field }}
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-6" style='display:none'>
+                    {{ form.delExtranjero|as_crispy_field }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+            </div>
+        </form>
+        
+      
+        
+    </div>
+</div>
+<!-- Asegúrate de que jQuery esté incluido en tu página -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Captura los elementos del DOM
+        var deseaLlamar = document.getElementById("id_deseaLlamar");
+        var motivoNoLlamada = document.getElementById("id_motivoNoLlamada");
+
+        // Función para habilitar o deshabilitar motivoNoLlamada
+        function toggleMotivoNoLlamada() {
+            if (deseaLlamar.value === "1") { // Suponemos que 1 significa "Sí"
+                motivoNoLlamada.removeAttribute("readonly");
+            } else {
+                motivoNoLlamada.setAttribute("readonly", "readonly");
+            }
+        }
+
+        // Llamamos a la función al cargar la página para establecer el estado inicial
+        toggleMotivoNoLlamada();
+
+        // Agregamos un evento change al campo deseaLlamar
+        deseaLlamar.addEventListener("change", toggleMotivoNoLlamada);
+    });
+</script>
