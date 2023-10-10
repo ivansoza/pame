@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Inventario, Pertenencias, Valores, EnseresBasicos
+from .models import Inventario, Pertenencias, Valores, EnseresBasicos, Pertenencia_aparatos
 # Register your models here.
 
 class InventarioAdmin(admin.ModelAdmin):
@@ -18,3 +18,4 @@ admin.site.register(Pertenencias)
 
 admin.site.register(Valores)
 admin.site.register(EnseresBasicos)
+admin.site.register(Pertenencia_aparatos)
