@@ -7,7 +7,7 @@ class InventarioForm(forms.ModelForm):
     #     ) 
     class Meta:
         model = Inventario
-        fields = ['foloInventario', 'validacion']
+        fields = ['foloInventario', 'validacion','nup']
 
     #     widgets = {
     #         'noExtranjero': forms.TextInput(attrs={'readonly': 'readonly'}),
