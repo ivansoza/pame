@@ -120,10 +120,7 @@
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Valores">
                         <i class="fas fa-coins"></i>
                     </a>
-                {% endif %}
-                       
-   
-                   
+                {% endif %}          
                 {% if extranjero.tiene_enseres %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
