@@ -231,3 +231,15 @@ JAZZMIN_SETTINGS = {
 
 LOGIN_REDIRECT_URL = 'menu'
 LOGOUT_REDIRECT_URL = "home"
+
+# Servicio de correo electronico 
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'email-smtp.us-east-2.amazonaws.com'
+EMAIL_PORT = 587  # 587 es común para TLS; 465 es común para SSL; 25 es el puerto por defecto
+EMAIL_USE_TLS = True  # True si quieres usar TLS, cambia a False si no.
+EMAIL_HOST_USER = 'ses-smtp-user.20231010-171347'
+EMAIL_HOST_PASSWORD = 'BNQZcKJoaOAkV7Wknk4f6hDYwQlPc2z+tVLIhMUDDnOU'
+
+
