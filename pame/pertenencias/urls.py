@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM, CrearPertenenciasElectronicasViewINM,DeletePertenenciaselectronicasINM,EditarPertenenciaselectronicasViewINM, CrearvaloresefectivoViewINM, eliminarvaloresefectivoINM, editarvaloresefectivoINM,CrearvaloresjoyasViewINM, eliminarvaloresjoyasINM,editarvaloresjoyasINM,CrearvaloresdocumentosViewINM,eliminarvaloresdocumentosINM,editarvaloresdocumentosINM
-from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC
+from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC,CrearPertenenciasElectronicasViewAC,DeletePertenenciaselectronicasAC,EditarPertenenciaselectronicasViewAC,CrearvaloresefectivoViewAC,eliminarvaloresefectivoAC,editarvaloresefectivoAC,CrearvaloresjoyasViewAC,eliminarvaloresjoyasAC,editarvaloresjoyasAC,CrearvaloresdocumentosViewAC,eliminarvaloresdocumentosAC,editarvaloresdocumentosAC
 from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP, ListaEnseresViewUP, CrearEnseresVP, CrearEnseresModalVP, DeleteEnseresVP, EditarEnseresViewVP
 from .views import homePertenencias, manejar_imagen
 
@@ -61,6 +61,29 @@ urlpatterns = [
     path('editar-enseres-ac/<int:pk>/', EditarEnseresViewAC.as_view(), name='editarEnseresAC'),
     path('eliminar-enseres-ac/<int:pk>/', DeleteEnseresAC.as_view(), name='eliminarEnseresAC'),
     path('crear-enseres-ac1/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresModaAC.as_view(), name='crearEnseresModaAC'),
+    
+        #pertenencias electronicas
+    path('crear-pertenenciaselectronicas-ac/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasElectronicasViewAC.as_view(), name='crear_pertenenciaselectronicasAC'),
+    path('eliminar-pertenenciaselectronicas-ac/<int:pk>/',DeletePertenenciaselectronicasAC.as_view(), name='eliminar_pertenenciaselectronicasAC'),
+    path('editar_pertenenciaselectronicas-ac/<int:pk>/', EditarPertenenciaselectronicasViewAC.as_view(), name='editar_pertenenciaselectronicasAC'),
+
+    #valores efectivo
+    path('crearvaloresefectivo-ac/<int:inventario_id>/<int:puesta_id>/', CrearvaloresefectivoViewAC.as_view(), name='crear_pertenenciasefectivoAC'),
+    path('eliminar-valoresefectivo-ac/<int:pk>/',eliminarvaloresefectivoAC.as_view(), name='eliminar_pertenenciasefectivoAC'),
+    path('editar-valoresefectivo-ac/<int:pk>/', editarvaloresefectivoAC.as_view(), name='editar_pertenenciasefectivoAC'),
+
+    
+    #valores alhajas
+    path('crear-valoresjoyas-ac/<int:inventario_id>/<int:puesta_id>/', CrearvaloresjoyasViewAC.as_view(), name='Crear_valoresjoyasViewAC'),
+    path('eliminar-valoresjoyas-ac/<int:pk>/',eliminarvaloresjoyasAC.as_view(), name='eliminar_valoresjoyasAC'),
+    path('editar_valoresjoyas-ac/<int:pk>/', editarvaloresjoyasAC.as_view(), name='editar_valoresjoyasAC'),
+
+
+    # # documentos del extranjero
+    path('crear-pertenenciasdocumentos-ac/<int:inventario_id>/<int:puesta_id>/', CrearvaloresdocumentosViewAC.as_view(), name='crear_pertenenciasdocumentosAC'),
+    path('eliminar-pertenenciasdocumentos-ac/<int:pk>/',eliminarvaloresdocumentosAC.as_view(), name='eliminar_pertenenciasdocumentosAC'),
+    path('editar_pertenenciasdocumentos-ac/<int:pk>/', editarvaloresdocumentosAC.as_view(), name='editar_valoresdocumentosAC'),
+
 
 #-----------------------------VP---------------------------
     path('crear-inventario-vp/<int:extranjero_id>/<int:puesta_id>/', CrearInventarioViewVP.as_view(), name='crear_inventarioVP'),

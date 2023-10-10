@@ -15,14 +15,14 @@
 <div class="modal-dialog modal-lg" role="document" >
     <div class="modal-content">
         <div class="modal-header custom-header-color"> <!-- Agrega la clase personalizada aquí -->
-            <h2 class="modal-title">Agregar Pertenencia</h2>
+            <h2 class="modal-title">Agregar Pertenencia Electronicas </h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
         {% load crispy_forms_tags %}
 
-        <form action="{% url 'crear_pertenenciasAC' inventario_id=inventario.id puesta_id=puesta.id%}" method="POST">
+        <form action="{% url 'crear_pertenenciaselectronicasAC' inventario_id=inventario.id puesta_id=puesta.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
                 <div class="titulo-general-container mt-2" >
@@ -32,13 +32,16 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12 col-md-6 col-lg-12">
-                        {{form.equipaje|as_crispy_field}}
+                        {{form.electronicos|as_crispy_field}}
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-12">
                         {{form.cantidad|as_crispy_field}}
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-12">
-                        {{form.color|as_crispy_field}}
+                        {{form.marca|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-12">
+                        {{form.serie|as_crispy_field}}
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-12">
                         {{form.observaciones|as_crispy_field}}
@@ -46,7 +49,9 @@
                     <div class="col-sm-12 col-md-6 col-lg-12" style='visibility: hidden' >
                         {{form.delInventario|as_crispy_field}}
                     </div>
+                    
                 </div>
+            </div>
         <div class="modal-footer">
  <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom2">Confirmar</button>
@@ -56,4 +61,6 @@
 
     </div>
 </div>
+
+
 
