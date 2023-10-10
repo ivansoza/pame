@@ -13,10 +13,22 @@ class Inventario(models.Model):
 
     def __str__(self) -> str:
         return self.foloInventario
-
+COLORES_CHOICES = [
+        ('Rojo', 'Rojo'),
+        ('Azul', 'Azul'),
+        ('Verde', 'Verde'),
+        ('Amarillo', 'Amarillo'),
+        ('Naranja', 'Naranja'),
+        ('Morado', 'Morado'),
+        ('Rosa', 'Rosa'),
+        ('Blanco', 'Blanco'),
+        ('Negro', 'Negro'),
+        ('Gris', 'Gris'),
+    ]
 class Pertenencias(models.Model):
-    descripcion = models.CharField(max_length=100, verbose_name='Descripcion')
+    equipaje = models.CharField(max_length=100, verbose_name='Equipaje')
     cantidad = models.FloatField(verbose_name='Cantidad')
+    color = models.CharField(max_length=50, verbose_name='Color', choices=COLORES_CHOICES)
     observaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
     def __str__(self) -> str:
@@ -24,6 +36,55 @@ class Pertenencias(models.Model):
     
     class Meta:
         verbose_name_plural = "Pertenencias"
+        
+# aqui empiezan los modales ------->>>>>>>>>>
+class Pertenencia_aparatos(models.Model):# pentenencias electronicas ----------------->>>>>>
+    electronicos = models.CharField(max_length=100, verbose_name='Electronicos')
+    cantidad = models.FloatField(verbose_name='Cantidad')
+    marca = models.CharField(max_length=100, verbose_name='Marca')
+    serie = models.CharField(max_length=100, verbose_name='Serie')
+    observaciones = models.CharField(max_length=100, verbose_name='Observaciones')
+    delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
+    def __str__(self) -> str:
+        return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "pertenenecia_aparatos"
+        
+
+class valoresefectivo(models.Model): #modales para el efectivo ------------>>>
+    importe = models.FloatField(max_length=100, verbose_name='Importe')
+    moneda = models.CharField(max_length=100, verbose_name='Moneda')
+    delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
+    def __str__(self) -> str:
+        return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "valoresefectivo"
+        
+class valoresjoyas(models.Model): # valores de joyas y otros -------->>>>>>>
+    metal = models.CharField(max_length=100, verbose_name='Metal')
+    descripcion = models.CharField(max_length=300, verbose_name='Descripcion')
+    delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero del Inventario')
+    def __str__(self) -> str:
+        return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "valoresjoyas"
+    
+class documentospertenencias(models.Model): #docuemntos del extranjero ------------------->>>>>>>>>
+    tipodocumento = models.CharField(max_length=200, verbose_name='Tipodocumento')
+    descripcion = models.CharField(max_length=300, verbose_name='Descripcion')
+    delInventario = models.ForeignKey(Inventario,on_delete=models.CASCADE, verbose_name='Numero del Inventario')
+    def __str__(self) -> str:
+        return '__all__'
+    
+    class Meta:
+        verbose_name_plural = "documentospertenencias"
+    
+# aqui terminan los modales ---------->>>>>
+
+        
 class Valores(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     cantidad = models.FloatField(verbose_name='Cantidad')

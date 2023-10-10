@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM
+from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPertenenciasViewINM, ListaPertenenciasValorViewINM, CrearPertenenciasValoresViewINM, DeletePertenenciasINM, DeletePertenenciasIValorNM, EditarPertenenciasViewINM, UpdatePertenenciasValorINM, ListaEnseresViewINM, CrearEnseresINM, EditarEnseresViewINM, DeleteEnseresINM,CrearEnseresModaINM, CrearPertenenciasElectronicasViewINM,DeletePertenenciaselectronicasINM,EditarPertenenciaselectronicasViewINM, CrearvaloresefectivoViewINM, eliminarvaloresefectivoINM, editarvaloresefectivoINM,CrearvaloresjoyasViewINM, eliminarvaloresjoyasINM,editarvaloresjoyasINM,CrearvaloresdocumentosViewINM,eliminarvaloresdocumentosINM,editarvaloresdocumentosINM
 from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC
 from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP, ListaEnseresViewUP, CrearEnseresVP, CrearEnseresModalVP, DeleteEnseresVP, EditarEnseresViewVP
 from .views import homePertenencias, manejar_imagen
@@ -22,7 +22,28 @@ urlpatterns = [
     path('editar-enseres-inm/<int:pk>/', EditarEnseresViewINM.as_view(), name='editarEnseresINM'),
     path('eliminar-enseres-inm/<int:pk>/', DeleteEnseresINM.as_view(), name='eliminarEnseresINM'),
     path('crear-enseres-inm1/<int:extranjero_id>/<int:puesta_id>/', CrearEnseresModaINM.as_view(), name='crearEnseresModaINM'),
+    
+    #pertenencias electronicas
+    path('crear-pertenenciaselectronicas-inm/<int:inventario_id>/<int:puesta_id>/', CrearPertenenciasElectronicasViewINM.as_view(), name='crear_pertenenciaselectronicasINM'),
+    path('eliminar-pertenenciaselectronicas-inm/<int:pk>/',DeletePertenenciaselectronicasINM.as_view(), name='eliminar_pertenenciaselectronicasINM'),
+    path('editar_pertenenciaselectronicas-inm/<int:pk>/', EditarPertenenciaselectronicasViewINM.as_view(), name='editar_pertenenciaselectronicasINM'),
 
+    #valores efectivo
+    path('crearvaloresefectivo-inm/<int:inventario_id>/<int:puesta_id>/', CrearvaloresefectivoViewINM.as_view(), name='crear_pertenenciasefectivoINM'),
+    path('eliminar-valoresefectivo-inm/<int:pk>/',eliminarvaloresefectivoINM.as_view(), name='eliminar_pertenenciasefectivoINM'),
+    path('editar-valoresefectivo-inm/<int:pk>/', editarvaloresefectivoINM.as_view(), name='editar_pertenenciasefectivoINM'),
+
+    
+    #valores alhajas
+    path('crear-valoresjoyas-inm/<int:inventario_id>/<int:puesta_id>/', CrearvaloresjoyasViewINM.as_view(), name='Crear_valoresjoyasViewINM'),
+    path('eliminar-valoresjoyas-inm/<int:pk>/',eliminarvaloresjoyasINM.as_view(), name='eliminar_valoresjoyasINM'),
+    path('editar_valoresjoyas-inm/<int:pk>/', editarvaloresjoyasINM.as_view(), name='editar_valoresjoyasINM'),
+
+
+    # # documentos del extranjero
+    path('crear-pertenenciasdocumentos-inm/<int:inventario_id>/<int:puesta_id>/', CrearvaloresdocumentosViewINM.as_view(), name='crear_pertenenciasdocumentosINM'),
+    path('eliminar-pertenenciasdocumentos-inm/<int:pk>/',eliminarvaloresdocumentosINM.as_view(), name='eliminar_pertenenciasdocumentosINM'),
+    path('editar_pertenenciasdocumentos-inm/<int:pk>/', editarvaloresdocumentosINM.as_view(), name='editar_valoresdocumentosINM'),
 
 #----------------------------AC-------------------------
     path('crear-inventario-ac/<int:extranjero_id>/<int:puesta_id>/', CrearInventarioViewAC.as_view(), name='crear_inventarioAC'),
