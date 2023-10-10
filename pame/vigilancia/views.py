@@ -406,6 +406,17 @@ class listarExtranjeros(ListView):
 
             extranjero.tiene_enseres = tiene_enseres
 
+     for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_inventario = False
+
+            if ultimo_nup:
+                inventario = Inventario.objects.filter(nup=ultimo_nup).first()
+                if inventario:
+                    tiene_inventario = True
+
+            extranjero.tiene_inventario = tiene_inventario
+
      context['puesta'] = puesta
      context['navbar'] = 'seguridad'
      context['seccion'] = 'seguridadINM'

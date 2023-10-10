@@ -62,6 +62,7 @@ class PuestaDisposicionAC(models.Model):
     dependencia = models.CharField(verbose_name='Dependencia', max_length=100)
     numeroCarpeta = models.IntegerField(verbose_name='Número de Carpeta')
     entidadFederativa = models.CharField(verbose_name='Entidad Federativa', max_length=100)
+    municipio =models.CharField(max_length=50)
     certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     class Meta:

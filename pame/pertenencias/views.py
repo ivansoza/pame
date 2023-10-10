@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP
+from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP, NoProceso
 from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm, EditPertenenciaForm,EditarValoresForm,pertenenciaselectronicasForm, valoresefectivoForm,valorejoyasForm, EditarelectronicosForm,documentospertenenciasForm
 from .models import Pertenencias, Inventario, Valores, EnseresBasicos, Pertenencia_aparatos, valoresefectivo,valoresjoyas,documentospertenencias
 from django.shortcuts import get_object_or_404
@@ -314,13 +314,15 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
     def get_initial(self):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
         estaciones_id = extranjero.deLaEstacion.id
         estaciones = extranjero.deLaEstacion.nombre
         ultimo_registro = Inventario.objects.order_by('-id').first()
         ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
         nuevo_numero = f'2023/INV/{estaciones_id}/{extranjero_id}/{ultimo_numero + 1:06d}'
 
-        return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones}
+        return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones,'nup':ultimo_no_proceso_id}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -356,15 +358,17 @@ class ListaPertenenciasViewINM(ListView):
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
         puesta_id = self.kwargs.get('puesta_id')
-        aparato = Pertenencia_aparatos.objects.filter(delInventario=inventario.noExtranjero.id)
-        efectivo = valoresefectivo.objects.filter(delInventario=inventario.noExtranjero.id)
-        joyas = valoresjoyas.objects.filter(delInventario=inventario.noExtranjero.id)
-        document = documentospertenencias.objects.filter(delInventario=inventario.noExtranjero.id)
+
+        extranjero_id = inventario.noExtranjero.id
+        aparatos = Pertenencia_aparatos.objects.filter(delInventario__noExtranjero_id=extranjero_id)
+        efectivos = valoresefectivo.objects.filter(delInventario__noExtranjero_id=extranjero_id)
+        joyas = valoresjoyas.objects.filter(delInventario__noExtranjero_id=extranjero_id)
+        documentos = documentospertenencias.objects.filter(delInventario__noExtranjero_id=extranjero_id)
         
-        context['document']=document
-        context['efectivo']=efectivo
+        context['document']=documentos
+        context['efectivo']=efectivos
         context['joyas']=joyas
-        context['aparato']=aparato
+        context['aparato']=aparatos
         context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['puesta_id']=puesta_id

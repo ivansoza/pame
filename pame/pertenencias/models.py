@@ -10,6 +10,7 @@ class Inventario(models.Model):
     horaEntrega = models.DateTimeField(verbose_name='Hora Entrega', auto_now_add=True)
     validacion = models.FileField(upload_to='files/',  null=True,blank=True,verbose_name='Documento de Validación')
     noExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.foloInventario
