@@ -5,8 +5,8 @@
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
 {% endblock link %}
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
-  <i class="fas fa-arrow-left"></i>
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeroAC' puesta.id %}">
+    <i class="fas fa-arrow-left"></i>
 </a> 
 
 {% endblock dashboard %}
@@ -100,7 +100,7 @@
                 <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
                 <p><input type="checkbox" name="" id=""> He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta estación migratoria.</p>
-                
+
                 <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a>
             </div>
         </div>
