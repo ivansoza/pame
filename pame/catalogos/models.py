@@ -44,11 +44,13 @@ class Estacion(models.Model):
     colonia = models.CharField(max_length=50, null=False)
     cp = models.IntegerField(null=False)
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
+    municipio =models.CharField(max_length=50)
     email = models.EmailField(max_length=254, null=False)
     responsable = models.ForeignKey(Responsable, on_delete=models.CASCADE)
     tipo = models.ForeignKey(Tipos, on_delete=models.CASCADE)
     estatus = models.ForeignKey(Estatus, on_delete=models.CASCADE)
     capacidad = models.IntegerField( null=False)
+    servicioMedico = models.BooleanField(verbose_name='¿Cuenta con servicio medico?')
     
     def __str__(self) -> str:
         return self.nombre 
