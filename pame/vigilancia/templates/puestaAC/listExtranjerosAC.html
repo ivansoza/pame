@@ -68,7 +68,7 @@
 
                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
                     <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#" data-title="Derechos y Obligaciones">
+                    href="{% url "notificacionDOAC" extranjero.id puesta.id%}" data-title="Derechos y Obligaciones">
                         <i class="fas fa-balance-scale"></i>
                     </a>
 
@@ -83,11 +83,7 @@
                     </a>
                     {% endif %}
                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="{% url "notificacionDOAC" extranjero.id puesta.id%}" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
-                    {% endif %}
+                    
                     {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoAC' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
