@@ -1,16 +1,4 @@
-{% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
-{% block titulo %}PAME - Home{% endblock titulo %}
-{% block card %}{% endblock card %}
-{% block link %}
-    <link rel="stylesheet" href=" {% static 'css/cards/style.css' %}?v1.2ssss">
-{% endblock link %}
-{% block seccion  %}Menu{% endblock seccion  %}
-
-
-{% block contenido  %}
-
-{% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
 
 <div class="titulo-general-container">
     <h1 class="titulo-general">Accesos Directos a Puestas</h1>
@@ -137,70 +125,9 @@
         <a href="{% url 'homePuestaAC' %}" class="card-button-traslado">Ir</a>
       </div>
     </div>
-  </div>
-</div>
-{% endif %}
 
-
-{% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
-
-
-{% endif %}
-
-{% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
-<div class="titulo-general-container">
-  <h1 class="titulo-general">Accesos Directos a Cocina</h1>
-</div>  
-<div class="container mt-10">
-<div class="row justify-content-center">
-
-
-  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-    <div class="card mx-auto">
-      <div class="icon">
-        <div class="icon"><i class="fas fa-utensils"></i></div>
-      </i></div>
-      <p class="titulo" >Planificación de Menús</p>
-
-      <a href="#" class="card-button">Ir</a>
-    </div>
+  
   </div>
 
-    
-    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-      <div class="card mx-auto">
-        <div class="icon">
-          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-        </div>
-        <p class="titulo" >Gestión de Ingredientes y Almacenamiento</p>
-        <a href="#" class="card-button">Ir</a>
-      </div>
-    </div>
 
-    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-      <div class="card mx-auto">
-        <div class="icon">
-          <div class="icon"><i class="fas fa-boxes"></i></div>
-        </div>
-        <p class="titulo" >Preparación de Comidas</p>
-        <a href="#" class="card-button">Ir</a>
-      </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-      <div class="card mx-auto">
-        <div class="icon">
-          <div class="icon"><i class="fas fa-hamburger"></i></div>
-        </div>
-        <p class="titulo" >Gestión de Higiene y Seguridad</p>
-        <a href="#" class="card-button">Ir</a>
-      </div>
-    </div>
 </div>
-</div>
-
-{% endif %}
-
-
-
-{% endblock contenido  %}

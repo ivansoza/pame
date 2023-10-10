@@ -101,6 +101,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'traslados.context_processors.numero_traslados',
                 'traslados.context_processors.total_notificaciones',
+                'traslados.context_processors.user_groups',
 
             ],
         },
