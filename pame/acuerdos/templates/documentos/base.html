@@ -9,33 +9,40 @@
         }
 
         #header {
-            font-size: 16px;
+            font-size: 14px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: auto;
+            text-align: right;
+            padding: 10px;
         }
 
         #content {
             font-size: 16px;
             text-align: justify;
+            margin-top: 3cm;
         }
 
         .centrado {
             text-align: center;
         }
 
-        #footer1 {
-            background-color: #333;
-            color: white;
+        #footer {
+            /* background-color: #333; */
+            /* color: white; */
             padding: 10px;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             width: 100%;
+            font-size: 10px;
         }
 
         @page {
             size: letter;
-            margin: 2.5cm;
-            margin-bottom: 1cm;
+            margin: 0.5cm 2.5cm 0.5cm 2.5cm; /* Margen superior 1.5cm, márgenes derecho, inferior e izquierdo 2.5cm */
         }
 
         .columnas {
@@ -58,13 +65,27 @@
 </head>
 <body>
     <div id="header">
-        <h1>Proceso Administrativo Migratorio Electrónico (PAME)</h1>
+        <p>SECRETARÍA DE GOBERNACIÓN <br>
+            INSTITUTO NACIONAL DE MIGRACIÓN
+            {% block header %} {% endblock %}
+        </p>
     </div>
     <div id="content">
         {% block content %}
         {% endblock %}
     </div>
     <div id="footer">
+        <p>
+            <span style="text-align: center; display: block; margin-bottom: -0.3cm;">Aviso de Privacidad Simplificado</span> <br>
+            <span style="text-align: justify;">
+                El Instituto Nacional de Migración (IMN) es el responsable del tratamiento de los datos personales recabados a través de este acuerdo. Los datos personales que proporcione, 
+                serán protegidos conforme a lo dispuesto por la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados y demás normatividad que resulte
+                aplicable. 
+            </span>
+            <br>El aviso de privacidad integral lo podrá consultar en: <a href="https://www.inm.gob.mx/static/transparencia/pdf/avisos/Aviso de Privacidad Administrativo.pdf">
+                https://www.inm.gob.mx/static/transparencia/pdf/avisos/Aviso de Privacidad Administrativo.pdf
+            </a>
+        </p>
     </div>
 </body>
 </html>

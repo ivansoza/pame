@@ -23,7 +23,7 @@
                 <th>Nombre(s)</th>
                 <th>Apellido(s)</th>
                 <th>Nacionalidad</th>
-                <th>¿Con acuerdo?</th>
+                <!-- <th>¿Con acuerdo?</th> -->
                 <th style="width: 5%;">Opciones</th>
             </tr>
         </thead>
@@ -34,13 +34,13 @@
                 <td>{{ e.nombreExtranjero }}</td>
                 <td>{{ e.apellidoPaternoExtranjero }} {{ e.apellidoMaternoExtranjero }}</td>
                 <td>{{ e.nacionalidad }}</td>
-                <td>
+                <!-- <td>
                     {% for extranjero, pdf_exists in extranjeros_pdf %}
                         {% if extranjero.id == e.id %}
                             {{ pdf_exists }}
                         {% endif %}
                     {% endfor %}
-                </td>
+                </td> -->
                 <td align="center">
                     {% for extranjero, pdf_exists in extranjeros_pdf %}
                         {% if extranjero.id == e.id %}
@@ -51,7 +51,7 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
                             {% else %}
-                                <a href="{% url 'generarPdf' extranjero_id=e.id %}" target="_blank" 
+                                <a href="{% url 'generarPdf' extranjero_id=extranjero.id %}" target="_blank" 
                                     class="btn btn-sm btn-icon1 tooltip-link btn-no-generado"
                                     data-title="Generar Oficio">
                                     <i class="fas fa-file-pdf"></i>

@@ -26,6 +26,9 @@ class acuerdo_inicio(ListView):
         extranjeros_ordenados = sorted(pdf_existencia, key=lambda x: x[1])
 
         context = {
+            'navbar': 'acuerdos', # Sección de acuerdos 
+            'seccion': 'presentacion', # Sección de Inicio de acuerdos
+            'acuerdo': 'inicio',
             'extranjeros': [extranjero for extranjero, _ in extranjeros_ordenados],
             'extranjeros_pdf': pdf_existencia
             }
@@ -35,8 +38,8 @@ def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoUno_{extranjero_id}.pdf"
     ubicacion_pdf = os.path.join("pame/media/files", nombre_pdf)
     exists = os.path.exists(ubicacion_pdf)
-    print(f"PDF para extranjero {extranjero_id}: {exists}")
-    print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
+    # print(f"PDF para extranjero {extranjero_id}: {exists}")
+    # print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
     return exists
 
 def generate_pdf(request, extranjero_id):
@@ -67,5 +70,37 @@ def generate_pdf(request, extranjero_id):
 
     # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
     response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+    return response
+
+def constancia_llamada(request, extranjero_id):
+    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    #Obtener datos a renderizar 
+    nombre = extranjero.nombreExtranjero
+    apellidop = extranjero.apellidoPaternoExtranjero
+    apellidom = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad
+
+    # Obtener el nombre del archivo PDF
+    nombre_pdf = f"Constancia_llamadas_{extranjero.id}.pdf"
+
+    # Crear el objeto HTML a partir de una plantilla o contenido HTML
+    html_context = {
+        'contexto': 'variables',
+        'nombre': nombre,
+        'apellidop': apellidop,
+        'apellidom': apellidom,
+        'nacionalidad': nacionalidad,
+    }
+    html_content = render_to_string('documentos/constanciaLlamada.html', html_context)
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF generado como una respuesta HTTP directamente desde los bytes generados
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
     return response

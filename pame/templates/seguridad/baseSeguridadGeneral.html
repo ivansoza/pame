@@ -366,8 +366,8 @@
 
         <!-- Acuerdos  -->
 
-        <li class="nav-item {% if navbar == '#' %}menu-is-opening menu-open{% endif %}">
-          <a href="#" class="nav-link {% if navbar == '#' %}active first-li{% endif %}">
+        <li class="nav-item {% if navbar == 'acuerdos' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'acuerdos' %}active first-li{% endif %}">
             <i class="nav-icon fa fa-file-text-o"></i>
             <p>
               Acuerdos
@@ -377,50 +377,102 @@
 
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{% url 'listTraslado' %}" class="nav-link {% if seccion == 'traslado' %}active {% endif %}">
+              <a href="#" class="nav-link {% if seccion == '#' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>De Inicio</p>
+                <p>Especiales</p>
+                <i class="right fas fa-angle-left"></i>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Acumulación</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Conclusión</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Traslado</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Separación Alojados</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Radicación</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Recepción de documentos</p>
+                  </a>
+                </li>
+              </ul>
             </li>
 
-            <li class="nav-item">
-              <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Comparecencia</p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
+            <li class="nav-item {% if seccion == 'presentacion' %}menu-is-opening menu-open{% endif %}">
+              <a href="" class="nav-link {% if seccion == 'presentacion' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Presentación</p>
+                <i class="right fas fa-angle-left"></i>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{% url 'homeAcuerdoInicio' %}" class="nav-link {% if acuerdo == 'inicio' %}active {% endif %}">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Inicio</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Comparecencia</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fa fa-circle nav-icon"></i>
+                    <p>Presentación</p>
+                  </a>
+                </li>
+              </ul>
             </li>
 
             <li class="nav-item">
-              <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
+              <a href="#" class="nav-link {% if seccion == '#' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Pruebas y Alegatos</p>
+                <p>Resoluciones</p>
               </a>
-            </li>
-
-            <li class="nav-item">
-              <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Ampliación de Alojamiento</p>
-              </a>
-            </li>
-          
+            </li>          
           </ul>
         </li>
-
-
-
-
-
-
-
-          
+        <!-- Termina Acuerdos -->
           </li>
         </ul>
       </nav>
