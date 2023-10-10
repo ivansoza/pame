@@ -106,34 +106,8 @@
     <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>
 </form>
 
-<!-- Modal de la foto -->
-<div class="modal fade" id="webcamModal" tabindex="-1" aria-labelledby="webcamModalLabel">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header custom-header-color">
-                <h2 class="modal-title">Capturar Foto</h2>
-                <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <span id="timerSpan" style="margin-left: 10px; display: none;">3</span>
-            </div>
-            <div class="modal-body d-flex justify-content-center align-items-center">
-                <div class="capture-container">
-                    <video id="webcam" width="640" height="480" autoplay></video>
-                    <canvas id="capturedImage" width="640" height="480" style="display:none;"></canvas>
-                    <div id="countdown"
-                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #20302B; color: white; font-size: 24px; padding: 10px 20px; border-radius: 5px; display: none;">
-                        5</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
-                <button id="confirmarFoto" class="btn btn-custom2">Confirmar foto</button>
-                <button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- MODAL PARA CREAR EXTRANJERO -->
+{% include "includes/camera/crearExtranjero.html" %}
 {% endblock contenido %}
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
