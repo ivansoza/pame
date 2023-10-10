@@ -84,8 +84,6 @@ class documentospertenencias(models.Model): #docuemntos del extranjero ---------
         verbose_name_plural = "documentospertenencias"
     
 # aqui terminan los modales ---------->>>>>
-
-        
 class Valores(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     cantidad = models.FloatField(verbose_name='Cantidad')

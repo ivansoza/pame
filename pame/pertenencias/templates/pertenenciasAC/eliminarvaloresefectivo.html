@@ -24,16 +24,14 @@
             <i class="fas fa-trash-alt fa-7x mt-5" style="color: #922E41;"></i>
         </div>
 
-        <form action="{% url 'eliminar_pertenenciasAC' pk=object.id %}" method="POST">
+        <form action="{% url 'eliminar_pertenenciasefectivoAC' pk=object.id %}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
                 
-                <h2>¿Estás seguro de que deseas eliminar la siguiente pertenencia?</h2>
+                <h2>¿Estás seguro de que deseas eliminar las siguientes pertenencias?</h2>
                 <ul>
-                    <li>Equipaje: {{ object.equipaje }}</li>
-                    <li>Cantidad: {{ object.cantidad}}</li>
-                    <li>color: {{ object.color }}</li>
-                    <li>Observaciones: {{ object.observaciones }}</li>
+                    <li>Importe: {{ object.importe }}</li>
+                    <li>Moneda: {{ object.moneda }}</li>
                     <li>Inventario: {{ object.delInventario }}</li>
 
                     <!-- Agrega más campos aquí según lo necesario -->

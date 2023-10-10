@@ -17,11 +17,7 @@ class PertenenciaForm(forms.ModelForm):
     class Meta:
         model = Pertenencias
         fields = '__all__'
-        widgets = {
-            'cantidad': forms.NumberInput(attrs={'placeholder': 'Cantidad'}),
-            'observaciones': forms.TextInput(attrs={'placeholder': 'Observaciones'}),
-            'delInventario': forms.TextInput(attrs={'style': 'display:none;'}),
-        }
+       
         
 class EditPertenenciaForm(forms.ModelForm):
     class Meta:
@@ -101,6 +97,92 @@ class documentospertenenciasForm(forms.ModelForm):
         model = documentospertenencias
         fields = ['tipodocumento', 'descripcion']
 # aqui terminan los formularios de valores documentos pertenencias ---------------->>>>>>
+
+
+#aqui empiezan los formularios para AC ----------------------->>>>>>>>
+
+
+
+class EditPertenenciaACForm(forms.ModelForm):
+    class Meta:
+        model = Pertenencias
+        fields = ['equipaje','cantidad','color','observaciones']
+        
+        
+class pertenenciaselectronicasACForm(forms.ModelForm):
+    class Meta:
+        model = Pertenencia_aparatos
+        fields = '__all__'
+        widgets ={
+            'electronicos': forms.TextInput(attrs={'placeholder': 'Electronicos'}),
+            'cantidad': forms.NumberInput(attrs={'placeholder': 'Cantidad'}),
+            'marca': forms.TextInput(attrs={'placeholder': 'Marca'}),
+            'serie': forms.TextInput(attrs={'placeholder': 'Serie'}),
+            'observaciones': forms.TextInput(attrs={'placehoolder': 'Observaciones'}),
+            'delInventario': forms.TextInput(attrs={'style': 'display:none;'})
+        }
+  
+class EditarelectronicosACForm(forms.ModelForm):
+    class Meta:
+        model = Pertenencia_aparatos
+        fields = '__all__'
+        
+        
+# aqui empiezan los formularios de valores efectivo -----------------<>>>>>
+class valoresefectivoACForm(forms.ModelForm):
+    class Meta:
+        model = valoresefectivo
+        fields = '__all__'
+        widgets ={
+            'importe': forms.NumberInput(attrs={'placeholder': 'Importe'}),
+            'moneda': forms.TextInput(attrs={'placeholder': 'Moneda'}),
+            'delInventario': forms.TextInput(attrs={'style': 'display:none;'})
+        }
+  
+class EditarelectronicosACForm(forms.ModelForm):
+    class Meta:
+        model = valoresefectivo
+        fields = ['importe', 'moneda']
+        
+        
+        
+# aqui terminan los formularios de valores joyas ---------------->>>>>>
+class valorejoyasACForm(forms.ModelForm):
+    class Meta:
+        model = valoresjoyas
+        fields = '__all__'
+        widgets ={
+            'metal': forms.TextInput(attrs={'placeholder': 'Metal'}),
+            'descripcion': forms.TextInput(attrs={'placeholder': 'Descripcion'}),
+            'delInventario': forms.TextInput(attrs={'style': 'display:none;'})
+        }
+  
+class valorejoyasACForm(forms.ModelForm):
+    class Meta:
+        model = valoresjoyas
+        fields = ['metal', 'descripcion']
+# aqui terminan los formularios de valores joyas ---------------->>>>>>
+
+
+
+# aqui empieza los formularios de valores documentospertenencias ---------------->>>>>>
+class documentospertenenciasACForm(forms.ModelForm):
+    class Meta:
+        model = documentospertenencias
+        fields = '__all__'
+        widgets ={
+            'tipodocumento': forms.TextInput(attrs={'placeholder': 'Tipodocumento'}),
+            'descripcion': forms.TextInput(attrs={'placeholder': 'Descripcion'}),
+            'delInventario': forms.TextInput(attrs={'style': 'display:none;'})
+        }
+  
+class documentospertenenciasACForm(forms.ModelForm):
+    class Meta:
+        model = documentospertenencias
+        fields = ['tipodocumento', 'descripcion']
+
+
+#aqui terminan los formularios para AC ----------------------->>>>>>>>
 
 
 class ValoresForm(forms.ModelForm):
