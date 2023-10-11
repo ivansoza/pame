@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView,DetailView, TemplateView
-from .models import Traslado, Extranjero, ExtranjeroTraslado
+from .models import Traslado, Extranjero, ExtranjeroTraslado, SolicitudTraslado
 from django.views.generic import CreateView, ListView,DetailView, UpdateView, DeleteView
 from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
@@ -345,6 +345,107 @@ class ListaExtranjerosTrasladoDestino(ListView):
         context['seccion'] = 'arribo'  # Cambia esto según la página activa
         return context
     
+# Reportes PDF
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
+
+def render_to_pdf(template_src, extranjero):
+    # Render the HTML template into a PDF
+    html = render_to_string(template_src, {'extranjero': extranjero})
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Acuerdo de Traslado - {extranjero.id}.pdf"'
+
+    # Convert HTML to PDF
+    pisa_status = pisa.CreatePDF(html.encode('utf-8'), dest=response, encoding='utf-8')
+
+    if pisa_status.err:
+        return HttpResponse('Error al generar el PDF: %s' % pisa_status.err, content_type='text/plain')
+
+    return response
+
+def documento_ac(request, extranjero_id):
+    # Obtenemos el objeto Extrajero utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # Specify the template you want to render
+    template_name = "documentos/acuerdoTraslado.html"
+
+    # Render the template into a PDF
+    return render_to_pdf(template_name, extranjero)
+
+def mi_vista(request):
+    return render(request, 'documentos/acuerdoTraslado.html')
+
+from weasyprint import HTML
+
+def generate_pdf(request, extranjero_id):
+    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # Obtener el objeto Traslado 
+    traslado = ExtranjeroTraslado.objects.filter(delExtranjero=extranjero).first()
+
+    # Definir el mapeo de los nombres de los meses en español
+    nombres_meses_espanol = {
+        'January': 'enero',
+        'February': 'febrero',
+        'March': 'marzo',
+        'April': 'abril',
+        'May': 'mayo',
+        'June': 'junio',
+        'July': 'julio',
+        'August': 'agosto',
+        'September': 'septiembre',
+        'October': 'octubre',
+        'November': 'noviembre',
+        'December': 'diciembre',
+    }
+
+    # OBtener datos a renderizar 
+    nombre_extranjero = extranjero.nombreExtranjero
+    apellidop_extranjero = extranjero.apellidoPaternoExtranjero
+    apellidom_extranjero = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad
+    nombre_estacion = extranjero.deLaEstacion.nombre
+    estado_estacion = extranjero.deLaEstacion.estado
+    calle = extranjero.deLaEstacion.calle
+    noExt = extranjero.deLaEstacion.noext
+    hora = traslado.delTraslado.fechaSolicitud
+    dia = traslado.delTraslado.fechaSolicitud.strftime('%d')
+    mes = traslado.delTraslado.fechaSolicitud.strftime('%B')
+    mes_espanol = nombres_meses_espanol.get(mes, mes)
+    anio = traslado.delTraslado.fechaSolicitud.strftime('%Y')
+
+    html_context = {
+        'contexto': 'variables',
+        'nombre_extranjero': nombre_extranjero,
+        'apellidop': apellidop_extranjero,
+        'apellidom': apellidom_extranjero,
+        'nacionalidad': nacionalidad,
+        'nombre_estacion': nombre_estacion,
+        'estado_estacion': estado_estacion,
+        'calle': calle,
+        'noExt': noExt,
+        'hora': hora,
+        'dia': dia,
+        'mes': mes_espanol,
+        'anio': anio,
+    }
+
+    # Crear un objeto HTML a partir de una plantilla o contenido HTML
+    html_content = render_to_string('documentos/acuerdoTraslado.html', html_context)
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="Acuerdo de Traslado {{nombre_extranjero}}.pdf"'
+    return response
+
 class cambiarStatusExtranjero(UpdateView):
     model = ExtranjeroTraslado
     form_class = EstatusTrasladoFormExtranjero

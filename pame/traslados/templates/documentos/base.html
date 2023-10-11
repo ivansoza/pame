@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    {% block title %} {% endblock title %}
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        #header {
+            font-size: 16px;
+        }
+
+        #content {
+            font-size: 16px;
+            text-align: justify;
+        }
+
+        .centrado {
+            text-align: center;
+        }
+
+        #footer1 {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        @page {
+            size: letter;
+            margin: 2.5cm;
+            margin-bottom: 1cm;
+        }
+
+        .columnas {
+            display: flex;
+            text-align: center;
+        }
+
+        .columna {
+            flex: 1;
+            padding: 10px;
+        }
+        
+        .firma {
+            border-top:1px solid #000;
+            margin-top: 80px;
+            padding-top: 10px;
+            
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Proceso Administrativo Migratorio Electrónico (PAME)</h1>
+    </div>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div id="footer">
+    </div>
+</body>
+</html>
