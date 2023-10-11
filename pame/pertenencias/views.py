@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
-from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP
+from vigilancia.models import Extranjero, PuestaDisposicionINM, PuestaDisposicionAC,PuestaDisposicionVP, NoProceso
 from .forms import InventarioForm, PertenenciaForm, ValoresForm, EnseresForm, EditPertenenciaForm,EditarValoresForm,pertenenciaselectronicasForm, valoresefectivoForm,valorejoyasForm, EditarelectronicosForm,documentospertenenciasForm,pertenenciaselectronicasACForm,valorejoyasACForm,valoresefectivoACForm,documentospertenenciasACForm, documentospertenenciasVPForm, valorejoyasVPForm, valoresefectivoVPForm, pertenenciaselectronicasVPForm
 from .models import Pertenencias, Inventario, Valores, EnseresBasicos, Pertenencia_aparatos, valoresefectivo,valoresjoyas,documentospertenencias
 from django.shortcuts import get_object_or_404
@@ -998,10 +998,10 @@ class ListaPertenenciasViewINM(ListView):
         ultimo_nup = ultimo_nup['consecutivo__max']
 
         # Filtra los datos según el último NUP
-        aparatos = Pertenencia_aparatos.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
-        efectivos = valoresefectivo.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
-        joyas = valoresjoyas.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
-        documentos = documentospertenencias.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
+        aparatos = Pertenencia_aparatos.objects.filter(delInventario_id=inventario_id)
+        efectivos = valoresefectivo.objects.filter(delInventario_id=inventario_id)
+        joyas = valoresjoyas.objects.filter(delInventario_id=inventario_id)
+        documentos = documentospertenencias.objects.filter(delInventario_id=inventario_id)
 
         
         context['document']=documentos
@@ -1564,10 +1564,10 @@ class ListaPertenenciasViewAC(ListView):
         ultimo_nup = ultimo_nup['consecutivo__max']
 
         # Filtra los datos según el último NUP
-        aparatos = Pertenencia_aparatos.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
-        efectivos = valoresefectivo.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
-        joyas = valoresjoyas.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
-        documentos = documentospertenencias.objects.filter(delInventario__noExtranjero_id=extranjero_id, delInventario__nup=ultimo_nup)
+        aparatos = Pertenencia_aparatos.objects.filter(delInventario_id=inventario_id)
+        efectivos = valoresefectivo.objects.filter(delInventario_id=inventario_id)
+        joyas = valoresjoyas.objects.filter(delInventario_id=inventario_id)
+        documentos = documentospertenencias.objects.filter(delInventario_id=inventario_id)
 
         
         context['doc']=documentos
@@ -1650,6 +1650,7 @@ class ListaPertenenciasValorViewAC(ListView):
         inventario_id = self.kwargs['inventario_id']
         inventario = Inventario.objects.get(pk=inventario_id)
         puesta_id = self.kwargs.get('puesta_id')
+        
         electronicos = Pertenencia_aparatos.objects.filter(delInventario=inventario.noExtranjero.id)
         dinero = valoresefectivo.objects.filter(delInventario=inventario.noExtranjero.id)
         alhajas = valoresjoyas.objects.filter(delInventario=inventario.noExtranjero.id)
@@ -1955,10 +1956,10 @@ class ListaPertenenciasViewVP(ListView):
         inventario = Inventario.objects.get(pk=inventario_id)
         puesta_id = self.kwargs.get('puesta_id')
         extranjero_id = inventario.noExtranjero.id
-        aparatos = Pertenencia_aparatos.objects.filter(delInventario__noExtranjero_id=extranjero_id)
-        dinero = valoresefectivo.objects.filter(delInventario__noExtranjero_id=extranjero_id)
-        alhajas = valoresjoyas.objects.filter(delInventario__noExtranjero_id=extranjero_id)
-        doc = documentospertenencias.objects.filter(delInventario__noExtranjero_id=extranjero_id)
+        aparatos = Pertenencia_aparatos.objects.filter(delInventario_id=inventario_id)
+        dinero = valoresefectivo.objects.filter(delInventario_id=inventario_id)
+        alhajas = valoresjoyas.objects.filter(delInventario_id=inventario_id)
+        doc = documentospertenencias.objects.filter(delInventario_id=inventario_id)
 
         context['electro']=aparatos
         context['doc']=doc
