@@ -1965,7 +1965,7 @@ class ListaPertenenciasViewVP(ListView):
         context['doc']=doc
         context['alhajas']=alhajas
         context['dinero']=dinero
-        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'
