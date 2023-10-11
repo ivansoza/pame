@@ -103,7 +103,7 @@
                     <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id %}" data-title="Pertenencias">
-                        <i class="fas fa-tshirt"></i>
+                        <i class="fas fa-briefcase"></i>
                     </a>
 
                 <!-- INICIO DE AGREGAR ENSERES -->
@@ -112,7 +112,7 @@
                 {% else %}
                 <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias">
-                        <i class="fas fa-tshirt"></i>
+                        <i class="fas fa-briefcase"></i>
                     </a>
                 <!-- INICIO CREAR INVENTARIO ENSERES -->
                
