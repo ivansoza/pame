@@ -1,5 +1,7 @@
 from django.urls import path, include
-from .views import ListTraslado, listarEstaciones, TrasladoCreateView, ListTrasladoDestino, ListaExtranjerosTraslado, DeleteExtranjeroPuestaTraslado, ListaExtranjerosTrasladoDestino, cambiarStatus, cambiarStatusExtranjero, seguimientoPuesta,seguimientoPuestaDestino
+from .views import ListTraslado, listarEstaciones, TrasladoCreateView, ListTrasladoDestino, ListaExtranjerosTraslado, DeleteExtranjeroPuestaTraslado, ListaExtranjerosTrasladoDestino, cambiarStatus, cambiarStatusExtranjero, seguimientoPuesta, seguimientoPuestaDestino
+from . import views
+
 urlpatterns = [
     
   #ORIGEN --------------------------
@@ -19,6 +21,8 @@ urlpatterns = [
   path('seguimiento-puesta-destino/<int:pk>/', seguimientoPuestaDestino.as_view(), name='seguimientoPuestaDestino'),
 
 
-
-
+# Documentos PDF
+  path('reporte-ac/<int:extranjero_id>/', views.documento_ac, name='reporteAC'),
+  path('generar/<int:extranjero_id>', views.generate_pdf, name='generar_pdf'),
+  path('mi-vista/', views.mi_vista, name='mi_vista'),
 ]
