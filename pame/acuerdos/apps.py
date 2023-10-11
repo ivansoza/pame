@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AcuerdoinicioConfig(AppConfig):
+class AcuerdosConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'acuerdoInicio'
+    name = 'acuerdos'

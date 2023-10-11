@@ -51,6 +51,9 @@
                            <i class="fas fa-trash-alt"></i>
                         </a>
                         <a class="btn btn-sm btn-icon3 tooltip-link"
+                         href="#"
+                         data-title="Generar Oficio" >
+                         <i class="fas fa-file-pdf"></i>
                            href="#"
                            data-title="Generar Oficio" >
                            <i class="fas fa-file-pdf"></i>
@@ -62,9 +65,9 @@
                              data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                              <i class="fas fa-trash-alt"></i>
                             </a>
-                            <a class="btn btn-sm btn-icon3 tooltip-link"
-                             href="#"
-                             data-title="Gerar Oficio" >
+                            <a class="btn btn-sm btn-icon3 tooltip-link" 
+                             href="{% url 'homeAcuerdoInicio' %}" target="_blank
+                             data-title="Generar Oficio" >
                              <i class="fas fa-file-pdf"></i>
                             </a>
                      
