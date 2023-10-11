@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'juridico',
     'traslados',
     'biometricos',
+    'alojamiento',
     
 ]
 
