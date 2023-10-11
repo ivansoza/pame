@@ -2,14 +2,14 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
-        <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
-    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+<!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
+<link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 {% endblock link %}
 
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
-  <i class="fas fa-arrow-left"></i>
+    <i class="fas fa-arrow-left"></i>
 </a>
 
 {% endblock dashboard %}
@@ -20,18 +20,14 @@
 
 
 <!-- BOTON DE FINGERPINT PARA VERIFICAR EL USUARIO  -->
-<a class='btn btn-verified tooltip-link' 
-   data-bs-toggle="tooltip" 
-   data-bs-placement="top" 
-   data-title="Verifica extranjero" >
-   <i class="fas fa-fingerprint"></i>
+<a class='btn btn-verified tooltip-link' data-bs-toggle="tooltip" data-bs-placement="top"
+    data-title="Verifica extranjero">
+    <i class="fas fa-fingerprint"></i>
 </a>
 <!-- BOTON PARA CREAR UNA PERTENENCIA -->
-<a class='btn btn-custom btn-unverified' 
-   data-bs-toggle="tooltip" 
-   data-bs-placement="top" 
-   href="{% url 'crear_pertenenciasVP' inventario_id=inventario.id puesta_id=puesta.id%}">
-   Agregar Pertenencias
+<a class='btn btn-custom btn-unverified' data-bs-toggle="tooltip" data-bs-placement="top"
+    href="{% url 'crear_pertenenciasVP' inventario_id=inventario.id puesta_id=puesta.id%}">
+    Agregar Pertenencias
 </a>
 <br>
 <br>
@@ -39,8 +35,9 @@
 <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
     <thead>
         <tr>
-            <th>Descripción</th>
+            <th>Equipaje</th>
             <th>Cantidad</th>
+            <th>color</th>
             <th>Observaciones</th>
             <th>Opciones</th>
         </tr>
@@ -48,37 +45,246 @@
     <tbody>
         {% for pertenencia in object_list %}
         <tr>
-            <td>{{ pertenencia.descripcion }}</td>
+            <td>{{ pertenencia.equipaje }}</td>
             <td>{{ pertenencia.cantidad }}</td>
+            <td>{{ pertenencia.color }}</td>
             <td>{{ pertenencia.observaciones }}</td>
             <td>
                 <!-- BOTON PARA AGREGAR PERTENENCIAS -->
                 <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
-                href="{% url 'editar_pertenenciasVP' pertenencia.id%}"
-                data-title="Editar Pertenencia">
-                <i class="fas fa-edit"></i>
+                    href="{% url 'editar_pertenenciasVP' pertenencia.id%}" data-title="Editar Pertenencia">
+                    <i class="fas fa-edit"></i>
                 </a>
                 <!-- BOTON PARA ELIMINAR PERTENENCIAS -->
                 <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
-                href="{% url 'eliminar_pertenenciasVP' pertenencia.id %}"
-                data-title="Eliminar Pertenencia" >
-                <i class="fas fa-trash-alt"></i>
+                    href="{% url 'eliminar_pertenenciasVP' pertenencia.id %}" data-title="Eliminar Pertenencia">
+                    <i class="fas fa-trash-alt"></i>
                 </a>
             </td>
-        {% endfor %}
+            {% endfor %}
     </tbody>
 </table>
 
 <hr>
 <!-- BOTON DE VOLVER -->
 
-<a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom5">Volver</a>
+<div class="modal fade" id="agregarpertenencia" role="dialog">
+</div>
+<div class="modal fade" id="editartpertenencia" role="dialog">
+</div>
+<div class="modal fade" id="eliminarextranjero" role="dialog">
+</div>
+
+
+{% load static %}
+
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+
+
+<div class="titulo-general-container-card mb-4">
+    <h1 class="titulo-general">Lista de electronicos
+</div>
+<br>
+<a class='btn btn-custom btn-unverified' data-bs-toggle="tooltip" data-bs-placement="top"
+    href="{% url 'crear_pertenenciaselectronicasVP' inventario.id puesta.id%}">
+    Valores electronicos
+</a>
+<br>
+<br>
+
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>Electronicos</th>
+            <th>Cantidad</th>
+            <th>Marca</th>
+            <th>No.Serie</th>
+            <th>Observaciones</th>
+            <th>Opciones</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for pertenencia in electro %}
+        <tr>
+
+            <td>{{ pertenencia.electronicos }}</td>
+            <td>{{ pertenencia.cantidad }}</td>
+            <td>{{ pertenencia.marca }}</td>
+            <td>{{ pertenencia.serie }}</td>
+            <td>{{ pertenencia.observaciones }}</td>
+            
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'editar_pertenenciaselectronicasVP' pertenencia.id%}" data-title="Editar Pertenencia">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'eliminar_pertenenciaselectronicasVP' pertenencia.id %}" data-title="Eliminar Pertenencia">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+
+            </td>
+            {% endfor %}
+    </tbody>
+</table>
+<hr>
 <div class="modal fade" id="agregarpertenencia" role="dialog">
 </div>
 <div class="modal fade" id="editartpertenencia" role="dialog">
 </div>
 
-<div class="modal fade" id="eliminarextranjero" role="dialog">
+
+
+
+<div class="titulo-general-container-card mb-4">
+    <h1 class="titulo-general">Lista de Valores Efectivo
+</div>
+<br>
+<a class='btn btn-custom btn-unverified' data-bs-toggle="tooltip" data-bs-placement="top"
+    href="{% url 'crear_pertenenciasefectivoVP' inventario.id puesta.id%}">
+    Valores Efectivo
+</a>
+<br>
+<br>
+
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>Importe</th>
+            <th>Tipo de Moneda</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pertenencia in dinero %}
+        <tr>
+
+            <td>{{ pertenencia.importe }}</td>
+            <td>{{ pertenencia.moneda }}</td>
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'editar_pertenenciasefectivoVP' pertenencia.id%}" data-title="Editar Pertenencia">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'eliminar_pertenenciasefectivoVP' pertenencia.id %}" data-title="Eliminar Pertenencia">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+
+            </td>
+            {% endfor %}
+    </tbody>
+</table>
+<hr>
+<div class="modal fade" id="agregarpertenencia" role="dialog">
+</div>
+<div class="modal fade" id="editartpertenencia" role="dialog">
+</div>
+
+<div class="titulo-general-container-card mb-4">
+    <h1 class="titulo-general">Lista de Valores Alhajas
+</div>
+<br>
+
+<a class='btn btn-custom btn-unverified' data-bs-toggle="tooltip" data-bs-placement="top"
+    href="{% url 'Crear_valoresjoyasViewVP' inventario.id puesta.id%}">
+    Valores alhajas
+</a>
+<br>
+<br>
+
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>Metal</th>
+            <th>Descripcion</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pertenencia in alhajas %}
+        <tr>
+
+            <td>{{ pertenencia.metal }}</td>
+            <td>{{ pertenencia.descripcion }}</td>
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'editar_valoresjoyasVP' pertenencia.id%}" data-title="Editar Pertenencia">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'eliminar_valoresjoyasVP' pertenencia.id %}" data-title="Eliminar Pertenencia">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+
+            </td>
+            {% endfor %}
+    </tbody>
+</table>
+<hr>
+<div class="modal fade" id="agregarpertenencia" role="dialog">
+</div>
+<div class="modal fade" id="editartpertenencia" role="dialog">
+</div>
+
+
+<div class="titulo-general-container-card mb-4">
+    <h1 class="titulo-general">Lista de Documentos del Extranjero
+</div>
+<br>
+
+<a class='btn btn-custom btn-unverified' data-bs-toggle="tooltip" data-bs-placement="top"
+    href="{% url 'crear_pertenenciasdocumentosVP' inventario.id puesta.id%}">
+    Documentos del Extranjero
+</a>
+<br>
+<br>
+
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>Tipo de Dcocumento</th>
+            <th>Descripcion</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pertenencia in doc %}
+        <tr>
+
+            <td>{{ pertenencia.tipodocumento}}</td>
+            <td>{{ pertenencia.descripcion }}</td>
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'editar_valoresdocumentosVP' pertenencia.id%}" data-title="Editar Pertenencia">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-unverified"
+                    href="{% url 'eliminar_pertenenciasdocumentosVP' pertenencia.id %}"
+                    data-title="Eliminar Pertenencia">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+
+            </td>
+            {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+<div class="modal fade" id="agregarpertenencia" role="dialog">
+</div>
+<div class="modal fade" id="editartpertenencia" role="dialog">
 </div>
 {% include "includes/biometricos/videoBiometricos.html" %}
 {% endblock %}
@@ -90,35 +296,34 @@
 
 <script type="text/javascript">
     var $ = jQuery.noConflict();
-    function abrir_modal(url){
-        $('#agregarpertenencia').load(url, function(){
+    function abrir_modal(url) {
+        $('#agregarpertenencia').load(url, function () {
             $(this).modal('show');
         })
     }
-    
+
 </script>
 
 <script type="text/javascript">
     var $ = jQuery.noConflict();
-    function abrir_modal_editar(url){
-        $('#editartpertenencia').load(url, function(){
+    function abrir_modal_editar(url) {
+        $('#editartpertenencia').load(url, function () {
             $(this).modal('show');
         })
     }
-    
+
 </script>
 <script type="text/javascript">
     var $ = jQuery.noConflict();
-    function abrir_modal_eliminar(url){
-        $('#eliminarextranjero').load(url, function(){
+    function abrir_modal_eliminar(url) {
+        $('#eliminarextranjero').load(url, function () {
             $(this).modal('show');
         })
     }
-    
+
 </script>
 
 
 
 
 {% endblock script %}
-
