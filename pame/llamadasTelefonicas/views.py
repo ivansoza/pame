@@ -558,8 +558,8 @@ class validarNotificacion(CreateView):
         extranjero = get_object_or_404(Extranjero, id=llamada_id)
 
         form.instance.noExtranjero = extranjero
-        response_data = {'success': True}
-        return JsonResponse(response_data)
+        return super().form_valid(form)
+    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
