@@ -145,7 +145,7 @@
 
     document.getElementById('tomarFotoBtn').addEventListener('click', function() {
         if (isVerified) {
-            let url = btn.getAttribute('href');
+            let url = this.getAttribute('data-href'); // Cambia 'btn' por 'this' y usa 'data-href'
             abrir_modal(url);
         } else {
             let modal = new bootstrap.Modal(document.getElementById('webcamModal'), {
