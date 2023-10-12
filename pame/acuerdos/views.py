@@ -8,6 +8,8 @@ from django.views.generic import ListView
 from vigilancia.models import Extranjero
 import os
 from operator import itemgetter
+from datetime import datetime
+import locale
 from llamadasTelefonicas.models import Notificacion
 
 def homeAcuerdo(request):
@@ -77,6 +79,8 @@ def generate_pdf(request, extranjero_id):
 def constancia_llamada(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+    fecha = datetime.now().strftime('%d de %B de %Y')
     notifi = get_object_or_404(Notificacion, delExtranjero=extranjero)
 
     #Obtener datos a renderizar 
@@ -100,6 +104,7 @@ def constancia_llamada(request, extranjero_id):
         'apellidop': apellidop,
         'apellidom': apellidom,
         'nacionalidad': nacionalidad,
+        'fecha': fecha,
     }
     html_content = render_to_string('documentos/constanciaLlamada.html', html_context)
     html = HTML(string=html_content)
