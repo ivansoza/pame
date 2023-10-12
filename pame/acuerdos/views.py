@@ -8,6 +8,7 @@ from django.views.generic import ListView
 from vigilancia.models import Extranjero
 import os
 from operator import itemgetter
+from llamadasTelefonicas.models import Notificacion
 
 def homeAcuerdo(request):
     return render(request,"acuerdoInicio.html")
@@ -76,18 +77,24 @@ def generate_pdf(request, extranjero_id):
 def constancia_llamada(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+    notifi = get_object_or_404(Notificacion, delExtranjero=extranjero)
 
     #Obtener datos a renderizar 
     nombre = extranjero.nombreExtranjero
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad
-
+    deseaLlamar = notifi.deseaLlamar
+    motivo = notifi.motivoNoLlamada
+    fecha = notifi.fechaHoraNotificacion
     # Obtener el nombre del archivo PDF
     nombre_pdf = f"Constancia_llamadas_{extranjero.id}.pdf"
 
     # Crear el objeto HTML a partir de una plantilla o contenido HTML
     html_context = {
+        'fecha':fecha,
+        'motivo':motivo,
+        'desea':deseaLlamar,
         'contexto': 'variables',
         'nombre': nombre,
         'apellidop': apellidop,
