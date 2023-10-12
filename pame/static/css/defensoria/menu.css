@@ -1,0 +1,110 @@
+
+.custom-navbar {
+    background-color: #762433;
+}
+
+
+/* styles.css */
+
+/* Estilo para el enlace activo en el menú lateral */
+
+.nav-sidebar .nav-pills .nav-link.active {
+  color: #902F4A;
+}
+.custom-navbar .nav-link,
+  .custom-navbar .nav-link i {
+    color: #ffffff; /* Color blanco para los enlaces del navbar y los iconos */
+    transition: color 0.3s ease; /* Transición suave de color al pasar el mouse */
+
+  }
+
+  .custom-navbar .nav-link i:hover{
+    color: #D1C1A0; /* Color blanco para los enlaces del navbar y los iconos */
+  }
+
+  /* Estilo para el badge de notificaciones en el navbar */
+  .custom-navbar .navbar-badge {
+    background-color: #FF5733; /* Color de fondo para el badge */
+    color: #ffffff; /* Color de texto para el badge */
+    transition: color 0.3s ease; /* Transición suave de color al pasar el mouse */
+
+  }
+  .custom-navbar .navbar-badge:hover {
+    background-color: #FF5733; /* Color de fondo para el badge */
+    color: #D1C1A0; /* Color de texto para el badge */
+  }
+
+
+
+
+
+
+
+
+  .custom-navbar .navbar-nav .nav-link {
+    color: #ffffff; /* Color blanco para los enlaces del navbar */
+    transition: color 0.3s ease; /* Transición suave de color al pasar el mouse */
+
+  }
+  .custom-navbar .navbar-nav .nav-link:hover {
+    color: #D1C1A0; /* Color de enlace al pasar el mouse */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Agregar sombra al pasar el mouse */
+  }
+
+  .custom-sidebar {
+    background-color: #612232;
+}
+
+
+
+.nav-item .nav-link.first-li.active {
+  background-color: #922E41 !important;
+  color: #fff;
+}
+
+.nav-item .nav-link.second-li.active {
+  background-color: #B59664 !important;
+  color: #ffffff;
+
+}
+
+/* DATATABLES  */
+.page-item.active .page-link{
+  columns: #fff;
+  background-color: #6c757d;
+  border: 1px solid #6c757d;
+}
+
+.pagination >li > a{
+  background-color: #fff;
+  color: #6c757d;
+
+}
+
+.pagination >li >a:focus,
+.pagination >li >a:hover,
+.pagination > span > a:focus,
+.pagination > span > a:hover{
+  color: #111;
+  background-color: #d3d3d3;
+  border: 1px solid #6c757d;
+  box-shadow: none;
+}
+
+.dataTables_paginate {
+  margin-top: -30px !important;
+  margin-bottom: 60px;
+}
+
+
+.dataTables_filter{
+  margin-bottom: 10px !important;
+}
+
+.dataTables_length {
+  
+  margin-bottom: -10px !important;
+}
+.dt-buttons{
+  margin-bottom: -40px !important;
+}

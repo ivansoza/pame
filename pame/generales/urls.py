@@ -1,6 +1,6 @@
 from django.urls import path, include
 from django.contrib.auth.views import LoginView
-from .views import CustomLoginView, templeteDenegado, DefensoriaLoginView
+from .views import CustomLoginView, templeteDenegado, DefensoriaLoginView, menuDefensoria
 from .views import home, menu, exit
 from django.contrib.auth import views as auth_views
 
@@ -10,6 +10,8 @@ from django.conf import settings
 urlpatterns = [
     path('', home, name="home"),
     path('menu/', menu, name='menu'),
+    path('menu-defensoria/', menuDefensoria, name='menuDefensoria'),
+
     path('logout/', exit, name="exit"),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('defensoria-login/', DefensoriaLoginView.as_view(), name='defensoriaLogin'),

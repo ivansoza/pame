@@ -1,80 +1,106 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>login</title>
-  <link rel="stylesheet" href=" {% static 'css/styleLogin.css' %}">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso a Defensoría - GOB.mx</title>
+
+    <!-- CSS -->
+    <link href="https://framework-gb.cdn.gob.mx/gm/v4/image/favicon.ico" rel="shortcut icon">
+    <link href="https://framework-gb.cdn.gob.mx/gm/v4/css/main.css" rel="stylesheet">
+
+    <!-- Estilos para el formulario -->
+    <style>
+        .login-container {
+            display: flex;
+            height: 70vh;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+        }
+
+        .login-form {
+            max-width: 500px;
+            padding: 30px 80px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        button.btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+        }
+		.forgot-password {
+			margin-top: 10px;
+            text-align: center;
+        }
+		
+    </style>
 </head>
+
 <body>
 
-    estas en defensoria 
-
-<header>
-  <div class="logo">
-    <img src=" {% static 'img/gobierno.png' %} " alt="logo del gobierno" class="logo-img">
-  </div>
-  <nav>
-    <a href="{% url 'home' %}" class="nav-link" style="color: white; font-size: 20px">P A M E</a>
-  </nav>
-  
-</header>
-  <div class="wrapper">
-    <div class="form-box login" style="text-align: center; display: flex; justify-content:center ;">
-      <div class="hijo1">
-        <h2>Login</h2>
-        <img src=" {% static 'img/gh.jpg' %} " style="width: 200px;" class="logo-img">
-      </div>
-      <div class="hijo2">
-        <form action="" method="post">
-          {% csrf_token %}
-          <div class="input-box">
-            <span class="icon"><i class="fa fa-user" aria-hidden="true"></i></span>
-            <input type="text" name="username" class="form-control" >
-            <label>Nombre Usuario</label>
-          </div>
-          <div class="input-box">
-            <span class="icon"><ion-icon name="lock"></ion-icon></span>
-            <input type="password" name="password" class="form-control" >
-            <label>Contraseña</label>
-          </div>
-          <button type="submit"  class="btn-dark">Ingresar</button>
-          <div class="recup-acceso">
-          </div>
-          <br>
-          <div class="remember-forgot" >
-            <a href="#" style="color: black;">Ingresar con huella<span class="icon" ><ion-icon name="finger-print"></ion-icon></span>
-              |
-            <a href="{% url 'password_reset' %}">Recuperar Contraseña<span class="icon">
-            </div>
-          </form>
+    <!-- Contenido -->
+    <div class="login-container">
+        <div class="login-form">
+            <h1>Acceso a Defensoría</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Nombre de usuario:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+				<div class="forgot-password">
+					<a href="#">Olvidé mi contraseña</a>
+				</div>
+            </form>
         </div>
     </div>
-  </div>
-  
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-  <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-  <script>
-    $(".hide").on('click', function() {
-      $("nav ul").toggle('slow');
-    })
-  </script>
-  {% if mostrarAlerta  %}
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      Swal.fire({
-        title: '¡Credenciales Invalidas!',
-        text: '¡Asegurece de que su usuario y contaseña sean correctos!',
-        icon: 'error',
-        confirmButtonText: 'Ok',
-        confirmButtonColor: '#85364A',
+
+    <!-- JS -->
+    <script src="https://framework-gb.cdn.gob.mx/gm/v4/js/gobmx.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+    <script>
+      $(".hide").on('click', function() {
+        $("nav ul").toggle('slow');
+      })
+    </script>
+    {% if mostrarAlerta  %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+          title: '¡Credenciales Invalidas!',
+          text: '¡Asegurece de que su usuario y contaseña sean correctos!',
+          icon: 'error',
+          confirmButtonText: 'Ok',
+          confirmButtonColor: '#85364A',
+        });
       });
-    });
-  </script>
-  {% endif %}
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </script>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
+
 </html>
