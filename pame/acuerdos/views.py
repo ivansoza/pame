@@ -11,7 +11,7 @@ from operator import itemgetter
 from datetime import datetime
 import locale
 from llamadasTelefonicas.models import Notificacion
-
+from vigilancia.models import NoProceso
 def homeAcuerdo(request):
     return render(request,"acuerdoInicio.html")
 
@@ -83,7 +83,9 @@ def constancia_llamada(request, extranjero_id):
     fecha = datetime.now().strftime('%d de %B de %Y')
     notifi = get_object_or_404(Notificacion, delExtranjero=extranjero)
 
-    #Obtener datos a renderizar 
+
+
+    # Obtener datos a renderizar
     nombre = extranjero.nombreExtranjero
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero

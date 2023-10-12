@@ -51,7 +51,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-custom2">Confirmar</button>
+                <button id='pdf' type="submit" class="btn btn-custom2"  >Confirmar</button>
             </div>
         </form>
         
@@ -60,7 +60,11 @@
     </div>
 </div>
 <!-- Asegúrate de que jQuery esté incluido en tu página -->
-
+<script>
+    document.getElementById("pdf").addEventListener("click", function () {
+        window.open("{% url 'constanciaLlamadas' extranjero_id=llamada.id %}");
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Captura los elementos del DOM

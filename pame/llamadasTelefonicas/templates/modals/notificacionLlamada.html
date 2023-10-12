@@ -63,8 +63,9 @@
 
 <script>
     document.getElementById("pdf").addEventListener("click", function () {
-        window.open("{% url 'constanciaLlamadas' extranjero_id=llamada.id %}", "_blank");
+        window.open("{% url 'constanciaLlamadas' extranjero_id=llamada.id %}");
     });
+   
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {

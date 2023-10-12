@@ -27,14 +27,16 @@
     Si (  )     No (  X   ) <br>
     {% endif %}
     <br>
-    2.- En caso de negativa, especifique el motivo <br>
-    {{motivo}}
-   <br>
+   <p>2.- En caso de negativa, especifique el motivo <br> {{motivo}}</p> 
    <br>
     3.- Fecha de realización: <br>
     {{fecha}} <br>
     <br>
+    <br>
     4.- Firma de conformidad: <br>
     <p class="firma" style="max-width: 40%; margin: 0 auto;"></p>
 </p>
+<script>
+    location.reload();
+</script>
 {% endblock content %}
