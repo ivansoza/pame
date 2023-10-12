@@ -370,7 +370,7 @@
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-utensils"></i>
               <p>
-                Cocina
+                Servicios Alimenticios
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -395,7 +395,7 @@
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-heartbeat"></i>
               <p>
-                Salud
+                Servicios Médicos
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -412,6 +412,7 @@
           <!-- Fin  Extranjeros -->
 
         <!-- Acuerdos  -->
+        {% if 'JuridicoGeneral' in user_groups or 'SeguridadGeneral' in user_groups or 'Administradores' in user_groups %}
 
         <li class="nav-item {% if navbar == 'acuerdos' %}menu-is-opening menu-open{% endif %}">
           <a href="#" class="nav-link {% if navbar == 'acuerdos' %}active first-li{% endif %}">
@@ -519,6 +520,8 @@
             </li>          
           </ul>
         </li>
+
+        {% endif %}
         <!-- Termina Acuerdos -->
           </li>
         </ul>
