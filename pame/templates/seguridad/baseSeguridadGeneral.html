@@ -362,56 +362,8 @@
 
           </li>
           {% endif %}
-          <!-- Fin  Alojamiento -->
-          <!--   Extranjeros -->
-          {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
 
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-utensils"></i>
-              <p>
-                Servicios Alimenticios
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Platillos</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          {% endif %}
-
-
-          <!-- Fin  Cocina -->
-          <!--   Medico -->
-          {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-heartbeat"></i>
-              <p>
-                Servicios Médicos
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pacientes</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          {% endif %}
-          <!-- Fin  Extranjeros -->
-
-        <!-- Acuerdos  -->
+          <!-- Acuerdos  -->
         {% if 'JuridicoGeneral' in user_groups or 'SeguridadGeneral' in user_groups or 'Administradores' in user_groups %}
 
         <li class="nav-item {% if navbar == 'acuerdos' %}menu-is-opening menu-open{% endif %}">
@@ -522,6 +474,56 @@
 
         {% endif %}
         <!-- Termina Acuerdos -->
+          <!-- Fin  Alojamiento -->
+          <!--   Extranjeros -->
+          {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Servicios Alimenticios
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Platillos</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          {% endif %}
+
+
+          <!-- Fin  Cocina -->
+          <!--   Medico -->
+          {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-heartbeat"></i>
+              <p>
+                Servicios Médicos
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pacientes</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {% endif %}
+          <!-- Fin  Extranjeros -->
+
+        
           </li>
         </ul>
       </nav>
