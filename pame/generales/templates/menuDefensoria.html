@@ -1,0 +1,72 @@
+{% extends 'defensoria/baseDefensoria.html' %}
+{% load static %}
+{% block titulo %}Defensoria - Menú{% endblock titulo %}
+{% block card %}{% endblock card %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/cards/style.css' %}?v1.2ssss">
+{% endblock link %}
+{% block seccion  %}Menu{% endblock seccion  %}
+
+
+{% block contenido  %}
+<div class="titulo-general-container">
+    <h1 class="titulo-general-traslados">Accesos Directos a Defensoría</h1>
+  </div> 
+  <div class="container mt-10">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-4">
+        <div class="card card-traslado mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </i></div>
+          <p class="titulo" >AGREGAR DEFENSORES</p>
+  
+          <a href="#" class="card-button-traslado">Ir</a>
+        </div>
+      </div>
+  
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-4">
+        <div class="card card-traslado mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </i></div>
+          <p class="titulo" >ASIGNAR DEFENSORES</p>
+  
+          <a href="#" class="card-button-traslado">Ir</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="titulo-general-container">
+    <h1 class="titulo-general-traslados">Accesos Directos a Solicitudes</h1>
+  </div> 
+  <div class="container mt-10">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-4">
+        <div class="card card-traslado mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </i></div>
+          <p class="titulo" >VER SOLICITUDES </p>
+  
+          <a href="#" class="card-button-traslado">Ir</a>
+        </div>
+      </div>
+  
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-4">
+        <div class="card card-traslado mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </i></div>
+          <p class="titulo" >VER EXTRANJEROS</p>
+  
+          <a href="#" class="card-button-traslado">Ir</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock contenido  %}

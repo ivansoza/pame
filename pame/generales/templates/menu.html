@@ -111,6 +111,8 @@
       </div>
   </div>
 </div>
+
+
 <div class="titulo-general-container">
   <h1 class="titulo-general-traslados">Accesos Directos a Traslados</h1>
 </div> 
@@ -149,7 +151,7 @@
 
 {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
 <div class="titulo-general-container">
-  <h1 class="titulo-general">Accesos Directos a Cocina</h1>
+  <h1 class="titulo-general">Accesos Directos a Servicios Alimenticios</h1>
 </div>  
 <div class="container mt-10">
 <div class="row justify-content-center">
@@ -201,6 +203,60 @@
 
 {% endif %}
 
+
+{% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
+<div class="titulo-general-container">
+  <h1 class="titulo-general">Accesos Directos a Servicios de Salud</h1>
+</div>  
+<div class="container mt-10">
+<div class="row justify-content-center">
+
+
+  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+    <div class="card mx-auto">
+      <div class="icon">
+        <div class="icon"><i class="fas fa-stethoscope"></i></div>
+      </i></div>
+      <p class="titulo" >EVALUACIONES MÉDICAS INICIALES</p>
+
+      <a href="#" class="card-button">Ir</a>
+    </div>
+  </div>
+
+    
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-syringe"></i></div>
+        </div>
+        <p class="titulo" >VACUNACIÓN</p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-clinic-medical"></i></div>
+        </div>
+        <p class="titulo" >ATENCIÓN PRIMARIA Y DE URGENCIA</p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-brain"></i></div>
+        </div>
+        <p class="titulo" >ASISTENCIA PSICOLÓGICA Y CONSEJERÍA  </p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+</div>
+</div>
+
+{% endif %}
 
 
 {% endblock contenido  %}
