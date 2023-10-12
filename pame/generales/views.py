@@ -60,6 +60,18 @@ class CustomLoginView(LoginView):
             return reverse_lazy('menu')
         else:
             return reverse_lazy('home')
+        
+class DefensoriaLoginView(LoginView):
+    template_name = 'registration/loginDefenseria.html'
+
+    # Implementa el comportamiento específico para este tipo de login aquí
+    def form_invalid(self, form):
+         mostrarAlerta = True
+         return render(self.request, 'registration/login.html', {'mostrarAlerta': mostrarAlerta})
+    def get_success_url(self):
+        # Define las redirecciones específicas para este tipo de usuario aquí
+        pass
+
 
 
 

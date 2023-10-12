@@ -1,6 +1,6 @@
 from django.urls import path, include
 from django.contrib.auth.views import LoginView
-from .views import CustomLoginView, templeteDenegado
+from .views import CustomLoginView, templeteDenegado, DefensoriaLoginView
 from .views import home, menu, exit
 from django.contrib.auth import views as auth_views
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('menu/', menu, name='menu'),
     path('logout/', exit, name="exit"),
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('defensoria-login/', DefensoriaLoginView.as_view(), name='defensoriaLogin'),
     path('recuperar-contrasena/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('permisoDenegado/', templeteDenegado.as_view(), name='permisoDenegado'),
     path('recuperar-contrasena/hecho/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
