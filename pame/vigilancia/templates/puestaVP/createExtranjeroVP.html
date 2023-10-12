@@ -102,6 +102,8 @@
         let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
         let isVerified = verifiedObj.time && 
                          verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
+                         verifiedObj.puestaId1 === '{{ fernandoteacalco_id }}' && 
+
                          (new Date().getTime() - verifiedObj.time) < 300000;
     
         if (isVerified) {
