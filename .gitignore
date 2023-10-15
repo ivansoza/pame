@@ -22,8 +22,8 @@ entvirt/
 newrelic.ini
 
 # Ignorar archivos de configuración local
-# *.sqlite3
-#local_settings.py
+*.sqlite3
+local_settings.py
 
 # Ignorar archivos de log
 *.log
