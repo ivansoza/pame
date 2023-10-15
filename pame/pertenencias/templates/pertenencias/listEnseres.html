@@ -1,0 +1,173 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.19e98 ">
+
+{% endblock link %}
+
+{% block dashboard %}
+<!-- FLECHA DE BACK  -->
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosEstacion'  %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+<!-- TITULO ENSERES -->
+{% include "includes/titulos/tituloEnseres.html" %}
+<!-- CARD ENSERES -->
+{% include "includes/cards/cardEnseres.html" %}
+
+<!--  AGREGAR ENSERES BUTTON   -->
+<a class='btn btn-custom btn-unverified' 
+    data-bs-toggle="tooltip" 
+    data-bs-placement="top" 
+    href="{% url 'crearEnseresModa' extranjero.id %}">
+    Agregar Enseres
+</a>
+<hr>
+
+<!-- INICIO DE TABLA DE ENSERES -->
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>Enseres</th>
+            <th>Fecha y Hora de Entrega</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for enseres in enseres %}
+        <tr>
+
+            <td>{{ enseres.enseres }}
+                {% if enseres.enseresExtras %}
+                     {{enseres.enseresExtras}}
+                {% endif %}
+            </td>
+            <td>{{ enseres.horaEntrega }}</td>
+            <td>
+
+
+                <a class="btn btn-sm btn-icon3a tooltip-link"
+                href="{% url 'editarEnseres' enseres.id%}"
+                data-title="Editar Enseres" onclick="abrir_modal(this.href); return false;">
+                <i class="fas fa-edit"></i>
+               </a>
+ 
+ 
+               <a class="btn btn-sm btn-icon3a tooltip-link" href="{% url 'eliminarEnseres' enseres.id %}" data-title="Eliminar Enseres" onclick="abrir_modal(this.href); return false;"><i class="fas fa-trash-alt"></i>
+               </a>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<hr>
+<a href="{% url 'listarExtranjerosEstacion' %}" class="btn btn-custom5">Volver</a>
+
+<div class="modal fade" id="abrir_modal_universal" role="dialog">
+</div>
+
+<!-- MODAL PARA AUTORIZAR ENSERES -->
+{% include "includes/biometricos/crearEnseres.html" %}  
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SCRIPT BIOMETRICO -->
+<!-- Asegúrate de tener SweetAlert2 incluido en tu proyecto para que esto funcione -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.all.min.js"></script>
+
+<!-- Asegúrate de tener SweetAlert2 incluido en tu proyecto para que esto funcione -->
+
+<script>
+    let todayRegistered = {% if today_registered %}true{% else %}false{% endif %};
+
+    // Inicializar estado de botones
+    initializeButtons();
+
+    function initializeButtons() {
+        if (todayRegistered) {
+            disableButtons();
+        } else {
+            enableButtons();
+        }
+    }
+
+    function disableButtons() {
+        document.querySelectorAll('.btn-custom, .btn-icon3').forEach(function(btn) {
+            btn.setAttribute('disabled', 'disabled');
+            btn.addEventListener('click', function(event) {
+                event.preventDefault();
+                showAlert();
+            });
+        });
+    }
+
+    function enableButtons() {
+        document.querySelectorAll('.btn-custom, .btn-icon3').forEach(function(btn) {
+            btn.removeAttribute('disabled');
+            btn.removeEventListener('click', showAlert);
+            btn.classList.remove('btn-unverified');
+            btn.addEventListener('click', function(event) {
+                event.preventDefault();
+                let url = btn.getAttribute('href');
+                abrir_modal(url);
+            });
+
+        });
+    }
+
+    function showAlert() {
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        let diff = tomorrow - now;
+    
+        const swalInstance = Swal.fire({
+            icon: 'warning',
+            title: '¡Registro ya realizado!',
+            html: `Ya has registrado enseres para el día de hoy. <br> Por favor, espera <span id="timer"></span> para hacer un nuevo registro.`,
+            confirmButtonColor: '#2A4B41',
+            allowOutsideClick: false
+        });
+    
+        updateTimer(diff);
+    
+        const interval = setInterval(() => {
+            diff -= 1000; // Reduce un segundo
+            if (diff <= 0) {
+                clearInterval(interval); // Detiene el intervalo cuando el tiempo llega a 0
+                swalInstance.close();   // Cierra el SweetAlert
+            }
+            updateTimer(diff);
+        }, 1000);
+    }
+    
+    function updateTimer(diff) {
+        const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
+        const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secondsLeft = Math.floor((diff % (1000 * 60)) / 1000);
+        const timeLeftString = `${hoursLeft} horas, ${minutesLeft} minutos y ${secondsLeft} segundos`;
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            timerElement.innerHTML = timeLeftString;
+        }
+    }
+    
+    
+</script>
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal(url){
+        $('#abrir_modal_universal').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+</script>
+
+{% endblock script %}
+

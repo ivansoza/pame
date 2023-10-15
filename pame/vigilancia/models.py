@@ -129,6 +129,13 @@ class Extranjero(models.Model):
             self.deLaEstacion.save()
         super().delete(*args, **kwargs)
 
+    @property
+    def tiene_fotografia(self):
+        try:
+            return bool(self.biometrico.fotografiaExtranjero)
+        except Biometrico.DoesNotExist:
+            return False
+
 estatura_choices = (
         ('1.70', '1.70 m o más'),
         ('1.65', '1.65 m - 1.69 m'),
