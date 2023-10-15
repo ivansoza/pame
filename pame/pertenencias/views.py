@@ -1030,6 +1030,11 @@ class ListaEnseresViewINM(ListView):
         # Filtra las llamadas que tengan el último nup registrado del extranjero
         queryset = EnseresBasicos.objects.filter(noExtranjero=extranjero_id, nup__consecutivo=ultimo_nup)
         
+        today_enseres = queryset.filter(fechaEntrega=date.today())
+        if today_enseres.exists():
+            self.today_registered = True
+        else:
+            self.today_registered = False
         return queryset    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1040,6 +1045,7 @@ class ListaEnseresViewINM(ListView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
+        context['today_registered'] = self.today_registered  # Agrega al contexto si se registró hoy
 
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
@@ -1136,7 +1142,7 @@ class CrearEnseresModaINM(CreateView):
 
 class EditarEnseresViewINM(UpdateView):
     model = EnseresBasicos
-    form_class = EnseresForm  # Usa tu formulario modificado
+    form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/inm/editarEnseresINM.html'
 
     def get_success_url(self):
@@ -1151,19 +1157,7 @@ class EditarEnseresViewINM(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
-    def get_initial(self):
-        extranjero_id = self.kwargs.get('extranjero_id')
-        initial = super().get_initial()
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        estacion = extranjero.deLaEstacion
-        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-        ultimo_no_proceso_id = ultimo_no_proceso.nup
 
-        # Rellena los campos en initial
-        initial['nup'] = ultimo_no_proceso_id
-        initial['unidadMigratoria'] = estacion
-        initial['noExtranjero'] = extranjero_id
-        return initial
     
 class DeleteEnseresINM(DeleteView):
     permission_required = {
@@ -1735,7 +1729,12 @@ class ListaEnseresViewAC(ListView):
 
         # Filtra las llamadas que tengan el último nup registrado del extranjero
         queryset = EnseresBasicos.objects.filter(noExtranjero=extranjero_id, nup__consecutivo=ultimo_nup)
-        
+        today_enseres = queryset.filter(fechaEntrega=date.today())
+        if today_enseres.exists():
+            self.today_registered = True
+        else:
+            self.today_registered = False
+        return queryset   
         return queryset    
     
     def get_context_data(self, **kwargs):
@@ -1747,6 +1746,8 @@ class ListaEnseresViewAC(ListView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadAC'
+        context['today_registered'] = self.today_registered  # Agrega al contexto si se registró hoy
+
         context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         return context
@@ -1799,7 +1800,7 @@ class CrearEnseresAC(CreateView):
     
 class EditarEnseresViewAC(UpdateView):
     model = EnseresBasicos
-    form_class = EnseresForm  # Usa tu formulario modificado
+    form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/ac/editarEnseresAC.html'
 
     def get_success_url(self):
@@ -1813,19 +1814,7 @@ class EditarEnseresViewAC(UpdateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadAC'
         return context
-    def get_initial(self):
-        extranjero_id = self.kwargs.get('extranjero_id')
-        initial = super().get_initial()
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        estacion = extranjero.deLaEstacion
-        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-        ultimo_no_proceso_id = ultimo_no_proceso.nup
 
-        # Rellena los campos en initial
-        initial['nup'] = ultimo_no_proceso_id
-        initial['unidadMigratoria'] = estacion
-        initial['noExtranjero'] = extranjero_id
-        return initial
 
     
 class DeleteEnseresAC(DeleteView):
@@ -2149,7 +2138,11 @@ class ListaEnseresViewUP(ListView):
 
         # Filtra las llamadas que tengan el último nup registrado del extranjero
         queryset = EnseresBasicos.objects.filter(noExtranjero=extranjero_id, nup__consecutivo=ultimo_nup)
-        
+        today_enseres = queryset.filter(fechaEntrega=date.today())
+        if today_enseres.exists():
+            self.today_registered = True
+        else:
+            self.today_registered = False
         return queryset  
     
     def get_context_data(self, **kwargs):
@@ -2161,6 +2154,8 @@ class ListaEnseresViewUP(ListView):
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadVP'
+        context['today_registered'] = self.today_registered  # Agrega al contexto si se registró hoy
+
         context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         return context
@@ -2273,7 +2268,7 @@ class DeleteEnseresVP(DeleteView):
     
 class EditarEnseresViewVP(UpdateView):
     model = EnseresBasicos
-    form_class = EnseresForm  # Usa tu formulario modificado
+    form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/vp/editarEnseresVP.html'
 
     def get_success_url(self):
