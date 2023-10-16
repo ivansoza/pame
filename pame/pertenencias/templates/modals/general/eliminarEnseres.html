@@ -15,35 +15,32 @@
 <div class="modal-dialog modal-lg" role="document" >
     <div class="modal-content">
         <div class="modal-header custom-header-color"> <!-- Agrega la clase personalizada aquí -->
-            <h2 class="modal-title">Editar Enseres</h2>
+            <h2 class="modal-title">Confirmar eliminacion</h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        {% load crispy_forms_tags %}
+        <div style="text-align: center;">
+            <i class="fas fa-trash-alt fa-7x mt-5" style="color: #922E41;"></i>
+        </div>
 
-        <form action="{% url 'editarEnseresVP' pk=object.id %}" method="POST">
+        <form action="{% url 'eliminarEnseres' pk=object.id %}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                {% csrf_token %}
+                
+                <h2>¿Estás seguro de que deseas eliminar la siguiente pertenencia de valor?</h2>
+                <ul>
+                    <li>Enseres: {{ object.enseres }}</li>
+                    <li>Nombre del Extranjero: {{ object.noExtranjero }}</li>
 
-                <div class="row">
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        {{form.enseres|as_crispy_field}}
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-lg-12">
-                        {{form.enseresExtras|as_crispy_field}}
-                    </div>
-
-                </div>
-              
+                    <!-- Agrega más campos aquí según lo necesario -->
+                </ul>
+            </div>
         <div class="modal-footer">
- <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom2">Confirmar</button>
 
         </div>
         </form>
-
     </div>
 </div>
-

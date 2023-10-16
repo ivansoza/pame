@@ -133,9 +133,26 @@
                     </a>
                     {% endwith %}
                     {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresAC' extranjero.id puesta.id %}" data-title="Enseres">
-                     <i class="fas fa-shopping-basket"></i>
-                    </a>
+            
+                            {% if extranjero.tiene_fotografia %}
+                            <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresAC' extranjero.id puesta.id %}" data-title="Asignar Enseres">
+                                <i class="fas fa-shopping-basket"></i>
+                                </a>
+                            {% else %}
+                                <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                                    <i class="fas fa-shopping-basket"></i>
+                                </a>
+                                <script>
+                                    function showBioAlert() {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: '¡Falta Fotografía!',
+                                            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                            confirmButtonColor: '#2A4B41'
+                                        });
+                                    }
+                                </script>
+                            {% endif %}
                     {% endif %}
 
                     <!-- BOTON DE EDITAR EXTRANJERO -->

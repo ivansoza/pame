@@ -1,0 +1,60 @@
+{% load static %}
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Asignar Enseres</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% load crispy_forms_tags %}
+
+        <form action="{% url 'crearEnseresModa' extranjero.id  %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="titulo-general-container mt-2" >
+                    <h1 class="titulo-general">Enseres del Extranjero:
+                        <span class="puesta-color" >{{extranjero.nombreExtranjero}} {{extranjero.apellidoPaternoExtranjero}} {{extranjero.apellidoMaternoExtranjero}}</span>
+                
+                    </h1>
+                </div>
+                {% csrf_token %}
+
+                <div class="row">
+                
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        {% for value, label in form.enseres.field.choices %}
+                            <div class="form-check">
+                                <input type="checkbox" name="{{ form.enseres.name }}" value="{{ value }}" class="form-check-input" id="id_enseres_{{ forloop.counter }}">
+                                <label class="form-check-label" for="id_enseres_{{ forloop.counter }}">{{ label }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <input type="text" name="{{ form.enseresExtras.name }}" id="id_enseresExtras" class="form-control" >
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-4"style='display:none'>
+                    {{ form.nup|as_crispy_field }}
+                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+            </div>
+        </form>
+        
+    </div>
+</div>
+

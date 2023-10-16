@@ -12,6 +12,8 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
+from django.shortcuts import redirect
+
 
 
 
@@ -156,6 +158,10 @@ class TrasladoCreateView(CreateView):
         destino_id = self.object.estacion_destino_id
         return reverse('traslado', kwargs={'traslado_id': self.object.pk, 'destino_id': destino_id})
     def form_valid(self, form):
+        numero_camiones = form.cleaned_data.get('numero_camiones')
+        if numero_camiones == 0:
+            return self.form_invalid(form)
+
         origen_id = self.kwargs['origen_id']
         destino_id = self.kwargs['destino_id']
         
@@ -163,6 +169,12 @@ class TrasladoCreateView(CreateView):
         form.instance.estacion_destino_id = destino_id
 
         return super().form_valid(form)
+    
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'No está permitido elegir 0 camiones para hacer un traslado.')
+        return redirect(reverse('listEstaciones'))
+
     def get_initial(self):
         initial = super().get_initial()
         Usuario = get_user_model()
