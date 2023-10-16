@@ -10,14 +10,14 @@ class TrasladoForm(forms.ModelForm):
         fields = ['numeroUnicoProceso', 'estacion_destino', 'nombreAutoridadEnvia', 'numero_camiones']
         widgets = { 
             'numeroUnicoProceso': forms.TextInput(attrs={'readonly':'readonly'}),
-            'numero_camiones': forms.NumberInput(attrs={'min': '1'}),
+            'numero_camiones': forms.NumberInput(attrs={'min': '1', 'placeholder': 'Ingresa número de extranjeros'}),
         }
 
     def clean_numero_camiones(self):
         numero_camiones = self.cleaned_data.get('numero_camiones')
         
         if numero_camiones <= 0:
-            raise ValidationError('El número de camiones debe ser mayor que 0.')
+            raise ValidationError('El número de extranjeros debe ser mayor que 0.')
         
         return numero_camiones
 
