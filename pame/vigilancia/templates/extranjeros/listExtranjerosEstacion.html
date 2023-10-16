@@ -55,6 +55,11 @@
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
+                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                  <a class="btn btn-sm btn-icon3 tooltip-link"
+                  href="#" data-title="Derechos y Obligaciones">
+                      <i class="fas fa-balance-scale"></i>
+                  </a>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.notificacion_set.all %}
                 {% with first_notificacion=extranjero.notificacion_set.first %}
@@ -67,11 +72,7 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% endif %}
-                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
+              
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
@@ -105,10 +106,7 @@
                         <i class="fas fa-tshirt"></i>
                     </a>
 
-                <!-- INICIO DE AGREGAR ENSERES -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
+         
                 {% endwith %}
                 {% else %}
                 <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
@@ -116,9 +114,7 @@
                         <i class="fas fa-tshirt"></i>
                     </a>
                 <!-- INICIO CREAR INVENTARIO ENSERES -->
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
+          
                 {% endif %}
                 {% if extranjero.enseresbasicos_set.all %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
@@ -157,10 +153,10 @@
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                <!-- BOTON DE RESUMEN GENERAL -->
+                {% comment %} <!-- BOTON DE RESUMEN GENERAL -->
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Resumen General">
                     <i class="fas fa-chart-bar"></i>
-                </a>
+                </a> {% endcomment %}
 
             </td>
         </tr>

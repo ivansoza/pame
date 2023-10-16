@@ -74,7 +74,7 @@ urlpatterns = [
     path('editarExtranjeroVPproceso/<int:pk>/<int:puesta_id>/', EditarExtranjeroVPProceso.as_view(), name='editarExtranjeroVPproceso'),
 
 #-----------------------------TRASLADOS---------------------
-    path('seguridad/<int:traslado_id>/<int:destino_id>/', listarTraslado.as_view(), name='traslado'),
+    path('traslado/<int:traslado_id>/<int:destino_id>/', listarTraslado.as_view(), name='traslado'),
     path('seguridad/solicitar_traslado/<int:traslado_id>/', solicitar_traslado, name='solicitar_traslado'),
     path('crear_traslado/<int:origen_id>/<int:destino_id>/', TrasladoCreateView.as_view(), name='crear_traslado'),
     path('procesar/traslado/', procesar_traslado, name='procesar_traslado'),

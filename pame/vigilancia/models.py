@@ -243,6 +243,7 @@ class NoProceso(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
     status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
+    comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)
 
     def __str__(self):
