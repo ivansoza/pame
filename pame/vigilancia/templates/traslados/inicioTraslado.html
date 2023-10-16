@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199dd8 ">
 {% endblock link %}
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homeSeguridadGeneral' %}">
@@ -114,8 +114,21 @@
 {% comment %} FIN  {% endcomment %}
 
 <!---------------------- CARD ------------------>
+<div class="card">
+  <div class="card-header">
+    Contador de Extranjeros Trasladados
+  </div>
+  <div class="card-body">
+    <h4 id="contador">Extranjeros trasladados: <span id="extranjeros-actuales">0</span> / {{ capacidad_total }}</h4>
+    <div class="progress" style="height: 25px; position: relative;">
+      <div id="barra-progreso" class="progress-bar" role="progressbar" style="width: 0%; display: flex; align-items: center; justify-content: flex-start;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="{{ capacidad_total }}">
+        <i id="icono-camion" class="fas fa-truck" style="margin-left: 5px; visibility: hidden;"></i> 
+      </div>
+    </div>
+  </div>
+</div>
 
-
+i
 <div class="row">
     <div class="col">
         <div class="titulo-general-container-card mb-4">
@@ -270,16 +283,64 @@
 
 </script>
 <script>
-    $(document).ready(function() {
+  $(document).ready(function() {
+    let capacidadTotal = parseInt('{{ capacidad_total }}'); // Asegúrate de que este valor se renderiza correctamente desde tu template.
+    let contador = 0;
+    let botonesAgregar = $('#tabla .btn-icon3');
+
+    function actualizarContador() {
+        $("#contador").text("Extranjeros trasladados: " + contador + " / " + capacidadTotal);
+      // Actualizar el texto del contador.
+      $("#extranjeros-actuales").text(contador);
+      
+      // Calcular el porcentaje de la barra de progreso.
+      let porcentaje = (contador / capacidadTotal) * 100;
+      
+      // Actualizar la barra de progreso.
+      $("#barra-progreso").css("width", porcentaje + "%").attr("aria-valuenow", contador);
+    
+        // Si alcanzamos el límite, mostramos un mensaje.
+        if (contador >= capacidadTotal) {
+            Swal.fire({
+                title: '¡Limite alcanzado!',
+                text: 'Has alcanzado el límite de extranjeros que puedes trasladar.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#85364A',
+            });
+
+        // Cambia el aspecto de todos los botones a gris y desactiva su funcionalidad.
+        botonesAgregar.addClass('btn-desactivado').off('click');
+    } else {
+        // Si no hemos alcanzado el límite, asegurémonos de que los botones tengan su estilo y funcionalidad originales.
+        botonesAgregar.removeClass('btn-desactivado');
+        // Aquí podrías volver a vincular el manejador de eventos original al clic, si es necesario.
+    
+        }
+    }
+
     // Manejar el clic en el icono de agregar
     $('#tabla tbody').on('click', '.btn-icon3', function(event) {
-        console.log("Botón añadir clickeado en la tablaExtranjeros");
+      if (contador >= capacidadTotal) {
+          // Si ya alcanzamos el límite, no permitimos añadir más extranjeros.
+          Swal.fire({
+              title: '¡No hay más cupo!',
+              text: 'Ya no hay cupo en los camiones.',
+              icon: 'warning',
+              confirmButtonText: 'Entendido',
+              confirmButtonColor: '#85364A',
+          });
+          $(this).addClass('btn-desactivado');
 
+          return; // Termina la ejecución aquí y no permite agregar más extranjeros.
+      }
+
+        console.log("Botón añadir clickeado en la tablaExtranjeros");
         event.preventDefault();
-        
+
         // Clonar la fila seleccionada
         var fila = $(this).closest('tr').clone();
-        
+
         // Añadir un icono de "remover" en lugar del de "agregar"
         fila.find('.btn-icon3')
             .removeClass('btn-primary')
@@ -289,29 +350,50 @@
 
         // Añadir la fila a la tabla de traslado
         $('#puestaAC-table tbody').append(fila);
-        
-        // (Opcional) Esconder la fila original en la tabla de extranjeros
+
+        // Esconder la fila original en la tabla de extranjeros
         $(this).closest('tr').hide();
+
+        // Incrementar el contador y actualizar
+        contador++;
+        actualizarContador();
     });
 
     // Manejar el clic en el icono de remover
     $('#puestaAC-table tbody').on('click', '.btn-icon3', function(event) {
         console.log("Botón remover clickeado en la tablaTraslado");
-
         event.preventDefault();
-        
+
         // Buscar el ID (o algún identificador único) de la fila
-        var extranjeroId = $(this).data('id');  // Asume que tienes un data-id en tu icono
+        var extranjeroId = $(this).data('id');
 
         // Mostrar de nuevo la fila en la tabla original
         $('#tabla tr[data-id="' + extranjeroId + '"]').show();
-        
+
         // Remover la fila de la tabla de traslado
         $(this).closest('tr').remove();
+
+        // Decrementar el contador y actualizar
+        contador--;
+        actualizarContador();
     });
 });
 
+
+function actualizarBarraDeProgreso(porcentaje) {
+  if (porcentaje > 0) {
+    $("#icono-camion").css("visibility", "visible");
+  } else {
+    $("#icono-camion").css("visibility", "hidden");
+  }
+
+  // Actualiza el width del progress-bar según el porcentaje
+  $("#barra-progreso").css("width", porcentaje + "%");
+}
+
+
 </script>
+
 
 
 {% endblock script %}

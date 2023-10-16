@@ -3054,8 +3054,9 @@ class listarTraslado(ListView):
         # Agrega la estación destino al contexto
         context['estacion_destino'] = estacion_destino
         context['traslado1'] = traslado1
-
-        
+        camiones = traslado1.numero_camiones
+        capacidad_total = camiones * 40
+        context['capacidad_total'] = capacidad_total
         context['navbar'] = 'traslado'
         context['seccion'] = 'vertraslado'
         
