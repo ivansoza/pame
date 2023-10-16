@@ -81,19 +81,22 @@ def constancia_llamada(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
-    notifi = get_object_or_404(Notificacion, delExtranjero=extranjero)
+    notificaciones = Notificacion.objects.filter(delExtranjero=extranjero)
 
+# Asegúrate de que hay notificaciones
+    if notificaciones.exists():
+    # Obtén la notificación más reciente en función de la fechaHoraNotificacion
+     notificacion = notificaciones.latest('nup')
 
-
-    # Obtener datos a renderizar
-    nombre = extranjero.nombreExtranjero
-    apellidop = extranjero.apellidoPaternoExtranjero
-    apellidom = extranjero.apellidoMaternoExtranjero
-    nacionalidad = extranjero.nacionalidad
-    deseaLlamar = notifi.deseaLlamar
-    motivo = notifi.motivoNoLlamada
-    fecha = notifi.fechaHoraNotificacion
-    # Obtener el nombre del archivo PDF
+     # Luego, continúa con el procesamiento de la notificación
+     nombre = extranjero.nombreExtranjero
+     apellidop = extranjero.apellidoPaternoExtranjero
+     apellidom = extranjero.apellidoMaternoExtranjero
+     nacionalidad = extranjero.nacionalidad
+     deseaLlamar = notificacion.deseaLlamar
+     motivo = notificacion.motivoNoLlamada
+     fecha = notificacion.fechaHoraNotificacion
+     # Obtener el nombre del archivo PDF
     nombre_pdf = f"Constancia_llamadas_{extranjero.id}.pdf"
 
     # Crear el objeto HTML a partir de una plantilla o contenido HTML

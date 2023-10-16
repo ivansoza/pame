@@ -315,6 +315,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = status_default,
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -560,6 +561,7 @@ class EditarExtranjeroINMProceso(CreatePermissionRequiredMixin,UpdateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = 'Activo',
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -1071,6 +1073,7 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = status_default,
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -1292,6 +1295,7 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = status_proceso,
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -1551,6 +1555,7 @@ class EditarExtranjeroACProceso(CreatePermissionRequiredMixin,UpdateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status='Activado',
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -1902,6 +1907,7 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = status_proceso,
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -2303,6 +2309,7 @@ class createExtranjeroVP(CreateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = status_proceso,
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -2537,6 +2544,7 @@ class EditarExtranjeroVPProceso(CreatePermissionRequiredMixin,UpdateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status='Activado',
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
@@ -2889,6 +2897,7 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
                 extranjero=extranjero,
                 consecutivo=nuevo_consecutivo,
                 status = status_proceso,
+                comparecencia = False,
                 nup=nup
             )
             no_proceso.save()
