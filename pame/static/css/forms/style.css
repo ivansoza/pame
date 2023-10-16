@@ -241,6 +241,19 @@
   border-color: #27463e; 
 }
 
+
+.btn-desactivado {
+  background-color: grey !important;
+  border-color: darkgrey !important;
+  cursor: not-allowed !important;
+}
+
+.btn-desactivado:hover {
+  background-color: rgb(81, 80, 80) !important;
+  border-color: rgb(82, 82, 82) !important;
+  cursor: not-allowed !important;
+}
+
 .btn-icon4 {
   background-color: #6f8092; 
   color: white; 
