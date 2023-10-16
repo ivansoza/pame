@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Otras etiquetas head -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0/signature-pad.css">
+</head>
+<body>
+    <!-- Tu contenido HTML -->
+    
+    <div id="signature-pad" class="m-signature-pad">
+        <div class="m-signature-pad--body">
+            <canvas></canvas>
+        </div>
+        <div class="m-signature-pad--footer">
+            <div class="description">Firma</div>
+            <button type="button" id="clear-button">Limpiar</button>
+        </div>
+    </div>
+
+    <div id="signature-input">
+        <label for="firma_digital">Firma:</label>
+        <textarea name="firma_digital" id="firma_digital" rows="4"></textarea>
+    </div>
+    
+    <!-- Más contenido HTML y scripts -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0/signature_pad.js"></script>
+    <script>
+        // Inicializa Signature Pad
+        var canvas = document.querySelector("canvas");
+        var signaturePad = new SignaturePad(canvas);
+        
+        // Maneja el botón "Limpiar"
+        document.getElementById("clear-button").addEventListener("click", function () {
+            signaturePad.clear();
+            document.getElementById("firma_digital").value = ''; // Limpia el campo de firma
+        });
+        
+        // Maneja el formulario al enviar la firma
+        var form = document.querySelector("form");
+        form.addEventListener("submit", function (e) {
+            // Evita que el formulario se envíe de forma tradicional
+            e.preventDefault();
+            
+            // Obtiene la firma como imagen base64
+            var signatureData = signaturePad.toDataURL();
+            
+            // Establece el valor del campo oculto con la firma
+            document.getElementById("firma_digital").value = signatureData;
+            
+            // Ahora puedes enviar el formulario a tu servidor para procesar la firma
+            form.submit();
+        });
+    </script>
+</body>
+</html>

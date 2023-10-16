@@ -36,7 +36,7 @@ class Traslado(models.Model):
     status = models.IntegerField(choices=OPCION_STATUS_CHOICES, default=0)  # Proporcionar un valor predeterminado
     motivo_rechazo = models.TextField(null=True, blank=True)
     status_traslado = models.IntegerField(choices=TRASLADO_STATUS_CHOICES, default=0)
-    numero_camiones = models.PositiveIntegerField(default=1, verbose_name="Número de Camiones")
+    numero_camiones = models.PositiveIntegerField(verbose_name="Número de Extranjeros")
 
     def __str__(self):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
