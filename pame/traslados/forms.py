@@ -1,12 +1,14 @@
 
 from django import forms 
 from .models import Traslado, ExtranjeroTraslado
+
 class TrasladoForm(forms.ModelForm):
     class Meta:
         model = Traslado
-        fields = ['numeroUnicoProceso', 'estacion_destino', 'nombreAutoridadEnvia']
-        widgets={ 
-            'numeroUnicoProceso':forms.TextInput(attrs={'readonly':'readonly'}),
+        fields = ['numeroUnicoProceso', 'estacion_destino', 'nombreAutoridadEnvia', 'numero_camiones']
+        widgets = { 
+            'numeroUnicoProceso': forms.TextInput(attrs={'readonly':'readonly'}),
+            'numero_camiones': forms.NumberInput(attrs={'min': '1'}),
         }
 
 

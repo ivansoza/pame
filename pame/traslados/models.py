@@ -1,7 +1,7 @@
 from django.db import models
 from catalogos.models import Estacion
 from vigilancia.models import Proceso, Extranjero
-
+from django import forms
 
 # Create your models here.
 
@@ -20,7 +20,7 @@ TRASLADO_STATUS_CHOICES = (
 
 
 class Traslado(models.Model):
-    numeroUnicoProceso = models.CharField(max_length=50)
+    numeroUnicoProceso = models.CharField(verbose_name="Numero Único de Proceso" ,max_length=50)
     estacion_origen = models.ForeignKey(Estacion, on_delete=models.CASCADE, related_name='solicitudes_origen1', verbose_name='Estación de Origen')
     estacion_destino = models.ForeignKey(Estacion, on_delete=models.CASCADE, related_name='solicitudes_destino1', verbose_name='Estación de Destino')
     fechaSolicitud = models.DateTimeField(auto_now_add=True)
@@ -28,7 +28,7 @@ class Traslado(models.Model):
     fecha_traslado = models.DateTimeField(null=True, blank=True)  # Similar al anterior
     fecha_arrivo = models.DateTimeField(null=True, blank=True)  # S
     fecha_rechazo = models.DateTimeField(null=True, blank=True)  
-    nombreAutoridadEnvia = models.CharField(max_length=100)
+    nombreAutoridadEnvia = models.CharField(verbose_name="Nombre de la Autoridad que Envia" ,max_length=100)
     nombreAutoridadRecibe = models.CharField(max_length=100)
     responsableEnvia = models.CharField(max_length=100)
     responsableRecibe = models.CharField(max_length=100)
@@ -36,11 +36,12 @@ class Traslado(models.Model):
     status = models.IntegerField(choices=OPCION_STATUS_CHOICES, default=0)  # Proporcionar un valor predeterminado
     motivo_rechazo = models.TextField(null=True, blank=True)
     status_traslado = models.IntegerField(choices=TRASLADO_STATUS_CHOICES, default=0)
-
+    numero_camiones = models.PositiveIntegerField(default=1, verbose_name="Número de Camiones")
 
     def __str__(self):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
     
+
 OPCION_STATUS_TRASLADO_CHOICES=[
     [0,'SOLICITUD'],
     [1,'ACEPTADO'],
