@@ -88,7 +88,7 @@ class listarEstaciones(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
-        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
+        context['seccion'] = 'traslado'  # Cambia esto según la página activa
         user_profile = self.request.user
         user_estacion = user_profile.estancia
         estaciones = Estacion.objects.exclude(pk=user_estacion.pk)

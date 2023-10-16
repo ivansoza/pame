@@ -3061,7 +3061,7 @@ class listarTraslado(ListView):
         capacidad_total = camiones
         context['capacidad_total'] = capacidad_total
         context['navbar'] = 'traslado'
-        context['seccion'] = 'vertraslado'
+        context['seccion'] = 'traslado'
         
         user_profile = self.request.user
         user_estacion = user_profile.estancia
