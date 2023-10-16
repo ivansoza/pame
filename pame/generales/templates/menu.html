@@ -1,208 +1,262 @@
-
-{% extends 'administrador/base.html' %}
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load static %}
-{% block titulo %}Pame - Menu {% endblock titulo %}
-{% block dashboard %}{% endblock dashboard %}
+{% block titulo %}PAME - Menú{% endblock titulo %}
+{% block card %}{% endblock card %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/cards/style.css' %}?v1.2ssss">
+{% endblock link %}
+{% block seccion  %}Menu{% endblock seccion  %}
 
 
+{% block contenido  %}
 
-{% block seccion %}Menu Principal{% endblock seccion %}
-
-
-{% block contenido %}
-
-<style>
-    .container .card{
-        width: 250px; /* Ancho igual al tamaño de la altura */
-        height: 270px;
-        font-size: 15px; /* Cambia el tamaño del párrafo p */
-        text-align: center; /* Centra el texto horizontalmente */
-        font-weight: 700; /* Nivel de negrita más ligero */
-        margin-bottom: 20px;
-        font-family: 'Montserrat', sans-serif;
-
-    }
-
-    .card {
-        border-radius: 5px;
-        transition: transform 0.3s, box-shadow 0.3s;
-        display: flex;
-        flex-direction: column; /* Para apilar el icono y el botón verticalmente */
-        align-items: center;
-        justify-content: center;
-        width: 10%; /* Ancho igual al tamaño de la altura */
-        height: 90%; /* Altura para hacer las cards cuadradas */
-        position: relative; /* Para posicionar el botón en la parte inferior */
-        overflow: hidden; /* Para que el botón no se desborde */
-      }
-    
-      .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      }
-    
-      .icon {
-        font-size: 80px; /* Icono más grande */
-        color: #B78D62;
-        margin-top: 30%;
-        transition: color 0.3s;
-      }
-    
-      .card:hover .icon {
-        color: #a98159;
-      }
-    
-      .card-button {
-        margin-top: auto; /* Mueve el botón hacia la parte inferior */
-        margin-bottom: 25%;
-        background-color: #991F40; /* Fondo transparente */
-        color: white;   
-        border-radius: 10%; /* Forma ovalada */
-        padding: 5px 10px; /* Espacio interno del botón */
-        width: 40%; /* Ancho del botón */
-        text-align: center; /* Centra el texto horizontalmente */
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-    
-      .card-button:hover {
-        color: white;
-        background-color: rgba(0, 0, 0, 0.8);
-      }
-      .titulo-general-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-      }
-    
-      .titulo-general {
-        background-color: #a98159;
-        padding: 10px;
-        border-radius: 5px;
-        color: white;
-        width: 500px; /* Cambia el valor según lo que necesites */
-    
-    
-        font-size: 24px; /* Cambia el tamaño del encabezado h1 */
-        text-align: center; /* Centra el texto horizontalmente */
-        margin-bottom: 20px; /* Agrega espacio inferior */
-      }
-    
-    
-      .imagen-icono {
-        max-width: 110px; /* Ajusta el ancho máximo de la imagen según tu preferencia */
-        max-height: 110px; /* Ajusta la altura máxima de la imagen según tu preferencia */
-      }
-</style>
+{% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
 
 <div class="titulo-general-container">
-    <h1 class="titulo-general">Accesos Directos</h1>
-  </div>  
+    <h1 class="titulo-general">Accesos Directos a Puestas</h1>
+</div>  
 <div class="container mt-10">
-    <div class="row">
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon">
-            <img src=" {% static 'img/icons/iconAC.png' %} " alt="Icono de imagen" class="imagen-icono">
-        </div>
-          <p class="titulo" style="font-size: 18px;" >Acuerdos</p>
+  <div class="row justify-content-center">
 
-          <a href="{% url 'homeAcuerdoInicio' %}" class="card-button" style="color: white;" >Ir</a>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon">            
-            <img src=" {% static 'img/icons/iconINM.png' %} " alt="Icono de imagen" class="imagen-icono">
-          </div>
-          <p class="titulo" style="font-size: 18px;">Actuaciones</p>
 
-          <a href="{% url 'homeActuaciones' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon">
-            <img src=" {% static 'img/icons/iconPuestaAC.png' %} " alt="Icono de imagen" class="imagen-icono">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+        </i></div>
+        <p class="titulo" >VER PUESTAS POR AUTORIDAD COMPETENTE</p>
 
-          </i></div>
-          <p class="titulo" style="font-size: 18px;" >Amparo</p>
-
-          <a href="{% url 'homeAmparo' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon">
-            <img src=" {% static 'img/icons/iconPuestaINM.png' %} " alt="Icono de imagen" class="imagen-icono">
-
-          </div>
-          <p class="titulo" style="font-size: 18px;">Certificado Medico</p>
-          <a href="{% url 'homeCertificadoMedico' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-          <p class="titulo" style="font-size: 18px;" >Consulta Medica</p>
-          <a href="{% url 'homeConsultaMedica' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-          <p class="titulo" style="font-size: 18px;" >Farmacia</p>
-          <a href="{% url 'homeFarmacia' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-book"></i></div>
-          <p class="titulo" style="font-size: 18px;" >Comparecencia</p>
-          <a href="#" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-sticky-note"></i></div>
-          <p class="titulo" style="font-size: 18px;" >Consulado</p>
-          <a href="{% url 'homeConsulado' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-          <p class="titulo" style="font-size: 18px;">Pertenencias</p>
-          <a href="{% url 'homePertenencias' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-      
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-          <p class="titulo" style="font-size: 18px;" >Seguridad General</p>
-          <a href="{% url 'homeSeguridadGeneral' %}" class="card-button" style="color: white;">Ir</a>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
-        <div class="card">
-          <div class="icon"><i class="fas fa-envelope"></i></div>
-          <p class="titulo" style="font-size: 18px;">llamadas Telefonicas</p>
-          <a href="#" class="card-button" style="color: white;">Ir</a>
-        </div>
+        <a href="{% url 'homePuestaAC' %}" class="card-button">Ir</a>
       </div>
     </div>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+      
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaINM.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </div>
+          <p class="titulo" >VER PUESTAS POR (INM)</p>
+          <a href="{% url 'homePuestaINM' %}" class="card-button">Ir</a>
+        </div>
+      </div>
 
-{% endblock contenido %}
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaINM.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </div>
+          <p class="titulo" >VER PUESTAS POR (VP)</p>
+          <a href="{% url 'homePuestasVP' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconTRAS.png' %} " alt="Icono de imagen" class="imagen-icono">
+          </div>
+          <p class="titulo" >VER TRASLADOS</p>
+          <a href="{% url 'listTraslado' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+
+
+      
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+        </div>
+          <p class="titulo" >CREAR PUESTA POR AUTORIDAD COMPETENTE</p>
+
+          <a href="{% url 'crearPuestaAC' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">            
+            <img src=" {% static 'img/icons/iconINM.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+          </div>
+          <p class="titulo" >CREAR PUESTA POR (INM)</p>
+
+          <a href="{% url 'crearPuestaINM' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+      
+      
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaVP.png' %} " alt="Icono de imagen" class="imagen-icono">
+          
+          </div>
+          <p class="titulo" >CREAR PUESTA POR VOLUNTAD PROPIA</p>
+          <a href="{% url 'crearPuestaVP' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+        <div class="card mx-auto">
+          <div class="icon">
+            <img src=" {% static 'img/icons/iconPuestaTRAS.png' %} " alt="Icono de imagen" class="imagen-icono">
+
+          </div>
+          <p class="titulo" >CREAR PUESTA POR TRASLADO</p>
+          <a href="{% url 'listEstaciones' %}" class="card-button">Ir</a>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<div class="titulo-general-container">
+  <h1 class="titulo-general-traslados">Accesos Directos a Traslados</h1>
+</div> 
+<div class="container mt-10">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-4">
+      <div class="card card-traslado mx-auto">
+        <div class="icon">
+          <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+        </i></div>
+        <p class="titulo" >CREAR TRASLADO</p>
+
+        <a href="{% url 'homePuestaAC' %}" class="card-button-traslado">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 mb-4">
+      <div class="card card-traslado mx-auto">
+        <div class="icon">
+          <img src=" {% static 'img/icons/iconPuestaAC.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+        </i></div>
+        <p class="titulo" >VER ARRIBOS</p>
+
+        <a href="{% url 'homePuestaAC' %}" class="card-button-traslado">Ir</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+{% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
+
+
+{% endif %}
+
+{% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
+<div class="titulo-general-container">
+  <h1 class="titulo-general">Accesos Directos a Servicios Alimenticios</h1>
+</div>  
+<div class="container mt-10">
+<div class="row justify-content-center">
+
+
+  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+    <div class="card mx-auto">
+      <div class="icon">
+        <div class="icon"><i class="fas fa-utensils"></i></div>
+      </i></div>
+      <p class="titulo" >PLANIFICACIÓN DE MENÚS</p>
+
+      <a href="#" class="card-button">Ir</a>
+    </div>
+  </div>
+
+    
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+        </div>
+        <p class="titulo" >GESTIÓN DE INGREDIENTES Y ALMACENAMIENTO</p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-boxes"></i></div>
+        </div>
+        <p class="titulo" >PREPARACIÓN DE COMIDAS</p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-hamburger"></i></div>
+        </div>
+        <p class="titulo" >GESTIÓN DE HIGIENE Y SEGURIDAD </p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+</div>
+</div>
+
+{% endif %}
+
+
+{% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
+<div class="titulo-general-container">
+  <h1 class="titulo-general">Accesos Directos a Servicios de Salud</h1>
+</div>  
+<div class="container mt-10">
+<div class="row justify-content-center">
+
+
+  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+    <div class="card mx-auto">
+      <div class="icon">
+        <div class="icon"><i class="fas fa-stethoscope"></i></div>
+      </i></div>
+      <p class="titulo" >EVALUACIONES MÉDICAS INICIALES</p>
+
+      <a href="#" class="card-button">Ir</a>
+    </div>
+  </div>
+
+    
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-syringe"></i></div>
+        </div>
+        <p class="titulo" >VACUNACIÓN</p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-clinic-medical"></i></div>
+        </div>
+        <p class="titulo" >ATENCIÓN PRIMARIA Y DE URGENCIA</p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+      <div class="card mx-auto">
+        <div class="icon">
+          <div class="icon"><i class="fas fa-brain"></i></div>
+        </div>
+        <p class="titulo" >ASISTENCIA PSICOLÓGICA Y CONSEJERÍA  </p>
+        <a href="#" class="card-button">Ir</a>
+      </div>
+    </div>
+</div>
+</div>
+
+{% endif %}
+
+
+{% endblock contenido  %}

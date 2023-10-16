@@ -30,6 +30,9 @@
                     <div class="col-sm-6 col-md-6 col-lg-4">
                         {{ form.deseaLlamar|as_crispy_field}}
                     </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6"style='display:none'>
+                        {{ form.nup|as_crispy_field }}
+                    </div>
                     <div id="motivoDiv">
                         {{ form.motivoNoLlamada|as_crispy_field }}
                     </div>
@@ -48,7 +51,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-custom2">Confirmar</button>
+                <button id='pdf' type="submit" class="btn btn-custom2"  >Confirmar</button>
             </div>
         </form>
         
@@ -57,7 +60,11 @@
     </div>
 </div>
 <!-- Asegúrate de que jQuery esté incluido en tu página -->
-
+<script>
+    document.getElementById("pdf").addEventListener("click", function () {
+        window.open("{% url 'constanciaLlamadas' extranjero_id=llamada.id %}");
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Captura los elementos del DOM

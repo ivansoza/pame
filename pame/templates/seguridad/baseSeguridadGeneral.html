@@ -1,5 +1,4 @@
 {% load static %}
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,12 +76,7 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Inicio</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% include "includes/user_menu1.html" %}" class="nav-link">Menú</a>
-      </li>
+ 
      
     </ul>
 
@@ -257,7 +251,7 @@
            
           </li>
           <li class="nav-item">
-            <a href=" {% url 'homeSeguridadGeneral' %}" class="nav-link {% if navbar == 'home' %}active first-li{% endif %} ">
+            <a href=" {% url 'menu' %}" class="nav-link {% if navbar == 'home' %}active first-li{% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Menú
@@ -268,6 +262,7 @@
 
 
           <!-- Puesta disposición -->
+          {% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
 
           <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
             <a href="#" class="nav-link {% if navbar == 'seguridad' %}active first-li{% endif %}">
@@ -299,11 +294,7 @@
               </li>
             </ul>
           </li>
-
-
                     <!-- Cierre de Puesta disposición -->
-
-
                     <!--  Traslado -->
 
           <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
@@ -351,20 +342,29 @@
           <!-- Fin  Alojamiento -->
           <!--   Extranjeros -->
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
+          <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'extranjeros' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-user-friends"></i>
               <p>
-                Ver Extranjeros
+                Extranjeros
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
 
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ver Extranjeros</p>
+                </a>
+              </li>
+            </ul>
+
           </li>
+          {% endif %}
 
-          <!-- Fin  Extranjeros -->
-
-        <!-- Acuerdos  -->
+          <!-- Acuerdos  -->
+        {% if 'JuridicoGeneral' in user_groups or 'SeguridadGeneral' in user_groups or 'Administradores' in user_groups %}
 
         <li class="nav-item {% if navbar == 'acuerdos' %}menu-is-opening menu-open{% endif %}">
           <a href="#" class="nav-link {% if navbar == 'acuerdos' %}active first-li{% endif %}">
@@ -463,7 +463,6 @@
                 </li>
               </ul>
             </li>
-
             <li class="nav-item">
               <a href="#" class="nav-link {% if seccion == '#' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
@@ -472,7 +471,59 @@
             </li>          
           </ul>
         </li>
+
+        {% endif %}
         <!-- Termina Acuerdos -->
+          <!-- Fin  Alojamiento -->
+          <!--   Extranjeros -->
+          {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Servicios Alimenticios
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Platillos</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          {% endif %}
+
+
+          <!-- Fin  Cocina -->
+          <!--   Medico -->
+          {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-heartbeat"></i>
+              <p>
+                Servicios Médicos
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Pacientes</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {% endif %}
+          <!-- Fin  Extranjeros -->
+
+        
           </li>
         </ul>
       </nav>
@@ -508,6 +559,10 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+
+
+        <!-- INLCUIMOS EL ACCESO DIRECTO PRO GRUPO  -->
+
   {% block contenido %}
 
 

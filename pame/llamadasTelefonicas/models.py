@@ -1,5 +1,5 @@
 from django.db import models
-from vigilancia.models import Extranjero
+from vigilancia.models import Extranjero, NoProceso
 
 Desea_llamar_choices = [
     ['No','no'],
@@ -15,6 +15,7 @@ class LlamadasTelefonicas(models.Model):
     motivo = models.TextField(null=True, blank=True)
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
     huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
 
 class Notificacion(models.Model):
     fechaHoraNotificacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha y hora de la notificación')
@@ -23,6 +24,7 @@ class Notificacion(models.Model):
     firmaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
     huellaExtranjero = models.FileField(upload_to='files/', null=True, blank=True)
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
 
    
     

@@ -1,0 +1,587 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    {% block titulo %}
+    {% endblock titulo %}
+    </title>
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href=" {% static 'css/all.min.js' %} ">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'css/tempusdominus-bootstrap-4.min.css' %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static 'css/icheck-bootstrap.min.css' %}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static 'css/jqvmap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'css/OverlayScrollbars.min.css' %}">
+  {% comment %} <link rel="stylesheet" href="{% static 'css/biometricos.css' %}"> {% endcomment %}
+
+  <!-- Daterange picker -->
+  <!-- <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"> -->
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
+  <link rel="stylesheet" href=" {% static 'css/defensoria/menu.css' %}?v1.dsdddsddeeSSSSww222SSW">
+  {% block card %}
+  <link rel="stylesheet" href=" {% static 'css/forms/cards.css' %}?ww">
+
+  {% endblock card %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
+  <script src="https://kit.fontawesome.com/78350df3d2.js" crossorigin="anonymous"></script>
+
+  <!-- Incluye las bibliotecas de DataTables -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- ---------------------DATATABLES -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/datatables.min.css" rel="stylesheet">
+
+
+  {% block link %}
+  
+  {% endblock link %}
+
+
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Preloader -->
+  {% include "includes/preloader.html" %}
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-navbar">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+ 
+     
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Navbar Search -->
+      <li class="nav-item">
+        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+          <i class="fas fa-search"></i>
+        </a>
+        <div class="navbar-search-block">
+          <form class="form-inline">
+            <div class="input-group input-group-sm">
+              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+              <div class="input-group-append">
+                <button class="btn btn-navbar" type="submit">
+                  <i class="fas fa-search"></i>
+                </button>
+                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </li>
+
+      <!-- Messages Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-comments"></i>
+          <span class="badge badge-danger navbar-badge">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  Brad Diesel
+                  <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">Call me whenever you can...</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  John Pierce
+                  <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">I got your message bro</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  Nora Silvester
+                  <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">The subject goes here</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+        </div>
+      </li>
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          {% if total_notificaciones > 0 %}
+              <span class="badge badge-warning navbar-badge">{{total_notificaciones}}</span>
+          {% endif %}
+
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">{{total_notificaciones}} Notifications</span>
+          {% comment %} <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> 4 new messages
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> 8 friend requests
+            <span class="float-right text-muted text-sm">12 hours</span>
+          </a> {% endcomment %}
+          <div class="dropdown-divider"></div>
+          <a href="{% url 'traslados_recibidos' %}" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i> {{ traslados_solicitud }} Solicitudes de Traslados
+            {% if traslados_solicitud > 0 %}
+                <span class="float-right text-muted text-sm">{{ tiempo_ultimo_traslado }}</span>
+            {% endif %}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen"  role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+      <li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 ">{{ user.username }} </span>
+            
+        </a>
+        <!-- Dropdown - User Information -->
+        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+            aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="#">
+                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                <strong style='color:#A3835F;'>Usuario: </strong>{{ user.username }}
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fas fa-users fa-sm fa-fw mr-2 text-gray-400"></i>
+                <strong style='color:#A3835F;'>Grupo: </strong>{{ user.groups.first.name }}
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fas fa-building fa-sm fa-fw mr-2 text-gray-400"></i>
+                <strong style='color:#A3835F;'>Estación: </strong>{{ user.estancia }}
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'exit' %}">
+                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                Cerrar sesión
+            </a>
+        </div>
+    </li>
+      
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4 custom-sidebar">
+    <!-- Brand Logo -->
+<!-- ICONO DE DEFENSORIA -->
+    <a href="{% url 'menuDefensoria' %}" class="brand-link">
+      <img src="{% static 'img/logo160x16021.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">DEFENSORÍA</span>
+    </a>    
+
+ <div class="sidebar">
+
+
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+       
+          <li class="nav-item menu-open">
+           
+          </li>
+          <li class="nav-item">
+            <a href=" {% url 'menuDefensoria' %}" class="nav-link {% if navbar == 'home' %}active first-li{% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Menú
+                <!-- <span class="right badge badge-danger">New</span> -->
+              </p>
+            </a>
+          </li>
+
+          <!-- abre -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Agregar Defensores</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
+
+          <!-- abre -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Ver Defensores</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
+
+           <!-- abre -->
+           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Asignar Defensores</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
+          
+          <!-- abre -->
+           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Ver Extranjeros</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
+        <!-- Termina Acuerdos -->
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header" >
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-8">
+              {% block dashboard %}
+              
+              {% endblock dashboard %}  
+
+            
+          </div><!-- /.col -->
+          <div class="col-sm-4 editcolor">
+            <ol class="breadcrumb float-sm-right ">
+              <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+              <li class="breadcrumb-item active">{% block seccion %}{% endblock seccion %}</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+        <!-- INLCUIMOS EL ACCESO DIRECTO PRO GRUPO  -->
+
+  {% block contenido %}
+
+
+  {% endblock contenido %}
+
+
+
+
+
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2023-2025 PAME.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.0.0
+    </div>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<!-- jQuery -->
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'js/Chart.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'js/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="{% static 'js/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'js/jquery.vmap.usa.js' %}"></script>
+<script src="{% static 'js/mexico.js' %}"></script>
+
+<!-- jQuery Knob Chart -->
+<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
+<!-- daterangepicker -->
+<script src="{% static 'js/moment.min.js' %}"></script>
+<script src="{% static 'js/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- Summernote -->
+<script src="{% static 'js/summernote-bs4.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/biometricos.js' %}"></script>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+{% comment %} para que funcione el modal  {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
+
+<!-- ----------------DATATABLES-------------------------- -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-1.13.6/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/datatables.min.js"></script>
+<!-- ----------------SEET ALERTS-------------------------- -->
+    
+<script>
+  $("#tabla").DataTable({
+    {% block filtro %}
+
+    {% endblock filtro %}
+      paging: true,
+      lengthMenu: [5, 10, 25, 50, 100], // Cambiamos el menú de longitud para incluir 5 entradas
+      pageLength:5,
+      lengthChange :true,
+      autoWidth: true,
+      searching: true,
+      bInfo: true,
+      bSort: true,
+      {% block dom %}
+      dom: 'Bfrltip',
+      {% endblock dom %}
+      buttons:[
+        {% block datatable %}
+
+        
+        {% endblock datatable %}        
+        
+        {% block datatable2 %}
+          {extend: 'copy',
+          text: '<i class="fas fa-clone"></i>',
+          class: 'btn btn-secondary',
+          titleAttr: 'Copy',
+          exportOptions:{
+              columns:[0,1,2]
+          }
+          },
+          {extend: 'excel',
+          text: '<i class="fas fa-file-excel"></i>',
+          class: 'btn btn-secondary',
+          titleAttr: 'Excel',
+          exportOptions:{
+              columns:[0,1,2]
+          }
+          },
+          {extend: 'print',
+          text: '<i class="fas fa-print"></i>',
+          class: 'btn btn-secondary',
+          titleAttr: 'Excel',
+          exportOptions:{
+              columns:[0,1,2]
+          }
+          },
+          {% endblock datatable2 %}
+      ],
+      "language": {
+                  "sProcessing": "Procesando...",
+                  "sLengthMenu": "Mostrar _MENU_ Registros",
+                  "sZeroRecords": "No se encontraron resultados",
+                  "sEmptyTable": "Ningún dato disponible en esta tabla",
+                  "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                  "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                  "sInfoFiltered": "(filtrado de un total de _MAX_ Registros)",
+                  "sSearch": "Buscar:",
+                  "sInfoThousands": ",",
+                  "sLoadingRecords": "Cargando...",
+                  "oPaginate": {
+                      "sFirst": "Primero",
+                      "sLast": "Último",
+                      "sNext": "Siguiente",
+                      "sPrevious": "Anterior"
+                  },
+                  "oAria": {
+                      "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                      "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                  },
+                  "buttons": {
+                      "copy": "Copiar",
+                      "colvis": "Visibilidad"
+                  }
+              },
+
+  });
+  
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+
+
+    <script>
+      $(function() {
+        setTimeout(function() {
+          var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+    
+          {% for message in messages %}
+            {% if message.tags == "success" %}
+              Toast.fire({
+                icon: 'success',
+                title: '{{ message }}'
+              });
+            {% elif message.tags == "error" %}
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ message }}",
+                footer: '<a href="">Why do I have this issue?</a>'
+              });
+            {% endif %}
+          {% endfor %}
+        }, 500); // 500 milisegundos (medio segundo)
+      });
+    </script>
+    
+    
+    {% block script  %}
+    
+    {% endblock script  %}
+
+
+   
+
+
+</body>
+</html>

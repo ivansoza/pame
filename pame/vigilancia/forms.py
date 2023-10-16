@@ -130,6 +130,10 @@ class puestaDisposicionACForm(forms.ModelForm):
         label= "Entidad Federativa:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Entidad 1'})
     )
+    municipio = forms.CharField(
+        label= "Municipio:",
+        widget=forms.TextInput(attrs={'placeholder':'Ej: Apizaco'})
+    )
     certificadoMedico = forms.FileField(
         label= "Certificado Medico:",
         required=False,

@@ -65,26 +65,26 @@
                 <td>{{ extranjero.nacionalidad }}</td>
 
                 <td>       
+
+                    <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="{% url "notificacionDOAC" extranjero.id puesta.id%}" data-title="Derechos y Obligaciones">
+                        <i class="fas fa-balance-scale"></i>
+                    </a>
+
                     <!-- ICONO DE LLAMADA -->
-                    {% if extranjero.notificacion_set.all %}
-                    {% with first_notificacion=extranjero.notificacion_set.first %}
-                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                    {% if extranjero.tiene_notificacion %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                             <i class="fas fa-phone"></i>
                         </a>
-                    {% endwith %}
                     {% else %}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-ac' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                     <i class="fas fa-phone"></i>
                     </a>
                     {% endif %}
                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
-
-                 
-                {% if extranjero.biometrico %}
+                    
+                    {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoAC' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
                         <i class="fas fa-fingerprint"></i>
@@ -108,35 +108,51 @@
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesAC' extranjero.id puesta.id%}" data-title="Acompańante">
                         <i class="fas fa-handshake"></i>
                     </a>
-                    {% if extranjero.inventario_set.all  %}
-                    {% with first_inventario=extranjero.inventario_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id%}" data-title="Pertenencias">
-                        <i class="fas fa-tshirt"></i>
+                    {% if extranjero.tiene_inventario %}
+                    <!-- INICIO DE AGREGAR PERTENENCIAS -->
+                {% with first_inventario=extranjero.inventario_set.first %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasAC' first_inventario.id puesta.id %}" data-title="Pertenencias">
+                        <i class="fas fa-briefcase"></i>
                     </a>
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorAC' first_inventario.id  puesta.id%}" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
-                    {% endwith %}
 
-                    {% else %}
+                <!-- INICIO DE AGREGAR ENSERES -->
+                
+                {% endwith %}
+                {% else %}
+                <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Pertenencias">
-                         <i class="fas fa-tshirt"></i>
+                        <i class="fas fa-briefcase"></i>
                     </a>
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioAC' extranjero.id puesta.id%}" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
-                    {% endif %}
-
-                    {% if extranjero.enseresbasicos_set.all %}
-                     {% with first_enseres=extranjero.enseresbasicos_set.first %}
+                <!-- INICIO CREAR INVENTARIO ENSERES -->
+                 
+                {% endif %}  
+                    {% if extranjero.tiene_enseres %}
+                    {% with first_enseres=extranjero.enseresbasicos_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseresAC' extranjero.id puesta.id %}" data-title="Enseres">
                         <i class="fas fa-shopping-basket"></i>
                     </a>
                     {% endwith %}
                     {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresAC' extranjero.id puesta.id %}" data-title="Enseres">
-                     <i class="fas fa-shopping-basket"></i>
-                    </a>
+            
+                            {% if extranjero.tiene_fotografia %}
+                            <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresAC' extranjero.id puesta.id %}" data-title="Asignar Enseres">
+                                <i class="fas fa-shopping-basket"></i>
+                                </a>
+                            {% else %}
+                                <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                                    <i class="fas fa-shopping-basket"></i>
+                                </a>
+                                <script>
+                                    function showBioAlert() {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: '¡Falta Fotografía!',
+                                            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                            confirmButtonColor: '#2A4B41'
+                                        });
+                                    }
+                                </script>
+                            {% endif %}
                     {% endif %}
 
                     <!-- BOTON DE EDITAR EXTRANJERO -->

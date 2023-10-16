@@ -33,17 +33,20 @@
         {% csrf_token %}
 
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.identificadorProceso|as_crispy_field}}
                 <!-- Campo no editable desde la plantilla html -->
                 <script>
                     document.getElementById('id_identificadorProceso').readOnly = true;
                 </script>
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.numeroOficio|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.numeroCarpeta|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.fechaOficio|as_crispy_field}}
                 <script>
                     var fechaOficioField = document.getElementById("id_fechaOficio");
@@ -124,13 +127,13 @@
                 </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
-                {{form.numeroCarpeta|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
                 {{form.entidadFederativa|as_crispy_field}}
                 <script>
                     document.getElementById('id_entidadFederativa').readOnly = true;
                 </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{form.municipio|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4" style="display: none;">
                 {{form.deLaEstacion|as_crispy_field}}

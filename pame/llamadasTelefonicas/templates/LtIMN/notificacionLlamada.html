@@ -80,7 +80,7 @@
     </style>
     <div class="titulo-general-container">
         <h1 class="titulo-general">
-            Notificación de Llamada Telefónica           
+            Notificación de Llamada Telefónica
         </h1>
       </div>
       <br>
@@ -100,6 +100,7 @@
                 <p>Por favor, siga las instrucciones del personal de la estación, agradecemos su cooperación.</p>
                 <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
+                
                 <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a>
                 <a href="{% url 'constanciaLlamadas' extranjero_id=llamada_id %}" target="_blank"
                     class="btn btn-custom2">PDF</a>

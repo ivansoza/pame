@@ -26,9 +26,9 @@
             {% csrf_token %}
             <div class="modal-body">
                 {% csrf_token %}
-
-                {{form.descripcion|as_crispy_field}}
+                {{form.equipaje|as_crispy_field}}
                 {{form.cantidad|as_crispy_field}}
+                {{form.color|as_crispy_field}}
                 {{form.observaciones|as_crispy_field}}
             </div>
         <div class="modal-footer">

@@ -1,4 +1,13 @@
 from django.shortcuts import render
+from django.views.generic import CreateView, ListView, TemplateView
+from vigilancia.models import Extranjero, PuestaDisposicionINM, Biometrico, PuestaDisposicionAC, PuestaDisposicionVP
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import face_recognition
+from io import BytesIO
+import numpy as np
+from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 # Create your views here.
 
@@ -12,3 +21,170 @@ def homeJuridico(request):
 
 def homeJuridicoResponsable(request):
     return render (request, "home/homeJuridicoResponsable.html")
+
+class notificacionDO(TemplateView):
+    template_name ='home/notificacion_d_o.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs['extranjero_id']
+    
+    
+     # Obtener la instancia del Extranjero correspondiente
+        extrannjero = Extranjero.objects.get(pk=extranjero_id)
+        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        estacion = extrannjero.deLaEstacion.responsable
+        responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['extranjero']= extrannjero
+        context['nombreCompleto']= nombre_completo
+        context['responsable']=responsable
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        return context
+    
+class notificacionDOAC(TemplateView):
+    template_name ='notificacionDOAC.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs['extranjero_id']
+    
+    
+     # Obtener la instancia del Extranjero correspondiente
+        extrannjero = Extranjero.objects.get(pk=extranjero_id)
+        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        estacion = extrannjero.deLaEstacion.responsable
+        responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
+        context['extranjero']= extrannjero
+        context['nombreCompleto']= nombre_completo
+        context['responsable']=responsable
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        return context
+    
+class notificacionDOVP(TemplateView):
+    template_name ='notificacionDOVP.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs['extranjero_id']
+    
+    
+     # Obtener la instancia del Extranjero correspondiente
+        extrannjero = Extranjero.objects.get(pk=extranjero_id)
+        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        estacion = extrannjero.deLaEstacion.responsable
+        responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
+        puesta_id = self.kwargs.get('puesta_id')
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
+        context['extranjero']= extrannjero
+        context['nombreCompleto']= nombre_completo
+        context['responsable']=responsable
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        return context
+    
+@csrf_exempt
+def manejar_imagen(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+        print(imagen)
+        print(extranjero_id_str)
+
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid llamada_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)
+
+        try:
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            face_encoding_almacenado = biometrico.face_encoding
+
+            # Conversion de la imagen subida
+            imagen_bytes_io = BytesIO(imagen.read())
+            imagen_pil = Image.open(imagen_bytes_io)
+
+            if imagen_pil.mode != 'RGB':
+                imagen_pil = imagen_pil.convert('RGB')
+
+            imagen_array = np.array(imagen_pil)
+
+            if not isinstance(imagen_array, np.ndarray):
+                return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+            # Obteniendo los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen_array)
+
+            if not encodings_subido:
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+            uploaded_encoding = encodings_subido[0]
+            tolerance = 0.5  # Puedes ajustar este valor
+
+            distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+            distance_value = float(distance[0])
+            
+            if distance_value < tolerance:
+                similarity_str = f"Similitud: {(1 - distance_value) * 100:.2f}%"
+                return JsonResponse({'match': True, 'similarity': similarity_str, 'distance': distance_value})
+            else:
+                return JsonResponse({'match': False, 'similarity': None, 'distance': distance_value})
+
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def compare_faces(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+
+        # Verifica si el extranjero_id es None o si no es un número válido
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)  # Convertir a entero
+        print(type(extranjero_id))  # <class 'int'>
+        print(extranjero_id)  
+        try:
+            # Obtener el objeto Biometrico asociado con el Extranjero_id
+      # Debería ser un número entero válido
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            # ...
+
+            # Cargar face_encoding almacenado
+            face_encoding_almacenado = biometrico.face_encoding
+
+            # Convertir imagen subida a formato que face_recognition puede entender
+            imagen = face_recognition.load_image_file(InMemoryUploadedFile(imagen))
+
+            # Obtener los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen)
+            
+            if not encodings_subido:  # Verificar que se detectaron rostros en la imagen subida
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+            
+            # Comparar face_encoding_subido con face_encoding_almacenado
+            matches = face_recognition.compare_faces([face_encoding_almacenado], encodings_subido[0])
+            
+            # También puedes calcular la distancia si lo necesitas
+            distance = face_recognition.face_distance([face_encoding_almacenado], encodings_subido[0])
+            similarity = f"Similitud: {100 - distance[0]*100:.2f}%"
+            
+            return JsonResponse({'match': matches[0], 'similarity': similarity})
+        
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)

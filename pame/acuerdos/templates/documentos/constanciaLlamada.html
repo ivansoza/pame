@@ -19,17 +19,24 @@
 <p class="centrado">
     Constancia de llamada telefónica
 </p>
-<p>
+<p> {% if desea %}
     1.- ¿Es su deseo realizar llamada? <br>
-    Si (     )     No (     ) <br>
+    Si ( X  )     No (     ) <br>
+    {% else %}
+    1.- ¿Es su deseo realizar llamada? <br>
+    Si (  )     No (  X   ) <br>
+    {% endif %}
     <br>
-    2.- En caso de negativa, especifique el motivo <br>
-    --- <br>
+   <p>2.- En caso de negativa, especifique el motivo <br> {{motivo}}</p> 
    <br>
     3.- Fecha de realización: <br>
     {{fecha}} <br>
     <br>
+    <br>
     4.- Firma de conformidad: <br>
     <p class="firma" style="max-width: 40%; margin: 0 auto;"></p>
 </p>
+<script>
+    location.reload();
+</script>
 {% endblock content %}

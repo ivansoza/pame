@@ -14,18 +14,39 @@
   <form method="post" class="card p-3" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{form.foloInventario|as_crispy_field}}
-                <script>
-                  document.getElementById('id_foloInventario').readOnly = true;
-              </script>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-6">
-              {{form.validacion|as_crispy_field}}
-            </div>
+          <div class="col-sm-12 col-md-6 col-lg-6">
+              {{form.foloInventario|as_crispy_field}}
+              <script>
+                document.getElementById('id_foloInventario').readOnly = true;
+            </script>
           </div>
+
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="file-input-container">
+                <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+                 class="button-link"
+                onclick="abrir_modal_eliminar(this.href); return false;"
+                 data-input-id="id_validacion">
+                <i class="fas fa-camera"></i> 
+                </a>
+                {{form.validacion|as_crispy_field}}
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
+                {{form.nup|as_crispy_field}}
+              </div>
+        </div>
+          
+         
+  </div>
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
         <hr>
         <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>
     </form>
+    {% include "includes/camera/modalCamera.html" %}
+
 {% endblock %}
+
+{% block script %}
+{% include "includes/js/cam/camera.html" %}
+
+{% endblock script %}

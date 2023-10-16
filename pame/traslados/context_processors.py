@@ -54,3 +54,10 @@ def total_notificaciones(request):
     # solicitudes_amistad = ...
     total = traslados_solicitud_count  # + mensajes_nuevos + solicitudes_amistad
     return {'total_notificaciones': total}
+
+
+# Agregar un clasificador de grupos 
+
+def user_groups(request):
+    groups = [group.name for group in request.user.groups.all()]
+    return {'user_groups': groups}

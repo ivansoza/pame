@@ -1,0 +1,43 @@
+{% load static %}
+
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+
+<div class="modal-dialog modal-lg" role="document" >
+    <div class="modal-content">
+        <div class="modal-header custom-header-color"> <!-- Agrega la clase personalizada aquí -->
+            <h2 class="modal-title">Editar Pertenencias Documentos</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% load crispy_forms_tags %}
+
+        <form action="{% url 'editar_valoresdocumentosAC' pk=object.id %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                {% csrf_token %}
+
+                {{form.tipodocumento|as_crispy_field}}
+                {{form.descripcion|as_crispy_field}}
+                    <!-- Campo no editable desde la plantilla html -->
+               
+            </div>
+        <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+        </div>
+        </form>
+
+    </div>
+</div>
+

@@ -62,6 +62,7 @@ class PuestaDisposicionAC(models.Model):
     dependencia = models.CharField(verbose_name='Dependencia', max_length=100)
     numeroCarpeta = models.IntegerField(verbose_name='Número de Carpeta')
     entidadFederativa = models.CharField(verbose_name='Entidad Federativa', max_length=100)
+    municipio =models.CharField(max_length=50)
     certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     class Meta:
@@ -127,6 +128,13 @@ class Extranjero(models.Model):
             self.deLaEstacion.capacidad += 1
             self.deLaEstacion.save()
         super().delete(*args, **kwargs)
+
+    @property
+    def tiene_fotografia(self):
+        try:
+            return bool(self.biometrico.fotografiaExtranjero)
+        except Biometrico.DoesNotExist:
+            return False
 
 estatura_choices = (
         ('1.70', '1.70 m o más'),
@@ -224,10 +232,17 @@ class descripcion(models.Model):
     segnasParticulares = models.CharField(max_length=50, verbose_name='Señas Particulares', choices=segnasParticulares_choices)
     observaciones = models.CharField(max_length=50)  
 
+STATUS_PROCESO_CHOICES= (
+    ('Activo', 'Activo'),
+    ('Suspendido', 'Suspendido'),
+    ('Cerrado', 'Cerrado'),
+    # Agrega más opciones según sea necesario
+)
 class NoProceso(models.Model):
     agno = models.DateField(auto_now_add=True)
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
+    status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
     nup = models.CharField(max_length=50, primary_key=True)
 
     def __str__(self):

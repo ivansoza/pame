@@ -15,7 +15,11 @@ def home(request):
     return render(request,'home2.html', context)
 
 def menu(request):
-    return render(request, 'menu.html')
+    return render(request, 'menu.html',{'navbar':'home'})
+
+
+def menuDefensoria(request):
+    return render(request, 'menuDefensoria.html',{'navbar':'home'})
 
 
 def exit(request):
@@ -33,25 +37,66 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         user = self.request.user
         if user.groups.filter(name='MedicoResponsable').exists():
-            return reverse_lazy('homeMedicoResponsable')
+            return reverse_lazy('menu')
+        
         elif user.groups.filter(name='MedicoGeneral').exists():
-            return reverse_lazy('homeMedicoGeneral')
+            return reverse_lazy('menu')
+        
         elif user.groups.filter(name='CocinaResponsable').exists():
-            return reverse_lazy('homeCocinaResponsable')
+            return reverse_lazy('menu')
+        
         elif user.groups.filter(name='CocinaGeneral').exists():
-            return reverse_lazy('homeCocinaGeneral')
+            return reverse_lazy('menu')
+        
         elif user.groups.filter(name='SeguridadResponsable').exists():
-            return reverse_lazy('homeSeguridadResponsable')
+            return reverse_lazy('menu')
+        
         elif user.groups.filter(name='SeguridadGeneral').exists():
-            return reverse_lazy('homeSeguridadGeneral')
+            return reverse_lazy('menu')
         elif user.groups.filter(name='Administradores').exists():
             return reverse_lazy('menu')
         elif user.groups.filter(name='JuridicoGeneral').exists():
-            return reverse_lazy('homeJuridicoGeneral')
+            return reverse_lazy('menu')
         elif user.groups.filter(name='JuridicoResponsable').exists():
-            return reverse_lazy('homeJuridicoResponsable')
+            return reverse_lazy('menu')
         else:
             return reverse_lazy('home')
+        
+class DefensoriaLoginView(LoginView):
+    template_name = 'registration/loginDefenseria.html'
+
+    # Implementa el comportamiento específico para este tipo de login aquí
+    def form_invalid(self, form):
+         mostrarAlerta = True
+         return render(self.request, 'registration/loginDefenseria.html', {'mostrarAlerta': mostrarAlerta})
+    def get_success_url(self):
+            user = self.request.user
+            if user.groups.filter(name='MedicoResponsable').exists():
+                return reverse_lazy('menuDefensoria')
+            
+            elif user.groups.filter(name='MedicoGeneral').exists():
+                return reverse_lazy('menuDefensoria')
+            
+            elif user.groups.filter(name='CocinaResponsable').exists():
+                return reverse_lazy('menuDefensoria')
+            
+            elif user.groups.filter(name='CocinaGeneral').exists():
+                return reverse_lazy('menuDefensoria')
+            
+            elif user.groups.filter(name='SeguridadResponsable').exists():
+                return reverse_lazy('menuDefensoria')
+            
+            elif user.groups.filter(name='SeguridadGeneral').exists():
+                return reverse_lazy('menuDefensoria')
+            elif user.groups.filter(name='Administradores').exists():
+                return reverse_lazy('menuDefensoria')
+            elif user.groups.filter(name='JuridicoGeneral').exists():
+                return reverse_lazy('menuDefensoria')
+            elif user.groups.filter(name='JuridicoResponsable').exists():
+                return reverse_lazy('menuDefensoria')
+            else:
+                return reverse_lazy('home')
+
 
 
 

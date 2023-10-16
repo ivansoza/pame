@@ -10,7 +10,8 @@ import os
 from operator import itemgetter
 from datetime import datetime
 import locale
-
+from llamadasTelefonicas.models import Notificacion
+from vigilancia.models import NoProceso
 def homeAcuerdo(request):
     return render(request,"acuerdoInicio.html")
 
@@ -80,18 +81,26 @@ def constancia_llamada(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
+    notifi = get_object_or_404(Notificacion, delExtranjero=extranjero)
 
-    #Obtener datos a renderizar 
+
+
+    # Obtener datos a renderizar
     nombre = extranjero.nombreExtranjero
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad
-
+    deseaLlamar = notifi.deseaLlamar
+    motivo = notifi.motivoNoLlamada
+    fecha = notifi.fechaHoraNotificacion
     # Obtener el nombre del archivo PDF
     nombre_pdf = f"Constancia_llamadas_{extranjero.id}.pdf"
 
     # Crear el objeto HTML a partir de una plantilla o contenido HTML
     html_context = {
+        'fecha':fecha,
+        'motivo':motivo,
+        'desea':deseaLlamar,
         'contexto': 'variables',
         'nombre': nombre,
         'apellidop': apellidop,
