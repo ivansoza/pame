@@ -1,0 +1,184 @@
+<!-- EXTENDEMOS LA PLANTILLA BASA  -->
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+<!-- INCLUIMOS LOS ESTATICOS -->
+{% load static %}
+<!-- BLOQUE DE LINKS  -->
+{% block link %}
+<!-- INCLUIMOS ESTILOS PARA EL TEMPLATE -->
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.223SDDDdssdss22D ">
+    <link rel="stylesheet" href=" {% static 'css/progress_bar/style.css' %}?v1.223SDDdddDdssdss22D ">
+
+{% endblock link %}
+<!-- INCLUIMOS EL DASHBOARDS PARA COLOCAR LA FLECHA HACIA ATRAS -->
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="#">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+{% endblock dashboard %}
+
+{% block contenido %}
+<!-- TITULO GENERAL DE LA PLANTILLA -->
+<div class="titulo-general-container mt-2" >
+    <h1 class="titulo-general">Seguimiento de la Puesta Traslado</h1> 
+</div>
+<br>
+<!-- CARD PARA SABER LOS DATOS DEL EXTRANJERO -->
+
+
+  <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="process-wrapper">
+                        <div id="progress-bar-container">
+                            <ul>
+                                <li class="step step01 active clickable">
+                                    <div class="step-inner">SOLICITUD</div>
+                                </li>
+                                <li class="step step02 {% if not Traslado.fecha_aceptacion %}blocked{% else %}clickable{% endif %}">
+                                    <div class="step-inner">ACEPTACIÓN</div>
+                                </li>
+                                <li class="step step03 {% if Traslado.status_traslado < 1 %}blocked{% else %}clickable{% endif %}">
+                                    <div class="step-inner">INICIA PROCESO DE TRASLADO</div>
+                                </li>
+                                <li class="step step04 {% if Traslado.status_traslado < 2 %}blocked{% else %}clickable{% endif %}">
+                                    <div class="step-inner">EN TRASLADO</div>
+                                </li>
+                                <li class="step step05 {% if Traslado.status_traslado < 3 %}blocked{% else %}clickable{% endif %}">
+                                    <div class="step-inner">ARRIBO</div>
+                                </li>
+                            </ul>
+
+                            <div id="line">
+                                <div id="line-progress" {% if Traslado.status == 2 %}class="rechazado"{% endif %}></div>
+                            </div>
+                        </div>
+
+                        <div id="progress-content-section">
+                            <div class="section-content discovery active">
+                                <h2>Detalles de la Solicitud</h2>
+                                <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
+                                <p>Solicitado por: {{ Traslado.nombreAutoridadEnvia }}</p>
+                                <p>Fecha de Solicitud: {{ Traslado.fechaSolicitud|date:"d M, Y" }}</p>
+                            </div>
+
+                            <div class="section-content strategy">
+                                <h2>Detalles de la Aceptación</h2>
+                                <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
+                                <p>Aceptado por: {{ Traslado.nombreAutoridadRecibe }}</p>
+                                <p>Fecha de Aceptación: {{ Traslado.fecha_aceptacion|date:"d M, Y" }}</p>
+
+                            </div>
+
+                            <div class="section-content creative">
+                                <h2>Detalles del Inicio de Traslado</h2>
+                                <p>Lorem ipsum...</p>
+                            </div>
+
+                            <div class="section-content production">
+                                <h2>Detalles del Traslado</h2>
+                                <p>Lorem ipsum...</p>
+                            </div>
+
+                            <div class="section-content analysis">
+                                <h2>Detalles de la Llegada</h2>
+                                <p>Lorem ipsum...</p>
+                            </div>
+                        </div>
+                    </div>  
+
+                    <a href="#" class="btn btn-custom mt-3">Volver a la Lista de Puestas de Traslado</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function() {
+    
+        $(".clickable").click( function() {
+            $(this).addClass("active").prevAll(".clickable").addClass("active");
+            $(this).nextAll().removeClass("active");
+        });
+    
+        $(".step01.clickable").click( function() {
+            $("#line-progress").css("width", "5%");
+            $(".discovery").addClass("active").siblings().removeClass("active");
+        });
+    
+        $(".step02.clickable").click( function() {
+            $("#line-progress").css("width", "25%");
+            $(".strategy").addClass("active").siblings().removeClass("active");
+        });
+    
+        $(".step03.clickable").click( function() {
+            $("#line-progress").css("width", "50%");
+            $(".creative").addClass("active").siblings().removeClass("active");
+        });
+    
+        $(".step04.clickable").click( function() {
+            $("#line-progress").css("width", "75%");
+            $(".production").addClass("active").siblings().removeClass("active");
+        });
+    
+        $(".step05.clickable").click( function() {
+            $("#line-progress").css("width", "100%");
+            $(".analysis").addClass("active").siblings().removeClass("active");
+        });
+    
+        // Inicialización basada en el estado actual del objeto Traslado.
+        var estadoActual = {{ Traslado.status }};
+        var estadoTrasladoActual = {{ Traslado.status_traslado }};
+    
+        switch (estadoActual) {
+            case 0:
+                $(".step01").trigger('click');
+                break;
+            case 1:
+                $(".step02").trigger('click');
+                break;
+            case 2:
+                // Aquí, la solicitud fue rechazada. No avanzar el "progress bar" más allá de la solicitud.
+                break;
+        }
+    
+        if (estadoActual == 1) {  // Solo si la solicitud fue aceptada
+            switch (estadoTrasladoActual) {
+                case 1:
+                    $(".step03").trigger('click');
+                    break;
+                case 2:
+                    $(".step04").trigger('click');
+                    break;
+                case 3:
+                    $(".step05").trigger('click');
+                    break;
+            }
+        }
+    
+    });
+    
+    </script>
+    
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock script %}
+
+
+
+{% endblock contenido %}
+
+
+
+

@@ -328,18 +328,48 @@
 
                     <!--  Alojamiento -->
 
-          <li class="nav-item">
-            <a href="#" class="nav-link">
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-chart-pie"></i>
               <p>
                 Alojamiento
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Alojados</p>
+                </a>
+              </li>
+            </ul>
           </li>
 
+
           <!-- Fin  Alojamiento -->
+
+          <!--   defensoria -->
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-city"></i>
+              <p>
+                Defensoria
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Denfensores</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          
           <!--   Extranjeros -->
 
           <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
@@ -356,6 +386,15 @@
                 <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Ver Extranjeros</p>
+                </a>
+              </li>
+            </ul>
+
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ver Acompañantes</p>
                 </a>
               </li>
             </ul>

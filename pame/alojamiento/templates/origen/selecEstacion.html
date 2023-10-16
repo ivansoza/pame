@@ -1,0 +1,272 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listTraslado' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+
+
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Agregar Traslado
+    
+    </h1>
+</div>
+<br>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <!-- Resto de tus campos y contenido -->
+                
+                <div class="form-group">
+                  <label for="estacion-selector">Selecciona una estación para el traslado:</label>
+                  <select id="estacion-selector" class="form-control">
+                    <option value="">Selecciona una estación</option>
+                    {% for estacion in estaciones %}
+                      <option value="{{ estacion.pk }}">{{ estacion.nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+            </form>
+            <div class="row">
+                <!-- Card con datos del extranjero -->
+                <div class="col-md-10">
+                  <div class="card">
+                     <div class="header">
+                        <h2>Datos de la Estancia:</h2>
+                     </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col">
+                            <span class="etiqueta">Nombre de la estancia:</span>
+                            <span id="estancia-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Calle:</span>
+                            <span id="calle-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Colonia:</span>
+                            <span id="colonia-nombre" class="valor">N/A</span>                
+                        </div>
+            
+                        <div class="col">
+                            <span class="etiqueta">Codigo Postal:</span>
+                            <span id="cp-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Estado:</span>
+                            <span id="estado-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Email:</span>
+                            <span id="email-nombre" class="valor">N/A</span>                
+                        </div>
+
+                        <div class="col">
+                            <span class="etiqueta">Nombre del Responsable:</span>
+                            <span id="responsable-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Telefono del Responsable:</span>
+                            <span id="telResponsable-nombre" class="valor">N/A</span>                
+                            <br>
+                            <span class="etiqueta">Email del Responsable:</span>
+                            <span id="emailResponsable-nombre" class="valor">N/A</span>                
+                            <br>
+                           
+                        </div>
+                        <!-- Otros campos de datos -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Card con la foto del extranjero -->
+                <div class="col-md-2 d-none d-md-block">
+                  <div class="card">
+                    <div class="col-lg">
+                        <!-- small card -->
+                        <div class="small-box bg-success">
+                          <div class="inner">
+                            <h3 id="capacidad-cantidad">N/A</h3>
+                    
+                            <p>Lugares disponibles</p>
+                          </div>
+                          <div class="icon">
+                    
+                            <i class="fas fa-check-circle"></i>
+                          </div>
+                          <a href="#" class="small-box-footer">
+                            More info <i class="fas fa-arrow-circle-right"></i>
+                          </a>
+                        </div>
+                      </div>
+                   
+                  </div>
+                </div>
+              </div>
+            
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <a class="btn btn-custom" id="btnCrearPuesta2" href="#" data-title="Crear Puesta">
+      Crear Puesta
+  </a>
+  <div class="modal fade" id="crearPuestaModal" role="dialog"></div>
+
+{% endblock contenido %}
+{% block datatable2 %}
+
+{% endblock datatable2 %}
+
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+  document.getElementById("btnCrearPuesta2").addEventListener("click", function() {
+    // Obtiene el valor seleccionado del dropdown
+    let estacionDestino = document.getElementById("estacion-selector").value;
+    let estacionOrigen = "{{user.estancia.id}}";  // Estación origen desde el contexto del template
+
+    if(estacionDestino) {
+        // Construye la URL
+        let url = `{% url 'crearTraslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
+
+        // Abre el modal y carga el contenido desde la URL
+        abrir_modal_puesta(url);
+    } else {
+      Swal.fire({
+            title: '¡Estación destino no seleccionada!',
+            text: 'Por favor, selecciona una estación destino antes de crear el traslado.',
+            icon: 'info',
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#85364A',
+        });
+    }
+});
+
+function abrir_modal_puesta(url){
+    $('#crearPuestaModal').load(url, function(){
+        $(this).modal('show');
+    });
+}
+
+</script>
+
+<script>
+$(document).ready(function() {
+  $("#estacion-selector").change(function() {
+    console.log("Cambio detectado en #estacion-selector con valor:", $(this).val());
+
+    var selectedEstacionId = $(this).val();
+    if (selectedEstacionId) {
+      var csrfToken = $("input[name=csrfmiddlewaretoken]").val();  // Obtén el token CSRF del formulario
+      $.ajax({
+        url: '',  // Deja la URL en blanco para enviar la solicitud al mismo punto final
+        type: 'POST',
+        data: {
+          'estacion_id': selectedEstacionId,
+          'csrfmiddlewaretoken': csrfToken  // Agrega el token CSRF a la solicitud
+        },
+        dataType: 'json',
+        success: function(data) {
+            console.log("Respuesta exitosa del servidor:", data);
+
+          $("#capacidad").text(data.capacidad);
+          $("#capacidad-cantidad").text(data.capacidad);
+          $("#responsable-nombre").text(data.responsable);
+          $("#estado-nombre").text(data.estado);
+          $("#estancia-nombre").text(data.estancia);
+
+          $("#email-nombre").text(data.email);
+          $("#calle-nombre").text(data.calle);
+          $("#no-nombre").text(data.no);
+          $("#cp-nombre").text(data.cp);
+          $("#colonia-nombre").text(data.colonia);
+
+          $("#telResponsable-nombre").text(data.telResponsable);
+          $("#emailResponsable-nombre").text(data.emailResponsable);
+
+
+
+        },
+        error: function() {
+          $("#capacidad").text('Error al cargar la capacidad');
+          $("#capacidad-cantidad").text('Error al cargar la capacidad');
+          $("#responsable-nombre").text('Error al cargar el responsable');
+          $("#estado-nombre").text('Error al cargar el responsable');
+          $("#estancia-nombre").text('Error al cargar el responsable');   
+          
+          $("#email-nombre").text('Error al cargar el responsable');          
+          $("#calle-nombre").text('Error al cargar el responsable');          
+          $("#no-nombre").text('Error al cargar el responsable');          
+          $("#cp-nombre").text('Error al cargar el responsable');          
+          $("#colonia-nombre").text('Error al cargar el responsable');        
+
+          $("#telResponsable-nombre").text('Error al cargar el responsable');          
+          $("#emailResponsable-nombre").text('Error al cargar el responsable');          
+ 
+
+        }
+      });
+    } else {
+      $("#capacidad").text('N/A');
+      $("#capacidad-cantidad").text('N/A');
+      $("#responsable-nombre").text('N/A');
+      $("#estado-nombre").text('N/A');
+      $("#estancia-nombre").text('N/A');
+
+      $("#email-nombre").text('N/A');
+      $("#calle-nombre").text('N/A');
+      $("#no-nombre").text('N/A');
+      $("#cp-nombre").text('N/A');
+      $("#colonia-nombre").text('N/A');
+
+      $("#telResponsable-nombre").text('N/A');
+      $("#emailResponsable-nombre").text('N/A');
+
+
+    }
+  });
+});
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.getElementById("btnCrearPuesta").addEventListener("click", function() {
+      // Obtiene el valor seleccionado del dropdown
+      let estacionDestino = document.getElementById("estacion-selector").value;
+      let estacionOrigen = "{{user.estancia.id}}";  // Estación origen desde el contexto del template
+  
+      if(estacionDestino) {
+          // Construye la URL y redirige
+          let url = `{% url 'crearTraslado' origen_id=9999 destino_id=9999 %}`.replace('9999/9999', `${estacionOrigen}/${estacionDestino}`);
+          abrir_modal(url);
+      } else {
+          alert("Selecciona una estación destino primero.");
+      }
+  });
+  </script>
+  
+{% endblock script %}

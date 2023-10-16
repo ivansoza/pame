@@ -1,0 +1,59 @@
+{% load static %}
+
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+
+    
+</style>
+
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Cambiar Status de la solicitud de la Puesta</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+     
+        {% load crispy_forms_tags %}
+        <form action="{% url 'editar-status'  object.id %}" method="POST" id="cambio-status-form">
+            {% csrf_token %}
+            {{ form.status|as_crispy_field }}
+            {{ form.nombreAutoridadRecibe|as_crispy_field }}
+            <div id="motivo-rechazo-wrapper">
+                {{ form.motivo_rechazo|as_crispy_field }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Función para mostrar/ocultar el campo de motivo en función del estado seleccionado.
+        function toggleMotivoRechazoField() {
+            if ($("#id_status").val() == "2") {  // Asumiendo que 2 es el valor para RECHAZADO
+                $("#motivo-rechazo-wrapper").show();
+            } else {
+                $("#motivo-rechazo-wrapper").hide();
+            }
+        }
+
+        // Llamar a la función al cargar la página.
+        toggleMotivoRechazoField();
+
+        // Llamar a la función cada vez que cambie el estado.
+        $("#id_status").change(toggleMotivoRechazoField);
+    });
+</script>
