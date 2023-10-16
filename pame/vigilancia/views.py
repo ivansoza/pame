@@ -2171,7 +2171,7 @@ class createPuestaVP(CreateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
     def get_success_url(self):
-        messages.success(self.request, 'La puesta de voluntad propia se ha creado con éxito.')
+        messages.success(self.request, 'La puesta de voluntad se ha creado con éxito.')
         return super().get_success_url()
 
 class listarExtranjerosVP(ListView):
