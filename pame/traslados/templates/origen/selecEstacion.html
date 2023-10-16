@@ -269,6 +269,21 @@ $(document).ready(function() {
   });
   </script>
 
-
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let camionesInput = document.querySelector("[name='numero_camiones']");
+        let lugaresDiv = document.getElementById("lugares");
+    
+        camionesInput.addEventListener("input", function() {
+            let camiones = parseInt(camionesInput.value);
+            if (!isNaN(camiones) && camiones > 0) {
+                let lugares = camiones * 40; // asumiendo que un camión tiene 40 lugares
+                lugaresDiv.textContent = `Total de lugares: ${lugares}`;
+            } else {
+                lugaresDiv.textContent = ""; // limpiar el mensaje si el input es inválido
+            }
+        });
+    });
+    </script>
   
 {% endblock script %}

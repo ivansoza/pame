@@ -10,7 +10,6 @@
 </style>
 
 
-
 <div class="modal-dialog modal-lg" role="document" >
     <div class="modal-content">
         <div class="modal-header custom-header-color">
@@ -30,7 +29,9 @@
                 {{ form.estacion_destino|as_crispy_field }}
                 {{ form.nombreAutoridadEnvia|as_crispy_field }}
                 {{ form.numero_camiones|as_crispy_field }}
-                        </div>
+                <div id="lugares" style="margin-top: 10px; font-weight: bold;"></div>
+
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom2">Confirmar</button>
@@ -40,3 +41,6 @@
 
     </div>
 </div>
+
+
+    
