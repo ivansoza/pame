@@ -129,6 +129,13 @@ class Extranjero(models.Model):
             self.deLaEstacion.save()
         super().delete(*args, **kwargs)
 
+    @property
+    def tiene_fotografia(self):
+        try:
+            return bool(self.biometrico.fotografiaExtranjero)
+        except Biometrico.DoesNotExist:
+            return False
+
 estatura_choices = (
         ('1.70', '1.70 m o más'),
         ('1.65', '1.65 m - 1.69 m'),
@@ -236,6 +243,7 @@ class NoProceso(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
     status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
+    comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)
 
     def __str__(self):

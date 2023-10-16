@@ -55,6 +55,11 @@
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
+                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                  <a class="btn btn-sm btn-icon3 tooltip-link"
+                  href="#" data-title="Derechos y Obligaciones">
+                      <i class="fas fa-balance-scale"></i>
+                  </a>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.notificacion_set.all %}
                 {% with first_notificacion=extranjero.notificacion_set.first %}
@@ -67,11 +72,7 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% endif %}
-                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
+              
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
@@ -105,10 +106,7 @@
                         <i class="fas fa-tshirt"></i>
                     </a>
 
-                <!-- INICIO DE AGREGAR ENSERES -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
+         
                 {% endwith %}
                 {% else %}
                 <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
@@ -116,20 +114,34 @@
                         <i class="fas fa-tshirt"></i>
                     </a>
                 <!-- INICIO CREAR INVENTARIO ENSERES -->
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
+          
                 {% endif %}
                 {% if extranjero.enseresbasicos_set.all %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Enseres">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseres' extranjero.id  %}" data-title="Ver Enseres">
                         <i class="fas fa-shopping-basket"></i>
                     </a>
                 {% endwith %}
                  {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Enseres">
-                        <i class="fas fa-shopping-basket"></i>
-                    </a>
+                    {% if extranjero.tiene_fotografia %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseres' extranjero.id %}" data-title="Asignar Enseres">
+                            <i class="fas fa-shopping-basket"></i>
+                        </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                            <i class="fas fa-shopping-basket"></i>
+                        </a>
+                        <script>
+                            function showBioAlert() {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¡Falta Fotografía!',
+                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                    confirmButtonColor: '#2A4B41'
+                                });
+                            }
+                        </script>
+                    {% endif %}
                 {% endif %}
                 <!-- INICIO DE EDITAR EXTRANJERO -->
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Editar Extranjero">
@@ -141,10 +153,10 @@
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                <!-- BOTON DE RESUMEN GENERAL -->
+                {% comment %} <!-- BOTON DE RESUMEN GENERAL -->
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Resumen General">
                     <i class="fas fa-chart-bar"></i>
-                </a>
+                </a> {% endcomment %}
 
             </td>
         </tr>
@@ -173,7 +185,7 @@
 <div class="modal fade" id="eliminarextranjero" role="dialog">
 </div>
 {% endblock contenido %}
-{% block datatable %}
+{% comment %} {% block datatable %}
 
  {
     text: 'Crear Extranjero',
@@ -184,7 +196,7 @@
    }
   },
   
-{% endblock datatable %}
+{% endblock datatable %} {% endcomment %}
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">

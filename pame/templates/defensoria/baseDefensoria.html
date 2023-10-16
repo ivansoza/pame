@@ -6,15 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>
     {% block titulo %}
-    
     {% endblock titulo %}
-
-   
-
-    
     </title>
-
-
   <!-- Google Font: Source Sans Pro -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -41,7 +34,7 @@
   <!-- <link rel="stylesheet" href="{% static 'css/daterangepicker.css' %}"> -->
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'css/summernote-bs4.min.css' %}">
-  <link rel="stylesheet" href=" {% static 'css/style.css' %}?v1.dsdddsddeeSS222SSW">
+  <link rel="stylesheet" href=" {% static 'css/defensoria/menu.css' %}?v1.dsdddsddeeSSSSww222SSW">
   {% block card %}
   <link rel="stylesheet" href=" {% static 'css/forms/cards.css' %}?ww">
 
@@ -235,9 +228,11 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4 custom-sidebar">
     <!-- Brand Logo -->
-
-{% include "includes/user_menu.html" %}
-    
+<!-- ICONO DE DEFENSORIA -->
+    <a href="{% url 'menuDefensoria' %}" class="brand-link">
+      <img src="{% static 'img/logo160x16021.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">DEFENSORÍA</span>
+    </a>    
 
  <div class="sidebar">
 
@@ -251,7 +246,7 @@
            
           </li>
           <li class="nav-item">
-            <a href=" {% url 'menu' %}" class="nav-link {% if navbar == 'home' %}active first-li{% endif %} ">
+            <a href=" {% url 'menuDefensoria' %}" class="nav-link {% if navbar == 'home' %}active first-li{% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Menú
@@ -260,270 +255,90 @@
             </a>
           </li>
 
-
-          <!-- Puesta disposición -->
-          {% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'seguridad' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Puesta a Disposición
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right"></span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{% url 'homePuestaINM' %} "  class="nav-link {% if seccion == 'seguridadINM' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Por personal del INM</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'homePuestaAC' %} " class="nav-link  {% if seccion == 'seguridadAC' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Por autoridad competente</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'homePuestasVP' %} " class="nav-link  {% if seccion == 'seguridadVP' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Por Voluntad Propia</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-                    <!-- Cierre de Puesta disposición -->
-                    <!--  Traslado -->
-
-          <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'traslado' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-exchange-alt"></i>
-              <p>
-                Traslado
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{% url 'listTraslado' %}" class="nav-link {% if seccion == 'traslado' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Generar traslado</p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Arribar extranjeros</p>
-                </a>
-              </li>
-            
-            </ul>
-          </li>
-                    <!--  Fin Traslado -->
-
-
-                    <!--  Alojamiento -->
-
+          <!-- abre -->
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Alojamiento
-                <i class="right fas fa-angle-left"></i>
-              </p>
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Agregar Defensores</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
             </a>
-
-          </li>
-
-          <!-- Fin  Alojamiento -->
-          <!--   Extranjeros -->
-
-          <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'extranjeros' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-user-friends"></i>
-              <p>
-                Extranjeros
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
+                <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Ver Extranjeros</p>
+                  <p>Ejemplo 1</p>
                 </a>
               </li>
             </ul>
-
           </li>
-          {% endif %}
+          <!-- cierre  -->
 
-          <!-- Acuerdos  -->
-        {% if 'JuridicoGeneral' in user_groups or 'SeguridadGeneral' in user_groups or 'Administradores' in user_groups %}
+          <!-- abre -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Ver Defensores</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
 
-        <li class="nav-item {% if navbar == 'acuerdos' %}menu-is-opening menu-open{% endif %}">
-          <a href="#" class="nav-link {% if navbar == 'acuerdos' %}active first-li{% endif %}">
-            <i class="nav-icon fa fa-file-text-o"></i>
-            <p>
-              Acuerdos
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-
-          <ul class="nav nav-treeview">
-            <li class="nav-item {% if seccion == 'presentacion' %}menu-is-opening menu-open{% endif %}">
-              <a href="#" class="nav-link {% if seccion == 'presentacion' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Presentación</p>
-                <i class="right fas fa-angle-left"></i>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{% url 'homeAcuerdoInicio' %}" class="nav-link {% if acuerdo == 'inicio' %}active {% endif %}">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Inicio</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Comparecencia</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Presentación</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li class="nav-item {% if seccion == '#' %}menu-is-opening menu-open{% endif %}">
-              <a href="" class="nav-link {% if seccion == '#' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Especiales</p>
-                <i class="right fas fa-angle-left"></i>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Acumulación</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Conclusión</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Traslado</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Separación Alojados</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Radicación</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="#" class="nav-link">
-                    <i class="fa fa-circle nav-icon"></i>
-                    <p>Recepción de documentos</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '#' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Resoluciones</p>
-              </a>
-            </li>          
-          </ul>
-        </li>
-
-        {% endif %}
+           <!-- abre -->
+           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Asignar Defensores</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
+          
+          <!-- abre -->
+           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copu"></i>
+              <p>Ver Extranjeros</p>
+              <i class="fas fa-angle-left right"></i>
+              <span class="badge badge-info right"></span>
+            </a>
+            <!-- cierre del principal  -->
+            <!-- Nuevo submenu  -->
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ejemplo 1</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- cierre  -->
         <!-- Termina Acuerdos -->
-          <!-- Fin  Alojamiento -->
-          <!--   Extranjeros -->
-          {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-utensils"></i>
-              <p>
-                Servicios Alimenticios
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Platillos</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          {% endif %}
-
-
-          <!-- Fin  Cocina -->
-          <!--   Medico -->
-          {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-heartbeat"></i>
-              <p>
-                Servicios Médicos
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pacientes</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          {% endif %}
-          <!-- Fin  Extranjeros -->
-
-        
           </li>
         </ul>
       </nav>

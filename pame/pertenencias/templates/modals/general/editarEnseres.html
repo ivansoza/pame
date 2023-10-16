@@ -22,7 +22,7 @@
         </div>
         {% load crispy_forms_tags %}
 
-        <form action="{% url 'editarEnseresVP' pk=object.id %}" method="POST">
+        <form action="{% url 'editarEnseres' pk=object.id %}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
                 {% csrf_token %}
@@ -34,9 +34,11 @@
                     <div class="col-sm-12 col-md-12 col-lg-12">
                         {{form.enseresExtras|as_crispy_field}}
                     </div>
-
                 </div>
-              
+                    <!-- Campo no editable desde la plantilla html -->
+                
+               
+            </div>
         <div class="modal-footer">
  <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-custom2">Confirmar</button>

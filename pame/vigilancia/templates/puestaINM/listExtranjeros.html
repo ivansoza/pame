@@ -103,23 +103,19 @@
                     <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenenciasINM' first_inventario.id puesta.id %}" data-title="Pertenencias">
-                        <i class="fas fa-tshirt"></i>
+                        <i class="fas fa-briefcase"></i>
                     </a>
 
                 <!-- INICIO DE AGREGAR ENSERES -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_pertenencias_valorINM' first_inventario.id puesta.id%}" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
+            
                 {% endwith %}
                 {% else %}
                 <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Pertenencias">
-                        <i class="fas fa-tshirt"></i>
+                        <i class="fas fa-briefcase"></i>
                     </a>
                 <!-- INICIO CREAR INVENTARIO ENSERES -->
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioINM' extranjero.id puesta.id%}" data-title="Valores">
-                        <i class="fas fa-coins"></i>
-                    </a>
+               
                 {% endif %}          
                 {% if extranjero.tiene_enseres %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
@@ -128,9 +124,26 @@
                     </a>
                 {% endwith %}
                  {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Enseres">
+                   
+                    {% if extranjero.tiene_fotografia %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseresINM' extranjero.id puesta.id %}" data-title="Asignar Enseres">
                         <i class="fas fa-shopping-basket"></i>
-                    </a>
+                        </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                            <i class="fas fa-shopping-basket"></i>
+                        </a>
+                        <script>
+                            function showBioAlert() {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¡Falta Fotografía!',
+                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                    confirmButtonColor: '#2A4B41'
+                                });
+                            }
+                        </script>
+                    {% endif %}
                 {% endif %}
                 <!-- INICIO DE EDITAR EXTRANJERO -->
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarExtranjeroINM' extranjero.id %}" data-title="Editar Extranjero">

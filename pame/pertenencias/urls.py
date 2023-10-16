@@ -3,6 +3,8 @@ from .views import CrearInventarioViewINM, ListaPertenenciasViewINM, CrearPerten
 from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenenciasViewAC, ListaPertenenciasValorViewAC, CrearPertenenciasValoresViewAC, DeletePertenenciasAC, EditarPertenenciasViewAC, DeletePertenenciasValoresAC, UpdatePertenenciasValorAC, ListaEnseresViewAC,EditarEnseresViewAC, DeleteEnseresAC,CrearEnseresModaAC, CrearEnseresAC,CrearPertenenciasElectronicasViewAC,DeletePertenenciaselectronicasAC,EditarPertenenciaselectronicasViewAC,CrearvaloresefectivoViewAC,eliminarvaloresefectivoAC,editarvaloresefectivoAC,CrearvaloresjoyasViewAC,eliminarvaloresjoyasAC,editarvaloresjoyasAC,CrearvaloresdocumentosViewAC,eliminarvaloresdocumentosAC,editarvaloresdocumentosAC
 from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP, ListaEnseresViewUP, CrearEnseresVP, CrearEnseresModalVP, DeleteEnseresVP, EditarEnseresViewVP, CrearPertenenciasElectronicasViewVP,DeletePertenenciaselectronicasVP,EditarPertenenciaselectronicasViewVP,CrearvaloresefectivoViewVP,eliminarvaloresefectivoVP,editarvaloresefectivoVP,CrearvaloresjoyasViewVP,eliminarvaloresjoyasVP,editarvaloresjoyasVP,CrearvaloresdocumentosViewVP,eliminarvaloresdocumentosVP,editarvaloresdocumentosVP
 from .views import homePertenencias, manejar_imagen
+from .views import ListaEnseresView, CrearEnseres, CrearEnseresModa, DeleteEnseres,EditarEnseresView
+
 
 urlpatterns = [
     path('', homePertenencias, name="homePertenencias"),
@@ -129,6 +131,11 @@ urlpatterns = [
     path('editar_pertenenciasdocumentos-vp/<int:pk>/', editarvaloresdocumentosVP.as_view(), name='editar_valoresdocumentosVP'),
 
 
-
-
+    # Enseres globales
+    path('listar-enseres/<int:extranjero_id>/', ListaEnseresView.as_view(), name='listarEnseres'),
+    path('crear-enseres/<int:extranjero_id>/', CrearEnseres.as_view(), name='crearEnseres'),
+    path('editar-ensere/<int:pk>/', EditarEnseresView.as_view(), name='editarEnseres'),
+    path('eliminar-enseres/<int:pk>/', DeleteEnseres.as_view(), name='eliminarEnseres'),
+    path('crear-enseres-modal/<int:extranjero_id>/', CrearEnseresModa.as_view(), name='crearEnseresModa'),
+    
 ]

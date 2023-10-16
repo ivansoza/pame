@@ -560,6 +560,7 @@ class validarNotificacion(CreateView):
         form.instance.noExtranjero = extranjero
         return super().form_valid(form)
     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         llamada_id = self.kwargs['llamada_id']

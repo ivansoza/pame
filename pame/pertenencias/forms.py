@@ -292,3 +292,7 @@ class EnseresForm(forms.ModelForm):
         model = EnseresBasicos
         fields = ['enseres','enseresExtras','nup']
       
+class EnseresFormUpdate(forms.ModelForm):
+    class Meta:
+        model = EnseresBasicos
+        fields = ['enseres','enseresExtras']

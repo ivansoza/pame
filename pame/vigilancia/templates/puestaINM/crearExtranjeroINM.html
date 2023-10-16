@@ -115,6 +115,8 @@
     let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
     let isVerified = verifiedObj.time && 
                      verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
+                     verifiedObj.puestaId1 === '{{ fernandoteacalco_id }}' && 
+
                      (new Date().getTime() - verifiedObj.time) < 300000;
 
     if (isVerified) {
@@ -145,7 +147,7 @@
 
     document.getElementById('tomarFotoBtn').addEventListener('click', function() {
         if (isVerified) {
-            let url = btn.getAttribute('#');
+            let url = this.getAttribute('data-href'); // Cambia 'btn' por 'this' y usa 'data-href'
             abrir_modal(url);
         } else {
             let modal = new bootstrap.Modal(document.getElementById('webcamModal'), {
