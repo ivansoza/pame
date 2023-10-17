@@ -28,6 +28,9 @@ class Traslado(models.Model):
     fecha_traslado = models.DateTimeField(null=True, blank=True)  # Similar al anterior
     fecha_arrivo = models.DateTimeField(null=True, blank=True)  # S
     fecha_rechazo = models.DateTimeField(null=True, blank=True)  
+    fecha_inicio = models.DateTimeField(null=True, blank=True)  
+    fecha_llegada= models.DateTimeField(null=True, blank=True)  
+
     nombreAutoridadEnvia = models.CharField(verbose_name="Nombre de la Autoridad que Envia" ,max_length=100)
     nombreAutoridadRecibe = models.CharField(max_length=100)
     responsableEnvia = models.CharField(max_length=100)

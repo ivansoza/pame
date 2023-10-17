@@ -26,9 +26,31 @@ class EstatusTrasladoForm(forms.ModelForm):
         model = Traslado
         fields = ['status', 'nombreAutoridadRecibe', 'motivo_rechazo']
 
+class EstatusTrasladoFormOrigen(forms.ModelForm):
+    status_traslado = forms.ChoiceField(
+        choices=[(0, 'No iniciado'),(1, 'Iniciar Proceso'), (2, 'En Traslado')],
+        widget=forms.Select()
+    )
+
+    class Meta:
+        model = Traslado
+        fields = ['status_traslado']
+
+class EstatusTrasladoFormOrigenDestino(forms.ModelForm):
+    status_traslado = forms.ChoiceField(
+        choices=[(1, 'Iniciar Proceso'), (2, 'En Traslado')],
+        widget=forms.Select()
+    )
+
+    class Meta:
+        model = Traslado
+        fields = ['status_traslado']
+
 
 class EstatusTrasladoFormExtranjero(forms.ModelForm):
     class Meta:
         model = ExtranjeroTraslado
         fields = ['statusTraslado']
+
+
     

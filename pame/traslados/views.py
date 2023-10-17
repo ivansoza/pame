@@ -5,7 +5,7 @@ from django.views.generic import CreateView, ListView,DetailView, UpdateView, De
 from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
 from django.http import JsonResponse
-from .forms import TrasladoForm, EstatusTrasladoForm, EstatusTrasladoFormExtranjero
+from .forms import TrasladoForm, EstatusTrasladoForm, EstatusTrasladoFormExtranjero, EstatusTrasladoFormOrigen, EstatusTrasladoFormOrigenDestino
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -217,7 +217,6 @@ class cambiarStatus(UpdateView):
         
         return super(cambiarStatus, self).form_valid(form)
 
-
     def get_success_url(self):
         return reverse('traslados_recibidos')
     def get_initial(self):
@@ -230,6 +229,33 @@ class cambiarStatus(UpdateView):
             initial['nombreAutoridadRecibe'] = nombre_usuario
             
             return initial
+class cambiarStatusOrigen(UpdateView):
+    model = Traslado
+    form_class = EstatusTrasladoFormOrigen
+    template_name = 'modal/seleccionarStatusTrasladoOrigen.html'
+
+    def form_valid(self, form):
+        # Si el estatus cambió a ACEPTADO
+        if 'status_traslado' in form.changed_data and form.instance.status == 1: 
+            form.instance.fecha_inicio = timezone.now()
+        return super(cambiarStatusOrigen, self).form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('listTraslado')
+    
+class cambiarStatusOrigenDestino(UpdateView):
+    model = Traslado
+    form_class = EstatusTrasladoFormOrigenDestino
+    template_name = 'modal/seleccionarStatusTrasladoOrigenDestino.html'
+
+    def form_valid(self, form):
+        # Si el estatus cambió a ACEPTADO
+        if 'status_traslado' in form.changed_data and form.instance.status == 1: 
+            form.instance.fecha_traslado = timezone.now()
+        return super(cambiarStatusOrigenDestino, self).form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('listTraslado')
 
 class ListTrasladoDestino(ListView):
     model = Traslado
