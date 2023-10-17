@@ -32,9 +32,9 @@ class Traslado(models.Model):
     fecha_llegada= models.DateTimeField(null=True, blank=True)  
 
     nombreAutoridadEnvia = models.CharField(verbose_name="Nombre de la Autoridad que Envia" ,max_length=100)
-    nombreAutoridadRecibe = models.CharField(max_length=100)
-    responsableEnvia = models.CharField(max_length=100)
-    responsableRecibe = models.CharField(max_length=100)
+    nombreAutoridadRecibe = models.CharField(max_length=100, null=True, blank=True)
+    responsableEnvia = models.CharField(max_length=100, null=True, blank=True)
+    responsableRecibe = models.CharField(max_length=100, null=True, blank=True)
     enTraslado = models.BooleanField(default=False)
     status = models.IntegerField(choices=OPCION_STATUS_CHOICES, default=0)  # Proporcionar un valor predeterminado
     motivo_rechazo = models.TextField(null=True, blank=True)

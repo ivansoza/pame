@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import ListTraslado, listarEstaciones, TrasladoCreateView, ListTrasladoDestino, ListaExtranjerosTraslado, DeleteExtranjeroPuestaTraslado, ListaExtranjerosTrasladoDestino, cambiarStatus, cambiarStatusExtranjero, seguimientoPuesta, seguimientoPuestaDestino, cambiarStatusOrigen, cambiarStatusOrigenDestino
+from .views import ListTraslado, listarEstaciones, TrasladoCreateView, ListTrasladoDestino, ListaExtranjerosTraslado, DeleteExtranjeroPuestaTraslado, ListaExtranjerosTrasladoDestino, cambiarStatus, cambiarStatusExtranjero, seguimientoPuesta, seguimientoPuestaDestino, cambiarStatusOrigen, cambiarStatusOrigenDestino,ActualizarTrasladoView,CambioEstacionView
 from . import views
 from .views import estadisticasEnvio
 urlpatterns = [
@@ -28,4 +28,12 @@ urlpatterns = [
   path('reporte-ac/<int:extranjero_id>/', views.documento_ac, name='reporteAC'),
   path('generar/<int:extranjero_id>', views.generate_pdf, name='generar_pdf'),
   path('mi-vista/', views.mi_vista, name='mi_vista'),
+
+
+  # cambio de estacion
+
+  path('actualizar_traslado/<int:traslado_id>/', ActualizarTrasladoView.as_view(), name='actualizar_traslado'),
+  path('cambio_estacion/<int:pk>/', CambioEstacionView.as_view(), name='cambio_estacion'),
+
 ]
+

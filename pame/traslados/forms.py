@@ -21,6 +21,22 @@ class TrasladoForm(forms.ModelForm):
         
         return numero_camiones
 
+# Formulario para poder cambiar de estacion 
+
+class CambioEstacionForm(forms.ModelForm):
+    class Meta:
+        model = Traslado
+        fields = ['estacion_destino']
+   
+
+# Formulario para elegir que opcion hacer 
+class DecisionForm(forms.Form):
+    OPCIONES = (
+        ('cambiar', 'Cambiar de Estación'),
+        ('finalizar', 'Finalizar Proceso')
+    )
+    decision = forms.ChoiceField(choices=OPCIONES, widget=forms.RadioSelect)
+
 class EstatusTrasladoForm(forms.ModelForm):
     class Meta:
         model = Traslado
