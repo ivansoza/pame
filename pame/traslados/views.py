@@ -475,6 +475,12 @@ class cambiarStatusExtranjero(UpdateView):
             form.instance.delExtranjero.deLaEstacion_id = new_station_id
             form.instance.delExtranjero.save()
 
+            estacion = self.request.user.estancia
+            if estacion:
+                estacion.capacidad -= 1
+                estacion.save()
+            
+
         return super(cambiarStatusExtranjero, self).form_valid(form)
 
     def get_success_url(self):
