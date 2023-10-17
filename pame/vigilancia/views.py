@@ -99,6 +99,9 @@ def homeSeguridadGeneral(request):
 
 
 
+def ejemplo(request):
+    return render (request, "prueba.html")
+
 
 def homeSeguridadResponsable(request):
     return render (request, "home/homeSeguridadResponsable.html")
@@ -3055,10 +3058,10 @@ class listarTraslado(ListView):
         context['estacion_destino'] = estacion_destino
         context['traslado1'] = traslado1
         camiones = traslado1.numero_camiones
-        capacidad_total = camiones * 40
+        capacidad_total = camiones
         context['capacidad_total'] = capacidad_total
         context['navbar'] = 'traslado'
-        context['seccion'] = 'vertraslado'
+        context['seccion'] = 'traslado'
         
         user_profile = self.request.user
         user_estacion = user_profile.estancia

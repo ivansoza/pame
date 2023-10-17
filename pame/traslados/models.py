@@ -28,15 +28,18 @@ class Traslado(models.Model):
     fecha_traslado = models.DateTimeField(null=True, blank=True)  # Similar al anterior
     fecha_arrivo = models.DateTimeField(null=True, blank=True)  # S
     fecha_rechazo = models.DateTimeField(null=True, blank=True)  
+    fecha_inicio = models.DateTimeField(null=True, blank=True)  
+    fecha_llegada= models.DateTimeField(null=True, blank=True)  
+
     nombreAutoridadEnvia = models.CharField(verbose_name="Nombre de la Autoridad que Envia" ,max_length=100)
-    nombreAutoridadRecibe = models.CharField(max_length=100)
-    responsableEnvia = models.CharField(max_length=100)
-    responsableRecibe = models.CharField(max_length=100)
+    nombreAutoridadRecibe = models.CharField(max_length=100, null=True, blank=True)
+    responsableEnvia = models.CharField(max_length=100, null=True, blank=True)
+    responsableRecibe = models.CharField(max_length=100, null=True, blank=True)
     enTraslado = models.BooleanField(default=False)
     status = models.IntegerField(choices=OPCION_STATUS_CHOICES, default=0)  # Proporcionar un valor predeterminado
     motivo_rechazo = models.TextField(null=True, blank=True)
     status_traslado = models.IntegerField(choices=TRASLADO_STATUS_CHOICES, default=0)
-    numero_camiones = models.PositiveIntegerField(default=1, verbose_name="Número de Camiones")
+    numero_camiones = models.PositiveIntegerField(verbose_name="Número de Extranjeros")
 
     def __str__(self):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'
