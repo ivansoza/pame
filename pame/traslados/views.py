@@ -525,3 +525,7 @@ class seguimientoPuestaDestino(DetailView):
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'arribo'  # Cambia esto según la página activa
         return context 
+
+class estadisticasEnvio(TemplateView):
+    template_name = 'destino/estadisticaDeEnvio.html'
+    
