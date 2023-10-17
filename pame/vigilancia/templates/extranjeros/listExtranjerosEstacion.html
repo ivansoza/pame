@@ -4,6 +4,9 @@
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
 {% endblock link %}
+
+
+
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
     <i class="fas fa-arrow-left"></i>
@@ -160,7 +163,9 @@
                 </a> {% endcomment %}
 
             </td>
-            <td>36 horas</td>
+            <td style="text-align: center; {% if extranjero.horas_transcurridas < 12 %}background-color: green; color: black;{% elif extranjero.horas_transcurridas < 24 %}background-color: yellow; color: black;{% else %}background-color: red; color: black;{% endif %}">
+                {{ extranjero.horas_transcurridas }} horas {{ extranjero.minutos_transcurridos }} minutos
+            </td>            
         </tr>
         {% endfor %}
 
@@ -218,6 +223,19 @@
             this.form.submit();
         });
     });
+</script>
+
+<script>
+    function color_class(horas_transcurridas) {
+        var hours = parseFloat(horas_transcurridas); // Convierte la cadena en un número
+        if (hours <= 12) {
+            return 'verde';
+        } else if (hours <= 24) {
+            return 'amarillo';
+        } else {
+            return 'rojo';
+        }
+    }
 </script>
 
 {% endblock script %}

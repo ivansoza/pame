@@ -92,7 +92,7 @@ OPCION_ESTATUS_CHOICES=[
 ]
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro', auto_now_add=True)
-    horaRegistro = models.TimeField(verbose_name='Hora de Registro', auto_now_add=True)
+    horaRegistro = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
     numeroExtranjero = models.CharField(verbose_name='Número de Extranjero', max_length=25, null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)

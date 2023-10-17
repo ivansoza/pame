@@ -3561,7 +3561,22 @@ class listarExtranjerosEstacion(ListView):
         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre
 
-        
+        ahora = timezone.now() # Hora Actual
+
+        for extranjero in context['extranjeros']:
+            tiempo_transcurrido = ahora - extranjero.horaRegistro
+            horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
+            horas_transcurridas = int(horas_transcurridas)
+            minutos_transcurridos = int(minutos_transcurridos * 60)
+
+            # Limitar a un máximo de 36 horas
+            if horas_transcurridas > 36:
+                horas_transcurridas = 36
+                minutos_transcurridos = 0
+
+            extranjero.horas_transcurridas = horas_transcurridas
+            extranjero.minutos_transcurridos = minutos_transcurridos
+
         return context
      
     
