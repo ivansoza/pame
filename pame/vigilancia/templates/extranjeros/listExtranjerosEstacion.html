@@ -163,8 +163,13 @@
                 </a> {% endcomment %}
 
             </td>
-            <td style="text-align: center; {% if extranjero.horas_transcurridas < 12 %}background-color: green; color: black;{% elif extranjero.horas_transcurridas < 24 %}background-color: yellow; color: black;{% else %}background-color: red; color: black;{% endif %}">
-                {{ extranjero.horas_transcurridas }} horas {{ extranjero.minutos_transcurridos }} minutos
+            <td style="text-align: center; 
+            {% if extranjero.horas_transcurridas < 12 %}background-color: green; color: black;
+            {% elif extranjero.horas_transcurridas < 24 %}background-color: yellow; color: black;
+            {% elif extranjero.horas_transcurridas < 36 %}background-color: orange; color: black;
+            {% else %}background-color: red; color: black;
+            {% endif %}">
+            {{ extranjero.horas_transcurridas }} horas {{ extranjero.minutos_transcurridos }} minutos
             </td>            
         </tr>
         {% endfor %}
