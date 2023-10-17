@@ -4,9 +4,6 @@
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
 {% endblock link %}
-
-
-
 {% block dashboard %}
 <a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
     <i class="fas fa-arrow-left"></i>
@@ -43,7 +40,6 @@
             <th>Nacionalidad</th>
             <!-- <th>Puesta</th> -->
             <th style="width: 5%;">Opciones</th>
-            <th>Tiempo</th>
         </tr>
     </thead>
     <tbody>
@@ -59,11 +55,6 @@
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
-                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                  <a class="btn btn-sm btn-icon3 tooltip-link"
-                  href="#" data-title="Derechos y Obligaciones">
-                      <i class="fas fa-balance-scale"></i>
-                  </a>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.notificacion_set.all %}
                 {% with first_notificacion=extranjero.notificacion_set.first %}
@@ -76,7 +67,11 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% endif %}
-              
+                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="#" data-title="Derechos y Obligaciones">
+                        <i class="fas fa-balance-scale"></i>
+                    </a>
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
@@ -110,7 +105,10 @@
                         <i class="fas fa-tshirt"></i>
                     </a>
 
-         
+                <!-- INICIO DE AGREGAR ENSERES -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Valores">
+                        <i class="fas fa-coins"></i>
+                    </a>
                 {% endwith %}
                 {% else %}
                 <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
@@ -118,34 +116,20 @@
                         <i class="fas fa-tshirt"></i>
                     </a>
                 <!-- INICIO CREAR INVENTARIO ENSERES -->
-          
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Valores">
+                        <i class="fas fa-coins"></i>
+                    </a>
                 {% endif %}
                 {% if extranjero.enseresbasicos_set.all %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listarEnseres' extranjero.id  %}" data-title="Ver Enseres">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Enseres">
                         <i class="fas fa-shopping-basket"></i>
                     </a>
                 {% endwith %}
                  {% else %}
-                    {% if extranjero.tiene_fotografia %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearEnseres' extranjero.id %}" data-title="Asignar Enseres">
-                            <i class="fas fa-shopping-basket"></i>
-                        </a>
-                    {% else %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
-                            <i class="fas fa-shopping-basket"></i>
-                        </a>
-                        <script>
-                            function showBioAlert() {
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: '¡Falta Fotografía!',
-                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
-                                    confirmButtonColor: '#2A4B41'
-                                });
-                            }
-                        </script>
-                    {% endif %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Enseres">
+                        <i class="fas fa-shopping-basket"></i>
+                    </a>
                 {% endif %}
                 <!-- INICIO DE EDITAR EXTRANJERO -->
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Editar Extranjero">
@@ -157,20 +141,12 @@
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                {% comment %} <!-- BOTON DE RESUMEN GENERAL -->
+                <!-- BOTON DE RESUMEN GENERAL -->
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Resumen General">
                     <i class="fas fa-chart-bar"></i>
-                </a> {% endcomment %}
+                </a>
 
             </td>
-            <td style="text-align: center; 
-            {% if extranjero.horas_transcurridas < 12 %}background-color: green; color: black;
-            {% elif extranjero.horas_transcurridas < 24 %}background-color: yellow; color: black;
-            {% elif extranjero.horas_transcurridas < 36 %}background-color: orange; color: black;
-            {% else %}background-color: red; color: black;
-            {% endif %}">
-            {{ extranjero.horas_transcurridas }} horas {{ extranjero.minutos_transcurridos }} minutos
-            </td>            
         </tr>
         {% endfor %}
 
@@ -181,7 +157,6 @@
                 <th>Nacionalidad</th>
                 <!-- <th>Puesta</th> -->
                 <th style="width: 5%;">Opciones</th>
-                <th>Tiempo</th>
             </tr>
         </tfoot>
 
@@ -198,7 +173,7 @@
 <div class="modal fade" id="eliminarextranjero" role="dialog">
 </div>
 {% endblock contenido %}
-{% comment %} {% block datatable %}
+{% block datatable %}
 
  {
     text: 'Crear Extranjero',
@@ -209,7 +184,7 @@
    }
   },
   
-{% endblock datatable %} {% endcomment %}
+{% endblock datatable %}
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
@@ -229,21 +204,5 @@
         });
     });
 </script>
-
-<script>
-    function color_class(horas_transcurridas) {
-        var hours = parseFloat(horas_transcurridas); // Convierte la cadena en un número
-        if (hours <= 12) {
-            return 'verde';
-        } else if (hours <= 24) {
-            return 'amarillo';
-        } else {
-            return 'rojo';
-        }
-    }
-</script>
-{% block filtro %}
-"order": [[4, "desc"]],
-{% endblock filtro %}
 
 {% endblock script %}

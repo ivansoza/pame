@@ -11,7 +11,7 @@
 {% endblock link %}
 <!-- INCLUIMOS EL DASHBOARDS PARA COLOCAR LA FLECHA HACIA ATRAS -->
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href=" {% url "listTraslado" %}">
+<a class="btn btn-sm btn-icon1 " href="#">
     <i class="fas fa-arrow-left"></i>
   </a>
 {% endblock dashboard %}
@@ -19,7 +19,7 @@
 {% block contenido %}
 <!-- TITULO GENERAL DE LA PLANTILLA -->
 <div class="titulo-general-container mt-2" >
-    <h1 class="titulo-general">Seguimiento de la Puesta Traslado</h1> 
+    <h1 class="titulo-general">Seguimiento de la Puesta a Recibir</h1> 
 </div>
 <br>
 <!-- CARD PARA SABER LOS DATOS DEL EXTRANJERO -->
@@ -34,21 +34,11 @@
                         <div id="progress-bar-container">
                             <ul>
                                 <li class="step step01 active clickable">
-                                    <div class="step-inner">SOLICITUD GENERADA</div>
+                                    <div class="step-inner">SOLICITUD</div>
                                 </li>
-                                    {% if Traslado.status == 0 %} <!-- SOLICITUD -->
-                                        <li class="step step02 blocked">
-                                            <div class="step-inner">EN ESPERA DE RESPUESTA</div>
-                                        </li>
-                                    {% elif Traslado.status == 1 %} <!-- ACEPTADO -->
-                                        <li class="step step02 {% if not Traslado.fecha_aceptacion %}blocked{% else %}clickable{% endif %}">
-                                            <div class="step-inner">ACEPTACIÓN</div>
-                                        </li>
-                                    {% elif Traslado.status == 2 %} <!-- RECHAZADO -->
-                                        <li class="step step02 {% if not Traslado.fecha_rechazo %}blocked{% else %}clickable{% endif %}">
-                                            <div class="step-inner">RECHAZADA</div>
-                                        </li>
-                                    {% endif %}
+                                <li class="step step02 {% if not Traslado.fecha_aceptacion %}blocked{% else %}clickable{% endif %}">
+                                    <div class="step-inner">ACEPTACIÓN</div>
+                                </li>
                                 <li class="step step03 {% if Traslado.status_traslado < 1 %}blocked{% else %}clickable{% endif %}">
                                     <div class="step-inner">INICIA PROCESO DE TRASLADO</div>
                                 </li>
@@ -61,7 +51,7 @@
                             </ul>
 
                             <div id="line">
-                                <div id="line-progress" {% if Traslado.status == 2 %}class="rechazado"{% endif %}></div>
+                                <div id="line-progress"></div>
                             </div>
                         </div>
 
@@ -70,41 +60,25 @@
                                 <h2>Detalles de la Solicitud</h2>
                                 <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
                                 <p>Solicitado por: {{ Traslado.nombreAutoridadEnvia }}</p>
-                                <p>Fecha de Solicitud: {{ Traslado.fechaSolicitud|date:"d M, Y" }} {{ Traslado.fechaSolicitud|time:"g:i A" }}</p>
+                                <p>Fecha de Solicitud: {{ Traslado.fechaSolicitud|date:"d M, Y" }}</p>
                             </div>
-                            {% if Traslado.status == 1 %} <!-- ACEPTADO -->
+
                             <div class="section-content strategy">
                                 <h2>Detalles de la Aceptación</h2>
                                 <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
                                 <p>Aceptado por: {{ Traslado.nombreAutoridadRecibe }}</p>
-                                <p>Fecha de Aceptación: {{ Traslado.fecha_aceptacion|date:"d M, Y" }} {{ Traslado.fecha_aceptacion|time:"g:i A" }}</p>
+                                <p>Fecha de Aceptación: {{ Traslado.fecha_aceptacion|date:"d M, Y" }}</p>
 
                             </div>
-                            {% elif Traslado.status == 2 %} <!-- RECHAZADO -->
-                            <div class="section-content strategy">
-                                <h2>Detalles del Rechazo</h2>
-                                <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
-                                <p>Rechazado por: {{ Traslado.nombreAutoridadRecibe }}</p>
-                                <p>Motivo: {{ Traslado.motivo_rechazo }}</p>
-
-                                <p>Fecha de Rechazo: {{ Traslado.fecha_rechazo|date:"d M, Y" }} {{ Traslado.fecha_rechazo|time:"g:i A" }}</p>
-
-                            </div>
-                            {% endif %}
-
 
                             <div class="section-content creative">
-                                <h2>Detalles del Inicio de Proceso de Traslado</h2>
-                                <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
-                                    <p>Inicio de proceso de traslado </p>
-                                    <p>Fecha de Inicio de Proceso: {{ Traslado.fecha_inicio|date:"d M, Y" }} {{ Traslado.fecha_inicio|time:"g:i A" }}</p>
+                                <h2>Detalles del Inicio de Traslado</h2>
+                                <p>Lorem ipsum...</p>
                             </div>
 
                             <div class="section-content production">
                                 <h2>Detalles del Traslado</h2>
-                                <p> <span style="font-weight: 900;">{{ Traslado.estacion_origen }}</span>  a <span style="font-weight: 900;">{{ Traslado.estacion_destino }}</p>
-                                    <p>En traslado </p>
-                                    <p>Fecha de Traslado: {{ Traslado.fecha_traslado|date:"d M, Y" }} {{ Traslado.fecha_traslado|time:"g:i A" }}</p>
+                                <p>Lorem ipsum...</p>
                             </div>
 
                             <div class="section-content analysis">
@@ -114,8 +88,8 @@
                         </div>
                     </div>  
 
-                    <a href=" {% url "listTraslado" %} " class="btn btn-custom mt-3">Volver a la Lista de Puestas de Traslado</a>
- 
+                    <a href="#" class="btn btn-custom mt-3">Volver a la Lista de Puestas de Traslado</a>
+
                 </div>
             </div>
         </div>
@@ -170,7 +144,7 @@
                 $(".step02").trigger('click');
                 break;
             case 2:
-            $(".step02").trigger('click');
+                // Aquí, la solicitud fue rechazada. No avanzar el "progress bar" más allá de la solicitud.
                 break;
         }
     
@@ -200,6 +174,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 {% endblock script %}
+
+
 
 
 

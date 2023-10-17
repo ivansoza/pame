@@ -2174,7 +2174,7 @@ class createPuestaVP(CreateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
     def get_success_url(self):
-        messages.success(self.request, 'La puesta de voluntad propia se ha creado con éxito.')
+        messages.success(self.request, 'La puesta de voluntad se ha creado con éxito.')
         return super().get_success_url()
 
 class listarExtranjerosVP(ListView):
@@ -3061,7 +3061,7 @@ class listarTraslado(ListView):
         capacidad_total = camiones
         context['capacidad_total'] = capacidad_total
         context['navbar'] = 'traslado'
-        context['seccion'] = 'vertraslado'
+        context['seccion'] = 'traslado'
         
         user_profile = self.request.user
         user_estacion = user_profile.estancia
@@ -3548,7 +3548,7 @@ class listarExtranjerosEstacion(ListView):
 
         estado = self.request.GET.get('estado_filtrado', 'activo')
         # Filtrar por estación del usuario y ordenar por nombre de extranjero.
-        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('nombreExtranjero')
+        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('horaRegistro')
 
         if estado == 'activo':
             queryset = queryset.filter(estatus='Activo')
@@ -3564,7 +3564,22 @@ class listarExtranjerosEstacion(ListView):
         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre
 
-        
+        ahora = timezone.now() # Hora Actual
+
+        for extranjero in context['extranjeros']:
+            tiempo_transcurrido = ahora - extranjero.horaRegistro
+            horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
+            horas_transcurridas = int(horas_transcurridas)
+            minutos_transcurridos = int(minutos_transcurridos * 60)
+
+            # Limitar a un máximo de 36 horas
+            if horas_transcurridas > 36:
+                horas_transcurridas = 36
+                minutos_transcurridos = 0
+
+            extranjero.horas_transcurridas = horas_transcurridas
+            extranjero.minutos_transcurridos = minutos_transcurridos
+
         return context
      
     

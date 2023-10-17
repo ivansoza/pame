@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     'juridico',
     'traslados',
     'biometricos',
+    'alojamiento',
+    'preventconcurrentlogins',
     
 ]
 
@@ -82,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
 ]
 
 

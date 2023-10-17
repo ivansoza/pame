@@ -1,22 +1,20 @@
 from django.shortcuts import render
+
+# Create your views here.
+from django.shortcuts import render
 from django.views.generic import CreateView, ListView,DetailView, TemplateView
 from .models import Traslado, Extranjero, ExtranjeroTraslado, SolicitudTraslado
-from django.views.generic import CreateView, ListView,DetailView, UpdateView, DeleteView, FormView
+from django.views.generic import CreateView, ListView,DetailView, UpdateView, DeleteView
 from .models import Traslado, Extranjero, ExtranjeroTraslado
 from vigilancia.models import Estacion
 from django.http import JsonResponse
-from .forms import TrasladoForm, EstatusTrasladoForm, EstatusTrasladoFormExtranjero, EstatusTrasladoFormOrigen, EstatusTrasladoFormOrigenDestino, DecisionForm,CambioEstacionForm
+from .forms import TrasladoForm, EstatusTrasladoForm, EstatusTrasladoFormExtranjero
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
-from django.shortcuts import redirect
-from django.db.models import Count  # Añade esta línea al principio del archivo
-
-from datetime import date
-
 
 
 
@@ -91,7 +89,7 @@ class listarEstaciones(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
-        context['seccion'] = 'traslado'  # Cambia esto según la página activa
+        context['seccion'] = 'vertraslado'  # Cambia esto según la página activa
         user_profile = self.request.user
         user_estacion = user_profile.estancia
         estaciones = Estacion.objects.exclude(pk=user_estacion.pk)
@@ -161,10 +159,6 @@ class TrasladoCreateView(CreateView):
         destino_id = self.object.estacion_destino_id
         return reverse('traslado', kwargs={'traslado_id': self.object.pk, 'destino_id': destino_id})
     def form_valid(self, form):
-        numero_camiones = form.cleaned_data.get('numero_camiones')
-        if numero_camiones == 0:
-            return self.form_invalid(form)
-
         origen_id = self.kwargs['origen_id']
         destino_id = self.kwargs['destino_id']
         
@@ -172,12 +166,6 @@ class TrasladoCreateView(CreateView):
         form.instance.estacion_destino_id = destino_id
 
         return super().form_valid(form)
-    
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'No está permitido elegir 0 camiones para hacer un traslado.')
-        return redirect(reverse('listEstaciones'))
-
     def get_initial(self):
         initial = super().get_initial()
         Usuario = get_user_model()
@@ -220,6 +208,7 @@ class cambiarStatus(UpdateView):
         
         return super(cambiarStatus, self).form_valid(form)
 
+
     def get_success_url(self):
         return reverse('traslados_recibidos')
     def get_initial(self):
@@ -232,33 +221,6 @@ class cambiarStatus(UpdateView):
             initial['nombreAutoridadRecibe'] = nombre_usuario
             
             return initial
-class cambiarStatusOrigen(UpdateView):
-    model = Traslado
-    form_class = EstatusTrasladoFormOrigen
-    template_name = 'modal/seleccionarStatusTrasladoOrigen.html'
-
-    def form_valid(self, form):
-        # Si el estatus cambió a ACEPTADO
-        if 'status_traslado' in form.changed_data and form.instance.status == 1: 
-            form.instance.fecha_inicio = timezone.now()
-        return super(cambiarStatusOrigen, self).form_valid(form)
-    
-    def get_success_url(self):
-        return reverse('listTraslado')
-    
-class cambiarStatusOrigenDestino(UpdateView):
-    model = Traslado
-    form_class = EstatusTrasladoFormOrigenDestino
-    template_name = 'modal/seleccionarStatusTrasladoOrigenDestino.html'
-
-    def form_valid(self, form):
-        # Si el estatus cambió a ACEPTADO
-        if 'status_traslado' in form.changed_data and form.instance.status == 1: 
-            form.instance.fecha_traslado = timezone.now()
-        return super(cambiarStatusOrigenDestino, self).form_valid(form)
-    
-    def get_success_url(self):
-        return reverse('listTraslado')
 
 class ListTrasladoDestino(ListView):
     model = Traslado
@@ -493,21 +455,9 @@ class cambiarStatusExtranjero(UpdateView):
     template_name = 'modal/seleccionarSttausdeTraslado1.html'
 
     def form_valid(self, form):
-        # Verifica si el status ha cambiado y si es "ACEPTADO," ajusta la fecha de aceptación
-        if 'statusTraslado' in form.changed_data and form.instance.statusTraslado == 1:  # 1 representa "ACEPTADO"
+        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
+        if 'statusTraslado' in form.changed_data:
             form.instance.fecha_aceptacion = timezone.now()
-
-            # Accede al objeto Extranjero relacionado y actualiza su campo deLaEstacion
-            new_station_id = self.request.user.estancia.id
-            form.instance.delExtranjero.deLaEstacion_id = new_station_id
-            form.instance.delExtranjero.save()
-
-            estacion = self.request.user.estancia
-            if estacion:
-                estacion.capacidad -= 1
-                estacion.save()
-            
-
         return super(cambiarStatusExtranjero, self).form_valid(form)
 
     def get_success_url(self):
@@ -540,105 +490,3 @@ class seguimientoPuestaDestino(DetailView):
         context['navbar'] = 'traslado'  # Cambia esto según la página activa
         context['seccion'] = 'arribo'  # Cambia esto según la página activa
         return context 
-
-class estadisticasEnvio(TemplateView):
-    model = Traslado
-    template_name = 'destino/estadisticaDeEnvio.html'
-    context_object_name = 'trasladosRecibidos'
-
-    def get_queryset(self):
-        # Filtrar los traslados por la estación destino del usuario logueado
-        user_profile = self.request.user
-        user_estacion = user_profile.estancia
-        queryset = Traslado.objects.filter(estacion_destino=user_estacion)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        traslado_id = self.kwargs.get('traslado_id')
-        traslado = Traslado.objects.get(pk=traslado_id)
-        
-        # Encuentra los extranjeros asociados a esta puesta de traslado
-        extranjeros_en_traslado = ExtranjeroTraslado.objects.filter(delTraslado=traslado)
-        nacionalidades = Extranjero.objects.filter(extranjerotraslado__delTraslado=traslado).values('nacionalidad__nombre').annotate(count=Count('id'))
-        genero_count = Extranjero.objects.filter(extranjerotraslado__delTraslado=traslado).values('genero').annotate(count=Count('genero'))
-
-        # Cuenta el número de extranjeros en esta puesta de traslado
-        numero_extranjeros = extranjeros_en_traslado.count()
-        context['navbar'] = 'traslado'  # Ajusta según la página activa en tu navbar
-        context['seccion'] = 'arribo'  # Ajusta según la sección activa
-        context['traslados_count1'] = numero_extranjeros  # Agregar el recuento de extranjeros
-        context['nacionalidades'] = nacionalidades  # Agregar el conteo de extranjeros por nacionalidad
-        context['genero'] = genero_count
-
-        user_profile = self.request.user
-        user_estacion = user_profile.estancia
-
-        traslados_count = self.get_queryset().count() 
-        context['traslados_count'] = traslados_count
-
-        # Si necesitas más datos en el contexto, puedes añadirlos aquí
-        # como lo hiciste en la vista para la estación origen.
-
-        return context
-
-    
-
-# en caso de rechazo
-class ActualizarTrasladoView(FormView):
-    template_name = 'modal/actualizar_traslado.html'
-    form_class = DecisionForm
-
-    def get_context_data(self, **kwargs):
-        context = super(ActualizarTrasladoView, self).get_context_data(**kwargs)
-        traslado = get_object_or_404(Traslado, id=self.kwargs['traslado_id'])
-        context['object'] = traslado
-        return context
-
-    def form_valid(self, form):
-        decision = form.cleaned_data['decision']
-        if decision == 'cambiar':
-            return redirect('cambio_estacion', pk=self.kwargs['traslado_id'])
-        else:
-            # Aquí manejas la opción "finalizar proceso" si es necesario.
-            # Puedes redirigir a otra página o hacer otro procesamiento aquí.
-            return redirect('alguna_otra_url') # Esto es solo un ejemplo. Debes decidir a dónde redirigir en este caso.
-
-    
-class CambioEstacionView(UpdateView):
-    model = Traslado
-    template_name = 'origen/cambiarEstacion.html'
-    form_class = CambioEstacionForm
-
-
-
-    def get_form(self, form_class=None):
-        form = super(CambioEstacionView, self).get_form(form_class)
-        # Excluye la estación origen y destino actuales del queryset
-        form.fields['estacion_destino'].queryset = form.fields['estacion_destino'].queryset.exclude(
-            id__in=[self.object.estacion_origen.id, self.object.estacion_destino.id]
-        )
-        return form
-
-
-    def form_valid(self, form):
-        # Actualiza la estación destino.
-        response = super().form_valid(form)
-
-        # Resetear los campos según tus especificaciones.
-        self.object.fechaSolicitud = timezone.now()
-        self.object.fecha_aceptacion = None
-        self.object.fecha_rechazo = None
-        self.object.nombreAutoridadRecibe = None
-        self.object.motivo_rechazo = None
-
-
-        # ... resetea los otros campos ...
-        self.object.status = 0
-        self.object.status_traslado = 0
-        self.object.save()
-
-        return response
-
-    def get_success_url(self):
-        return reverse_lazy('listTraslado')
