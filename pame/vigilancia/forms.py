@@ -181,11 +181,7 @@ class extranjeroFormsInm(forms.ModelForm):
 
     )
 
-    apellidoMaternoExtranjero = forms.CharField(
-        label= "Apellido Materno:",
-        widget=forms.DateInput(attrs={'placeholder':"Ej:Juarez"}),
-
-    )
+   
     class Meta:
         model = Extranjero
         fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
@@ -271,11 +267,7 @@ class extranjeroFormsAC(forms.ModelForm):
 
     )
 
-    apellidoMaternoExtranjero = forms.CharField(
-        label= "Apellido Materno:",
-        widget=forms.DateInput(attrs={'placeholder':"Ej:Juarez"}),
-
-    )
+    
    
    
    
@@ -367,10 +359,7 @@ class extranjeroFormsVP(forms.ModelForm):
         label= "Apellido Paterno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
     )
-    apellidoMaternoExtranjero = forms.CharField(
-        label= "Apellido Materno:",
-        widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
-    )
+    
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
     )

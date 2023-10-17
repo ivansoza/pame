@@ -19,7 +19,7 @@ urlpatterns = [
   path('editar-status/<int:pk>/', cambiarStatus.as_view(), name='editar-status'),
   path('editar-status-extranjero/<int:pk>/', cambiarStatusExtranjero.as_view(), name='editar-status-extranjero'),
   path('seguimiento-puesta-destino/<int:pk>/', seguimientoPuestaDestino.as_view(), name='seguimientoPuestaDestino'),
-  path('estadistica', estadisticasEnvio.as_view(), name='estadistica'),
+  path('estadistica/<int:traslado_id>/', estadisticasEnvio.as_view(), name='estadistica'),
 
 
 # Documentos PDF
