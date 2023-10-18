@@ -36,7 +36,7 @@
             <th style="width: 10%;">No. Único de Proceso</th>
             <th style="width: 10%;">Estación Destino</th>
             <th style="width: 10%;">Fecha de solicitud</th>
-            <th style="width: 10%;" >Status</th>
+            <th style="width: 1%;" >Status</th>
           <th style="width: 5%;">Opciones</th>
         </tr>
     </thead>
@@ -99,6 +99,19 @@
             <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'seguimientoPuesta' puesta.id %}" data-title="Ver seguimiento">
               <i class="fas fa-chart-bar"></i>
             </a>
+
+            {% if puesta.status == 0 or puesta.status == 2 %}
+            <!-- Icono para eliminar -->
+            <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Eliminar" onclick="confirmDelete({{ puesta.id }}); return false;">
+              <i class="fas fa-times"></i>
+            </a>
+            {% else %}
+            <!-- Icono para eliminar desactivado -->
+              <a class="btn btn-sm btn-desactivado" href="#" data-title="Eliminar" onclick="showSweetAlert1({{ puesta.id }});">
+                <i class="fas fa-times"></i>
+              </a>
+
+             {% endif %}
         </td>
       </tr>
       
@@ -175,6 +188,45 @@
         }
     });
 }
+function showSweetAlert1(puestaId) {
+  Swal.fire({
+      title: 'Imposible Eliminar',
+      text: 'Estas en algun proceso.',
+      icon: 'info',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#2A4B41',
+      showCancelButton: true,
+      cancelButtonText: 'Ver Seguimiento',
+      cancelButtonColor: '#882332'
+  }).then((result) => {
+      if (result.isDismissed) {
+          let finalUrl = baseUrl.replace("999", puestaId);
+          window.location.href = finalUrl;
+      }
+  });
+}
+
+let deleteUrlBase = "{% url 'eliminar_traslado' pk=999 %}";
+
+function confirmDelete(trasladoId) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#2A4B41',
+        cancelButtonColor: '#882332',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let finalDeleteUrl = deleteUrlBase.replace("999", trasladoId);
+            window.location.href = finalDeleteUrl;
+        }
+    });
+}
   </script>
+
+
 
 {% endblock script %}

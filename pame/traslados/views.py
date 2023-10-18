@@ -550,7 +550,7 @@ class ActualizarTrasladoView(FormView):
         else:
             # Aquí manejas la opción "finalizar proceso" si es necesario.
             # Puedes redirigir a otra página o hacer otro procesamiento aquí.
-            return redirect('alguna_otra_url') # Esto es solo un ejemplo. Debes decidir a dónde redirigir en este caso.
+            return redirect('eliminar_traslado', pk=self.kwargs['traslado_id']) # Esto es solo un ejemplo. Debes decidir a dónde redirigir en este caso.
 
     
 class CambioEstacionView(UpdateView):
@@ -590,3 +590,18 @@ class CambioEstacionView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('listTraslado')
+    
+
+# eliminar traslado
+
+def eliminar_traslado(request, pk):
+    traslado = get_object_or_404(Traslado, pk=pk)
+    
+    # Comprueba si el traslado tiene el status permitido para ser eliminado
+    if traslado.status in [0, 2]:
+        traslado.delete()
+        messages.success(request, 'Traslado eliminado con éxito.')
+    else:
+        messages.error(request, 'No se puede eliminar el traslado en su estado actual.')
+
+    return redirect('listTraslado')  # Reemplaza 'ruta_lista_traslados' con la ruta correcta para la lista de traslados
