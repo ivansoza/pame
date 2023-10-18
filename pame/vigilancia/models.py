@@ -4,14 +4,15 @@ from PIL import Image, ExifTags
 
 
 class Nacionalidad(models.Model):
-    nombre = models.CharField(max_length=200,verbose_name='País')
-    Abreviatura = models.CharField(max_length=200,verbose_name='Abreviatura')
+    identificador = models.CharField(max_length=5, verbose_name='ID')
+    Abreviatura = models.CharField(max_length=200,verbose_name='País')
+    nombre = models.CharField(max_length=200,verbose_name='Nacionalidad')
     
     class Meta:
-        verbose_name_plural = "Países"
+        verbose_name_plural = "Gentilicios"
     
     def __str__(self):
-        return self.nombre
+        return self.Abreviatura
     
 # FUNCION PARA ASIGNAR UN NOMBRE DE CARPETA A PARTIR DE LA ESTACION, SU IDENTIFICADOR DE PROCESO Y SU FILE NAME 
 def user_directory_pathINM(instance, filename):

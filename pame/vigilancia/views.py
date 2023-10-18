@@ -3548,7 +3548,7 @@ class listarExtranjerosEstacion(ListView):
 
         estado = self.request.GET.get('estado_filtrado', 'activo')
         # Filtrar por estación del usuario y ordenar por nombre de extranjero.
-        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('horaRegistro')
+        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('nombreExtranjero')
 
         if estado == 'activo':
             queryset = queryset.filter(estatus='Activo')
