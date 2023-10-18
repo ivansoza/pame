@@ -498,6 +498,9 @@ class cambiarStatusExtranjero(UpdateView):
             form.instance.fecha_aceptacion = timezone.now()
 
             # Accede al objeto Extranjero relacionado y actualiza su campo deLaEstacion
+            form.instance.delExtranjero.estatus = 'Trasladado'
+            form.instance.delExtranjero.save()
+
             new_station_id = self.request.user.estancia.id
             form.instance.delExtranjero.deLaEstacion_id = new_station_id
             form.instance.delExtranjero.save()
@@ -506,7 +509,7 @@ class cambiarStatusExtranjero(UpdateView):
             if estacion:
                 estacion.capacidad -= 1
                 estacion.save()
-            
+
 
         return super(cambiarStatusExtranjero, self).form_valid(form)
 
@@ -642,3 +645,24 @@ class CambioEstacionView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('listTraslado')
+    
+class extranjeroTrasladadoList(ListView):
+    model = Extranjero
+    template_name='destino/verExtranjerosTraladados.html'
+    context_object_name = 'extranjeros'
+
+    def get_queryset(self):
+        # Obtiene la estación del usuario logueado
+        estacion_usuario = self.request.user.estancia
+
+        # Filtra los extranjeros que pertenecen a la estación del usuario y tienen un estatus de "Trasladado"
+        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario, estatus='Trasladado')
+        
+        return queryset
+
+  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'trasladados'  # Cambia esto según la página activa
+        return context
