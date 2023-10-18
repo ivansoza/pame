@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from django.shortcuts import redirect
+from django.db.models import Count  # Añade esta línea al principio del archivo
 
 from datetime import date
 
@@ -492,9 +493,24 @@ class cambiarStatusExtranjero(UpdateView):
     template_name = 'modal/seleccionarSttausdeTraslado1.html'
 
     def form_valid(self, form):
-        # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
-        if 'statusTraslado' in form.changed_data:
+        # Verifica si el status ha cambiado y si es "ACEPTADO," ajusta la fecha de aceptación
+        if 'statusTraslado' in form.changed_data and form.instance.statusTraslado == 1:  # 1 representa "ACEPTADO"
             form.instance.fecha_aceptacion = timezone.now()
+
+            # Accede al objeto Extranjero relacionado y actualiza su campo deLaEstacion
+            form.instance.delExtranjero.estatus = 'Trasladado'
+            form.instance.delExtranjero.save()
+
+            new_station_id = self.request.user.estancia.id
+            form.instance.delExtranjero.deLaEstacion_id = new_station_id
+            form.instance.delExtranjero.save()
+
+            estacion = self.request.user.estancia
+            if estacion:
+                estacion.capacidad -= 1
+                estacion.save()
+
+
         return super(cambiarStatusExtranjero, self).form_valid(form)
 
     def get_success_url(self):
@@ -529,7 +545,46 @@ class seguimientoPuestaDestino(DetailView):
         return context 
 
 class estadisticasEnvio(TemplateView):
+    model = Traslado
     template_name = 'destino/estadisticaDeEnvio.html'
+    context_object_name = 'trasladosRecibidos'
+
+    def get_queryset(self):
+        # Filtrar los traslados por la estación destino del usuario logueado
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+        queryset = Traslado.objects.filter(estacion_destino=user_estacion)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        traslado_id = self.kwargs.get('traslado_id')
+        traslado = Traslado.objects.get(pk=traslado_id)
+        
+        # Encuentra los extranjeros asociados a esta puesta de traslado
+        extranjeros_en_traslado = ExtranjeroTraslado.objects.filter(delTraslado=traslado)
+        nacionalidades = Extranjero.objects.filter(extranjerotraslado__delTraslado=traslado).values('nacionalidad__nombre').annotate(count=Count('id'))
+        genero_count = Extranjero.objects.filter(extranjerotraslado__delTraslado=traslado).values('genero').annotate(count=Count('genero'))
+
+        # Cuenta el número de extranjeros en esta puesta de traslado
+        numero_extranjeros = extranjeros_en_traslado.count()
+        context['navbar'] = 'traslado'  # Ajusta según la página activa en tu navbar
+        context['seccion'] = 'arribo'  # Ajusta según la sección activa
+        context['traslados_count1'] = numero_extranjeros  # Agregar el recuento de extranjeros
+        context['nacionalidades'] = nacionalidades  # Agregar el conteo de extranjeros por nacionalidad
+        context['genero'] = genero_count
+
+        user_profile = self.request.user
+        user_estacion = user_profile.estancia
+
+        traslados_count = self.get_queryset().count() 
+        context['traslados_count'] = traslados_count
+
+        # Si necesitas más datos en el contexto, puedes añadirlos aquí
+        # como lo hiciste en la vista para la estación origen.
+
+        return context
+
     
 
 # en caso de rechazo
@@ -590,6 +645,27 @@ class CambioEstacionView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('listTraslado')
+    
+class extranjeroTrasladadoList(ListView):
+    model = Extranjero
+    template_name='destino/verExtranjerosTraladados.html'
+    context_object_name = 'extranjeros'
+
+    def get_queryset(self):
+        # Obtiene la estación del usuario logueado
+        estacion_usuario = self.request.user.estancia
+
+        # Filtra los extranjeros que pertenecen a la estación del usuario y tienen un estatus de "Trasladado"
+        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario, estatus='Trasladado')
+        
+        return queryset
+
+  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'trasladados'  # Cambia esto según la página activa
+        return context
     
 
 # eliminar traslado
