@@ -18,6 +18,10 @@ TRASLADO_STATUS_CHOICES = (
     (3, 'Llegada'),
 )
 
+TIPO_TRASLADO_CHOICES = (
+    (0, 'Por Resolución'),
+    (1, 'Por Alojamiento'),
+)
 
 class Traslado(models.Model):
     numeroUnicoProceso = models.CharField(verbose_name="Numero Único de Proceso" ,max_length=50)
@@ -40,6 +44,7 @@ class Traslado(models.Model):
     motivo_rechazo = models.TextField(null=True, blank=True)
     status_traslado = models.IntegerField(choices=TRASLADO_STATUS_CHOICES, default=0)
     numero_camiones = models.PositiveIntegerField(verbose_name="Número de Extranjeros")
+    tipo_de_traslado = models.IntegerField(choices=TIPO_TRASLADO_CHOICES)  # Proporcionar un valor predeterminado
 
     def __str__(self):
         return f'Solicitud de {self.estacion_origen} a {self.estacion_destino}'

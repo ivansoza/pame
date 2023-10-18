@@ -7,10 +7,12 @@ class TrasladoForm(forms.ModelForm):
     
     class Meta:
         model = Traslado
-        fields = ['numeroUnicoProceso', 'estacion_destino', 'nombreAutoridadEnvia', 'numero_camiones']
+        fields = ['numeroUnicoProceso', 'estacion_destino', 'nombreAutoridadEnvia', 'numero_camiones','tipo_de_traslado']
         widgets = { 
             'numeroUnicoProceso': forms.TextInput(attrs={'readonly':'readonly'}),
             'numero_camiones': forms.NumberInput(attrs={'min': '1', 'placeholder': 'Ingresa número de extranjeros'}),
+            'tipo_de_traslado': forms.Select(attrs={'class':'form-control'}), # Añadir widget personalizado si lo deseas
+
         }
 
     def clean_numero_camiones(self):
