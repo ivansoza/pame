@@ -550,7 +550,7 @@ class ActualizarTrasladoView(FormView):
         else:
             # Aquí manejas la opción "finalizar proceso" si es necesario.
             # Puedes redirigir a otra página o hacer otro procesamiento aquí.
-            return redirect('alguna_otra_url') # Esto es solo un ejemplo. Debes decidir a dónde redirigir en este caso.
+            return redirect('eliminar_traslado', pk=self.kwargs['traslado_id']) # Esto es solo un ejemplo. Debes decidir a dónde redirigir en este caso.
 
     
 class CambioEstacionView(UpdateView):
