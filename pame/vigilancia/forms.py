@@ -5,7 +5,41 @@ import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
 
-class puestDisposicionINMForm(forms.ModelForm):
+class ValidacionArchivos(forms.Form):
+    def clean_archivo(self, field_name):
+        archivo = self.cleaned_data.get(field_name)
+        if archivo:
+            # Validar por tipo de archivo
+            nombre_archivo = archivo.name
+            extension = nombre_archivo.split('.')[-1].lower()
+            if extension not in ['jpg', 'jpeg', 'png', 'pdf']:
+                raise forms.ValidationError(f'El documento debe ser JPG, PNG o PDF.')
+            
+            # Validar por tamaño de archivo, menor a 1 MB
+            max_tamano = 1024 * 1024 # 1 MB en bytes
+            if archivo.size > max_tamano:
+                raise forms.ValidationError(f'El documento debe ser menor de 1 MB.')
+            
+        return archivo
+
+class ValidacionArchivosPDF(forms.Form):
+    def clean_archivof(self, field_name):
+        archivo = self.cleaned_data.get(field_name)
+        if archivo:
+            # Validacion por tipo de archivo 
+            nombre_archivo = archivo.name
+            extension = nombre_archivo.split('.')[-1].lower()
+            if extension not in ['jpg', 'jpeg', 'png']:
+                raise forms.ValidationError(f'La firma debe ser JPG o PNG')
+            
+            # Validar por tamaño de archivo, menor a 1 MB
+            max_tamano = 512 * 512 # 1/2 MB
+            if archivo.size > max_tamano:
+                raise forms.ValidationError(f'La firma debe ser menor a 512 kb')
+            
+        return archivo
+
+class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
     numeroOficio = forms.CharField(
         label= "Número de Oficio:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: 162729'})
@@ -38,7 +72,6 @@ class puestDisposicionINMForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
     )
 
-
     oficioPuesta = forms.FileField(
         label= "Oficio de Puesta:",
         required=False,
@@ -46,17 +79,22 @@ class puestDisposicionINMForm(forms.ModelForm):
          # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
     
+    def clean_oficioPuesta(self):
+        return self.clean_archivo('oficioPuesta')
+    
     oficioComision = forms.FileField(
         label= "Oficio de Comisión:",
         required=False,
         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
     
+    def clean_oficioComision(self):
+        return self.clean_archivo('oficioComision')
+    
     puntoRevision = forms.CharField(
         label= "Punto de Revision:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
-    
     
     class Meta:
         model = PuestaDisposicionINM
@@ -64,7 +102,7 @@ class puestDisposicionINMForm(forms.ModelForm):
 
 
 
-class puestaDisposicionACForm(forms.ModelForm):
+class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
 
     
     numeroOficio = forms.CharField(
@@ -103,12 +141,18 @@ class puestaDisposicionACForm(forms.ModelForm):
 
          # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
+    
+    def clean_oficioPuesta(self):
+        return self.clean_archivo('oficioPuesta')
 
     oficioComision = forms.FileField(
         label= "Oficio de Comisión:",
         required=False,
-        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
-     )
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'}) 
+    )
+
+    def clean_oficioComision(self):
+        return self.clean_archivo('oficioComision')
 
     puntoRevision = forms.CharField(
         label= "Punto de Revision:",
@@ -134,12 +178,17 @@ class puestaDisposicionACForm(forms.ModelForm):
         label= "Municipio:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Apizaco'})
     )
+
     certificadoMedico = forms.FileField(
         label= "Certificado Medico:",
         required=False,
 
         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
-     )
+    )
+
+    def clean_certificadoMedico(self):
+        return self.clean_archivo('certificadoMedico')
+
     class Meta:
         model = PuestaDisposicionAC
         fields ='__all__'
@@ -151,7 +200,7 @@ class puestaDisposicionACForm(forms.ModelForm):
 
 
 
-class extranjeroFormsInm(forms.ModelForm):
+class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
         widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
@@ -168,7 +217,8 @@ class extranjeroFormsInm(forms.ModelForm):
             raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
         return data
     
-  
+    def clean_documentoIdentidad(self):
+        return self.clean_archivo('documentoIdentidad')
    
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
@@ -228,18 +278,23 @@ class editExtranjeroINMForm(forms.ModelForm):
         }
 
 
-class BiometricoFormINM(forms.ModelForm):
+class BiometricoFormINM(forms.ModelForm, ValidacionArchivosPDF):
     class Meta:
         model = Biometrico
         fields = '__all__'  # Incluye todos los campos del modelo
+
+    def clean_firmaExtranjero(self):
+        return self.clean_archivof('firmaExtranjero')
 
 class BiometricoFormAC(forms.ModelForm):
     class Meta:
         model = Biometrico
         fields = '__all__'  # Incluye todos los campos del modelo
 
+    def clean_firmaExtranjero(self):
+        return self.clean_archivof('firmaExtranjero')
 
-class extranjeroFormsAC(forms.ModelForm):
+class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
 
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
@@ -256,10 +311,7 @@ class extranjeroFormsAC(forms.ModelForm):
         if age > 110:
             raise ValidationError('La edad ingresada no es válida. Por favor, verifica la fecha de nacimiento.')
         return data
-  
-    
- 
-    
+     
     nombreExtranjero = forms.CharField(
         label= "Nombre(s):",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Luis"}),
@@ -277,16 +329,13 @@ class extranjeroFormsAC(forms.ModelForm):
 
     )
    
-   
-   
-   
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
         required=False
-
     )
 
-
+    def clean_documentoIdentidad(self):
+        return self.clean_archivo('documentoIdentidad')
    
     class Meta:
         model = Extranjero
@@ -341,7 +390,7 @@ class puestaVPForm(forms.ModelForm):
         model = PuestaDisposicionVP
         fields = '__all__'
 
-class extranjeroFormsVP(forms.ModelForm):
+class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
         widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
@@ -374,6 +423,9 @@ class extranjeroFormsVP(forms.ModelForm):
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
     )
+
+    def clean_documentoIdentidad(self):
+        return self.clean_archivo('documentoIdentidad')
   
    
     class Meta:
@@ -421,6 +473,9 @@ class BiometricoFormVP(forms.ModelForm):
     class Meta:
         model = Biometrico
         fields = '__all__'  # Incluye todos los campos del modelo
+
+    def clean_firmaExtranjero(self):
+        return self.clean_archivof('firmaExtranjero')
 
 
 class TrasladoForm(forms.ModelForm):

@@ -230,18 +230,6 @@
     });
 </script>
 
-<script>
-    function color_class(horas_transcurridas) {
-        var hours = parseFloat(horas_transcurridas); // Convierte la cadena en un número
-        if (hours <= 12) {
-            return 'verde';
-        } else if (hours <= 24) {
-            return 'amarillo';
-        } else {
-            return 'rojo';
-        }
-    }
-</script>
 {% block filtro %}
 "order": [[4, "desc"]],
 {% endblock filtro %}
