@@ -1,0 +1,106 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+        <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
+    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
+{% endblock link %}
+
+{% block titulo %}PAME | Telefono{% endblock titulo %}
+{% block dashboard %}
+<!-- FLECHA DE BACK  -->
+
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosEstacion' %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
+{% block contenido %}
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Llamadas Telefonicas</h1>
+</div>
+<br>
+{% include "includes/tituloLlamada.html" %}
+
+<a class='btn btn-verified tooltip-link' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   data-title="Verifica extranjero" >
+   <i class="fas fa-fingerprint"></i>
+</a>
+
+
+<a class='btn btn-custom btn-unverified' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   href="{% url 'crear_llamadaGen' llamada_id=llamada.id%}">
+   Agregar Llamada
+</a>
+
+<br>
+<br>
+
+<table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">    <thead>
+        <tr>
+            <th>Fecha y Hora</th>
+            <th>¿Realizo llamada?</th>
+            <th>Motivo/Observaciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for llamada in object_list %}
+          <tr>
+            <td>{{ llamada.fechaHoraLlamada }}</td>
+            <td>{{ llamada.deseaLlamar }}</td>
+            <!-- Muestra el valor legible del choice -->
+            
+            <td>
+                    {{ llamada.motivo }}
+                    {{ llamada.observaciones }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{{ objetos.fechaHoraLlamada }}
+<a class="btn btn-custom6" href="#">Imprimir Documento</a>
+<a class="btn btn-custom6" href="{% url 'constanciaLlamadas' extranjero_id=llamada.id %}" target="_blank">Digitalizar Notificion de llamada</a>
+
+<br>
+<br>
+
+
+<a href="{% url 'listarExtranjerosEstacion'%}" class="btn btn-custom5">Volver</a>
+
+
+<div class="modal fade" id="agregarllamada" role="dialog">
+</div>
+
+{% include "includes/biometricos/modalLlamada.html" %}
+
+{% endblock contenido %}
+
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% include "includes/biometricos/scriptBiometricoLlamada.html" %}
+
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal(url){
+        $('#agregarllamada').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+</script>
+
+
+
+
+
+{% endblock script %}
+

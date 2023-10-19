@@ -3580,6 +3580,39 @@ class listarExtranjerosEstacion(ListView):
             extranjero.horas_transcurridas = horas_transcurridas
             extranjero.minutos_transcurridos = minutos_transcurridos
 
+            
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_notificacion = False
+
+            if ultimo_nup:
+                notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+                if notificacion:
+                    tiene_notificacion = True
+
+            extranjero.tiene_notificacion = tiene_notificacion
+
+        for extranjero in context['extranjeros']:
+                ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+                tiene_enseres = False
+
+                if ultimo_nup:
+                    enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
+                    if enseres:
+                        tiene_enseres = True
+
+                extranjero.tiene_enseres = tiene_enseres
+
+        for extranjero in context['extranjeros']:
+                ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+                tiene_inventario = False
+
+                if ultimo_nup:
+                    inventario = Inventario.objects.filter(nup=ultimo_nup).first()
+                    if inventario:
+                        tiene_inventario = True
+
+                extranjero.tiene_inventario = tiene_inventario
         return context
      
     

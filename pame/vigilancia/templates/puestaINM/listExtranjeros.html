@@ -56,6 +56,7 @@
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
 
+                
                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
                  <a class="btn btn-sm btn-icon3 tooltip-link"
                     href="{% url "notificacion_d_o" extranjero.id puesta.id %}" data-title="Derechos y Obligaciones">
@@ -75,16 +76,7 @@
                         <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
                             <i class="fas fa-phone"></i>
                         </a>
-                        <script>
-                            function showBioAlert() {
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: '¡Falta Fotografía!',
-                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
-                                    confirmButtonColor: '#2A4B41'
-                                });
-                            }
-                        </script>
+                 
                     {% endif %}
                 {% endif %}
                 <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
@@ -135,16 +127,7 @@
                         <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
                             <i class="fas fa-briefcase"></i>
                         </a>
-                        <script>
-                            function showBioAlert() {
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: '¡Falta Fotografía!',
-                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
-                                    confirmButtonColor: '#2A4B41'
-                                });
-                            }
-                        </script>
+                  
                     {% endif %}
                 <!-- INICIO CREAR INVENTARIO ENSERES -->
                
@@ -165,16 +148,7 @@
                         <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
                             <i class="fas fa-shopping-basket"></i>
                         </a>
-                        <script>
-                            function showBioAlert() {
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: '¡Falta Fotografía!',
-                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
-                                    confirmButtonColor: '#2A4B41'
-                                });
-                            }
-                        </script>
+                    
                     {% endif %}
                 {% endif %}
                 
@@ -240,6 +214,15 @@
         $('#eliminarextranjero').load(url, function(){
             $(this).modal('show');
         })
+    }
+
+    function showBioAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: '¡Falta Fotografía!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+            confirmButtonColor: '#2A4B41'
+        });
     }
 </script>
 
