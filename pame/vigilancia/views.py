@@ -91,6 +91,10 @@ class CreatePermissionRequiredMixin(UserPassesTestMixin):
 def sesionfinal(request):
     return render(request, 'finalizarsesion.html')
 
+def firma(request):
+    return render(request, 'modal/firma.html')
+
+
 
 
 
