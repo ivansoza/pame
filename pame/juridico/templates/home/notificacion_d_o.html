@@ -102,6 +102,11 @@
                 <p><input type="checkbox" name="" id=""> He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta estación migratoria.</p>
                 
                 <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a>
+                <form method="post">
+                    {% csrf_token %}
+                    <!-- El resto del contenido, incluyendo el checkbox -->
+                    <button type="submit" class="btn btn-custom2 ">Acepto que he sido notificado</button>
+                </form>
             </div>
         </div>
     </div>

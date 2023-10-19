@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import CreateView, ListView, TemplateView
-from vigilancia.models import Extranjero, PuestaDisposicionINM, Biometrico, PuestaDisposicionAC, PuestaDisposicionVP
+from vigilancia.models import Extranjero, PuestaDisposicionINM, Biometrico, PuestaDisposicionAC, PuestaDisposicionVP, NoProceso
+from django.shortcuts import redirect
+from .models import Notificacion
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import face_recognition
@@ -24,12 +26,22 @@ def homeJuridicoResponsable(request):
 
 class notificacionDO(TemplateView):
     template_name ='home/notificacion_d_o.html'
+    def post(self, request, *args, **kwargs):
+            extranjero_id = self.kwargs['extranjero_id']
+            extranjero = Extranjero.objects.get(pk=extranjero_id)
+            estacion = extranjero.deLaEstacion
 
+            # Usando el método para obtener el último NoProceso
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+
+            # Solo crea la Notificacion si hay un NoProceso asociado
+            if ultimo_nup:
+                Notificacion.objects.create(no_proceso=ultimo_nup, estacion=estacion)
+                
+            return redirect('listarExtranjeros', puesta_id=self.kwargs.get('puesta_id'))  
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs['extranjero_id']
-    
-    
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
         nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
