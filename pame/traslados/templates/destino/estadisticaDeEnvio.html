@@ -1,0 +1,153 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+
+{% block link %}
+<link rel="stylesheet" href="{% static 'css/forms/style.css' %}?v1.1998">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'traslados_recibidos' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+<br>
+<div class="titulo-general-container mt-2" >
+    <h1 class="titulo-general">Numero Total de Extranjero en la Solicitud de Traslado: <strong style="color:#873542">{{traslados_count1}}</strong> </h1> 
+</div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div>
+           <div class="row">
+            <div class="col-md-6">
+            <!-- DONUT CHART -->
+            <div class="card">
+              <div class="card-header" style='background:#9E8364'>
+                <h3 class="card-title" style='color:#ffffff'>Sexo</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus" style='color:#ffffff'></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times" style='color:#ffffff'></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="donutChartGenero"style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+        </div>
+            <!-- /.card -->
+
+            <!-- PIE CHART -->
+            <div class="col-md-6">
+
+            <div class="card">
+              <div class="card-header" style='background:#9E8364'>
+                <h3 class="card-title" style='color:#ffffff'>Nacionalidades</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus" style='color:#ffffff'></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"  style='color:#ffffff'></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="pieChartNacionalidades"style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+          </div>
+         
+
+            <!-- /.card -->
+
+           </div>
+        </div>
+         </div>
+          <!-- /.col (RIGHT) -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Add Content Here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- ChartJS -->
+<script src="../../plugins/chart.js/Chart.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../../dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+      // Datos para el gráfico de género
+      var generoChartCanvas = $('#donutChartGenero').get(0).getContext('2d');
+      var generoData = {
+        labels: ['Hombre', 'Mujer'],
+        datasets: [{
+          data: [{{ genero.0.count }}, {{ genero.1.count }}],  // Asumiendo que los primeros dos elementos son Hombre y Mujer
+          backgroundColor: ['#2A62B2', '#9D4D91']
+        }]
+      };
+      var generoOptions = {
+        maintainAspectRatio: false,
+        responsive: true
+      };
+      new Chart(generoChartCanvas, {
+        type: 'doughnut',
+        data: generoData,
+        options: generoOptions
+      });
+  
+      // Datos para el gráfico de nacionalidades
+      var nacionalidadesChartCanvas = $('#pieChartNacionalidades').get(0).getContext('2d');
+      var nacionalidadesData = {
+        labels: [{% for n in nacionalidades %}'{{ n.nacionalidad__nombre }}',{% endfor %}],
+        datasets: [{
+          data: [{% for n in nacionalidades %}{{ n.count }},{% endfor %}],
+          backgroundColor: ['#CD856F' , '#1DAE82', '#873542','#20302B' , '#1D1D1D', '#466EAC','#CD856F' , '#1DAE82', '#873542']  // Asigna colores a tus nacionalidades
+        }]
+      };
+      var nacionalidadesOptions = {
+        maintainAspectRatio: false,
+        responsive: true
+      };
+      new Chart(nacionalidadesChartCanvas, {
+        type: 'doughnut',
+        data: nacionalidadesData,
+        options: nacionalidadesOptions
+      });
+    });
+  </script>
+  
+  
+  
+  
+  
+  
+
+
+{% endblock contenido %}

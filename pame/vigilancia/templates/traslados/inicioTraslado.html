@@ -115,20 +115,18 @@
 
 <!---------------------- CARD ------------------>
 <div class="card">
-  <div class="card-header">
-    Contador de Extranjeros Trasladados
-  </div>
+
   <div class="card-body">
-    <h4 id="contador">Extranjeros trasladados: <span id="extranjeros-actuales">0</span> / {{ capacidad_total }}</h4>
+    <h5 id="contador">Espacio definido para trasladar: <span id="extranjeros-actuales">0</span> / {{ capacidad_total }}</h5>
     <div class="progress" style="height: 25px; position: relative;">
-      <div id="barra-progreso" class="progress-bar" role="progressbar" style="width: 0%; display: flex; align-items: center; justify-content: flex-start;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="{{ capacidad_total }}">
+      <div id="barra-progreso" class="progress-bar" role="progressbar" style="width: 0%; background-color: #28a745; display: flex; align-items: center; justify-content: flex-start;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="{{ capacidad_total }}">
         <i id="icono-camion" class="fas fa-truck" style="margin-left: 5px; visibility: hidden;"></i> 
       </div>
     </div>
   </div>
 </div>
 
-i
+
 <div class="row">
     <div class="col">
         <div class="titulo-general-container-card mb-4">
@@ -222,6 +220,8 @@ i
       </div>
   </div>
 <!---------------------- CARD ------------------>
+
+<a href="{% url "ejemplo" %}">ejemplo</a>
 {% endblock contenido %}
 {% block datatable2 %}
 
@@ -289,13 +289,14 @@ i
     let botonesAgregar = $('#tabla .btn-icon3');
 
     function actualizarContador() {
-        $("#contador").text("Extranjeros trasladados: " + contador + " / " + capacidadTotal);
+        $("#contador").text("Espacio definido para trasladar: " + contador + " / " + capacidadTotal);
       // Actualizar el texto del contador.
       $("#extranjeros-actuales").text(contador);
       
       // Calcular el porcentaje de la barra de progreso.
       let porcentaje = (contador / capacidadTotal) * 100;
-      
+      // actualizarBarraDeProgreso(porcentaje); // ¡Llama a la función aquí!
+
       // Actualizar la barra de progreso.
       $("#barra-progreso").css("width", porcentaje + "%").attr("aria-valuenow", contador);
     
@@ -325,7 +326,7 @@ i
           // Si ya alcanzamos el límite, no permitimos añadir más extranjeros.
           Swal.fire({
               title: '¡No hay más cupo!',
-              text: 'Ya no hay cupo en los camiones.',
+              text: 'Espacio definido ocupado.',
               icon: 'warning',
               confirmButtonText: 'Entendido',
               confirmButtonColor: '#85364A',

@@ -6,7 +6,14 @@
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
     <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
-
+    <style>
+      .ll{
+        text-align: center;
+      }
+      .lll{
+        text-align: left;
+      }
+    </style>
 {% endblock link %}
 
 {% block dashboard %}
@@ -54,16 +61,12 @@
           {{ form.huellaExtranjero|as_crispy_field }}
          </div>
         </div>
-        <div class="col-sm-6 col-md-6 col-lg-4">
-          <div class="file-input-container">
-            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
-            onclick="abrir_modal_eliminar(this.href); return false;"
-            data-input-id="id_fotografiaExtranjero">
-            <i class="fas fa-pencil-alt"></i>
+        <div class="col-sm-6 col-md-6 col-lg-4 ll" >
+          <p style="font-size: 16px; font-weight: bold; margin-top: 0;" class="lll">Firma del Extranjero:</p>
+          <a class="btn btn-sm btn-icon1 btn-primary " href='{% url "qr"  extranjero.id  %}' target="_blank" style="width: 70%;">
+              <i class="fas fa-pencil-alt"></i>
           </a>
-          {{ form.firmaExtranjero|as_crispy_field }}
-        </div>
-        </div>
+      </div>     
       </div>
     </div>
   </div>

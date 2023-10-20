@@ -1,0 +1,20 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %} 
+
+
+{% block contenido %}
+
+<div class="container mt-5">
+    <h2>Cambio de Estación</h2>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Cambiar Estación</button>
+    </form>
+</div>
+
+{% endblock contenido %}
+
+
+

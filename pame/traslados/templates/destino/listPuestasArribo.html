@@ -42,6 +42,7 @@
                      onclick="abrir_modal_eliminar(this.href); return false;">
                       {{ traslado.get_status_display }}
                   </a>
+                 
               {% else %}  <!-- Si es ACEPTADO o RECHAZADO, mostramos solo el estado sin permitir cambios -->
                   <span class="btn" 
                         style="{% if traslado.status == 1 %}background-color: #2A4B41; color: #ffffff;{% endif %}
@@ -52,11 +53,22 @@
           </td>
           
           <td>
+            {% if traslado.status == 0 %} 
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listaExtranjerosTrasladoDestino" traslado.id%}"
+                    data-title="Ver Extranjeros" style='display:none'>
+                    <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
+                </a>
+            {% else %}
+               <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listaExtranjerosTrasladoDestino" traslado.id%}"
                     data-title="Ver Extranjeros">
                     <i class="fas fa-users"></i> <!-- Icono Ver Personas -->
                 </a>
-
+            {% endif %}
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "estadistica" traslado.id%}" data-title="Ver Gráfica de Pastel">
+                    <i class="fas fa-chart-pie"></i> <!-- Icono de Gráfica de Pastel -->
+                </a>
+                
+                
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#"
                 data-title="Ver Oficio">
                 <i class="fas fa-file-pdf"></i> <!-- Icono Ver Personas -->
@@ -83,7 +95,7 @@
   </div>
 
   <div class="modal fade" id="eliminarextranjero" role="dialog">
-
+  </div>
 {% endblock %}
 {% block script %}
 

@@ -289,7 +289,7 @@
               <li class="nav-item">
                 <a href="{% url 'homePuestasVP' %} " class="nav-link  {% if seccion == 'seguridadVP' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Por Voluntad Propia</p>
+                  <p>Voluntario</p>
                 </a>
               </li>
             </ul>
@@ -392,9 +392,17 @@
 
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
+                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == '#' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Ver Acompañantes</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'listTrasladados' %}" class="nav-link {% if seccion == 'trasladados' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ver Trasladados</p>
                 </a>
               </li>
             </ul>

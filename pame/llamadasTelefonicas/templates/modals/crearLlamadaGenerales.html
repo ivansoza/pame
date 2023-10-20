@@ -1,0 +1,99 @@
+{% load static %}
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white;
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+<!-- Bootstrap CSS -->
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Agregar llamada</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        {% load crispy_forms_tags %}
+
+        <form id="llamadaForm" action="{% url 'crear_llamadaGen' llamada_id=llamada.id%}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="titulo-general-container mt-2" >
+                    <h1 class="titulo-general">Llamadas del Extranjero:
+                        <span class="puesta-color" >{{nombre_extranjero2}}</span>
+                
+                    </h1>   
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
+                        {{ form.noExtranjero|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6"style='display:none'>
+                        {{ form.nup|as_crispy_field }}
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6" style='display:none'>
+                        {{ form.estacionMigratoria|as_crispy_field }}
+                        <script>
+                            document.getElementById('id_estacionMigratoria').readOnly = true;
+                        </script>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        {{ form.deseaLlamar|as_crispy_field }}
+                    </div>
+                </div>
+                <div id="motivoDiv" {% if form.deseaLlamar.value == 'No' %}style="display: none;"{% endif %}>
+                    {{ form.motivo|as_crispy_field }}
+                </div>
+                
+                <div id="observacionesDiv" {% if form.deseaLlamar.value == 'Si' %}style="display: none;"{% endif %}>
+                    {{ form.observaciones|as_crispy_field }}
+                </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    {{ form.firmaExtranjero|as_crispy_field }}
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-6">
+                    {{ form.huellaExtranjero|as_crispy_field }}
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+            </div>
+        </form>
+        
+        <script>
+            const form = document.getElementById('llamadaForm');
+            const deseaLlamarSelect = form.querySelector('#id_deseaLlamar');
+            const motivoDiv = form.querySelector('#motivoDiv');
+            const observacionesDiv = form.querySelector('#observacionesDiv');
+            const motivoTextarea = document.querySelector('#id_motivo'); // Cambiar el ID al campo real
+            const observacionesTextarea = document.querySelector('#id_observaciones'); // Cambiar el ID al campo real
+            deseaLlamarSelect.addEventListener('change', function () {
+                if (deseaLlamarSelect.value === 'No') {
+                    motivoDiv.style.display = 'none';
+                    observacionesDiv.style.display = 'block';
+                    motivoTextarea.value = ''; // Limpiar el texto del área de motivo
+                } else if (deseaLlamarSelect.value === 'Si') {
+                    motivoDiv.style.display = 'block';
+                    observacionesDiv.style.display = 'none';
+                    observacionesTextarea.value = ''; 
+                }
+                
+                // Recargar el modal para aplicar los cambios
+                const modal = new bootstrap.Modal(document.getElementById('myModal'));
+                modal.show();
+            });
+        </script>
+        
+    </div>
+</div>

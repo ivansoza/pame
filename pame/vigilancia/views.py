@@ -9,7 +9,7 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biome
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView,DetailView
+from django.views.generic import CreateView, ListView,DetailView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms,descripcionForms
 from .forms import BiometricoFormVP
@@ -63,6 +63,9 @@ from generales.mixins import HandleFileMixin
 
 from django.db import transaction
 from biometricos.models import UserFace1
+
+import qrcode
+
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -105,6 +108,9 @@ def homeSeguridadGeneral(request):
     return render (request, "home/homeSeguridadGeneral.html",{'navbar':'home'})
 
 
+
+def ejemplo(request):
+    return render (request, "prueba.html")
 
 
 def homeSeguridadResponsable(request):
@@ -2178,7 +2184,7 @@ class createPuestaVP(CreateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
     def get_success_url(self):
-        messages.success(self.request, 'La puesta de voluntad propia se ha creado con éxito.')
+        messages.success(self.request, 'La puesta de voluntad se ha creado con éxito.')
         return super().get_success_url()
 
 class listarExtranjerosVP(ListView):
@@ -3062,10 +3068,10 @@ class listarTraslado(ListView):
         context['estacion_destino'] = estacion_destino
         context['traslado1'] = traslado1
         camiones = traslado1.numero_camiones
-        capacidad_total = camiones * 40
+        capacidad_total = camiones
         context['capacidad_total'] = capacidad_total
         context['navbar'] = 'traslado'
-        context['seccion'] = 'vertraslado'
+        context['seccion'] = 'traslado'
         
         user_profile = self.request.user
         user_estacion = user_profile.estancia
@@ -3568,8 +3574,68 @@ class listarExtranjerosEstacion(ListView):
         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre
 
-        
+        ahora = timezone.now() # Hora Actual
+
+        for extranjero in context['extranjeros']:
+            tiempo_transcurrido = ahora - extranjero.horaRegistro
+            horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
+            horas_transcurridas = int(horas_transcurridas)
+            minutos_transcurridos = int(minutos_transcurridos * 60)
+
+            # Limitar a un máximo de 36 horas
+            if horas_transcurridas > 36:
+                horas_transcurridas = 36
+                minutos_transcurridos = 0
+
+            extranjero.horas_transcurridas = horas_transcurridas
+            extranjero.minutos_transcurridos = minutos_transcurridos
+
+            
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_notificacion = False
+
+            if ultimo_nup:
+                notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+                if notificacion:
+                    tiene_notificacion = True
+
+            extranjero.tiene_notificacion = tiene_notificacion
+
+        for extranjero in context['extranjeros']:
+                ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+                tiene_enseres = False
+
+                if ultimo_nup:
+                    enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
+                    if enseres:
+                        tiene_enseres = True
+
+                extranjero.tiene_enseres = tiene_enseres
+
+        for extranjero in context['extranjeros']:
+                ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+                tiene_inventario = False
+
+                if ultimo_nup:
+                    inventario = Inventario.objects.filter(nup=ultimo_nup).first()
+                    if inventario:
+                        tiene_inventario = True
+
+                extranjero.tiene_inventario = tiene_inventario
         return context
      
     
   
+
+class qrs(TemplateView):
+    template_name='qr.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('extranjero_id')
+        qr_link = f"http://192.168.1.126:8082/seguridad/firma/{extranjero_id}"
+        extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+        nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
+        context['initial_qr_link'] = qr_link
+        context['nombre'] = nombre
+        return context
