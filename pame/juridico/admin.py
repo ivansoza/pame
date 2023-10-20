@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Notificacion
+from .models import NotificacionDerechos
 
 
 class NotificacionAdmin(admin.ModelAdmin):
@@ -13,4 +13,4 @@ class NotificacionAdmin(admin.ModelAdmin):
         return obj.no_proceso.extranjero.nombreExtranjero
     get_extranjero.short_description = 'Extranjero Asociado'
 
-admin.site.register(Notificacion, NotificacionAdmin)
+admin.site.register(NotificacionDerechos, NotificacionAdmin)

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, TemplateView
 from vigilancia.models import Extranjero, PuestaDisposicionINM, Biometrico, PuestaDisposicionAC, PuestaDisposicionVP, NoProceso
 from django.shortcuts import redirect
-from .models import Notificacion
+from .models import NotificacionDerechos
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import face_recognition
@@ -10,7 +10,8 @@ from io import BytesIO
 import numpy as np
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+from django.contrib import messages
+from acuerdos.models import NotificacionesGlobales
 # Create your views here.
 
 
@@ -27,6 +28,7 @@ def homeJuridicoResponsable(request):
 class notificacionDO(TemplateView):
     template_name ='home/notificacion_d_o.html'
     def post(self, request, *args, **kwargs):
+        try:
             extranjero_id = self.kwargs['extranjero_id']
             extranjero = Extranjero.objects.get(pk=extranjero_id)
             estacion = extranjero.deLaEstacion
@@ -36,11 +38,23 @@ class notificacionDO(TemplateView):
 
             # Solo crea la Notificacion si hay un NoProceso asociado
             if ultimo_nup:
-                Notificacion.objects.create(no_proceso=ultimo_nup, estacion=estacion)
+                NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
                 
-            return redirect('listarExtranjeros', puesta_id=self.kwargs.get('puesta_id'))  
+            messages.success(request, 'Notificación creada exitosamente.')
+            return redirect('listarExtranjeros', puesta_id=self.kwargs.get('puesta_id'))
+
+        except Exception as e:
+            messages.error(request, f'Ocurrió un error: {str(e)}')
+            return redirect('notificacionDO', extranjero_id=extranjero_id)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        try:
+            # Recupera la notificación del tipo "Notificación de Derechos y Obligaciones"
+            notificacion_global = NotificacionesGlobales.objects.get(tipo_notificacion=NotificacionesGlobales.NOTIFICACION_DERECHOS)
+            context['notificacion_global'] = notificacion_global
+        except NotificacionesGlobales.DoesNotExist:
+            context['notificacion_global'] = None
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)

@@ -63,6 +63,8 @@ from generales.mixins import HandleFileMixin
 
 from django.db import transaction
 from biometricos.models import UserFace1
+
+from juridico.models import NotificacionDerechos
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -390,14 +392,31 @@ class listarExtranjeros(ListView):
 
      for extranjero in context['extranjeros']:
         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+        tiene_notificacion_derechos = False
+
+        if ultimo_nup:
+            notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+            if notificacion and notificacion.fechaAceptacion:
+                tiene_notificacion_derechos = True
+        extranjero.tiene_notificacion_derechos = tiene_notificacion_derechos
+
+
+     for extranjero in context['extranjeros']:
+        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
         tiene_notificacion = False
 
         if ultimo_nup:
-            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
-            if notificacion:
-                tiene_notificacion = True
-
-        extranjero.tiene_notificacion = tiene_notificacion
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion.strftime('%d/%m/%Y')
+                    extranjero.hora_aceptacion = notificacion.fechaAceptacion.strftime('%H:%M:%S')
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
 
      for extranjero in context['extranjeros']:
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
@@ -424,7 +443,6 @@ class listarExtranjeros(ListView):
      context['puesta'] = puesta
      context['navbar'] = 'seguridad'
      context['seccion'] = 'seguridadINM'
-
      return context
      
 class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):

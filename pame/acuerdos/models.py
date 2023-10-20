@@ -1,6 +1,7 @@
 from django.db import models
 from catalogos.models import Estacion, Responsable
 from vigilancia.models import Extranjero
+from django.core.exceptions import ValidationError
 
 # class TestigoUno (models.Model):
 #     nombreTestigoUno = models.CharField(max_length=50, verbose_name='Nombre del primer testigo')
@@ -91,3 +92,26 @@ class PDFGenerado(models.Model):
 
     def __str__(self):
         return self.documento
+    
+
+def upload_to(instance, filename):
+    # Esta función determina dónde se almacenará el archivo
+    base_filename = instance.tipo_notificacion  # Usamos el tipo de notificación como el nombre base del archivo
+    return f'acuerdos/acuerdos_generales/{base_filename}.pdf'
+def validate_pdf(value):
+    import os
+    ext = os.path.splitext(value.name)[1]  # [0] devuelve el path+filename; [1] devuelve la extensión del archivo
+    valid_extensions = ['.pdf']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError('Solo se aceptan archivos PDF.')
+class NotificacionesGlobales(models.Model):
+    NOTIFICACION_DERECHOS = 'notificacion_derechos_obligaciones'
+    
+    TIPO_NOTIFICACION_CHOICES = [
+        (NOTIFICACION_DERECHOS, 'Notificación de Derechos y Obligaciones'),
+    ]
+
+    tipo_notificacion = models.CharField(max_length=50, choices=TIPO_NOTIFICACION_CHOICES, unique=True)
+    archivo = models.FileField(upload_to=upload_to, validators=[validate_pdf])
+    fecha_hora = models.DateTimeField(auto_now_add=True)
+
