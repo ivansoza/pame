@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from vigilancia.models import Extranjero
 from django.http import HttpResponse, FileResponse
 from weasyprint import HTML
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string, get_template
 from django.views.generic import ListView
 from vigilancia.models import Extranjero
 import os
@@ -12,8 +12,9 @@ from datetime import datetime
 import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
+
 def homeAcuerdo(request):
-    return render(request,"acuerdoInicio.html")
+    return render(request,"documentos/acuerdoTraslado.html")
 
 class acuerdo_inicio(ListView):
     template_name = 'acuerdoInicio.html'
@@ -46,6 +47,34 @@ def pdf_exist(extranjero_id):
     return exists
 
 def generate_pdf(request, extranjero_id):
+    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # Obtener el nombre del archivo PDF
+    nombre_pdf = f"AcuerdoUno_{extranjero.id}.pdf"
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/acuerdoTraslado.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+    
+    return response
+
+def generate_pdfGuardar(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
 
