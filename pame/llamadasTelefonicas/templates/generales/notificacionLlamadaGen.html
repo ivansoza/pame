@@ -3,13 +3,11 @@
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
-    <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
-    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 {% endblock link %}
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosEstacion'%}">
   <i class="fas fa-arrow-left"></i>
-</a> 
+</a>
 
 {% endblock dashboard %}
 
@@ -17,7 +15,7 @@
 <style>
     .container {
       width: 90%;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 20px;
       border-radius: 10px;
@@ -82,10 +80,9 @@
     </style>
     <div class="titulo-general-container">
         <h1 class="titulo-general">
-            Notificación de Derechos y Obligaciones
+            Notificación de Llamada Telefónica
         </h1>
       </div>
-      <br>
       <br>
       <div class="container">
         <div class="content-container">
@@ -93,45 +90,20 @@
                 <img class="image" src="{% static 'img/gh.jpg' %}" style="width: 300px;" class="logo-img">
             </div>
         </div>
-        
         <div class="text-container">
             <div class="text" id="text-content" style="text-align: justify;">
                 <p>Sr(a)<strong style="color: rgb(161, 13, 13);"> {{nombreCompleto}}</strong>,</p>
-                <h5>Durante el tiempo que usted permanezca alojado en esta Estación Migratoria, tiene los siguientes derechos y obligaciones</h5>
-                {% if notificacion_global %}
-                    <a href="{{ notificacion_global.archivo.url }}" target="_blank" class="btn btn-icon3a ">
-                        <i class="fas fa-file-pdf"></i>
-                    </a>
-                {% else %}
-                    <p>No se ha encontrado la Notificación de Derechos y Obligaciones.</p>
-                {% endif %}
-                <br>
+                <p>Se le informa que en cumplimiento a lo establecido en los artículos, 109 fraccíon Vll de la Ley de Migración; 226 fracción lX, 232 fracción lV y 237 del 
+                    Reglamento de la Ley de Migración; 18 y 24 fracción lX del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias 
+                    Provisionales del Instituto Nacional de Migración, se levanta la presente:</p>
+                <p style="text-align: center;"><strong>Constancia de llamada telefónica</strong></p>
+                <p>Por favor, siga las instrucciones del personal de la estación, agradecemos su cooperación.</p>
                 <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <input type="checkbox" name="derechos_aceptados" id="derechosCheckbox"> He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta estación migratoria.
                 
-                {% comment %} <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a> {% endcomment %}
-                <div class="div">
-                    <div class="row">
-                        <div class="col-2">
-                            <a class='btn btn-verified tooltip-link' data-bs-toggle="tooltip" data-bs-placement="top"
-                            data-title="Verifica extranjero">
-                            <i class="fas fa-fingerprint"></i>
-                            </a>
-                        </div>
-                        <div class="col-10">
-                            <form method="post">
-                                {% csrf_token %}
-                                <!-- El resto del contenido, incluyendo el checkbox -->
-    
-                                <button type="submit" class="btn btn-custom btn-unverified">Acepto que he sido notificado</button>
-                            </form>
-                        </div>
-              
-                    </div>
-                </div>
-               
-              
+                <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a>
+                <a href="{% url 'constanciaLlamadas' extranjero_id=llamada_id %}" target="_blank"
+                    class="btn btn-custom2">PDF</a>
             </div>
         </div>
     </div>
@@ -176,11 +148,13 @@
       </div>
   </div>
 </div>
+
 {% endblock contenido %}
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 <script>
+    
   let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
   let isVerified = verifiedObj.time && 
       verifiedObj.puestaId === '{{ puesta_id }}' && 
@@ -276,12 +250,12 @@
   
                           let formData = new FormData();
                           var puestaId = '{{ puesta_id }}';  // Accediendo al ID del Extranjero en JavaScript
-                          var extranjeroId = '{{ extranjero_id }}';  // Accediendo al ID del Extranjero en JavaScript
+                          var extranjeroId = '{{ llamada_id }}';  // Accediendo al ID del Extranjero en JavaScript
                           formData.append('image', file);  // Adjunta la imagen al formulario
-                          formData.append('extranjero_id', extranjeroId);  // Añade el id del Extranjero al FormData
+                          formData.append('llamada_id', extranjeroId);  // Añade el id del Extranjero al FormData
   
                           $.ajax({
-                              url: '/juridico/manejar_imagen/',
+                              url: '/llamadas-telefonicas/manejar_imagen/',
                               type: 'POST',
                               data: formData,
                               processData: false,
@@ -302,18 +276,18 @@
                                           localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
                                       }, 300000);
                                       Swal.fire({
-                                            icon: 'success',
-                                            title: '¡Coincidencia Exitosa!',
-                                            confirmButtonColor: '#2A4B41',
+                                        icon: 'success',
+                                        title: '¡Coincidencia Exitosa!',
+                                        confirmButtonText: 'Aceptar',
+                                        confirmButtonColor: '#20302B',
+                                        reverseButtons: true,
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            abrir_modal("{% url 'validar_notificacionGen' llamada.id%}");
 
-                                        });
-                                        document.querySelectorAll('.btn-unverified').forEach(function(btn) {
-                                            btn.classList.remove('btn-unverified');
-                                        });
-                                        document.querySelectorAll('.btn-verified').forEach(function(btn) {
-                                            btn.remove();
-                                        });
-    
+
+                                        }
+                                    });
                                      
   
                                   } else {
@@ -376,19 +350,9 @@
   document.querySelectorAll('.btn-custom, .btn-icon3').forEach(function(btn) {
       btn.addEventListener('click', function(event) {
           event.preventDefault();
-          var checkbox = document.getElementById("derechosCheckbox");
 
           if (isVerified) {
-             if (checkbox.checked) {
-                    btn.closest('form').submit();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Debes aceptar los derechos y obligaciones',
-                        confirmButtonText: 'Ok'
-                    });
-                    return; // detiene el código aquí y no avanza más
-                }
+            
           } else {
               Swal.fire({
                   icon: 'error',
@@ -457,3 +421,4 @@
 
 
 {% endblock script %}
+

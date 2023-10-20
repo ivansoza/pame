@@ -1,6 +1,7 @@
 from django.urls import path, include
 from .views import ListTraslado, listarEstaciones, TrasladoCreateView, ListTrasladoDestino, ListaExtranjerosTraslado, DeleteExtranjeroPuestaTraslado, ListaExtranjerosTrasladoDestino, cambiarStatus, cambiarStatusExtranjero, seguimientoPuesta, seguimientoPuestaDestino, cambiarStatusOrigen, cambiarStatusOrigenDestino,ActualizarTrasladoView,CambioEstacionView
 from . import views
+from .views import estadisticasEnvio, extranjeroTrasladadoList
 from .views import estadisticasEnvio, eliminar_traslado
 urlpatterns = [
     
@@ -21,7 +22,7 @@ urlpatterns = [
   path('editar-status/<int:pk>/', cambiarStatus.as_view(), name='editar-status'),
   path('editar-status-extranjero/<int:pk>/', cambiarStatusExtranjero.as_view(), name='editar-status-extranjero'),
   path('seguimiento-puesta-destino/<int:pk>/', seguimientoPuestaDestino.as_view(), name='seguimientoPuestaDestino'),
-  path('estadistica', estadisticasEnvio.as_view(), name='estadistica'),
+  path('estadistica/<int:traslado_id>/', estadisticasEnvio.as_view(), name='estadistica'),
 
 
 # Documentos PDF
@@ -34,6 +35,8 @@ urlpatterns = [
 
   path('actualizar_traslado/<int:traslado_id>/', ActualizarTrasladoView.as_view(), name='actualizar_traslado'),
   path('cambio_estacion/<int:pk>/', CambioEstacionView.as_view(), name='cambio_estacion'),
+  path('listTrasladados/', extranjeroTrasladadoList.as_view(), name='listTrasladados'),
+
 # eliminar traslado
   path('eliminar_traslado/<int:pk>/', views.eliminar_traslado, name='eliminar_traslado'),
 

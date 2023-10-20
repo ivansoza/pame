@@ -90,6 +90,8 @@ OPCION_GENERO_CHOICES=[
 OPCION_ESTATUS_CHOICES=[
     ('Activo','activo'),
     ('Inactivo','inactivo'),
+    ('Traslado','traslado'),
+    ('Trasladado','trasladado'),
 ]
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro', auto_now_add=True)

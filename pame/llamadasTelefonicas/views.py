@@ -19,6 +19,7 @@ import numpy as np
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Max
+from django.contrib import messages
 
 
 def homeLLamadasTelefonicas(request):
@@ -786,3 +787,206 @@ def compare_faces(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+
+# llamadas generales 
+
+class ListLlamadasGenerales(ListView):
+    model= LlamadasTelefonicas
+    template_name = 'generales/listLlamadas.html'
+
+    def get_queryset(self):
+        llamada_id = self.kwargs['llamada_id']
+        extranjero = Extranjero.objects.get(pk=llamada_id)
+
+        # Obtén el último nup registrado del extranjero
+        ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+
+        # Filtra las llamadas que tengan el último nup registrado del extranjero
+        queryset = LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id, nup__consecutivo=ultimo_nup)
+        
+        return queryset
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        apellido_paterno = llamada.apellidoPaternoExtranjero
+        apellido_materno = llamada.apellidoMaternoExtranjero
+        no_puesta = llamada.numeroExtranjero
+        context['extranjero_id'] = llamada_id  # ID del extranjero
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['apellido_paterno'] = apellido_paterno
+        context['apellido_materno'] = apellido_materno
+        context['no_puesta'] = no_puesta
+        context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+        return context
+    
+class notificacionLlamadaGenerales(TemplateView):
+    template_name = 'generales/notificacionLlamadaGen.html'
+    def get_queryset(self):
+        llamada_id = self.kwargs['llamada_id']
+        return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
+    
+    
+    def get_context_data(self, **kwargs):
+     context = super().get_context_data(**kwargs)
+     llamada_id = self.kwargs['llamada_id']
+    
+    
+     # Obtener la instancia del Extranjero correspondiente
+     llamada = Extranjero.objects.get(pk=llamada_id)
+     ultimo_no_proceso = llamada.noproceso_set.latest('consecutivo')
+
+# Obtener el ID (nup) del último registro NoProceso
+     ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+     print(f"ID del último NoProceso: {ultimo_no_proceso_id}") 
+     nombre_extranjero = llamada.nombreExtranjero
+     estancia_extranjero = llamada.deLaEstacion
+     apellido_paterno = llamada.apellidoPaternoExtranjero
+     apellido_materno = llamada.apellidoMaternoExtranjero
+    
+    # Verificar y asignar espacio en blanco si los apellidos son None
+     if apellido_paterno is None:
+        apellido_paterno = ""
+     if apellido_materno is None:
+        apellido_materno = ""
+    
+     estancia_responsableN = llamada.deLaEstacion.responsable.nombre
+     estancia_responsableAP = llamada.deLaEstacion.responsable.apellidoPat
+     estancia_responsableAM = llamada.deLaEstacion.responsable.apellidoMat
+     no_puesta = llamada.numeroExtranjero
+     nn = llamada.pk
+     context['nup'] = ultimo_no_proceso_id
+
+     context['llamada'] = llamada
+     context['nombre_extranjero'] = nombre_extranjero
+     context['apellido_paterno'] = apellido_paterno
+     context['apellido_materno'] = apellido_materno
+     context['extranjero'] = nn
+     context['no_puesta'] = no_puesta
+     context['estancia_extranjero'] = estancia_extranjero
+     context['nombreCompleto'] = nombre_extranjero + " " + apellido_paterno + " " + apellido_materno
+     context['responsable'] = estancia_responsableN + " " + estancia_responsableAP + " " + estancia_responsableAM
+     context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+     context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+    
+     return context
+
+
+class validarNotificacionGenerales(CreateView):
+    template_name = 'modals/notificacionLlamadaGen.html'
+    form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
+    model = Notificacion
+
+    def get_success_url(self):
+     
+        return reverse('listarExtranjerosEstacion')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Obtén el ID del extranjero desde la URL
+        llamada_id = self.kwargs.get('llamada_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+
+# Obtener el ID (nup) del último registro NoProceso
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        initial['delExtranjero'] = extranjero        
+        return initial
+
+    def form_valid(self, form):
+        # Asigna la relación al campo noExtranjero
+        llamada_id = self.kwargs.get('llamada_id')
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        extranjero = get_object_or_404(Extranjero, id=llamada_id)
+
+        form.instance.noExtranjero = extranjero
+        messages.success(self.request, 'Notificación enviada con éxito.')
+
+        return super().form_valid(form)
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        ape = llamada.apellidoPaternoExtranjero
+        ame = llamada.apellidoMaternoExtranjero
+       
+    
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+        return context
+    
+class crearLlamadasGenerales(CreateView):
+    template_name = 'modals/crearLlamadaGenerales.html'
+    form_class = LlamadasTelefonicasForm
+    model = LlamadasTelefonicas
+
+    def get_success_url(self):
+        return reverse('listLLamadasGen', args=[self.object.noExtranjero.id])
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Obtén el ID del extranjero desde la URL
+        llamada_id = self.kwargs.get('llamada_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+
+# Obtener el ID (nup) del último registro NoProceso
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+
+        # Rellena los campos en initial
+        initial['nup'] = ultimo_no_proceso_id
+        # Rellena los campos en initial
+        initial['noExtranjero'] = extranjero
+        initial['estacionMigratoria'] = extranjero.deLaEstacion
+        
+        return initial
+
+    def form_valid(self, form):
+        # Asigna la relación al campo noExtranjero
+        llamada_id = self.kwargs.get('llamada_id')
+        extranjero = Extranjero.objects.get(id=llamada_id)
+        extranjero = get_object_or_404(Extranjero, id=llamada_id)
+
+        form.instance.noExtranjero = extranjero
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        llamada_id = self.kwargs['llamada_id']
+        # Obtener la instancia del Extranjero correspondiente
+        llamada = Extranjero.objects.get(pk=llamada_id)
+        nombre_extranjero = llamada.nombreExtranjero
+        estancia_extranjero = llamada.deLaEstacion
+        ape = llamada.apellidoPaternoExtranjero
+        ame = llamada.apellidoMaternoExtranjero
+        context['llamada'] = llamada
+        context['nombre_extranjero'] = nombre_extranjero
+        context['estancia_extranjero'] = estancia_extranjero
+        context['nombre_extranjero2'] = nombre_extranjero
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+        return context
