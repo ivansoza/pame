@@ -6,7 +6,7 @@ from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,ad
 from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
-from .views import listarExtranjerosEstacion, ejemplo, qrs
+from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs
 
 from .views import compare_faces, UserFaceCreateView, search_face
 urlpatterns = [
@@ -94,6 +94,13 @@ urlpatterns = [
 
 
     path('listar-extranjero-dd/', listarExtranjerosEstacion.as_view(), name='listarExtranjerosEstacion'),
+    
+    
+    path('sesionfinal/', sesionfinal, name='sesionfinal'),
+    
+    
+    path('firma/', firma, name='firma'),
+
 
 ]
 

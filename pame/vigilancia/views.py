@@ -90,7 +90,14 @@ class CreatePermissionRequiredMixin(UserPassesTestMixin):
             # Si el usuario no está autenticado, redirige a la página de inicio de sesión
             return redirect(self.login_url)
 
-   
+
+def sesionfinal(request):
+    return render(request, 'finalizarsesion.html')
+
+def firma(request):
+    return render(request, 'modal/firma.html')
+
+
 
 
 
