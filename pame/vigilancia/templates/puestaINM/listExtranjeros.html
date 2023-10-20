@@ -69,8 +69,10 @@
                             Swal.fire({
                                 title: 'Detalles de la Notificación',
                                 html: `
-                                    <strong>Fecha y Hora:</strong> {{ extranjero.fecha_aceptacion  }} {{ extranjero.hora_aceptacion }}
+                                    <strong>Fecha y Hora:</strong> {{ extranjero.fecha_aceptacion|date:"d M, Y" }} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
                                     <br>
+
+
                                     <strong>Estación:</strong> {{ extranjero.estacion_notificacion  }}
                                 `,
                                 icon: 'success',

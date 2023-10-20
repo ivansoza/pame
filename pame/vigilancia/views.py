@@ -409,8 +409,8 @@ class listarExtranjeros(ListView):
                 notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
                 if notificacion:
                     extranjero.tiene_notificacion_derechos = True
-                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion.strftime('%d/%m/%Y')
-                    extranjero.hora_aceptacion = notificacion.fechaAceptacion.strftime('%H:%M:%S')
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.hora_aceptacion = notificacion.fechaAceptacion.strftime('%I:%M:%S %p')
                     extranjero.estacion_notificacion = notificacion.estacion
                 else:
                     extranjero.tiene_notificacion_derechos = False
