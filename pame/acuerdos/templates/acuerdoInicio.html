@@ -45,13 +45,13 @@
                     {% for extranjero, pdf_exists in extranjeros_pdf %}
                         {% if extranjero.id == e.id %}
                             {% if pdf_exists %}
-                                <a href="{% url 'generarPdf' extranjero_id=e.id %}" target="_blank" 
+                                <a href="{% url 'acuerdoInicioPDF' extranjero_id=e.id %}" target="_blank" 
                                     class="btn btn-sm btn-icon3 tooltip-link btn-generado"
                                     data-title="Ver Oficio">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             {% else %}
-                                <a href="{% url 'generarPdf' extranjero_id=extranjero.id %}" target="_blank" 
+                                <a href="{% url 'acuerdoInicioPDF' extranjero_id=extranjero.id %}" target="_blank" 
                                     class="btn btn-sm btn-icon1 tooltip-link btn-no-generado"
                                     data-title="Generar Oficio">
                                     <i class="fas fa-file-pdf"></i>

@@ -13,9 +13,31 @@ import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 
+# ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
-    return render(request,"documentos/acuerdoTraslado.html")
+    return render(request,"documentos/Derechos.html")
 
+# ----- Vista de prueba para visualizar los pdf -----
+def pdf(request):
+    # Tu lógica para obtener los datos y generar el contexto
+    context = {
+        # ...
+    }
+    
+    # Renderiza la plantilla HTML
+    html_template = get_template('documentos/derechosObligaciones.html')
+    html_string = html_template.render(context)
+    
+    # Convierte la plantilla HTML a PDF con WeasyPrint
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="docPrueba.pdf"'
+    
+    html = HTML(string=html_string)
+    html.write_pdf(response)
+    
+    return response
+
+# ----- Lista Extranjeros para ver o generar Acuerdo de Inicio -----
 class acuerdo_inicio(ListView):
     template_name = 'acuerdoInicio.html'
 
@@ -37,16 +59,82 @@ class acuerdo_inicio(ListView):
             'extranjeros_pdf': pdf_existencia
             }
         return render(request, self.template_name, context)
-    
+
+# ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
-    nombre_pdf = f"AcuerdoUno_{extranjero_id}.pdf"
+    nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
     ubicacion_pdf = os.path.join("pame/media/files", nombre_pdf)
     exists = os.path.exists(ubicacion_pdf)
     # print(f"PDF para extranjero {extranjero_id}: {exists}")
     # print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
     return exists
 
-def generate_pdf(request, extranjero_id):
+# ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
+def acuerdoInicio_pdf(request, extranjero_id):
+    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # Obtener el nombre del archivo PDF
+    nombre_pdf = f"AcuerdoInicio_{extranjero.id}.pdf"
+    ubicacion_pdf = os.path.abspath(os.path.join("pame/media/files", nombre_pdf))
+
+    # Verificar si el archivo PDF ya existe en la ubicación
+    if not os.path.exists(ubicacion_pdf):
+        # Si el archivo no existe, procede a generarlo y guardarlo
+        html_context = {
+            'contexto': 'variables',
+        }
+
+        # Crear un objeto HTML a partir de una plantilla o contenido HTML
+        html_content = render_to_string('documentos/acuerdoInicio.html', html_context)
+        html = HTML(string=html_content)
+
+        # Generar el PDF
+        pdf_bytes = html.write_pdf()
+
+        # Guardar el PDF en el Servidor
+        with open(ubicacion_pdf, "wb") as pdf_file:
+            pdf_file.write(pdf_bytes)
+
+    # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
+    response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+    return response
+
+# ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
+def derechoObligaciones_pdf(request, extranjero_id):
+    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+    # Obtener el nombre del archivo PDF
+    nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
+    ubicacion_pdf = os.path.abspath(os.path.join("pame/media/files", nombre_pdf))
+
+    # Verificar si el archivo PDF ya existe en la ubicación
+    if not os.path.exists(ubicacion_pdf):
+        # Si el archivo no existe, procede a generarlo y guardarlo
+        html_context = {
+            'contexto': 'variables',
+        }
+
+        # Crear un objeto HTML a partir de una plantilla o contenido HTML
+        html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
+        html = HTML(string=html_content)
+
+        # Generar el PDF
+        pdf_bytes = html.write_pdf()
+
+        # Guardar el PDF en el Servidor
+        with open(ubicacion_pdf, "wb") as pdf_file:
+            pdf_file.write(pdf_bytes)
+
+    # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
+    response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+    return response
+
+# ----- Genera el documento PDF sin guardarlo en directorio 
+def generate_pdfsinguardar(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
 
@@ -74,37 +162,7 @@ def generate_pdf(request, extranjero_id):
     
     return response
 
-def generate_pdfGuardar(request, extranjero_id):
-    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
-    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
-
-    # Obtener el nombre del archivo PDF
-    nombre_pdf = f"AcuerdoUno_{extranjero.id}.pdf"
-    ubicacion_pdf = os.path.abspath(os.path.join("pame/media/files", nombre_pdf))
-
-    # Verificar si el archivo PDF ya existe en la ubicación
-    if not os.path.exists(ubicacion_pdf):
-        # Si el archivo no existe, procede a generarlo y guardarlo
-        html_context = {
-            'contexto': 'variables',
-        }
-
-        # Crear un objeto HTML a partir de una plantilla o contenido HTML
-        html_content = render_to_string('documentos/acuerdoTraslado.html', html_context)
-        html = HTML(string=html_content)
-
-        # Generar el PDF
-        pdf_bytes = html.write_pdf()
-
-        # Guardar el PDF en el Servidor
-        with open(ubicacion_pdf, "wb") as pdf_file:
-            pdf_file.write(pdf_bytes)
-
-    # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
-    response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
-    return response
-
+# ----- Genera el documento PDF de la constancia de llamada 
 def constancia_llamada(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
@@ -112,7 +170,7 @@ def constancia_llamada(request, extranjero_id):
     fecha = datetime.now().strftime('%d de %B de %Y')
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero)
 
-# Asegúrate de que hay notificaciones
+    # Asegúrate de que hay notificaciones
     if notificaciones.exists():
     # Obtén la notificación más reciente en función de la fechaHoraNotificacion
      notificacion = notificaciones.latest('nup')

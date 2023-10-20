@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     {% block title %} {% endblock title %}
-
+    {% block estilos %}
     <style>
         h1 {
             text-align: center;
@@ -43,11 +43,13 @@
             margin-top: -1.5cm;
         }
 
+        {% block pagina %}
         @page {
             size: letter;
             margin: 2cm 1.5cm 1.5cm 2cm;
             /* Margen superior 1.5cm, márgenes derecho, inferior e izquierdo 2.5cm */
         }
+        {% endblock %}
 
         .columnas {
             display: flex;
@@ -64,7 +66,11 @@
             margin-top: 80px;
             padding-top: 10px;
         }
+
+        {% block estilosExtras %}
+        {% endblock %}
     </style>
+    {% endblock %}
 </head>
 
 <body>
@@ -79,6 +85,7 @@
         {% endblock %}
     </div>
     <div id="footer">
+        {% block footer %}
         <p>
             <span style="text-align: center; display: block; margin-bottom: -0.3cm;">Aviso de Privacidad
                 Simplificado</span> <br>
@@ -97,6 +104,7 @@
             </span>
             </a>
         </p>
+        {% endblock %}
     </div>
 </body>
 
