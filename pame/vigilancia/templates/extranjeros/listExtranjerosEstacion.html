@@ -100,7 +100,7 @@
                 {% if extranjero.inventario_set.all  %}
                 <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Pertenencias">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listPertenenciasGeneral" first_inventario.id %}" data-title="Pertenencias">
                         <i class="fas fa-tshirt"></i>
                     </a>
 
@@ -108,7 +108,7 @@
                 {% endwith %}
                 {% else %}
                 <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Pertenencias">
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crearInventarioGeneral' extranjero.id %} " data-title="Pertenencias">
                         <i class="fas fa-tshirt"></i>
                     </a>
                 <!-- INICIO CREAR INVENTARIO ENSERES -->

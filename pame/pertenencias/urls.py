@@ -4,7 +4,7 @@ from .views import CrearInventarioViewAC, ListaPertenenciasViewAC, CrearPertenen
 from .views import CrearInventarioViewVP,ListaPertenenciasViewVP,CrearPertenenciasViewVP,DeletePertenenciasVP, EditarPertenenciasViewVP, ListaPertenenciasValorViewVP, CrearPertenenciasValoresViewVP, DeletePertenenciasValorVP, UpdatePertenenciasValorVP, ListaEnseresViewUP, CrearEnseresVP, CrearEnseresModalVP, DeleteEnseresVP, EditarEnseresViewVP, CrearPertenenciasElectronicasViewVP,DeletePertenenciaselectronicasVP,EditarPertenenciaselectronicasViewVP,CrearvaloresefectivoViewVP,eliminarvaloresefectivoVP,editarvaloresefectivoVP,CrearvaloresjoyasViewVP,eliminarvaloresjoyasVP,editarvaloresjoyasVP,CrearvaloresdocumentosViewVP,eliminarvaloresdocumentosVP,editarvaloresdocumentosVP
 from .views import homePertenencias, manejar_imagen
 from .views import ListaEnseresView, CrearEnseres, CrearEnseresModa, DeleteEnseres,EditarEnseresView
-
+from .views import ListaPertenenciasViewGeneral, CrearInventarioViewGeneral, CrearPertenenciasViewGeneral, EditarPertenenciasViewGenerales, DeletePertenenciasGeneral, CrearPertenenciasElectronicasVieGeneral, EditarPertenenciaselectronicasViewGeneral, DeletePertenenciaselectronicasGenerales, CrearvaloresefectivoViewGeneral,editarvaloresefectivoGeneral,eliminarvaloresefectivoGeneral,CrearvaloresjoyasViewGeneral,editarvaloresjoyasGeneral, eliminarvaloresjoyasGeneral, CrearvaloresdocumentosViewGeneral,editarvaloresdocumentosGeneral, eliminarvaloresdocumentosGeneral
 
 urlpatterns = [
     path('', homePertenencias, name="homePertenencias"),
@@ -137,5 +137,26 @@ urlpatterns = [
     path('editar-ensere/<int:pk>/', EditarEnseresView.as_view(), name='editarEnseres'),
     path('eliminar-enseres/<int:pk>/', DeleteEnseres.as_view(), name='eliminarEnseres'),
     path('crear-enseres-modal/<int:extranjero_id>/', CrearEnseresModa.as_view(), name='crearEnseresModa'),
-    
+
+    # Pertenencias Globales
+    path('listPertenenciasGeneral/<int:inventario_id>/', ListaPertenenciasViewGeneral.as_view(), name='listPertenenciasGeneral'),
+    path('crearInventarioGeneral/<int:extranjero_id>/', CrearInventarioViewGeneral.as_view(), name='crearInventarioGeneral'),
+    path('crearPertenenciasGenerales/<int:inventario_id>/', CrearPertenenciasViewGeneral.as_view(), name='crearPertenenciasGenerales'),
+    path('editarPertenenciasGenerales/<int:pk>/', EditarPertenenciasViewGenerales.as_view(), name='editarPertenenciasGenerales'),
+    path('eliminarPertenenciasGeneral/<int:pk>/',DeletePertenenciasGeneral.as_view(), name='eliminarPertenenciasGeneral'),
+
+    path('crearPertenenciasElectronicas/<int:inventario_id>/', CrearPertenenciasElectronicasVieGeneral.as_view(), name='crearPertenenciasElectronicas'),
+    path('editarPertenenciasElectronicas/<int:pk>/', EditarPertenenciaselectronicasViewGeneral.as_view(), name='editarPertenenciasElectronicas'),
+    path('eliminarPertenenciasElectronicas/<int:pk>/',DeletePertenenciaselectronicasGenerales.as_view(), name='eliminarPertenenciasElectronicas'),
+    path('crearEfectivo/<int:inventario_id>/', CrearvaloresefectivoViewGeneral.as_view(), name='crearEfectivo'),
+    path('editarEfectivo/<int:pk>/', editarvaloresefectivoGeneral.as_view(), name='editarEfectivo'),
+    path('eliminarEfectivo/<int:pk>/',eliminarvaloresefectivoGeneral.as_view(), name='eliminarEfectivo'),
+    path('crearJoyas/<int:inventario_id>/', CrearvaloresjoyasViewGeneral.as_view(), name='crearJoyas'),
+    path('editarJoyas/<int:pk>/', editarvaloresjoyasGeneral.as_view(), name='editarJoyas'),
+    path('eliminarJoyas/<int:pk>/',eliminarvaloresjoyasGeneral.as_view(), name='eliminarJoyas'),
+    path('crearDocumento/<int:inventario_id>/', CrearvaloresdocumentosViewGeneral.as_view(), name='crearDocumento'),
+    path('editarDocumentos/<int:pk>/', editarvaloresdocumentosGeneral.as_view(), name='editarDocumentos'),
+    path('eliminarDocumentos/<int:pk>/',eliminarvaloresdocumentosGeneral.as_view(), name='eliminarDocumentos'),
+
+
 ]
