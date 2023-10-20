@@ -6,7 +6,7 @@ from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,ad
 from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
-from .views import listarExtranjerosEstacion, ejemplo
+from .views import listarExtranjerosEstacion, ejemplo, qrs
 
 from .views import compare_faces, UserFaceCreateView, search_face
 urlpatterns = [
@@ -87,6 +87,7 @@ urlpatterns = [
     path('manejar_imagen/', manejar_imagen, name='manejar_imagen'),
     path('manejar_imagen2/', manejar_imagen2, name='manejar_imagen2'),
     path('manejar_imagen3/', manejar_imagen3, name='manejar_imagen3'),
+    path('qr/', qrs.as_view(), name='qr'),
 
 
 # Listar extranjeros de forma global por estacion 

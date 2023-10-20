@@ -9,7 +9,7 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biome
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView,DetailView
+from django.views.generic import CreateView, ListView,DetailView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms,descripcionForms
 from .forms import BiometricoFormVP
@@ -63,6 +63,9 @@ from generales.mixins import HandleFileMixin
 
 from django.db import transaction
 from biometricos.models import UserFace1
+
+import qrcode
+
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -3617,3 +3620,6 @@ class listarExtranjerosEstacion(ListView):
      
     
   
+
+class qrs(TemplateView):
+    template_name='qr.html'
