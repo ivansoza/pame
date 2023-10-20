@@ -101,9 +101,25 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-vp'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                        <i class="fas fa-phone"></i>
-                    </a>
+                {% if extranjero.tiene_fotografia %}
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-vp'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                    <i class="fas fa-phone"></i>
+                </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                            <i class="fas fa-phone"></i>
+                        </a>
+                        <script>
+                            function showBioAlert() {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¡Falta Fotografía!',
+                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                    confirmButtonColor: '#2A4B41'
+                                });
+                            }
+                        </script>
+                    {% endif %}
                 {% endif %}
                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
                 
@@ -142,12 +158,27 @@
          
                 {% endwith %}
                 {% else %}
-                <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
+                {% if extranjero.tiene_fotografia %}
+                       <!-- INICIO CREAR INVENTARIO PERTENENCIAS -->
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Pertenencias">
                         <i class="fas fa-briefcase"></i>
                     </a>
-                <!-- INICIO CREAR INVENTARIO ENSERES -->
-            
+                <!-- INICIO CREAR INVENTARIO ENSERES -->s
+                    {% else %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                            <i class="fas fa-briefcase"></i>
+                        </a>
+                        <script>
+                            function showBioAlert() {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¡Falta Fotografía!',
+                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                    confirmButtonColor: '#2A4B41'
+                                });
+                            }
+                        </script>
+                    {% endif %}
                 {% endif %}     
                 {% if extranjero.tiene_enseres %}
                 {% with first_enseres=extranjero.enseresbasicos_set.first %}
