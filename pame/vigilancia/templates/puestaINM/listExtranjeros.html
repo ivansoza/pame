@@ -48,12 +48,12 @@
             <td>{{ extranjero.nombreExtranjero }}</td>
             <td>
                 {% if extranjero.apellidoPaternoExtranjero %}
-                    {{ extranjero.apellidoPaternoExtranjero }}
+                    {{ extranjero.apellidoPaternoExtranjero }} 
                 {% endif %}
                 {% if extranjero.apellidoMaternoExtranjero %}
                     {{ extranjero.apellidoMaternoExtranjero }}
                 {% endif %}</td>
-            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{{ extranjero.nacionalidad }} </td>
             <td>
 
             
@@ -104,6 +104,7 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% else %}
+
                 {% if extranjero.tiene_fotografia %}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                       <i class="fas fa-phone"></i>

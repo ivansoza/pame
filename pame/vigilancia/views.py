@@ -391,26 +391,25 @@ class listarExtranjeros(ListView):
      puesta = PuestaDisposicionINM.objects.get(id=puesta_id)  
 
      for extranjero in context['extranjeros']:
-        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-        tiene_notificacion_derechos = False
+         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+         tiene_notificacion = False
 
-        if ultimo_nup:
-            notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
-            if notificacion and notificacion.fechaAceptacion:
-                tiene_notificacion_derechos = True
-        extranjero.tiene_notificacion_derechos = tiene_notificacion_derechos
+         if ultimo_nup:
+            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+            if notificacion:
+                tiene_notificacion = True
 
+         extranjero.tiene_notificacion = tiene_notificacion
+    
 
      for extranjero in context['extranjeros']:
         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-        tiene_notificacion = False
 
         if ultimo_nup:
                 notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
                 if notificacion:
                     extranjero.tiene_notificacion_derechos = True
                     extranjero.fecha_aceptacion = notificacion.fechaAceptacion
-                    extranjero.hora_aceptacion = notificacion.fechaAceptacion.strftime('%I:%M:%S %p')
                     extranjero.estacion_notificacion = notificacion.estacion
                 else:
                     extranjero.tiene_notificacion_derechos = False
