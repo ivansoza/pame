@@ -105,6 +105,10 @@
                 {% else %}
                     <p>No se ha encontrado la Notificación de Derechos y Obligaciones.</p>
                 {% endif %}
+                <a href="{% url 'derechosObligaciones' extranjero_id=extranjero.id %}" target="_blank"
+                    class="btn btn-sm btn-icon1 tooltip-link btn-generado">
+                    <i class="fas fa-file-pdf"></i>
+                </a>
                 <br>
                 <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
