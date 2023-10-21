@@ -166,16 +166,23 @@ def generate_pdfsinguardar(request, extranjero_id):
     return response
 
 # ----- Genera el documento PDF de la constancia de llamada 
-def constancia_llamada(request, extranjero_id):
-    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
-    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+def constancia_llamada(request=None, extranjero_id=None):
+    print("Iniciando constancia_llamada")
+    
+    try:
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+    except Extranjero.DoesNotExist:
+        print(f"No se encontró Extranjero con ID {extranjero_id}")
+        return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
+    
+    print("Extranjero obtenido:", extranjero)
+    
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
     print("Notificaciones:", notificaciones)
 
-# Asegúrate de que hay notificaciones
     if notificaciones.exists():
         print("Entrando al bloque de notificaciones existentes")
 
