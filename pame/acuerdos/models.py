@@ -1,7 +1,8 @@
 from django.db import models
 from catalogos.models import Estacion, Responsable
-from vigilancia.models import Extranjero
+from vigilancia.models import Extranjero, NoProceso
 from django.core.exceptions import ValidationError
+import os
 
 # class TestigoUno (models.Model):
 #     nombreTestigoUno = models.CharField(max_length=50, verbose_name='Nombre del primer testigo')
@@ -114,4 +115,19 @@ class NotificacionesGlobales(models.Model):
     tipo_notificacion = models.CharField(max_length=50, choices=TIPO_NOTIFICACION_CHOICES, unique=True)
     archivo = models.FileField(upload_to=upload_to, validators=[validate_pdf])
     fecha_hora = models.DateTimeField(auto_now_add=True)
+
+def upload(instance, filename):
+    # Toma el nup de la instancia de NoProceso relacionada
+    nup_folder = instance.nup.nup
+    # Crea la estructura de directorio final
+    path = os.path.join('extranjeros', nup_folder, filename)
+    return path
+
+class Documentos(models.Model):
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name='Número de Proceso Asociado')
+    acuerdo_inicio = models.FileField(upload_to=upload)
+    oficio_llamada = models.FileField(upload_to=upload)
+    oficio_derechos_obligaciones = models.FileField(upload_to=upload)
+
+
 

@@ -12,6 +12,9 @@ from datetime import datetime
 import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
+from acuerdos.models import Documentos
+from django.core.files.base import ContentFile
+
 def homeAcuerdo(request):
     return render(request,"acuerdoInicio.html")
 
@@ -76,48 +79,74 @@ def generate_pdf(request, extranjero_id):
     response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
     return response
 
-def constancia_llamada(request, extranjero_id):
-    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
-    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+
+
+
+# CONTSANCIA DE LLAMADA 
+def constancia_llamada(request=None, extranjero_id=None):
+    print("Iniciando constancia_llamada")
+    
+    try:
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+    except Extranjero.DoesNotExist:
+        print(f"No se encontró Extranjero con ID {extranjero_id}")
+        return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
+    
+    print("Extranjero obtenido:", extranjero)
+    
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
-    notificaciones = Notificacion.objects.filter(delExtranjero=extranjero)
 
-# Asegúrate de que hay notificaciones
+    notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
+    print("Notificaciones:", notificaciones)
+
     if notificaciones.exists():
-    # Obtén la notificación más reciente en función de la fechaHoraNotificacion
-     notificacion = notificaciones.latest('nup')
+        print("Entrando al bloque de notificaciones existentes")
 
-     # Luego, continúa con el procesamiento de la notificación
-     nombre = extranjero.nombreExtranjero
-     apellidop = extranjero.apellidoPaternoExtranjero
-     apellidom = extranjero.apellidoMaternoExtranjero
-     nacionalidad = extranjero.nacionalidad
-     deseaLlamar = notificacion.deseaLlamar
-     motivo = notificacion.motivoNoLlamada
-     fecha = notificacion.fechaHoraNotificacion
-     # Obtener el nombre del archivo PDF
-    nombre_pdf = f"Constancia_llamadas_{extranjero.id}.pdf"
+        notificacion = notificaciones.latest('nup')
+        print("Notificacion:", notificacion)
 
-    # Crear el objeto HTML a partir de una plantilla o contenido HTML
-    html_context = {
-        'fecha':fecha,
-        'motivo':motivo,
-        'desea':deseaLlamar,
-        'contexto': 'variables',
-        'nombre': nombre,
-        'apellidop': apellidop,
-        'apellidom': apellidom,
-        'nacionalidad': nacionalidad,
-        'fecha': fecha,
-    }
-    html_content = render_to_string('documentos/constanciaLlamada.html', html_context)
-    html = HTML(string=html_content)
+        nombre = extranjero.nombreExtranjero
+        apellidop = extranjero.apellidoPaternoExtranjero
+        apellidom = extranjero.apellidoMaternoExtranjero
+        nacionalidad = extranjero.nacionalidad
+        deseaLlamar = notificacion.deseaLlamar
+        motivo = notificacion.motivoNoLlamada
+        fecha = notificacion.fechaHoraNotificacion
+        nombre_pdf = f"Constancia_llamadas.pdf"
+        
+        html_context = {
+            'fecha': fecha,
+            'motivo': motivo,
+            'desea': deseaLlamar,
+            'contexto': 'variables',
+            'nombre': nombre,
+            'apellidop': apellidop,
+            'apellidom': apellidom,
+            'nacionalidad': nacionalidad,
+            'fecha': fecha,
+        }
+        
+        html_content = render_to_string('documentos/constanciaLlamada.html', html_context)
+        html = HTML(string=html_content)
+        pdf_bytes = html.write_pdf()
 
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        print("Ultimo NoProceso:", ultimo_no_proceso)
 
-    # Devolver el PDF generado como una respuesta HTTP directamente desde los bytes generados
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
-    return response
+        documentos, created = Documentos.objects.get_or_create(nup=ultimo_no_proceso)
+        print("Documentos:", documentos, "Creado:", created)
+
+        try:
+            # Guarda el archivo PDF en el campo oficio_llamada
+            documentos.oficio_llamada.save(nombre_pdf, ContentFile(pdf_bytes))
+            documentos.save()
+            print("Documento guardado correctamente.")
+        except Exception as e:
+            print("Error al guardar el documento:", e)
+
+        # Si se ha proporcionado un request, devolver una respuesta HTTP
+        if request:
+            response = HttpResponse(pdf_bytes, content_type='application/pdf')
+            response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+            return response
