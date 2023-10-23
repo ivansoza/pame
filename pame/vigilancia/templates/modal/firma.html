@@ -97,8 +97,12 @@
 </head>
 <body>
 
-    <!-- Modal -->
-    <div id="signatureModal" class="modal">
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <input type="hidden" name="firma_imagen" id="inputFirmaImagen">
+    
+       <!-- Modal -->
+       <div id="signatureModal" class="modal">
         <div class="modal-content" style="width: auto;">
             <div id="lienzo-container">
                         {{nombre}}
@@ -112,6 +116,9 @@
             </div>
         </div>
     </div>
+    </form>
+    
+ 
 
     <script>
         // JavaScript para abrir y cerrar el modal
@@ -234,12 +241,10 @@
         /**
          * Función para guardar el contenido del canvas como imagen y descargarla
          */
-        function guardar() {
-            const img = miCanvas.toDataURL("image/png");
-            const enlace = document.createElement('a');
-            enlace.href = img;
-            enlace.download = 'firma.png';
-            enlace.click();
+         function guardar() {
+            const imgDataUrl = miCanvas.toDataURL("image/png");
+            document.getElementById('inputFirmaImagen').value = imgDataUrl;
+            document.forms[0].submit();
         }
 
         //======================================================================
