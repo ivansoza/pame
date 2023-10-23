@@ -1439,7 +1439,17 @@ class listarExtranjerosAC(ListView):
         for extranjero in context['extranjeros']:
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
             tiene_enseres = False
-
+            if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
             if ultimo_nup:
                 enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
                 if enseres:
@@ -2253,7 +2263,17 @@ class listarExtranjerosVP(ListView):
         for extranjero in context['extranjeros']:
          ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
          tiene_notificacion = False
-
+         if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
          if ultimo_nup:
             notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
             if notificacion:
@@ -3636,6 +3656,17 @@ class listarExtranjerosEstacion(ListView):
         for extranjero in context['extranjeros']:
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
             tiene_notificacion = False
+            if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
 
             if ultimo_nup:
                 notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
