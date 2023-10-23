@@ -1,3 +1,4 @@
+import base64
 from pathlib import Path
 from typing import Any
 from django import forms
@@ -68,6 +69,9 @@ from biometricos.models import UserFace1
 from juridico.models import NotificacionDerechos
 
 import qrcode
+from vigilancia.models import Firma
+from .forms import FirmaForm
+from django.core.files.base import ContentFile
 
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -3705,9 +3709,60 @@ class qrs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.1.128:8082/seguridad/firma/{extranjero_id}"
+        qr_link = f"http://192.168.1.128:8082/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
         context['initial_qr_link'] = qr_link
         context['nombre'] = nombre
+        return context
+    
+def verificar_firma(request, extranjero_id):
+    try:
+        firma = Firma.objects.get(extranjero_id=extranjero_id)
+        if firma.firma_imagen:
+            return JsonResponse({"firmado": True})
+        else:
+            return JsonResponse({"firmado": False})
+    except Firma.DoesNotExist:
+        return JsonResponse({"firmado": False})
+    
+
+class FirmaCreateView(CreateView):
+    model = Firma
+    form_class = FirmaForm
+    template_name = 'modal/firma.html'
+    
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        
+        # Verifica si el extranjero ya tiene una firma
+        if hasattr(extranjero, 'firma'):
+            # Aquí decides qué hacer si ya existe una firma
+            # Por ejemplo, puedes redirigir al usuario a otra página o mostrar un mensaje de error
+            return HttpResponse("El extranjero ya tiene una firma.")
+        else:
+            firma = form.save(commit=False)
+            firma.extranjero = extranjero
+
+            # Toma la cadena dataURL desde el formulario
+            firma_data_url = form.cleaned_data.get('firma_imagen')
+            format, imgstr = firma_data_url.split(';base64,')
+            ext = format.split('/')[-1]
+
+            # Crea un archivo de imagen desde la cadena dataURL
+            firma_image = ContentFile(base64.b64decode(imgstr), name=f"firma_{firma.id}.{ext}")
+
+            firma.firma_imagen.save(firma_image.name, firma_image)
+            firma.save()
+
+            return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirige a donde desees después de guardar la firma
+        return reverse_lazy('menu')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['extranjero_id'] = self.kwargs.get('extranjero_id')
         return context
