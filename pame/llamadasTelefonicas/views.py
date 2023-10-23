@@ -21,7 +21,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Max
 from django.contrib import messages
 from acuerdos.views import constancia_llamada
-
+from acuerdos.models import Documentos
 def homeLLamadasTelefonicas(request):
     return render(request,"LtIMN/LtIMN.html")
 
@@ -130,6 +130,17 @@ class ListLlamadas(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
+        extranjero = Extranjero.objects.get(pk=llamada_id)
+
+        try:
+            # Obtén el último nup registrado del extranjero
+            ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+            # Intenta obtener el documento oficio_llamada asociado a ese nup
+            documento = Documentos.objects.get(nup=ultimo_nup)
+            context['url_oficio_llamada'] = documento.oficio_llamada.url
+        except Documentos.DoesNotExist:
+            context['url_oficio_llamada'] = None
+
         context['extranjero_id'] = llamada_id  # ID del extranjero
         context['puesta_id'] = llamada.deLaPuestaIMN.id  
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)

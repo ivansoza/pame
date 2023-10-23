@@ -12,6 +12,7 @@ from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib import messages
 from acuerdos.models import NotificacionesGlobales
+from acuerdos.models import Documentos
 # Create your views here.
 
 
@@ -48,13 +49,15 @@ class notificacionDO(TemplateView):
             return redirect('notificacionDO', extranjero_id=extranjero_id)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
         try:
-            # Recupera la notificación del tipo "Notificación de Derechos y Obligaciones"
-            notificacion_global = NotificacionesGlobales.objects.get(tipo_notificacion=NotificacionesGlobales.NOTIFICACION_DERECHOS)
-            context['notificacion_global'] = notificacion_global
-        except NotificacionesGlobales.DoesNotExist:
-            context['notificacion_global'] = None
+            documento = Documentos.objects.get(nup=ultimo_nup)
+            context['oficio_derechos_obligaciones'] = documento.oficio_derechos_obligaciones
+        except Documentos.DoesNotExist:
+            context['oficio_derechos_obligaciones'] = None
+
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)

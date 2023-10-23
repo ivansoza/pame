@@ -105,34 +105,40 @@ def acuerdoInicio_pdf(request, extranjero_id):
     return response
 
 # ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
+
 def derechoObligaciones_pdf(request, extranjero_id):
     # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
 
-    # Obtener el nombre del archivo PDF
+    # Generar el nombre del archivo PDF para la respuesta y para guardar en el modelo
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
-    ubicacion_pdf = os.path.abspath(os.path.join("pame/media/files", nombre_pdf))
 
-    # Verificar si el archivo PDF ya existe en la ubicación
-    if not os.path.exists(ubicacion_pdf):
-        # Si el archivo no existe, procede a generarlo y guardarlo
-        html_context = {
-            'contexto': 'variables',
-        }
+    # Definir el contexto para la plantilla
+    html_context = {'contexto': 'variables'}
 
-        # Crear un objeto HTML a partir de una plantilla o contenido HTML
-        html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
-        html = HTML(string=html_content)
+    # Crear un objeto HTML a partir de una plantilla o contenido HTML
+    html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
+    html = HTML(string=html_content)
 
-        # Generar el PDF
-        pdf_bytes = html.write_pdf()
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
 
-        # Guardar el PDF en el Servidor
-        with open(ubicacion_pdf, "wb") as pdf_file:
-            pdf_file.write(pdf_bytes)
+    # Obtener el último NoProceso asociado al extranjero
+    ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+
+    # Obtener o crear una instancia de Documentos asociada a ese NoProceso
+    documentos, created = Documentos.objects.get_or_create(nup=ultimo_no_proceso)
+
+    try:
+        # Guarda el archivo PDF en el campo oficio_derechos_obligaciones del modelo Documentos
+        documentos.oficio_derechos_obligaciones.save(nombre_pdf, ContentFile(pdf_bytes))
+        documentos.save()
+        print("Documento de Derechos y Obligaciones guardado correctamente.")
+    except Exception as e:
+        print("Error al guardar el documento de Derechos y Obligaciones:", e)
 
     # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
-    response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
     return response
 
