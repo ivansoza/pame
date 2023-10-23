@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from vigilancia.models import Extranjero
@@ -14,6 +16,7 @@ from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 from acuerdos.models import Documentos
 from django.core.files.base import ContentFile
+from django.db.models import Max, OuterRef, Subquery
 
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
@@ -62,6 +65,63 @@ class acuerdo_inicio(ListView):
             'extranjeros_pdf': pdf_existencia
             }
         return render(request, self.template_name, context)
+
+
+
+class listRepositorio(ListView):
+
+    model = NoProceso
+    template_name = 'inicio/listExtranjeros.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'repositorio'  # Cambia esto según la página activa
+        context['seccion'] = 'verrepo'
+        return context
+
+class DocumentosListView(ListView):
+    model = Documentos
+    template_name = 'verAllAcuerdos.html'  # El nombre de tu template para mostrar los documentos
+
+    def get_queryset(self):
+        nup_value = self.kwargs.get('nup')
+        return Documentos.objects.filter(nup__nup=nup_value)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'repositorio'  # Cambia esto según la página activa
+        context['seccion'] = 'verrepo'
+        return context
+
+        
 
 # ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
@@ -239,3 +299,617 @@ def constancia_llamada(request=None, extranjero_id=None):
             response = HttpResponse(pdf_bytes, content_type='application/pdf')
             response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
             return response
+
+
+# Lista de acuerdo inicio 
+
+class lisExtranjerosInicio(ListView):
+
+    model = NoProceso
+    template_name = 'inicio/listExtranjerosInicio.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['seccion'] = 'inicio'
+        context['navbar1'] = 'inicio'  # Cambia esto según la página activa
+
+        context['seccion1'] = 'inicio'
+
+        return context
+    
+class lisExtranjerosComparecencia(ListView):
+
+    model = NoProceso
+    template_name = 'inicio/listExtranjerosComparecencia.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['seccion'] = 'inicio'
+        context['navbar1'] = 'inicio'  # Cambia esto según la página activa
+
+        context['seccion1'] = 'comparecencia'
+        return context
+    
+
+class lisExtranjerosPresentacion(ListView):
+
+    model = NoProceso
+    template_name = 'inicio/listExtranjerosPresentacion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'inicio'  # Cambia esto según la página activa
+
+        context['seccion'] = 'inicio'
+        context['seccion1'] = 'presentacion'
+        return context
+    
+
+
+# lista de extranjeros de especiales
+
+class listExtranjerosAcumulacion(ListView):
+
+    model = NoProceso
+    template_name = 'especiales/listExtranjerosAcumulacion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'especiales'  # Cambia esto según la página activa
+
+        context['seccion'] = 'especiales'
+        context['seccion1'] = 'acumulacion'
+        return context
+
+class listExtranjerosConclusion(ListView):
+
+    model = NoProceso
+    template_name = 'especiales/listExtranjerosConclusion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'especiales'  # Cambia esto según la página activa
+
+        context['seccion'] = 'especiales'
+        context['seccion1'] = 'conclusion'
+        return context
+    
+
+
+class listExtranjerosTraslado(ListView):
+
+    model = NoProceso
+    template_name = 'especiales/listExtranjerosTraslado.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'especiales'  # Cambia esto según la página activa
+
+        context['seccion'] = 'especiales'
+        context['seccion1'] = 'traslado'
+        return context
+    
+class listExtranjerosSeparacion(ListView):
+
+    model = NoProceso
+    template_name = 'especiales/listExtranjerosSeparacion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'especiales'  # Cambia esto según la página activa
+
+        context['seccion'] = 'especiales'
+        context['seccion1'] = 'separacion'
+        return context
+    
+class listExtranjerosRadicacion(ListView):
+
+    model = NoProceso
+    template_name = 'especiales/listExtranjerosRadicacion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar1'] = 'especiales'  # Cambia esto según la página activa
+
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['seccion'] = 'especiales'
+        context['seccion1'] = 'radicacion'
+        return context
+    
+class listExtranjerosRecepcion(ListView):
+
+    model = NoProceso
+    template_name = 'especiales/listExtranjerosRecepcion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'especiales'  # Cambia esto según la página activa
+
+        context['seccion'] = 'especiales'
+        context['seccion1'] = 'recepcion'
+        return context
+    
+class listExtranjerosArticulo(ListView):
+
+    model = NoProceso
+    template_name = 'resoluciones/listExtranjerosArticulo.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
+
+        context['seccion'] = 'resoluciones'
+        context['seccion1'] = 'articulo'
+        return context
+    
+class listExtranjerosComar(ListView):
+
+    model = NoProceso
+    template_name = 'resoluciones/listExtranjerosComar.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
+
+        context['seccion'] = 'resoluciones'
+        context['seccion1'] = 'comar'
+        return context
+    
+
+class listExtranjerosDeportacion(ListView):
+
+    model = NoProceso
+    template_name = 'resoluciones/listExtranjerosDeportacion.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
+
+        context['seccion'] = 'resoluciones'
+        context['seccion1'] = 'deportacion'
+        return context
+    
+class listExtranjerosLibre(ListView):
+
+    model = NoProceso
+    template_name = 'resoluciones/listExtranjerosLibre.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
+
+        context['seccion'] = 'resoluciones'
+        context['seccion1'] = 'libre'
+        return context
+    
+class listExtranjerosRetorno(ListView):
+
+    model = NoProceso
+    template_name = 'resoluciones/listExtranjerosRetorno.html'
+    context_object_name = "extranjeros"
+    
+    def get_queryset(self):
+            # Obtener la estación del usuario y el estado
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+
+            # Filtrar extranjeros por estación y estado
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+            # Obtener el último NoProceso para cada extranjero filtrado
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
+
+            # Ahora filtramos NoProceso basado en estos últimos registros
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+            )
+
+            return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
+
+        context['seccion'] = 'resoluciones'
+        context['seccion1'] = 'retorno'
+        return context
