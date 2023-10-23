@@ -55,9 +55,28 @@
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }} </td>
             <td>
+                
 
-            
-                 <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                <!-- INICIO DE ICONO DE LLAMADA  -->
+                {% if extranjero.tiene_notificacion %}
+                  <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                {% else %}
+
+                {% if extranjero.tiene_fotografia %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
+                      <i class="fas fa-phone"></i>
+                    </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                            <i class="fas fa-phone"></i>
+                        </a>
+                 
+                    {% endif %}
+                {% endif %}
+                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
                  {% if extranjero.tiene_notificacion_derechos %}
 
                  <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showNotification();" data-title="Ver Notificación">
@@ -97,27 +116,6 @@
 
                  {% endif %}
 
-
-                <!-- INICIO DE ICONO DE LLAMADA  -->
-                {% if extranjero.tiene_notificacion %}
-                  <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                        <i class="fas fa-phone"></i>
-                    </a>
-                {% else %}
-
-                {% if extranjero.tiene_fotografia %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
-                      <i class="fas fa-phone"></i>
-                    </a>
-                    {% else %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
-                            <i class="fas fa-phone"></i>
-                        </a>
-                 
-                    {% endif %}
-                {% endif %}
-                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
