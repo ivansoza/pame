@@ -48,11 +48,7 @@
                 {% endif %}</td>
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
-                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                  <a class="btn btn-sm btn-icon3 tooltip-link"
-                  href="#" data-title="Derechos y Obligaciones">
-                      <i class="fas fa-balance-scale"></i>
-                  </a>
+            
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.tiene_notificacion %}
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listLLamadasGen' extranjero.id%}" data-title="Llamadas Telefonicas">
@@ -70,7 +66,11 @@
                
                   {% endif %}
               {% endif %}
-              
+                    <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="#" data-title="Derechos y Obligaciones">
+                        <i class="fas fa-balance-scale"></i>
+                    </a>
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}

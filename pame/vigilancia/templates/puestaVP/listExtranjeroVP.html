@@ -90,11 +90,7 @@
             <td>{{ extranjero.nacionalidad }}</td> 
 
             <td>
-                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                <a class="btn btn-sm btn-icon3 tooltip-link"
-                href="{% url "notificacionDOVP" extranjero.id puesta.id  %}" data-title="Derechos y Obligaciones">
-                    <i class="fas fa-balance-scale"></i>
-                </a>
+   
                 <!-- NOTIFICACION DE LLAMADA  -->
                 {% if extranjero.tiene_notificacion %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadas_vp' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
@@ -123,7 +119,11 @@
                 {% endif %}
                  <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
                 
-
+                <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                <a class="btn btn-sm btn-icon3 tooltip-link"
+                href="{% url "notificacionDOVP" extranjero.id puesta.id  %}" data-title="Derechos y Obligaciones">
+                    <i class="fas fa-balance-scale"></i>
+                </a>
                 {% if extranjero.biometrico %}
                 {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
@@ -163,7 +163,7 @@
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'crear_inventarioVP' extranjero.id puesta.id%}" data-title="Pertenencias">
                         <i class="fas fa-briefcase"></i>
                     </a>
-                <!-- INICIO CREAR INVENTARIO ENSERES -->s
+                <!-- INICIO CREAR INVENTARIO ENSERES -->
                     {% else %}
                         <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
                             <i class="fas fa-briefcase"></i>

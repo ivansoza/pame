@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     {% block title %} {% endblock title %}
+    {% block estilos %}
     <style>
         h1 {
             text-align: center;
@@ -22,6 +24,7 @@
             font-size: 16px;
             text-align: justify;
             margin-top: 3cm;
+            margin-bottom: 1.5cm;
         }
 
         .centrado {
@@ -36,12 +39,17 @@
             right: 0;
             width: 100%;
             font-size: 10px;
+            height: 1.5cm;
+            margin-top: -1.5cm;
         }
 
+        {% block pagina %}
         @page {
             size: letter;
-            margin: 0.5cm 1.5cm 0.5cm 1.5cm; /* Margen superior 1.5cm, márgenes derecho, inferior e izquierdo 2.5cm */
+            margin: 2cm 1.5cm 1.5cm 2cm;
+            /* Margen superior 1.5cm, márgenes derecho, inferior e izquierdo 2.5cm */
         }
+        {% endblock %}
 
         .columnas {
             display: flex;
@@ -52,14 +60,19 @@
             flex: 1;
             padding: 10px;
         }
-        
+
         .firma {
-            border-top:1px solid #000;
+            border-top: 1px solid #000;
             margin-top: 80px;
             padding-top: 10px;
         }
+
+        {% block estilosExtras %}
+        {% endblock %}
     </style>
+    {% endblock %}
 </head>
+
 <body>
     <div id="header">
         <p>SECRETARÍA DE GOBERNACIÓN <br>
@@ -72,20 +85,27 @@
         {% endblock %}
     </div>
     <div id="footer">
+        {% block footer %}
         <p>
-            <span style="text-align: center; display: block; margin-bottom: -0.3cm;">Aviso de Privacidad Simplificado</span> <br>
+            <span style="text-align: center; display: block; margin-bottom: -0.3cm;">Aviso de Privacidad
+                Simplificado</span> <br>
             <span style="text-align: justify;">
-                El Instituto Nacional de Migración (IMN) es el responsable del tratamiento de los datos personales recabados a través de este acuerdo. Los datos personales que proporcione, 
-                serán protegidos conforme a lo dispuesto por la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados y demás normatividad que resulte
+                El Instituto Nacional de Migración (IMN) es el responsable del tratamiento de los datos personales
+                recabados a través de este acuerdo. Los datos personales que proporcione,
+                serán protegidos conforme a lo dispuesto por la Ley General de Protección de Datos Personales en
+                Posesión de Sujetos Obligados y demás normatividad que resulte
                 aplicable. <br>
                 <span style="text-align: center; display: block; margin-bottom: -0.3cm;">
-                    El aviso de privacidad integral lo podrá consultar en: 
-                    <a href="https://www.inm.gob.mx/static/transparencia/pdf/avisos/Aviso de Privacidad Administrativo.pdf" target="_blank">
-                    https://www.inm.gob.mx/static/transparencia/pdf/avisos/Aviso de Privacidad Administrativo.pdf
-                </span> 
+                    El aviso de privacidad integral lo podrá consultar en:
+                    <a href="https://www.inm.gob.mx/static/transparencia/pdf/avisos/Aviso de Privacidad Administrativo.pdf"
+                        target="_blank">
+                        https://www.inm.gob.mx/static/transparencia/pdf/avisos/Aviso de Privacidad Administrativo.pdf
+                </span>
             </span>
             </a>
         </p>
+        {% endblock %}
     </div>
 </body>
+
 </html>

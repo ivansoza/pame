@@ -66,12 +66,7 @@
 
                 <td>       
 
-                    <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="{% url "notificacionDOAC" extranjero.id puesta.id%}" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
-
+                   
                     <!-- ICONO DE LLAMADA -->
                     {% if extranjero.tiene_notificacion %}
                     <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasAC' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
@@ -99,6 +94,12 @@
                     {% endif %}
                     {% endif %}
                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                     <a class="btn btn-sm btn-icon3 tooltip-link"
+                     href="{% url "notificacionDOAC" extranjero.id puesta.id%}" data-title="Derechos y Obligaciones">
+                         <i class="fas fa-balance-scale"></i>
+                     </a>
+ 
                     
                     {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}

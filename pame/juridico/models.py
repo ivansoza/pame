@@ -3,8 +3,8 @@ from vigilancia.models import NoProceso, Estacion
 # Create your models here.
 
 
-class Notificacion(models.Model):
-    fechaAceptacion = models.DateField(verbose_name='Fecha de Aceptación', auto_now_add=True)
+class NotificacionDerechos(models.Model):
+    fechaAceptacion = models.DateTimeField(verbose_name='Fecha de Aceptación', auto_now_add=True)
     no_proceso = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name='Número de Proceso Asociado', related_name='notificaciones_juridico')
     estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Notificación')
     
