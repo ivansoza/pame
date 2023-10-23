@@ -21,7 +21,7 @@
             max-width: 100%; /* Cambiado a un porcentaje mayor para hacerlo más ancho en pantallas grandes */
             width: auto; /* Se ajustará automáticamente en pantallas más pequeñas */
             max-height: 390%; /* Cambiado a un porcentaje mayor para hacerlo más alto en pantallas grandes */
-            height: 390px; /* Se ajustará automáticamente en pantallas más pequeñas */
+            height: 450px; /* Se ajustará automáticamente en pantallas más pequeñas */
             text-align: center;
             position: relative;
             display: flex;
@@ -101,6 +101,8 @@
     <div id="signatureModal" class="modal">
         <div class="modal-content" style="width: auto;">
             <div id="lienzo-container">
+                        {{nombre}}
+
                 <canvas id="pizarra"></canvas>
                 <div id="botones-container">
                     <button class="boton" id="limpiar">Limpiar</button>

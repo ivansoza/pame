@@ -58,6 +58,7 @@ from django.core.files.base import ContentFile
 from .forms import CompareFacesForm, SearchFaceForm
 import face_recognition
 import time  # Importa el módulo de time
+from .forms import FirmaExtranjeroForm
 
 from generales.mixins import HandleFileMixin
 
@@ -94,10 +95,34 @@ class CreatePermissionRequiredMixin(UserPassesTestMixin):
 def sesionfinal(request):
     return render(request, 'finalizarsesion.html')
 
-def firma(request):
-    return render(request, 'modal/firma.html')
+class firma(TemplateView):
+    template_name= 'modal/firma.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Recuperar el ID del extranjero desde los argumentos de la URL
+        extranjero_id = self.kwargs.get('extranjero_id')
+        context['extramjero_id'] = extranjero_id
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+        nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        return context
+    
 
+def guardar_firma(request, extranjero_id):
+    extranjero = get_object_or_404(Biometrico, pk=extranjero_id)
 
+    if request.method == 'POST':
+        form = FirmaExtranjeroForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            extranjero.firmaExtranjero = form.cleaned_data.get('imagen_firma')
+            extranjero.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'error': 'Formulario no válido'})
+
+    return JsonResponse({'error': 'Solicitud no válida'})
 
 
 
@@ -3626,14 +3651,13 @@ class listarExtranjerosEstacion(ListView):
         return context
      
     
-  
 
 class qrs(TemplateView):
     template_name='qr.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.1.126:8082/seguridad/firma/{extranjero_id}"
+        qr_link = f"http://192.168.1.128:8082/seguridad/firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
         context['initial_qr_link'] = qr_link
