@@ -2539,3 +2539,431 @@ class DeleteEnseres(DeleteView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         return context
+
+#-------------------VistasGenerales-----------------------------------
+class ListaPertenenciasViewGeneral(ListView):
+    model = Pertenencias
+    template_name = 'pertenencias/listPertenencias.html'
+    
+    def get_queryset(self):
+        inventario_id = self.kwargs['inventario_id']
+        queryset =Pertenencias.objects.filter(delInventario_id=inventario_id)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+
+        extranjero_id = inventario.noExtranjero.id
+
+        # Obtén el último NUP del extranjero
+        ultimo_nup = NoProceso.objects.filter(extranjero_id=extranjero_id).aggregate(Max('consecutivo'))
+        ultimo_nup = ultimo_nup['consecutivo__max']
+
+        # Filtra los datos según el último NUP
+        aparatos = Pertenencia_aparatos.objects.filter(delInventario_id=inventario_id)
+        efectivos = valoresefectivo.objects.filter(delInventario_id=inventario_id)
+        joyas = valoresjoyas.objects.filter(delInventario_id=inventario_id)
+        documentos = documentospertenencias.objects.filter(delInventario_id=inventario_id)
+        estatus = inventario.noExtranjero.estatus # Asume que el campo es 'estatus', ajusta si es diferente
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+        
+        context['document']=documentos
+        context['efectivo']=efectivos
+        context['joyas']=joyas
+        context['aparato']=aparatos
+        context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
+        context['puesta_id']=puesta_id
+        context['inventario'] = inventario
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        return context
+
+class CrearInventarioViewGeneral(PermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'pertenencias.add_inventario',
+    }
+    model = Inventario
+    form_class = InventarioForm
+    template_name = 'pertenencias/inventarioGeneral.html'
+    def get_success_url(self):
+        messages.success(self.request, 'Inventario creado con éxito.')
+        return reverse_lazy('listarExtranjerosEstacion')
+
+    def form_valid(self, form):
+        extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estaciones = extranjero.deLaEstacion.nombre
+        form.instance.noExtranjero_id = extranjero_id
+        form.instance.unidadMigratoria = estaciones
+        return super().form_valid(form)
+
+
+    def get_initial(self):
+        extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+        estaciones_id = extranjero.deLaEstacion.id
+        estaciones = extranjero.deLaEstacion.nombre
+        ultimo_registro = Inventario.objects.order_by('-id').first()
+        ultimo_numero = int(ultimo_registro.foloInventario.split(f'/')[-1]) if ultimo_registro else 0
+        nuevo_numero = f'2023/INV/{estaciones_id}/{extranjero_id}/{ultimo_numero + 1:06d}'
+
+        return {'noExtranjero': extranjero_id, 'foloInventario':nuevo_numero, 'unidadMigratoria':estaciones,'nup':ultimo_no_proceso_id}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs['extranjero_id']
+        puesta_id = self.kwargs.get('puesta_id')
+        extranjero_id1 = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id1)
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
+
+        context['extranjero'] = extranjero
+        context['navbar'] = 'extranjeros' 
+
+        context['extranjero_id'] = extranjero_id
+        return context
+    
+class CrearPertenenciasViewGeneral(CreateView):
+    model = Pertenencias
+    form_class = PertenenciaForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/agregarPertenenciasPersonales.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.kwargs['inventario_id']
+        puesta_id = self.kwargs.get('puesta_id')
+        messages.success(self.request, 'Pertenencias creadas con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+class EditarPertenenciasViewGenerales(UpdateView):
+    model = Pertenencias
+    form_class = EditPertenenciaForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/editarPertenenciasPersonal.html'  # Crea este template
+
+    def get_success_url(self):
+        enseres_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencias editadas con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': enseres_id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+class DeletePertenenciasGeneral(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = Pertenencias
+    template_name = 'pertenencias/modals/eliminarPertenenciasPersonales.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencias creadas con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+    
+class CrearPertenenciasElectronicasVieGeneral(CreateView):
+    model = Pertenencia_aparatos
+    form_class = pertenenciaselectronicasACForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/agregarElectro.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencias creadas con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+    
+class EditarPertenenciaselectronicasViewGeneral(UpdateView):
+    model = Pertenencia_aparatos
+    form_class = pertenenciaselectronicasACForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/editarElectro.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencias editada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+class DeletePertenenciaselectronicasGenerales(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = Pertenencia_aparatos
+    template_name = 'pertenencias/modals/eliminarElectro.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia eliminada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
+        
+        return context
+    
+class CrearvaloresefectivoViewGeneral(CreateView):
+    model = valoresefectivo
+    form_class = valoresefectivoACForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/crearEfectivo.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia creada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadAC'
+        return context
+    
+class eliminarvaloresefectivoGeneral(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = valoresefectivo
+    template_name = 'pertenencias/modals/eliminarEfectivo.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia eliminada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+    
+class editarvaloresefectivoGeneral(UpdateView):
+    model = valoresefectivo
+    form_class = valoresefectivoForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/editarEfectivo.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia Editada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+class CrearvaloresjoyasViewGeneral(CreateView):
+    model = valoresjoyas
+    form_class = valorejoyasVPForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/agregarJoyas.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia creada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadVP'
+        return context
+    
+class eliminarvaloresjoyasGeneral(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = valoresjoyas
+    template_name = 'pertenencias/modals/eliminarJoyas.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia eliminada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        
+        return context
+    
+class editarvaloresjoyasGeneral(UpdateView):
+    model = valoresjoyas
+    form_class = valorejoyasVPForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/editarJoyas.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia Editada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadVP'
+        return context
+    
+class CrearvaloresdocumentosViewGeneral(CreateView):
+    model = documentospertenencias
+    form_class = documentospertenenciasForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/agregarDocumento.html'
+
+    def form_valid(self, form):
+        inventario_id = self.kwargs['inventario_id']
+        form.instance.delInventario_id = inventario_id
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+        inventario_id = self.kwargs['inventario_id']
+        initial['delInventario'] = inventario_id
+        return initial
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia creada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        inventario_id = self.kwargs['inventario_id']
+        inventario = Inventario.objects.get(pk=inventario_id)
+        puesta_id = self.kwargs.get('puesta_id')
+        context['inventario'] = inventario
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM'
+        return context
+    
+class eliminarvaloresdocumentosGeneral(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_pertenencia',
+    }
+    model = documentospertenencias
+    template_name = 'pertenencias/modals/eliminarDocumento.html'
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia eliminada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['navbar'] = 'seguridad'  # Cambia esto según la página activa
+        context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
+        
+        return context
+    
+class editarvaloresdocumentosGeneral(UpdateView):
+    model = documentospertenencias
+    form_class = documentospertenenciasForm  # Usa tu formulario modificado
+    template_name = 'pertenencias/modals/editarDocumento.html'  # Crea este template
+
+    def get_success_url(self):
+        inventario_id = self.object.delInventario.id
+        messages.success(self.request, 'Pertenencia Editada con éxito.')
+        return reverse('listPertenenciasGeneral', kwargs={'inventario_id': inventario_id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'seguridad'
+        context['seccion'] = 'seguridadINM'
+        return context

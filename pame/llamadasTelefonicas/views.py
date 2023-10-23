@@ -20,8 +20,8 @@ from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Max
 from django.contrib import messages
-
-
+from acuerdos.views import constancia_llamada
+from acuerdos.models import Documentos
 def homeLLamadasTelefonicas(request):
     return render(request,"LtIMN/LtIMN.html")
 
@@ -130,6 +130,17 @@ class ListLlamadas(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
+        extranjero = Extranjero.objects.get(pk=llamada_id)
+
+        try:
+            # Obtén el último nup registrado del extranjero
+            ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+            # Intenta obtener el documento oficio_llamada asociado a ese nup
+            documento = Documentos.objects.get(nup=ultimo_nup)
+            context['url_oficio_llamada'] = documento.oficio_llamada.url
+        except Documentos.DoesNotExist:
+            context['url_oficio_llamada'] = None
+
         context['extranjero_id'] = llamada_id  # ID del extranjero
         context['puesta_id'] = llamada.deLaPuestaIMN.id  
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
@@ -543,10 +554,7 @@ class validarNotificacion(CreateView):
         # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=llamada_id)
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-
-# Obtener el ID (nup) del último registro NoProceso
         ultimo_no_proceso_id = ultimo_no_proceso.nup
-
         # Rellena los campos en initial
         initial['nup'] = ultimo_no_proceso_id
         initial['delExtranjero'] = extranjero        
@@ -555,11 +563,16 @@ class validarNotificacion(CreateView):
     def form_valid(self, form):
         # Asigna la relación al campo noExtranjero
         llamada_id = self.kwargs.get('llamada_id')
-        extranjero = Extranjero.objects.get(id=llamada_id)
         extranjero = get_object_or_404(Extranjero, id=llamada_id)
-
         form.instance.noExtranjero = extranjero
-        return super().form_valid(form)
+
+        # Primero, guarda la instancia de Notificacion en la base de datos.
+        response = super().form_valid(form)
+
+        # Luego, una vez que la instancia se haya guardado, llama a la función constancia_llamada.
+        constancia_llamada(extranjero_id=self.object.delExtranjero.id)
+
+        return response
     
     
     def get_context_data(self, **kwargs):
@@ -571,7 +584,6 @@ class validarNotificacion(CreateView):
         estancia_extranjero = llamada.deLaEstacion
         ape = llamada.apellidoPaternoExtranjero
         ame = llamada.apellidoMaternoExtranjero
-       
         puesta_id = self.kwargs.get('puesta_id')
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['llamada'] = llamada
