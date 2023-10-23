@@ -491,3 +491,8 @@ class UserFaceForm(forms.ModelForm):
 
 class SearchFaceForm(forms.Form):
     image = forms.ImageField()
+
+class FirmaExtranjeroForm(forms.ModelForm):
+    class Meta:
+        model = Biometrico
+        fields = ['firmaExtranjero']
