@@ -105,7 +105,7 @@
       </li>
 
       <!-- Messages Dropdown Menu -->
-      <li class="nav-item dropdown">
+      {% comment %} <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-comments"></i>
           <span class="badge badge-danger navbar-badge">3</span>
@@ -161,7 +161,7 @@
           <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
         </div>
-      </li>
+      </li> {% endcomment %}
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
@@ -326,25 +326,6 @@
                     <!--  Fin Traslado -->
 
 
-                    <!--  Alojamiento -->
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Alojamiento
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Alojados</p>
-                </a>
-              </li>
-            </ul>
-          </li>
 
 
           <!-- Fin  Alojamiento -->
@@ -523,7 +504,7 @@
         <!-- Termina Acuerdos -->
           <!-- Fin  Alojamiento -->
           <!--   Extranjeros -->
-          {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
+          {% comment %} {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
 
           <li class="nav-item ">
             <a href="#" class="nav-link ">
@@ -543,7 +524,7 @@
             </ul>
           </li>
 
-          {% endif %}
+          {% endif %} {% endcomment %}
 
 
           <!-- Fin  Cocina -->
