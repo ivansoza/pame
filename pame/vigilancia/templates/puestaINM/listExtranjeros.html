@@ -48,26 +48,22 @@
             <td>{{ extranjero.nombreExtranjero }}</td>
             <td>
                 {% if extranjero.apellidoPaternoExtranjero %}
-                    {{ extranjero.apellidoPaternoExtranjero }}
+                    {{ extranjero.apellidoPaternoExtranjero }} 
                 {% endif %}
                 {% if extranjero.apellidoMaternoExtranjero %}
                     {{ extranjero.apellidoMaternoExtranjero }}
                 {% endif %}</td>
-            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{{ extranjero.nacionalidad }} </td>
             <td>
-
                 
-                 <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                 <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="{% url "notificacion_d_o" extranjero.id puesta.id %}" data-title="Derechos y Obligaciones">
-                        <i class="fas fa-balance-scale"></i>
-                    </a>
+
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.tiene_notificacion %}
                   <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'ver_llamadasIMN' extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                         <i class="fas fa-phone"></i>
                     </a>
                 {% else %}
+
                 {% if extranjero.tiene_fotografia %}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                       <i class="fas fa-phone"></i>
@@ -80,7 +76,46 @@
                     {% endif %}
                 {% endif %}
                 <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                    
+                     <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
+                 {% if extranjero.tiene_notificacion_derechos %}
+
+                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showNotification();" data-title="Ver Notificación">
+                    <i class="fas fa-balance-scale"></i>
+                </a>
+
+                    <script>
+                        function showNotification() {
+                            Swal.fire({
+                                title: 'Detalles de la Notificación',
+                                html: `
+                                    <strong>Fecha y Hora:</strong> {{ extranjero.fecha_aceptacion|date:"d M, Y" }} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+                                    <br>
+
+
+                                    <strong>Estación:</strong> {{ extranjero.estacion_notificacion  }}
+                                `,
+                                icon: 'success',
+                                confirmButtonText: 'Entendido',
+                                confirmButtonColor: '#2A4B41'
+
+                            });
+                        }
+                        </script>
+                 {% else %}
+                        {% if extranjero.tiene_fotografia %}
+
+                            <a class="btn btn-sm btn-icon1 tooltip-link"
+                            href="{% url "notificacion_d_o" extranjero.id puesta.id %}" data-title="Generar Notificación">
+                                <i class="fas fa-balance-scale"></i>
+                            </a>
+                        {% else %}
+                            <a class="btn btn-sm btn-icon1 tooltip-link" href="#"  onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                                <i class="fas fa-balance-scale"></i>
+                            </a>
+                        {% endif %}
+
+                 {% endif %}
+
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}

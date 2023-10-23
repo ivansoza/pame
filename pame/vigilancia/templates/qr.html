@@ -1,73 +1,40 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Código QR con Javascript</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
-		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-		<script defer src="{% static "js/appqr.js" %}"></script>
-		<style>
-			.contenedor {
-				width: 70%;
-				height: 70%;
-				max-width: 900px;
-				padding: 20px;
-				border-radius: 10px;
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-				display: flex;
-				justify-content: space-between;
-				flex-direction: row;
-				align-items: center;
-				font-family: Arial, sans-serif;
-				background-color: white;
-			}
-			.formulario1 .btn {
-				width: 100%;
-				border: none;
-				background:#873542;
-				color: #fff;
-				cursor: pointer;
-				padding: 20px;
-				padding-right: 20px;
-				font-size: 20px;
-				border-radius: 5px;
-				font-family: 'Open Sans', sans-serif;
-			}
-			
-			.formulario1 .btn:hover {
-				background: #20302B;
-			}
-			body{
-				background: #f2f2f2;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				height: 100vh; /* 100% del alto de la ventana */
-			}
-			.image-container {
-             text-align: center;
-             flex: 1; /* Ocupa todo el espacio disponible */
-             display: flex;
-             flex-direction: column;
-             justify-content: center;
-             align-items: center;
-            }
-
-           
-			.contenedorQR{
-				text-align: center;
-             flex: 1; /* Ocupa todo el espacio disponible */
-             display: flex;
-             flex-direction: column;
-             justify-content: center;
-             align-items: center;
-			}
-			.formulario {
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Código QR con Javascript</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        .formulario1 .btn {
+            width: 100%;
+            border: none;
+            background: #873542;
+            color: #fff;
+            cursor: pointer;
+            padding: 20px;
+            padding-right: 20px;
+            font-size: 20px;
+            border-radius: 5px;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        .formulario1 .btn:hover {
+            background: #20302B;
+        }
+        body{
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* 100% del alto de la ventana */
+        }
+        .image-container {
             text-align: center;
             flex: 1; /* Ocupa todo el espacio disponible */
             display: flex;
@@ -75,24 +42,55 @@
             justify-content: center;
             align-items: center;
         }
-		</style>
-	</head>
-	<body>
-		
-		<div class="contenedor" >
-			<div class="image-container">
-				<h1>Genera y escanea el codigo QR para generar firma del extranjero <strong style="color: #873542;">{{nombre}}</strong></h1>
 
-				<img class="image" src="{% static 'img/gh.jpg' %}" style="width: 300px;" class="logo-img">
-			</div>
-			<div class="formulario">
-				<form action="" id="formulario" class="formulario1">
-					<input type="text" id="link" placeholder="Escribe el texto o URL" value="{{ initial_qr_link }}" style='display:none'/>
-					<button class="btn">Generar QR</button>
-				</form>
-				<br>
-				<div id="contenedorQR" class="contenedorQR"></div>
-			</div>
-		</div>
-	</body>
+        .contenedorQR {
+            text-align: center;
+            flex: 1; /* Ocupa todo el espacio disponible */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .formulario {
+            text-align: center;
+            flex: 1; /* Ocupa todo el espacio disponible */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Firma</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="contenedor">
+            <div class="image-container">
+                <h2>Genera y escanea el código QR para capturar la firma de <strong style="color: #873542;">{{nombre}}</strong></h2>
+            </div>
+            <div class="formulario">
+                <form id="formulario" class="formulario1" onsubmit="return false;">
+                    <input type="text" id="link" placeholder="Escribe el texto o URL" value="{{ initial_qr_link }}" style='display:none'/>
+                    <button class="btn" onclick="generarQR()">Generar QR</button>
+                </form>
+                <br>
+                <div id="contenedorQR" class="contenedorQR" style="margin-bottom: 15px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function generarQR() {
+        const qr_link = "{{ initial_qr_link }}";
+        const qrcode = new QRCode(document.getElementById("contenedorQR"), qr_link);
+    }
+</script>
+</body>
+<br><br>
 </html>

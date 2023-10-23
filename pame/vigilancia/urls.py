@@ -8,7 +8,7 @@ from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtr
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
 from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs
 
-from .views import compare_faces, UserFaceCreateView, search_face
+from .views import compare_faces, UserFaceCreateView, search_face, guardar_firma
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
 
@@ -99,7 +99,8 @@ urlpatterns = [
     path('sesionfinal/', sesionfinal, name='sesionfinal'),
     
     
-    path('firma/', firma, name='firma'),
+    path('firma/<int:extranjero_id>/', firma.as_view(), name='firma'),
+    path('guardar_firma/<int:extranjero_id>/', guardar_firma, name='guardar_firma'),
 
 
 ]
