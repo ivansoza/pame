@@ -9,7 +9,7 @@ from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biome
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView,DetailView
+from django.views.generic import CreateView, ListView,DetailView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView
 from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms,descripcionForms
 from .forms import BiometricoFormVP
@@ -58,6 +58,7 @@ from django.core.files.base import ContentFile
 from .forms import CompareFacesForm, SearchFaceForm
 import face_recognition
 import time  # Importa el módulo de time
+from .forms import FirmaExtranjeroForm
 
 from generales.mixins import HandleFileMixin
 
@@ -65,6 +66,9 @@ from django.db import transaction
 from biometricos.models import UserFace1
 
 from juridico.models import NotificacionDerechos
+
+import qrcode
+
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
@@ -89,7 +93,38 @@ class CreatePermissionRequiredMixin(UserPassesTestMixin):
             # Si el usuario no está autenticado, redirige a la página de inicio de sesión
             return redirect(self.login_url)
 
-   
+
+def sesionfinal(request):
+    return render(request, 'finalizarsesion.html')
+
+class firma(TemplateView):
+    template_name= 'modal/firma.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Recuperar el ID del extranjero desde los argumentos de la URL
+        extranjero_id = self.kwargs.get('extranjero_id')
+        context['extramjero_id'] = extranjero_id
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+        nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        return context
+    
+
+def guardar_firma(request, extranjero_id):
+    extranjero = get_object_or_404(Biometrico, pk=extranjero_id)
+
+    if request.method == 'POST':
+        form = FirmaExtranjeroForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            extranjero.firmaExtranjero = form.cleaned_data.get('imagen_firma')
+            extranjero.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'error': 'Formulario no válido'})
+
+    return JsonResponse({'error': 'Solicitud no válida'})
 
 
 
@@ -391,26 +426,25 @@ class listarExtranjeros(ListView):
      puesta = PuestaDisposicionINM.objects.get(id=puesta_id)  
 
      for extranjero in context['extranjeros']:
-        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-        tiene_notificacion_derechos = False
+         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+         tiene_notificacion = False
 
-        if ultimo_nup:
-            notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
-            if notificacion and notificacion.fechaAceptacion:
-                tiene_notificacion_derechos = True
-        extranjero.tiene_notificacion_derechos = tiene_notificacion_derechos
+         if ultimo_nup:
+            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+            if notificacion:
+                tiene_notificacion = True
 
+         extranjero.tiene_notificacion = tiene_notificacion
+    
 
      for extranjero in context['extranjeros']:
         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-        tiene_notificacion = False
 
         if ultimo_nup:
                 notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
                 if notificacion:
                     extranjero.tiene_notificacion_derechos = True
-                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion.strftime('%d/%m/%Y')
-                    extranjero.hora_aceptacion = notificacion.fechaAceptacion.strftime('%H:%M:%S')
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
                     extranjero.estacion_notificacion = notificacion.estacion
                 else:
                     extranjero.tiene_notificacion_derechos = False
@@ -3634,4 +3668,15 @@ class listarExtranjerosEstacion(ListView):
         return context
      
     
-  
+
+class qrs(TemplateView):
+    template_name='qr.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('extranjero_id')
+        qr_link = f"http://192.168.1.128:8082/seguridad/firma/{extranjero_id}"
+        extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+        nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
+        context['initial_qr_link'] = qr_link
+        context['nombre'] = nombre
+        return context

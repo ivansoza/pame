@@ -6,9 +6,9 @@ from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,ad
 from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
-from .views import listarExtranjerosEstacion, ejemplo
+from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs
 
-from .views import compare_faces, UserFaceCreateView, search_face
+from .views import compare_faces, UserFaceCreateView, search_face, guardar_firma
 urlpatterns = [
     path('', homeSeguridadGeneral, name="homeSeguridadGeneral"),
 
@@ -87,12 +87,21 @@ urlpatterns = [
     path('manejar_imagen/', manejar_imagen, name='manejar_imagen'),
     path('manejar_imagen2/', manejar_imagen2, name='manejar_imagen2'),
     path('manejar_imagen3/', manejar_imagen3, name='manejar_imagen3'),
+    path('qr/<int:extranjero_id>/', qrs.as_view(), name='qr'),
 
 
 # Listar extranjeros de forma global por estacion 
 
 
     path('listar-extranjero-dd/', listarExtranjerosEstacion.as_view(), name='listarExtranjerosEstacion'),
+    
+    
+    path('sesionfinal/', sesionfinal, name='sesionfinal'),
+    
+    
+    path('firma/<int:extranjero_id>/', firma.as_view(), name='firma'),
+    path('guardar_firma/<int:extranjero_id>/', guardar_firma, name='guardar_firma'),
+
 
 ]
 

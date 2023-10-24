@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TipoAcuerdo, Acuerdo, PDFGenerado, NotificacionesGlobales
+from .models import TipoAcuerdo, Acuerdo, PDFGenerado, NotificacionesGlobales, Documentos
 
 admin.site.register(TipoAcuerdo)
 
@@ -14,3 +14,9 @@ class NotificacionesGlobalesAdmin(admin.ModelAdmin):
     ordering = ('-fecha_hora', )
 
 admin.site.register(NotificacionesGlobales, NotificacionesGlobalesAdmin)
+
+
+class DocumentsAdmin(admin.ModelAdmin):
+    list_display=("nup", "acuerdo_inicio","oficio_llamada","oficio_derechos_obligaciones")
+
+admin.site.register(Documentos, DocumentsAdmin)

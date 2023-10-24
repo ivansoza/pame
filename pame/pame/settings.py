@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'biometricos',
     'alojamiento',
     'preventconcurrentlogins',
+    'django_session_timeout',
     
 ]
 
@@ -85,7 +86,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
+    
+    
+    'usuarios.middleware.PreventMultipleLoginMiddleware',
+
 ]
+
+SESSION_EXPIRE_SECONDS = 600
+
+SESSION_TIMEOUT_REDIRECT = 'sesionfinal' 
+
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 
 
 ROOT_URLCONF = 'pame.urls'
@@ -244,5 +257,4 @@ EMAIL_PORT = 587  # 587 es común para TLS; 465 es común para SSL; 25 es el pue
 EMAIL_USE_TLS = True  # True si quieres usar TLS, cambia a False si no.
 EMAIL_HOST_USER = 'ses-smtp-user.20231010-171347'
 EMAIL_HOST_PASSWORD = 'BNQZcKJoaOAkV7Wknk4f6hDYwQlPc2z+tVLIhMUDDnOU'
-
 
