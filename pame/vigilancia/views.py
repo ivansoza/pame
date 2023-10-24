@@ -3711,7 +3711,7 @@ class qrs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"https://740a-187-187-225-64.ngrok-free.app/seguridad/crear_firma/{extranjero_id}"
+        qr_link = f"http://192.168.1.128:8082/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
         context['initial_qr_link'] = qr_link
@@ -3743,7 +3743,7 @@ class FirmaCreateView(CreateView):
         if hasattr(extranjero, 'firma'):
             # Aquí decides qué hacer si ya existe una firma
             # Por ejemplo, puedes redirigir al usuario a otra página o mostrar un mensaje de error
-            return HttpResponse("El extranjero ya tiene una firma.")
+          return redirect(reverse('firma_existente'))
         else:
             firma = form.save(commit=False)
             firma.extranjero = extranjero
@@ -3763,9 +3763,15 @@ class FirmaCreateView(CreateView):
 
     def get_success_url(self):
         # Redirige a donde desees después de guardar la firma
-        return reverse_lazy('menu')
+        return reverse_lazy('firma_exitosa')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['extranjero_id'] = self.kwargs.get('extranjero_id')
         return context
+    
+class firmE(TemplateView):
+    template_name='vistaFirmaSucces.html'
+
+class firmExistente(TemplateView):
+    template_name='firmaExistente.html'
