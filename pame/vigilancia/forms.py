@@ -4,6 +4,7 @@ from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, 
 import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
+from .models import Firma
 
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
@@ -496,3 +497,12 @@ class FirmaExtranjeroForm(forms.ModelForm):
     class Meta:
         model = Biometrico
         fields = ['firmaExtranjero']
+
+
+
+class FirmaForm(forms.ModelForm):
+    firma_imagen = forms.CharField(widget=forms.HiddenInput()) # Esto es para la cadena dataURL
+
+    class Meta:
+        model = Firma
+        fields = ['firma_imagen']

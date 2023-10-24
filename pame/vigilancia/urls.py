@@ -6,7 +6,7 @@ from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,ad
 from .views import CalcularTamanoDiscoView, listarTraslado
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
-from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs
+from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs, verificar_firma, FirmaCreateView, firmE, firmExistente
 
 from .views import compare_faces, UserFaceCreateView, search_face, guardar_firma
 urlpatterns = [
@@ -101,7 +101,12 @@ urlpatterns = [
     
     path('firma/<int:extranjero_id>/', firma.as_view(), name='firma'),
     path('guardar_firma/<int:extranjero_id>/', guardar_firma, name='guardar_firma'),
+    path('verificar_firma/<int:extranjero_id>/', verificar_firma, name='verificar_firma'),
 
+
+    path('crear_firma/<int:extranjero_id>/', FirmaCreateView.as_view(), name='crear_firma'),
+    path('firma_exitosa/', firmE.as_view(), name='firma_exitosa'),
+    path('firma_existente/', firmExistente.as_view(), name='firma_existente'),
 
 ]
 

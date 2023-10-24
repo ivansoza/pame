@@ -77,7 +77,7 @@
             <div class="formulario">
                 <form id="formulario" class="formulario1" onsubmit="return false;">
                     <input type="text" id="link" placeholder="Escribe el texto o URL" value="{{ initial_qr_link }}" style='display:none'/>
-                    <button class="btn" onclick="generarQR()">Generar QR</button>
+                    <button class="btn" id="generarQRButton">Generar QR</button>
                 </form>
                 <br>
                 <div id="contenedorQR" class="contenedorQR" style="margin-bottom: 15px;"></div>
@@ -86,6 +86,14 @@
     </div>
 </div>
 <script>
+    document.getElementById("generarQRButton").addEventListener("click", function () {
+        // Deshabilita el botón al hacer clic
+        this.disabled = true;
+
+        // Llama a la función para generar el QR
+        generarQR();
+    });
+
     function generarQR() {
         const qr_link = "{{ initial_qr_link }}";
         const qrcode = new QRCode(document.getElementById("contenedorQR"), qr_link);

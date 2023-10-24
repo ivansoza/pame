@@ -1,130 +1,93 @@
 <!DOCTYPE html>
 <html>
+{% load static %}
 <head>
     <style>
-        /* Estilos para el modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+        #contenedor-principal {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
+            align-items: flex-start;
         }
-
-        .modal-content {
-            background-color: white;
-            max-width: 100%; /* Cambiado a un porcentaje mayor para hacerlo más ancho en pantallas grandes */
-            width: auto; /* Se ajustará automáticamente en pantallas más pequeñas */
-            max-height: 390%; /* Cambiado a un porcentaje mayor para hacerlo más alto en pantallas grandes */
-            height: 450px; /* Se ajustará automáticamente en pantallas más pequeñas */
-            text-align: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-
-        /* Estilos para el botón que abre el modal */
-        #open-modal {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        #open-modal:hover {
-            background-color: #45a049;
-        }
-
+        
         #lienzo-container {
-            width: 100%;
-            max-width: 500px; /* Ajusta el ancho del canvas según tus necesidades */
-            height: 200px; /* Ajusta la altura del canvas según tus necesidades */
+            max-width: 60%; /* Cambiado a 70% para ocupar el 70% del ancho */
             border: 2px solid #000;
             background-color: white;
+            flex-grow: 1; /* Permite que este div ocupe el espacio restante horizontalmente */
+            padding: 10px; /* Agrega un poco de espacio alrededor del lienzo */
+        }
+        
+        #botones-container {
+            width: 30%;
+            margin: 0 10px;
+        }
+        .bty{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+        .image{
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 20px;
-        }
-
-        canvas {
-            width: 100%; /* Asegura que el canvas ocupe todo el espacio del contenedor */
-            height: 100%;
-        }
-
-        #botones-container {
-            display: flex;
             justify-content: center;
-            flex-direction: column;
-            width: 30%;
-            margin: 10px;
         }
-
+        
         .boton {
             margin: 5px;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: red;
+            background-color: #873542;
             border: none;
             color: white;
             cursor: pointer;
             border-radius: 5px;
         }
-
+        
         .boton:hover {
-            background-color: #45a049;
+            background-color: #20302B;
         }
-
-        #close-modal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
+        
     </style>
 </head>
+
 <body>
+    <h1 style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Captura de firma</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="firma_imagen" id="inputFirmaImagen">
 
-    <!-- Modal -->
-    <div id="signatureModal" class="modal">
-        <div class="modal-content" style="width: auto;">
+        <!-- Modal -->
+
+        <div id="contenedor-principal">
             <div id="lienzo-container">
-                        {{nombre}}
-
-                <canvas id="pizarra"></canvas>
-                <div id="botones-container">
-                    <button class="boton" id="limpiar">Limpiar</button>
-                    <button class="boton" id="guardar">Guardar</button>
-                </div>
-                <span id="close-modal">Cerrar</span>
+                {{nombre}}
+                <canvas id="pizarra" style="width: 100%; height: 200px;"></canvas>
+            </div>
+            <div id="botones-container">
+                <button class="boton" id="limpiar">Limpiar</button>
+                <button class="boton" id="guardar">Guardar</button>
+                <img class="image" src="{% static 'img/gh.jpg' %}" style="width: 160px; margin-top: 10px; margin-left: 30px;" class="logo-img">
             </div>
         </div>
-    </div>
+
+    </form>
+
+
 
     <script>
         // JavaScript para abrir y cerrar el modal
-        document.getElementById('open-modal').addEventListener('click', function() {
+        document.getElementById('open-modal').addEventListener('click', function () {
             document.getElementById('signatureModal').style.display = 'flex';
         });
 
-        document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('close-modal').addEventListener('click', function () {
             document.getElementById('signatureModal').style.display = 'none';
         });
 
         // Centrar verticalmente el modal
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             var modal = document.querySelector('.modal-content');
             modal.style.top = (window.innerHeight - modal.clientHeight) / 2 + 'px';
         });
@@ -149,7 +112,7 @@
         //======================================================================
         // FUNCIONES
         //======================================================================
-        
+
         /**
          * Función para obtener las coordenadas del evento
          */
@@ -235,17 +198,15 @@
          * Función para guardar el contenido del canvas como imagen y descargarla
          */
         function guardar() {
-            const img = miCanvas.toDataURL("image/png");
-            const enlace = document.createElement('a');
-            enlace.href = img;
-            enlace.download = 'firma.png';
-            enlace.click();
+            const imgDataUrl = miCanvas.toDataURL("image/png");
+            document.getElementById('inputFirmaImagen').value = imgDataUrl;
+            document.forms[0].submit();
         }
 
         //======================================================================
         // EVENTOS
         //======================================================================
-        
+
         miCanvas.addEventListener('mousedown', empezarDibujo, false);
         miCanvas.addEventListener('mousemove', dibujarLinea, false);
         miCanvas.addEventListener('mouseup', pararDibujar, false);
@@ -257,4 +218,5 @@
         document.getElementById('guardar').addEventListener('click', guardar, false);
     </script>
 </body>
+
 </html>

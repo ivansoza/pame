@@ -53,10 +53,7 @@
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
                   <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                  <a class="btn btn-sm btn-icon3 tooltip-link"
-                  href="#" data-title="Derechos y Obligaciones">
-                      <i class="fas fa-balance-scale"></i>
-                  </a>
+                  
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.notificacion_set.all %}
                 {% with first_notificacion=extranjero.notificacion_set.first %}
@@ -69,8 +66,45 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% endif %}
-              
+                
+                {% if extranjero.tiene_notificacion_derechos %}
 
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showNotification();" data-title="Ver Notificación">
+                   <i class="fas fa-balance-scale"></i>
+               </a>
+
+                   <script>
+                       function showNotification() {
+                           Swal.fire({
+                               title: 'Detalles de la Notificación',
+                               html: `
+                                   <strong>Fecha y Hora:</strong> {{ extranjero.fecha_aceptacion|date:"d M, Y" }} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+                                   <br>
+
+
+                                   <strong>Estación:</strong> {{ extranjero.estacion_notificacion  }}
+                               `,
+                               icon: 'success',
+                               confirmButtonText: 'Entendido',
+                               confirmButtonColor: '#2A4B41'
+
+                           });
+                       }
+                       </script>
+                {% else %}
+                       {% if extranjero.tiene_fotografia %}
+
+                           <a class="btn btn-sm btn-icon1 tooltip-link"
+                           href="{% url "notificacionDOVP" extranjero.id%}"  data-title="Generar Notificación">
+                               <i class="fas fa-balance-scale"></i>
+                           </a>
+                       {% else %}
+                           <a class="btn btn-sm btn-icon1 tooltip-link" href="#"  onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                               <i class="fas fa-balance-scale"></i>
+                           </a>
+                       {% endif %}
+
+                {% endif %}
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}

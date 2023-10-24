@@ -297,6 +297,12 @@ class Biometrico(models.Model):
     def __str__(self):
         return str(self.Extranjero.nombreExtranjero) 
     
+class Firma(models.Model):
+    extranjero = models.OneToOneField(Extranjero, on_delete=models.CASCADE)
+    firma_imagen = models.ImageField(upload_to='firmas/', blank=True, null=True)
+    fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
+    
 class UserFace(models.Model):
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
     image = models.ImageField(upload_to='user_faces/')

@@ -75,12 +75,38 @@ class notificacionDO(TemplateView):
     
 class notificacionDOAC(TemplateView):
     template_name ='notificacionDOAC.html'
+    def post(self, request, *args, **kwargs):
+        try:
+            extranjero_id = self.kwargs['extranjero_id']
+            extranjero = Extranjero.objects.get(pk=extranjero_id)
+            estacion = extranjero.deLaEstacion
 
+            # Usando el método para obtener el último NoProceso
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+
+            # Solo crea la Notificacion si hay un NoProceso asociado
+            if ultimo_nup:
+                NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
+                
+            messages.success(request, 'Notificación creada exitosamente.')
+            return redirect('listarExtranjeroAC', puesta_id=self.kwargs.get('puesta_id'))
+
+        except Exception as e:
+            messages.error(request, f'Ocurrió un error: {str(e)}')
+            return redirect('notificacionDOAC', extranjero_id=extranjero_id)
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs['extranjero_id']
-    
-    
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+        try:
+            documento = Documentos.objects.get(nup=ultimo_nup)
+            context['oficio_derechos_obligaciones'] = documento.oficio_derechos_obligaciones
+        except Documentos.DoesNotExist:
+            context['oficio_derechos_obligaciones'] = None
+
+        extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
         nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
@@ -97,12 +123,38 @@ class notificacionDOAC(TemplateView):
     
 class notificacionDOVP(TemplateView):
     template_name ='notificacionDOVP.html'
+    def post(self, request, *args, **kwargs):
+        try:
+            extranjero_id = self.kwargs['extranjero_id']
+            extranjero = Extranjero.objects.get(pk=extranjero_id)
+            estacion = extranjero.deLaEstacion
+
+            # Usando el método para obtener el último NoProceso
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+
+            # Solo crea la Notificacion si hay un NoProceso asociado
+            if ultimo_nup:
+                NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
+                
+            messages.success(request, 'Notificación creada exitosamente.')
+            return redirect('listarExtranjeroVP', puesta_id=self.kwargs.get('puesta_id'))
+
+        except Exception as e:
+            messages.error(request, f'Ocurrió un error: {str(e)}')
+            return redirect('notificacionDOVP', extranjero_id=extranjero_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs['extranjero_id']
-    
-    
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+        try:
+            documento = Documentos.objects.get(nup=ultimo_nup)
+            context['oficio_derechos_obligaciones'] = documento.oficio_derechos_obligaciones
+        except Documentos.DoesNotExist:
+            context['oficio_derechos_obligaciones'] = None
+
+        extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
         nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
@@ -115,6 +167,53 @@ class notificacionDOVP(TemplateView):
         context['responsable']=responsable
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
+        return context
+
+class notificacionDOGeneral(TemplateView):
+    template_name ='notificacionGeneralDO.html'
+    def post(self, request, *args, **kwargs):
+        try:
+            extranjero_id = self.kwargs['extranjero_id']
+            extranjero = Extranjero.objects.get(pk=extranjero_id)
+            estacion = extranjero.deLaEstacion
+
+            # Usando el método para obtener el último NoProceso
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+
+            # Solo crea la Notificacion si hay un NoProceso asociado
+            if ultimo_nup:
+                NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
+                
+            messages.success(request, 'Notificación creada exitosamente.')
+            return redirect('listarExtranjerosEstacion', puesta_id=self.kwargs.get('puesta_id'))
+
+        except Exception as e:
+            messages.error(request, f'Ocurrió un error: {str(e)}')
+            return redirect('notificacionGeneralDO', extranjero_id=extranjero_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+        try:
+            documento = Documentos.objects.get(nup=ultimo_nup)
+            context['oficio_derechos_obligaciones'] = documento.oficio_derechos_obligaciones
+        except Documentos.DoesNotExist:
+            context['oficio_derechos_obligaciones'] = None
+
+        extranjero_id = self.kwargs['extranjero_id']
+     # Obtener la instancia del Extranjero correspondiente
+        extrannjero = Extranjero.objects.get(pk=extranjero_id)
+        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        estacion = extrannjero.deLaEstacion.responsable
+        responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
+     
+        context['extranjero']= extrannjero
+        context['nombreCompleto']= nombre_completo
+        context['responsable']=responsable
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'verextranjero' # Cambia esto según la página activa
         return context
     
 @csrf_exempt
