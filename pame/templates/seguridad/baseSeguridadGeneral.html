@@ -272,28 +272,28 @@
                 <span class="badge badge-info right"></span>
               </p>
             </a>
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="margin-left: 20px;"> <!-- Añade un margen izquierdo -->
               <li class="nav-item">
-                <a href="{% url 'homePuestaINM' %} "  class="nav-link {% if seccion == 'seguridadINM' %}active {% endif %}">
+                <a href="{% url 'homePuestaINM' %} " class="nav-link {% if seccion == 'seguridadINM' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Por personal del INM</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'homePuestaAC' %} " class="nav-link  {% if seccion == 'seguridadAC' %}active {% endif %}">
+                <a href="{% url 'homePuestaAC' %} " class="nav-link {% if seccion == 'seguridadAC' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Por autoridad competente</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'homePuestasVP' %} " class="nav-link  {% if seccion == 'seguridadVP' %}active {% endif %}">
+                <a href="{% url 'homePuestasVP' %} " class="nav-link {% if seccion == 'seguridadVP' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Voluntario</p>
                 </a>
               </li>
             </ul>
           </li>
-                    <!-- Cierre de Puesta disposición -->
+              <!-- Cierre de Puesta disposición -->
                     <!--  Traslado -->
 
           <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
@@ -305,7 +305,7 @@
               </p>
             </a>
 
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="{% url 'listTraslado' %}" class="nav-link {% if seccion == 'traslado' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -339,7 +339,7 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="#" class="nav-link ">
                   <i class="far fa-circle nav-icon"></i>
@@ -361,7 +361,7 @@
               </p>
             </a>
 
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -370,7 +370,7 @@
               </li>
             </ul>
 
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == '#' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -378,7 +378,7 @@
                 </a>
               </li>
             </ul>
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="{% url 'listTrasladados' %}" class="nav-link {% if seccion == 'trasladados' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
@@ -404,7 +404,7 @@
           </a>
 
 
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview"style="margin-left: 20px;">
             <li class="nav-item">
               <li class="nav-item {% if navbar1 == 'inicio' %}menu-is-opening menu-open{% endif %}">
 
@@ -414,7 +414,7 @@
                 <i class="right fas fa-angle-left"></i>
               </a>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview" style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "lisExtranjerosInicio" %}"class="nav-link ">
                     <i class="{% if seccion1 == 'inicio' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -423,7 +423,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "lisExtranjerosComparecencia" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'comparecencia' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -431,7 +431,7 @@
                   </a>
                 </li>
               </ul>
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href=" {% url "lisExtranjerosPresentacion" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'presentacion' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -444,7 +444,7 @@
             
           </ul>
 
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview"style="margin-left: 20px;">
             <li class="nav-item {% if navbar1 == 'especiales' %}menu-is-opening menu-open{% endif %}">
               <a href="#" class="nav-link {% if seccion == 'especiales' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
@@ -452,7 +452,7 @@
                 <i class="right fas fa-angle-left"></i>
               </a>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosAcumulacion" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -461,7 +461,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosConclusion" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'conclusion' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -470,7 +470,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosTraslado" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'traslado' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -479,7 +479,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosSeparacion" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'separacion' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -488,7 +488,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosRadicacion" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'radicacion' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -497,7 +497,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosRecepcion" %}" class="nav-link ">
                     <i class="{% if seccion1 == 'recepcion' %}fas {% endif %} far fa-circle nav-icon"></i>
@@ -511,7 +511,7 @@
           </ul>
 
 
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview"style="margin-left: 20px;">
             <li class="nav-item">
               <a href="#" class="nav-link ">
                 <i class="far fa-circle nav-icon"></i>
@@ -519,7 +519,7 @@
                 <i class="right fas fa-angle-left"></i>
               </a>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosComar" %}" class="nav-link ">
                     <i class="far fa-circle nav-icon"></i>
@@ -528,7 +528,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosRetorno" %}" class="nav-link ">
                     <i class="far fa-circle nav-icon"></i>
@@ -536,7 +536,7 @@
                   </a>
                 </li>
               </ul>
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosLibre" %}" class="nav-link ">
                     <i class="far fa-circle nav-icon"></i>
@@ -544,7 +544,7 @@
                   </a>
                 </li>
               </ul>
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosArticulo" %}" class="nav-link ">
                     <i class="far fa-circle nav-icon"></i>
@@ -553,7 +553,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
                   <a href="{% url "listExtranjerosDeportacion" %}" class="nav-link ">
                     <i class="far fa-circle nav-icon"></i>
@@ -581,7 +581,7 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
               <a href="{% url "repositorio" %}" class="nav-link {% if seccion == 'verrepo' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
@@ -631,7 +631,7 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="#" class="nav-link ">
                   <i class="far fa-circle nav-icon"></i>
