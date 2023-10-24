@@ -53,11 +53,15 @@
           {{ form.huellaExtranjero|as_crispy_field }}
          </div>
         </div>
-
-
+        <!-- Mini card para la imagen de la firma -->
+    
         <!--aqui quiero una mini card una vez que se la firma sea capturada con exito que se muestre en chiquito -->
         <div class="col-sm-6 col-md-6 col-lg-4">
+          
           <p style="font-size: 16px; font-weight: bold; margin-top: 0;" class="lll">Firma del Extranjero:</p>
+          <div class="mini-card" style="display: none;">
+            <img src="" alt="Firma del Extranjero" id="firmaImagen" style="max-width: 100%; height: auto;">
+          </div>
           <a class="btn btn-sm btn-firma btn-icon1a " href='{% url "qr" extranjero.id %}' style="width: 100%;">
               <i class="fas fa-pencil-alt"></i>
           </a>
@@ -175,7 +179,10 @@
             success: function(response) {
                 if(response.firmado){
                     $('.btn-firma').removeClass('btn-icon1a').addClass('btn-icon3a').text("Firma Capturada");
-                    clearInterval(comprobacion); // Detiene la comprobación automática
+                    clearInterval(comprobacion); // Detiene la comprobación automáticamente
+                       // Añade la imagen al contenedor y muestra el contenedor
+                    $("#firmaImagen").attr("src", response.url_imagen_firma);
+                    $(".mini-card").show();
                 }
             }
         });

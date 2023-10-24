@@ -6,6 +6,8 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion, NoProceso
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
@@ -3720,12 +3722,13 @@ def verificar_firma(request, extranjero_id):
     try:
         firma = Firma.objects.get(extranjero_id=extranjero_id)
         if firma.firma_imagen:
-            return JsonResponse({"firmado": True})
+            # Construye la URL completa para la imagen
+            url_imagen = os.path.join(settings.MEDIA_URL, str(firma.firma_imagen))
+            return JsonResponse({"firmado": True, "url_imagen_firma": url_imagen})
         else:
             return JsonResponse({"firmado": False})
     except Firma.DoesNotExist:
         return JsonResponse({"firmado": False})
-    
 
 class FirmaCreateView(CreateView):
     model = Firma
