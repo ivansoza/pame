@@ -1,21 +1,10 @@
-
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199d8 ">
     <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
-    <style>
-      .ll{
-        text-align: center;
-      }
-      .lll{
-        text-align: left;
-      }
-    </style>
-
-    <script src="https://unpkg.com/sweetalert@2/dist/sweetalert.min.js"></script>
 
 {% endblock link %}
 
@@ -66,47 +55,13 @@
         </div>
 
 
-        <script type="text/javascript">
-          $(document).ready(function(){
-            let comprobacion = setInterval(verificarFirma, 1000);  // Hace la verificación cada segundo
-        
-            // Manejar el evento click
-            $(".btn-icon6").on("click", function(e) {
-                e.preventDefault();
-                if ($(this).hasClass("btn-success")) {
-                    swal("¡Éxito!", "Firma cargada exitosamente.", "success");
-                } else {
-                    abrir_modal_eliminar($(this).attr('href'));
-                }
-            });
-        
-            function verificarFirma(){
-                $.ajax({
-                    url: "{% url 'verificar_firma' extranjero.id %}",
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        if(response.firmado){
-                            $('.btn-icon6').removeClass('btn-primary').addClass('btn-success').text("Firma Capturada");
-                            clearInterval(comprobacion); // Detiene la comprobación automática
-                        }
-                    }
-                });
-            }
-        });
-        
-      </script>
-      
-      
-      <div class="col-sm-6 col-md-6 col-lg-4 ll" >
-        <p style="font-size: 16px; font-weight: bold; margin-top: 0;" class="lll">Firma del Extranjero:</p>
-        <a class="btn btn-sm btn-icon6 btn-primary " href='{% url "qr" extranjero.id %}' style="width: 70%;">
-            <i class="fas fa-pencil-alt"></i>
-        </a>
-    </div>
-    
-
-   
+        <!--aqui quiero una mini card una vez que se la firma sea capturada con exito que se muestre en chiquito -->
+        <div class="col-sm-6 col-md-6 col-lg-4">
+          <p style="font-size: 16px; font-weight: bold; margin-top: 0;" class="lll">Firma del Extranjero:</p>
+          <a class="btn btn-sm btn-firma btn-icon1a " href='{% url "qr" extranjero.id %}' style="width: 100%;">
+              <i class="fas fa-pencil-alt"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -165,29 +120,69 @@
         <div class="col-12">
           <button class="btn btn-custom btn-primary btn-block" type="submit">Guardar</button>
           <br>
-          <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Cancelar</a>
+          <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar Despues</a>
 
         </div>
       </div>
     </div>
   </div>    
   </form>
-  <div class="modal fade" id="eliminarextranjero" role="dialog">
 
+  <div class="modal fade" id="firmaextranjero" role="dialog">
+  </div>
+
+  <script>
+    function abrir_modal_firma(url){
+         $('#firmaextranjero').load(url, function(){
+             $(this).modal('show');
+         })
+     }
+ </script>
 
 <!-- FIN BIOMETRICOS -->
 {% include "includes/camera/modalCameraBiometricos.html" %}
 {% endblock %}
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script>
-   function abrir_modal_eliminar(url){
-        $('#eliminarextranjero').load(url, function(){
-            $(this).modal('show');
-        })
-    }
-</script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    let comprobacion = setInterval(verificarFirma, 1000);  // Hace la verificación cada segundo
+
+    // Manejar el evento click
+    $(".btn-firma").on("click", function(e) {
+        e.preventDefault();
+        if ($(this).hasClass("btn-icon3a")) {
+            Swal.fire({
+              title: "¡Éxito!",
+              text: "Firma cargada exitosamente.",
+              icon: 'success',
+              confirmButtonText: 'Ok',
+              confirmButtonColor: '#3B594F',
+          });
+        } else {
+          abrir_modal_firma($(this).attr('href'));
+        }
+    });
+
+    function verificarFirma(){
+        $.ajax({
+            url: "{% url 'verificar_firma' extranjero.id %}",
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if(response.firmado){
+                    $('.btn-firma').removeClass('btn-icon1a').addClass('btn-icon3a').text("Firma Capturada");
+                    clearInterval(comprobacion); // Detiene la comprobación automática
+                }
+            }
+        });
+    }
+});
+
+</script>
 {% include "includes/js/cam/createBiometricos.html" %}
 
 {% endblock script %}

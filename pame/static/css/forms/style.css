@@ -205,6 +205,17 @@
   border-color: #621e33; 
 }
 
+.btn-icon1a{
+  background-color: #922E41; 
+  color: white; 
+  border-color: #922E41; 
+}
+
+.btn-icon1a:hover {
+  color: white;
+  background-color: #621e33; 
+  border-color: #621e33; 
+}
 .btn-icon2 {
   background-color: #B59664; 
   color: white; 
