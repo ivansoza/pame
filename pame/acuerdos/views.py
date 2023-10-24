@@ -7,7 +7,7 @@ from django.http import HttpResponse, FileResponse
 from weasyprint import HTML
 from django.template.loader import render_to_string, get_template
 from django.views.generic import ListView
-from vigilancia.models import Extranjero
+from vigilancia.models import Extranjero, Firma
 import os
 from operator import itemgetter
 from datetime import datetime
@@ -247,6 +247,7 @@ def constancia_llamada(request=None, extranjero_id=None):
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
+
     print("Notificaciones:", notificaciones)
 
     if notificaciones.exists():
@@ -254,7 +255,7 @@ def constancia_llamada(request=None, extranjero_id=None):
 
         notificacion = notificaciones.latest('nup')
         print("Notificacion:", notificacion)
-
+        id = extranjero.pk
         nombre = extranjero.nombreExtranjero
         apellidop = extranjero.apellidoPaternoExtranjero
         apellidom = extranjero.apellidoMaternoExtranjero
@@ -262,9 +263,12 @@ def constancia_llamada(request=None, extranjero_id=None):
         deseaLlamar = notificacion.deseaLlamar
         motivo = notificacion.motivoNoLlamada
         fecha = notificacion.fechaHoraNotificacion
+        firma = extranjero.firma.firma_imagen
+        print(firma)
         nombre_pdf = f"Constancia_llamadas.pdf"
         
         html_context = {
+            'id':id,
             'fecha': fecha,
             'motivo': motivo,
             'desea': deseaLlamar,
@@ -274,6 +278,7 @@ def constancia_llamada(request=None, extranjero_id=None):
             'apellidom': apellidom,
             'nacionalidad': nacionalidad,
             'fecha': fecha,
+            'firma':firma,
         }
         
         html_content = render_to_string('documentos/constanciaLlamada.html', html_context)
