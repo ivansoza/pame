@@ -53,10 +53,7 @@
             <td>{{ extranjero.nacionalidad }}</td>
             <td>
                   <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
-                  <a class="btn btn-sm btn-icon3 tooltip-link"
-                  href="#" data-title="Derechos y Obligaciones">
-                      <i class="fas fa-balance-scale"></i>
-                  </a>
+                  
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.notificacion_set.all %}
                 {% with first_notificacion=extranjero.notificacion_set.first %}
@@ -69,7 +66,10 @@
                         <i class="fas fa-phone"></i>
                     </a>
                 {% endif %}
-              
+                <a class="btn btn-sm btn-icon3 tooltip-link"
+                href="#" data-title="Derechos y Obligaciones">
+                    <i class="fas fa-balance-scale"></i>
+                </a>
 
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}

@@ -96,12 +96,45 @@
             <div class="text" id="text-content" style="text-align: justify;">
                 <p>Sr(a)<strong style="color: rgb(161, 13, 13);"> {{nombreCompleto}}</strong>,</p>
                 <h5>Durante el tiempo que usted permanezca alojado en esta Estación Migratoria, tiene los siguientes derechos y obligaciones</h5>
+              
+                {% if oficio_derechos_obligaciones %}
+                <!-- Si existe el registro, mostrar el PDF almacenado -->
+                <a href="{{ oficio_derechos_obligaciones.url }}" target="_blank" class="btn btn-sm btn-icon1 tooltip-link btn-generado">
+                    <i class="fas fa-file-pdf"></i>
+                </a>
+                {% else %}
+                    <!-- Si no existe el registro, generar y mostrar el PDF -->
+                    <a href="{% url 'derechosObligaciones' extranjero_id=extranjero.id %}" target="_blank" class="btn btn-sm btn-icon1 tooltip-link btn-generado">
+                        <i class="fas fa-file-pdf"></i>
+                    </a>
+                {% endif %}
                 <br>
                 <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
-                <p><input type="checkbox" name="" id=""> He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta estación migratoria.</p>
-
-                <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a>
+                <input type="checkbox" name="derechos_aceptados" id="derechosCheckbox"> He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta estación migratoria.
+                
+                {% comment %} <a id="tomarFotoBtn" class="btn btn-custom2 btn-verified">Acepto que he sido notificado</a> {% endcomment %}
+                <div class="div">
+                    <div class="row">
+                        <div class="col-2">
+                            <a class='btn btn-verified tooltip-link' data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-title="Verifica extranjero">
+                            <i class="fas fa-fingerprint"></i>
+                            </a>
+                        </div>
+                        <div class="col-10">
+                            <form method="post">
+                                {% csrf_token %}
+                                <!-- El resto del contenido, incluyendo el checkbox -->
+    
+                                <button type="submit" class="btn btn-custom btn-unverified">Acepto que he sido notificado</button>
+                            </form>
+                        </div>
+              
+                    </div>
+                </div>
+               
+              
             </div>
         </div>
     </div>
@@ -272,18 +305,18 @@
                                           localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
                                       }, 300000);
                                       Swal.fire({
-                                        icon: 'success',
-                                        title: '¡Coincidencia Exitosa!',
-                                        confirmButtonText: 'Aceptar',
-                                        confirmButtonColor: '#20302B',
-                                        reverseButtons: true,
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            abrir_modal("");
+                                            icon: 'success',
+                                            title: '¡Coincidencia Exitosa!',
+                                            confirmButtonColor: '#2A4B41',
 
-
-                                        }
-                                    });
+                                        });
+                                        document.querySelectorAll('.btn-unverified').forEach(function(btn) {
+                                            btn.classList.remove('btn-unverified');
+                                        });
+                                        document.querySelectorAll('.btn-verified').forEach(function(btn) {
+                                            btn.remove();
+                                        });
+    
                                      
   
                                   } else {
@@ -346,9 +379,19 @@
   document.querySelectorAll('.btn-custom, .btn-icon3').forEach(function(btn) {
       btn.addEventListener('click', function(event) {
           event.preventDefault();
+          var checkbox = document.getElementById("derechosCheckbox");
 
           if (isVerified) {
-            
+             if (checkbox.checked) {
+                    btn.closest('form').submit();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Debes aceptar los derechos y obligaciones',
+                        confirmButtonText: 'Ok'
+                    });
+                    return; // detiene el código aquí y no avanza más
+                }
           } else {
               Swal.fire({
                   icon: 'error',

@@ -1,3 +1,4 @@
+import base64
 from pathlib import Path
 from typing import Any
 from django import forms
@@ -5,6 +6,8 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion, NoProceso
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
@@ -68,6 +71,9 @@ from biometricos.models import UserFace1
 from juridico.models import NotificacionDerechos
 
 import qrcode
+from vigilancia.models import Firma
+from .forms import FirmaForm
+from django.core.files.base import ContentFile
 
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
@@ -1439,7 +1445,17 @@ class listarExtranjerosAC(ListView):
         for extranjero in context['extranjeros']:
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
             tiene_enseres = False
-
+            if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
             if ultimo_nup:
                 enseres = EnseresBasicos.objects.filter(nup=ultimo_nup).first()
                 if enseres:
@@ -2253,7 +2269,17 @@ class listarExtranjerosVP(ListView):
         for extranjero in context['extranjeros']:
          ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
          tiene_notificacion = False
-
+         if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
          if ultimo_nup:
             notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
             if notificacion:
@@ -3636,6 +3662,17 @@ class listarExtranjerosEstacion(ListView):
         for extranjero in context['extranjeros']:
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
             tiene_notificacion = False
+            if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
 
             if ultimo_nup:
                 notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
@@ -3674,9 +3711,61 @@ class qrs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.1.128:8082/seguridad/firma/{extranjero_id}"
+        qr_link = f"https://740a-187-187-225-64.ngrok-free.app/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
         context['initial_qr_link'] = qr_link
         context['nombre'] = nombre
+        return context
+    
+def verificar_firma(request, extranjero_id):
+    try:
+        firma = Firma.objects.get(extranjero_id=extranjero_id)
+        if firma.firma_imagen:
+            # Construye la URL completa para la imagen
+            url_imagen = os.path.join(settings.MEDIA_URL, str(firma.firma_imagen))
+            return JsonResponse({"firmado": True, "url_imagen_firma": url_imagen})
+        else:
+            return JsonResponse({"firmado": False})
+    except Firma.DoesNotExist:
+        return JsonResponse({"firmado": False})
+
+class FirmaCreateView(CreateView):
+    model = Firma
+    form_class = FirmaForm
+    template_name = 'modal/firma.html'
+    
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        
+        # Verifica si el extranjero ya tiene una firma
+        if hasattr(extranjero, 'firma'):
+            # Aquí decides qué hacer si ya existe una firma
+            # Por ejemplo, puedes redirigir al usuario a otra página o mostrar un mensaje de error
+            return HttpResponse("El extranjero ya tiene una firma.")
+        else:
+            firma = form.save(commit=False)
+            firma.extranjero = extranjero
+
+            # Toma la cadena dataURL desde el formulario
+            firma_data_url = form.cleaned_data.get('firma_imagen')
+            format, imgstr = firma_data_url.split(';base64,')
+            ext = format.split('/')[-1]
+
+            # Crea un archivo de imagen desde la cadena dataURL
+            firma_image = ContentFile(base64.b64decode(imgstr), name=f"firma_{firma.id}.{ext}")
+
+            firma.firma_imagen.save(firma_image.name, firma_image)
+            firma.save()
+
+            return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirige a donde desees después de guardar la firma
+        return reverse_lazy('menu')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['extranjero_id'] = self.kwargs.get('extranjero_id')
         return context
