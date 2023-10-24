@@ -31,7 +31,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/derechosObligaciones.html')
+    html_template = get_template('documentos/acuerdoInicio.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
