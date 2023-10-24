@@ -6,6 +6,8 @@ from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion, NoProceso
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
@@ -3709,7 +3711,7 @@ class qrs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.100.41:8082/seguridad/crear_firma/{extranjero_id}"
+        qr_link = f"https://740a-187-187-225-64.ngrok-free.app/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
         context['initial_qr_link'] = qr_link
@@ -3720,12 +3722,13 @@ def verificar_firma(request, extranjero_id):
     try:
         firma = Firma.objects.get(extranjero_id=extranjero_id)
         if firma.firma_imagen:
-            return JsonResponse({"firmado": True})
+            # Construye la URL completa para la imagen
+            url_imagen = os.path.join(settings.MEDIA_URL, str(firma.firma_imagen))
+            return JsonResponse({"firmado": True, "url_imagen_firma": url_imagen})
         else:
             return JsonResponse({"firmado": False})
     except Firma.DoesNotExist:
         return JsonResponse({"firmado": False})
-    
 
 class FirmaCreateView(CreateView):
     model = Firma
