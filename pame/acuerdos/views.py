@@ -1,5 +1,4 @@
 from typing import Any
-from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from vigilancia.models import Extranjero
@@ -9,14 +8,13 @@ from django.template.loader import render_to_string, get_template
 from django.views.generic import ListView
 from vigilancia.models import Extranjero
 import os
-from operator import itemgetter
 from datetime import datetime
 import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 from acuerdos.models import Documentos
 from django.core.files.base import ContentFile
-from django.db.models import Max, OuterRef, Subquery
+from django.db.models import OuterRef, Subquery
 
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----

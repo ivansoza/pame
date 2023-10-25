@@ -18,13 +18,12 @@
             left: auto;
             text-align: right;
             padding: 10px;
+            margin-top: -2.8cm;
         }
 
         #content {
             font-size: 16px;
             text-align: justify;
-            margin-top: 3cm;
-            margin-bottom: 1.5cm;
         }
 
         .centrado {
@@ -35,19 +34,38 @@
             padding: 10px;
             position: fixed;
             bottom: 0;
-            left: 0;
+            left: -0.4cm;
             right: 0;
             width: 100%;
             font-size: 10px;
-            height: 1.5cm;
-            margin-top: -1.5cm;
+            text-align: center;
+            /* height: 1.5cm; */
+            margin-bottom: -3.5cm;
         }
 
         {% block pagina %}
         @page {
             size: letter;
-            margin: 2cm 1.5cm 1.5cm 2cm;
+            margin: 3cm 1.5cm 3.6cm 1.5cm;
+            /* margin-bottom: 3cm; */
             /* Margen superior 1.5cm, márgenes derecho, inferior e izquierdo 2.5cm */
+        }
+
+        @page :first {
+        /* Establece el margen superior de la primera página para dejar espacio para la paginación */
+        /* margin-bottom: -4cm; */
+        }
+
+        @page :left {
+            @bottom-center {
+                content: "Página " counter(page);
+            }
+        }
+
+        @page :right {
+            @bottom-center {
+                content: "Página " counter(page);
+            }
         }
         {% endblock %}
 
