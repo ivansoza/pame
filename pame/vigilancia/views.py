@@ -3711,11 +3711,16 @@ class qrs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.1.128:8082/seguridad/crear_firma/{extranjero_id}"
+        qr_link = f"http://192.168.1.127:8082/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
-        nombre = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero +" "+ extranjero.apellidoMaternoExtranjero
+        nombre = extranjero.nombreExtranjero
+        apellidoP = extranjero.apellidoPaternoExtranjero
+        apellidoM = extranjero.apellidoMaternoExtranjero
         context['initial_qr_link'] = qr_link
         context['nombre'] = nombre
+        context['apellidoP'] = apellidoP
+        context['apellidoM'] = apellidoM
+
         return context
     
 def verificar_firma(request, extranjero_id):
@@ -3775,3 +3780,109 @@ class firmE(TemplateView):
 
 class firmExistente(TemplateView):
     template_name='firmaExistente.html'
+
+class AgregarBiometricoINM(CreateView):
+    model = Biometrico
+    form_class = BiometricoFormINM
+    template_name = 'extranjeros/createBiometricosGenerales.html'  # Cambiar a la ruta correcta
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Biometrico Agregado con Éxito.')
+
+        return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        initial['Extranjero'] = extranjero
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtén el ID del extranjero del argumento en la URL
+        extranjero_id = self.kwargs.get('extranjero_id')
+        # Obtén la instancia del extranjero correspondiente al ID
+        context['form'] = BiometricoFormINM()
+        context['form1'] = descripcionForms()
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaIMN
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'seguridad' 
+        context['seccion'] = 'seguridadINM' 
+         # Datos iniciales para el segundo formulario (descripcionForms)
+        biometrico_initial = {
+          'Extranjero': extranjero,
+        # Agrega aquí más campos y sus valores iniciales según tu formulario BiometricoFormINM
+        }
+        context['form'] = BiometricoFormINM(initial=biometrico_initial)
+        descripcion_initial = {
+            'delExtranjero': extranjero,
+        }
+        context['form1'] = descripcionForms(initial=descripcion_initial)
+
+        return context
+    
+    def form_valid(self, form):
+    # Lógica de recorte
+     image = form.cleaned_data['fotografiaExtranjero']
+     img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+     img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+    
+     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+     faces = face_cascade.detectMultiScale(img, 1.3, 5)
+     region = None  # Definición inicial de la variable "region"
+
+     for (x,y,w,h) in faces:
+        margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+        margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+        margen_horizontal = int(0.2 * w)
+            
+        inicio_x = max(0, x - margen_horizontal)
+        inicio_y = max(0, y - margen_vertical_arriba)
+        fin_x = min(img.shape[1], x + w + margen_horizontal)
+        fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+            
+        region = img[inicio_y:fin_y, inicio_x:fin_x]
+    
+     if region is not None and region.size > 0:
+        is_success, im_buf_arr = cv2.imencode(".jpg", region)
+        region_bytes = im_buf_arr.tobytes()
+        
+        # Guarda en el modelo Biometrico
+        biometrico = form.save(commit=False)
+        biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=True)
+
+        # Calcula el face encoding y guarda en el modelo UserFace1
+        image_path = biometrico.fotografiaExtranjero.path
+        image_array = face_recognition.load_image_file(image_path)
+        face_encodings = face_recognition.face_encodings(image_array)
+
+        if face_encodings:
+            biometrico.face_encoding = face_encodings[0].tolist()
+            biometrico.save()
+            user_face1 = UserFace1(extranjero=biometrico.Extranjero)
+            user_face1.face_encoding = face_encodings[0].tolist()
+            user_face1.save()
+     else:
+        # Muestra un mensaje al usuario
+        messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+        return super().form_invalid(form)
+    
+    # Procesa el segundo formulario (DescripcionForm)
+     descripcion_form = descripcionForms(self.request.POST)
+    
+     if descripcion_form.is_valid():
+        descripcion = descripcion_form.save(commit=False)
+        # Asigna cualquier relación necesaria para el segundo formulario aquí
+        # Por ejemplo, si necesitas relacionar con el biometrico
+        descripcion.biometrico = biometrico  # Asegúrate de ajustar esto según tu modelo real
+        descripcion.save()
+     else:
+        messages.error(self.request, "Error en el segundo formulario. Por favor, verifica los datos.")
+        return super().form_invalid(form)
+
+     return super().form_valid(form)

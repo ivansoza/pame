@@ -185,7 +185,11 @@ class notificacionDOGeneral(TemplateView):
                 NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
                 
             messages.success(request, 'Notificación creada exitosamente.')
-            return redirect('listarExtranjerosEstacion', puesta_id=self.kwargs.get('puesta_id'))
+            estatus = extranjero.estatus
+            if estatus == "Trasladado":
+              return redirect('listTrasladados')
+            else:
+              return redirect('listarExtranjerosEstacion')
 
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
@@ -208,12 +212,15 @@ class notificacionDOGeneral(TemplateView):
         nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
-     
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
         context['extranjero']= extrannjero
         context['nombreCompleto']= nombre_completo
         context['responsable']=responsable
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
-        context['seccion'] = 'verextranjero' # Cambia esto según la página activa
         return context
     
 @csrf_exempt

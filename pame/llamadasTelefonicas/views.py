@@ -884,6 +884,7 @@ class notificacionLlamadaGenerales(TemplateView):
      estancia_responsableAM = llamada.deLaEstacion.responsable.apellidoMat
      no_puesta = llamada.numeroExtranjero
      nn = llamada.pk
+     estatus = llamada.estatus
      context['nup'] = ultimo_no_proceso_id
 
      context['llamada'] = llamada
@@ -896,7 +897,10 @@ class notificacionLlamadaGenerales(TemplateView):
      context['nombreCompleto'] = nombre_extranjero + " " + apellido_paterno + " " + apellido_materno
      context['responsable'] = estancia_responsableN + " " + estancia_responsableAP + " " + estancia_responsableAM
      context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
-     context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+     if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+     else:
+         context['seccion'] = 'verextranjero'
     
      return context
 
@@ -947,13 +951,15 @@ class validarNotificacionGenerales(CreateView):
         estancia_extranjero = llamada.deLaEstacion
         ape = llamada.apellidoPaternoExtranjero
         ame = llamada.apellidoMaternoExtranjero
-       
-    
+        estatus = llamada.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
-        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         return context
     
 class crearLlamadasGenerales(CreateView):

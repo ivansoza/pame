@@ -55,17 +55,22 @@
                   <!-- INICIO DE DERECHOS Y OBLIGACIONES  -->
                   
                 <!-- INICIO DE ICONO DE LLAMADA  -->
-                {% if extranjero.notificacion_set.all %}
-                {% with first_notificacion=extranjero.notificacion_set.first %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Llamadas Telefonicas">
-                        <i class="fas fa-phone"></i>
-                    </a>
-                {% endwith %}
-                {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Llamadas Telefonicas">
-                        <i class="fas fa-phone"></i>
-                    </a>
-                {% endif %}
+                {% if extranjero.tiene_notificacion %}
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listLLamadasGen' extranjero.id%}" data-title="Llamadas Telefonicas">
+                      <i class="fas fa-phone"></i>
+                  </a>
+              {% else %}
+              {% if extranjero.tiene_fotografia %}
+                  <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificarLlamadaGen'  extranjero.id  %}" data-title="Llamadas Telefonicas">
+                    <i class="fas fa-phone"></i>
+                  </a>
+                  {% else %}
+                      <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="No hay datos biométricos">
+                          <i class="fas fa-phone"></i>
+                      </a>
+               
+                  {% endif %}
+              {% endif %}
                 
                 {% if extranjero.tiene_notificacion_derechos %}
 
@@ -95,7 +100,7 @@
                        {% if extranjero.tiene_fotografia %}
 
                            <a class="btn btn-sm btn-icon1 tooltip-link"
-                           href="{% url "notificacionDOVP" extranjero.id%}"  data-title="Generar Notificación">
+                           href="{% url "notificacionGeneralDO" extranjero.id%}"  data-title="Generar Notificación">
                                <i class="fas fa-balance-scale"></i>
                            </a>
                        {% else %}

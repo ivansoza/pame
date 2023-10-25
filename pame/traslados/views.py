@@ -645,7 +645,9 @@ class CambioEstacionView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('listTraslado')
-    
+from juridico.models import NotificacionDerechos
+from llamadasTelefonicas.models import Notificacion
+
 class extranjeroTrasladadoList(ListView):
     model = Extranjero
     template_name='destino/verExtranjerosTraladados.html'
@@ -663,6 +665,32 @@ class extranjeroTrasladadoList(ListView):
   
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        for extranjero in context['extranjeros']:
+         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+         tiene_notificacion = False
+
+         if ultimo_nup:
+            notificacion = Notificacion.objects.filter(nup=ultimo_nup).first()
+            if notificacion:
+                tiene_notificacion = True
+
+         extranjero.tiene_notificacion = tiene_notificacion
+    
+
+        for extranjero in context['extranjeros']:
+         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+
+        if ultimo_nup:
+                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                if notificacion:
+                    extranjero.tiene_notificacion_derechos = True
+                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                    extranjero.estacion_notificacion = notificacion.estacion
+                else:
+                    extranjero.tiene_notificacion_derechos = False
+                    extranjero.fecha_aceptacion = None
+                    extranjero.hora_aceptacion = None
+                    extranjero.estacion_notificacion = None
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         context['seccion'] = 'trasladados'  # Cambia esto según la página activa
         return context
