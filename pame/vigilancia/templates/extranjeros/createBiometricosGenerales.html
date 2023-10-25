@@ -1,24 +1,27 @@
-
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 {% load crispy_forms_tags %}
 
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199d8 ">
     <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 
 {% endblock link %}
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosVP' puesta.id %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listar-extranjero-dd' %}">
   <i class="fas fa-arrow-left"></i>
 </a>
+
 {% endblock dashboard %}
+
 {% block contenido %}
+
 {% include "includes/tituloBiometricos.html" %}
 
 
 <!-- BIOMETRICOS -->
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="card">
@@ -50,6 +53,9 @@
           {{ form.huellaExtranjero|as_crispy_field }}
          </div>
         </div>
+        <!-- Mini card para la imagen de la firma -->
+    
+        <!--aqui quiero una mini card una vez que se la firma sea capturada con exito que se muestre en chiquito -->
         <div class="col-sm-6 col-md-6 col-lg-4">
           
           <p style="font-size: 16px; font-weight: bold; margin-top: 0;" class="lll">Firma del Extranjero:</p>
@@ -118,13 +124,14 @@
         <div class="col-12">
           <button class="btn btn-custom btn-primary btn-block" type="submit">Guardar</button>
           <br>
-          <a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom1 btn-block">Cancelar</a>
+          <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar Despues</a>
 
         </div>
       </div>
     </div>
   </div>    
   </form>
+
   <div class="modal fade" id="firmaextranjero" role="dialog">
   </div>
 
@@ -135,18 +142,15 @@
          })
      }
  </script>
- 
+
 <!-- FIN BIOMETRICOS -->
 {% include "includes/camera/modalCameraBiometricos.html" %}
-
-  
 {% endblock %}
-
-
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.js"></script>
+
 <script type="text/javascript">
   $(document).ready(function(){
     let comprobacion = setInterval(verificarFirma, 1000);  // Hace la verificación cada segundo
@@ -187,4 +191,5 @@
 
 </script>
 {% include "includes/js/cam/createBiometricos.html" %}
+
 {% endblock script %}

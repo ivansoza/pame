@@ -2413,11 +2413,14 @@ class ListaEnseresView(ListView):
         extranjero_id= self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
         context['today_registered'] = self.today_registered  # Agrega al contexto si se registró hoy
-
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
-        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         return context
 
 class CrearEnseres(CreateView):
@@ -2426,18 +2429,27 @@ class CrearEnseres(CreateView):
     template_name = 'pertenencias/agregarEnseres.html'
 
     def get_success_url(self):
-        extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
         messages.success(self.request, 'Enseres creado con éxito.')
-        return reverse('listarExtranjerosEstacion')
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+            return reverse('listarExtranjerosEstacion')
+        else:
+          return reverse('listTrasladados')
     
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
         context['extranjero'] = Extranjero.objects.get(id=extranjero_id)
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
-        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         context['extranjero_id'] = extranjero_id
 
         return context
@@ -2591,8 +2603,15 @@ class CrearInventarioViewGeneral(PermissionRequiredMixin,CreateView):
     form_class = InventarioForm
     template_name = 'pertenencias/inventarioGeneral.html'
     def get_success_url(self):
+        extranjero_id = self.kwargs['extranjero_id']
+        extranjero = Extranjero.objects.get(id=extranjero_id)
         messages.success(self.request, 'Inventario creado con éxito.')
-        return reverse_lazy('listarExtranjerosEstacion')
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+            return reverse('listarExtranjerosEstacion')
+        else:
+          return reverse('listTrasladados')
+
 
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
