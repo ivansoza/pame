@@ -283,7 +283,7 @@ class BiometricoFormINM(forms.ModelForm, ValidacionArchivosPDF):
     def clean_firmaExtranjero(self):
         return self.clean_archivof('firmaExtranjero')
 
-class BiometricoFormAC(forms.ModelForm):
+class BiometricoFormAC(forms.ModelForm,ValidacionArchivosPDF):
     class Meta:
         model = Biometrico
         fields = '__all__'  # Incluye todos los campos del modelo
@@ -459,7 +459,7 @@ class editExtranjeroVPForm(forms.ModelForm):
         }
 
 
-class BiometricoFormVP(forms.ModelForm):
+class BiometricoFormVP(forms.ModelForm,ValidacionArchivosPDF):
     class Meta:
         model = Biometrico
         fields = '__all__'  # Incluye todos los campos del modelo
