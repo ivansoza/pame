@@ -66,8 +66,11 @@
 
 {{ objetos.fechaHoraLlamada }}
 <a class="btn btn-custom6" href="#">Imprimir Documento</a>
-<a class="btn btn-custom6" href="{% url 'constanciaLlamadas' extranjero_id=llamada.id %}" target="_blank">Digitalizar Notificion de llamada</a>
-
+{% if url_oficio_llamada %}
+    <a href="{{ url_oficio_llamada }}" target="_blank" class="btn btn-custom6">
+        Ver constancia de llamada
+    </a>
+{% endif %}
 
 <br>
 <br>

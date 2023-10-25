@@ -258,6 +258,7 @@ def generate_pdfsinguardar(request, extranjero_id):
     
     return response
 
+
 # ----- Genera el documento PDF de la constancia de llamada 
 def constancia_llamada(request, extranjero_id=None):
     print("Iniciando constancia_llamada")

@@ -103,6 +103,7 @@ class llamadasTelefonicas(View):
 
   
 
+#-------------------------LISTA DE LLLAMADAS PARA LA PUESTA DE INM 
 class ListLlamadas(ListView):
     model= LlamadasTelefonicas
     template_name = 'LtIMN/LtIMN.html'
@@ -110,13 +111,8 @@ class ListLlamadas(ListView):
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         extranjero = Extranjero.objects.get(pk=llamada_id)
-
-        # Obtén el último nup registrado del extranjero
         ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
-
-        # Filtra las llamadas que tengan el último nup registrado del extranjero
         queryset = LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id, nup__consecutivo=ultimo_nup)
-        
         return queryset
     
     
@@ -216,7 +212,7 @@ class crearLlamadas(CreateView):
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
         return context
-#------------------------------------------------------------------------------------ 
+#-----------------------LISTA DE LLAMADAS PARA LA PUESTA AC ------------------------------------------------------------- 
 class ListLlamadasAC(ListView):
     model= LlamadasTelefonicas
     template_name = 'LtAC/LtAC.html'
@@ -225,13 +221,8 @@ class ListLlamadasAC(ListView):
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         extranjero = Extranjero.objects.get(pk=llamada_id)
-
-        # Obtén el último nup registrado del extranjero
         ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
-
-        # Filtra las llamadas que tengan el último nup registrado del extranjero
-        queryset = LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id, nup__consecutivo=ultimo_nup)
-        
+        queryset = LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id, nup__consecutivo=ultimo_nup)        
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -245,6 +236,18 @@ class ListLlamadasAC(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         folio = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id') 
+           # Obtener el último nup registrado del extranjero
+        extranjero = Extranjero.objects.get(pk=llamada_id)
+        ultimo_nup = extranjero.noproceso_set.latest('consecutivo')
+        tipo_doc_constancia = TiposDoc.objects.get(descripcion="ConstanciaLlamada")
+        repositorio = Repositorio.objects.filter(nup=ultimo_nup, delTipo=tipo_doc_constancia).order_by('-fechaGeneracion').first()
+        if repositorio and repositorio.archivo:
+            url_oficio_llamada = repositorio.archivo.url
+        else:
+            url_oficio_llamada = None
+
+        context['url_oficio_llamada'] = url_oficio_llamada
+
         context['extranjero_id'] = llamada_id  # ID del extranjero
         context['puesta_id'] = llamada.deLaPuestaAC.id  
         context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
@@ -441,31 +444,13 @@ class ListLlamadasVP(ListView):
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         extranjero = Extranjero.objects.get(pk=llamada_id)
-
-        # Obtén el último nup registrado del extranjero
         ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
-
-        # Filtra las llamadas que tengan el último nup registrado del extranjero
-        queryset = LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id, nup__consecutivo=ultimo_nup)
-        
+        queryset = LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id, nup__consecutivo=ultimo_nup)        
         return queryset
-
-    def get_initial(self):
-        initial = super().get_initial()
-        # Obtén el ID del extranjero desde la URL
-        llamada_id = self.kwargs.get('llamada_id')
-        # Obtén la instancia del extranjero correspondiente al ID
-        extranjero = Extranjero.objects.get(id=llamada_id)
-        
-        # Rellena los campos en initial
-        initial['noExtranjero'] = extranjero
-        initial['estacionMigratoria'] = extranjero.deLaEstacion
-    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         llamada_id = self.kwargs['llamada_id']
-        # Obtener la instancia del Extranjero correspondiente
         llamada = Extranjero.objects.get(pk=llamada_id)
         nombre_extranjero = llamada.nombreExtranjero
         estancia_extranjero = llamada.deLaEstacion
@@ -473,6 +458,18 @@ class ListLlamadasVP(ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
         puesta_id = self.kwargs.get('puesta_id')
+        extranjero = Extranjero.objects.get(pk=llamada_id)
+
+
+        # Obtener el último nup registrado del extranjero
+        ultimo_nup = extranjero.noproceso_set.latest('consecutivo')
+        tipo_doc_constancia = TiposDoc.objects.get(descripcion="ConstanciaLlamada")
+        repositorio = Repositorio.objects.filter(nup=ultimo_nup, delTipo=tipo_doc_constancia).order_by('-fechaGeneracion').first()
+        if repositorio and repositorio.archivo:
+            url_oficio_llamada = repositorio.archivo.url
+        else:
+            url_oficio_llamada = None
+        context['url_oficio_llamada'] = url_oficio_llamada
         context['extranjero_id'] = llamada_id  # ID del extranjero
         context['puesta_id'] = llamada.deLaPuestaVP.id
         context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
@@ -567,17 +564,11 @@ class validarNotificacion(CreateView):
         return initial
 
     def form_valid(self, form):
-        # Asigna la relación al campo noExtranjero
         llamada_id = self.kwargs.get('llamada_id')
         extranjero = get_object_or_404(Extranjero, id=llamada_id)
         form.instance.noExtranjero = extranjero
-
-        # Primero, guarda la instancia de Notificacion en la base de datos.
         response = super().form_valid(form)
-
-        # Luego, una vez que la instancia se haya guardado, llama a la función constancia_llamada.
         constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
-
         return response
     
     
@@ -626,13 +617,13 @@ class validarNotificacionAC(CreateView):
         return initial
 
     def form_valid(self, form):
-        # Asigna la relación al campo noExtranjero
         llamada_id = self.kwargs.get('llamada_id')
-        extranjero = Extranjero.objects.get(id=llamada_id)
         extranjero = get_object_or_404(Extranjero, id=llamada_id)
-
         form.instance.noExtranjero = extranjero
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
+
+        return response
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -679,13 +670,12 @@ class validarNotificacionVP(CreateView):
         return initial
 
     def form_valid(self, form):
-        # Asigna la relación al campo noExtranjero
         llamada_id = self.kwargs.get('llamada_id')
-        extranjero = Extranjero.objects.get(id=llamada_id)
         extranjero = get_object_or_404(Extranjero, id=llamada_id)
-
         form.instance.noExtranjero = extranjero
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
+        return response
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
