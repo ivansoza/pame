@@ -149,6 +149,11 @@ class Repositorio (models.Model):
     delResponsable = models.CharField(max_length=255)  # CharField para guardar el nombre completo del usuario
     archivo = models.FileField(verbose_name="Documento:",upload_to=upload, null=True, blank=True)
 
+    def delete(self, *args, **kwargs):
+            # Si el modelo tiene un archivo asociado, elimínalo
+            if self.archivo:
+                self.archivo.delete(save=False)
+            super(Repositorio, self).delete(*args, **kwargs)
     def __str__(self):
         return str(self.nup)
 
