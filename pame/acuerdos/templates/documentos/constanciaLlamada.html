@@ -20,27 +20,31 @@
 <p class="centrado">
     Constancia de llamada telefónica
 </p>
-<p> {% if desea %}
+<p> 
+    {% if desea %}
     1.- ¿Es su deseo realizar llamada? <br>
     Si ( X  )     No (     ) <br>
     {% else %}
     1.- ¿Es su deseo realizar llamada? <br>
     Si (  )     No (  X   ) <br>
     {% endif %}
-    <br>
-   <p>2.- En caso de negativa, especifique el motivo <br> {{motivo}}</p> 
-   <br>
+</p>
+<p>
+   2.- En caso de negativa, especifique el motivo <br> {{motivo}}
+</p>
+<p>
     3.- Fecha de realización: <br>
-    {{fecha}} <br>
-    <br>
-    <br>
+    {{fecha}}
+</p>
+<p>
     4.- Firma de conformidad: <br>
-    <p class="firma" style="max-width: 40%; margin: 0 auto;"></p>
-    {% if firma.firma_imagen %}
-        <img src="{{ firma.firma_imagen.url }}" alt="Firma de conformidad">
-    {% else %}
-        <p>No se ha proporcionado una firma</p>
-    {% endif %}
+    <div class="firma" style="max-width: 40%; margin: 0 auto; border-top: none; border-bottom: 1px solid #000; position: relative; height: 100px;">
+        {% if firma.firma_imagen %}
+            <img src="http://localhost:8000{{ firma.firma_imagen.url }}" alt="Firma de conformidad" style="max-width: 100%; height: auto; position: absolute; bottom: 0;">
+        {% else %}
+            No se ha proporcionado una firma
+        {% endif %}
+    </div>
 </p>
 <script>
     location.reload();
