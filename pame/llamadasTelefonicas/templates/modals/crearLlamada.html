@@ -26,12 +26,7 @@
         <form id="llamadaForm" action="{% url 'crear_llamada' llamada_id=llamada.id puesta_id=puesta.id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                <div class="titulo-general-container mt-2" >
-                    <h1 class="titulo-general">Llamadas del Extranjero:
-                        <span class="puesta-color" >{{nombre_extranjero2}}</span>
-                
-                    </h1>   
-                </div>
+          
                 <div class="row">
                     <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
                         {{ form.noExtranjero|as_crispy_field}}
@@ -39,7 +34,7 @@
                     <div class="col-sm-6 col-md-6 col-lg-6"style='display:none'>
                         {{ form.nup|as_crispy_field }}
                     </div>
-                    <div class="col-sm-6 col-md-6 col-lg-6" style='display:none'>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
                         {{ form.estacionMigratoria|as_crispy_field }}
                         <script>
                             document.getElementById('id_estacionMigratoria').readOnly = true;
