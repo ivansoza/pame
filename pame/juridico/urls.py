@@ -10,6 +10,6 @@ urlpatterns = [
     path('notificacion_d_o/<int:extranjero_id>/<int:puesta_id>/', notificacionDO.as_view(), name="notificacion_d_o"),
     path('notificacionDOAC/<int:extranjero_id>/<int:puesta_id>/', notificacionDOAC.as_view(), name="notificacionDOAC"),
     path('notificacionDOVP/<int:extranjero_id>/<int:puesta_id>/', notificacionDOVP.as_view(), name="notificacionDOVP"),
-    path('notificacionGeneralDO/<int:extranjero_id>/', notificacionDOGeneral.as_view(), name="notificacionDOVP"),
+    path('notificacionGeneralDO/<int:extranjero_id>/', notificacionDOGeneral.as_view(), name="notificacionGeneralDO"),
 
 ]
