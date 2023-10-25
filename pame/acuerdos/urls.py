@@ -14,7 +14,7 @@ urlpatterns = [
     path("repositorio/", listRepositorio.as_view(), name="repositorio"),
     path('documentos/<str:nup>/', RepositorioListView.as_view(), name="ver_documentos"),
 
-    path('acuerdoInicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='acuerdoInicioPDF'),
+    path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
     path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
 
     # pdf

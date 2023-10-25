@@ -158,40 +158,76 @@ def pdf_exist(extranjero_id):
     # print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
     return exists
 
+# ----- Funcion para cambiar los numeros del dia a palabra
+def numero_a_palabra(numero):
+    palabras = [
+        'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez',
+        'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve',
+        'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis',
+        'veintisiete', 'veintiocho', 'veintinueve', 'treinta', 'treinta y uno'
+    ]
+    return palabras[numero]
+
+# ----- Funcion para cambiar de numero a palabra los meses
+def mes_a_palabra(mes):
+    meses = [
+        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ]
+    return meses[mes - 1]  # Restamos 1 porque los meses se cuentan desde 1 enero a 12 diciembre 
+
 # ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
 def acuerdoInicio_pdf(request, extranjero_id):
-    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
-    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+    extranjero = Extranjero.objects.get(id=extranjero_id)
 
-    # Obtener el nombre del archivo PDF
-    nombre_pdf = f"AcuerdoInicio_{extranjero.id}.pdf"
-    ubicacion_pdf = os.path.abspath(os.path.join("pame/media/files", nombre_pdf))
+    nombre = extranjero.nombreExtranjero
+    apellidop = extranjero.apellidoPaternoExtranjero
+    apellidom = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad.nombre
+    nombreac = extranjero.deLaEstacion.responsable.nombre
+    apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
+    apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
+    lugar = extranjero.deLaEstacion.estado
+    dia = extranjero.fechaRegistro.day
+    mes = extranjero.fechaRegistro.month
+    anio = extranjero.fechaRegistro.year
 
-    # Verificar si el archivo PDF ya existe en la ubicación
-    if not os.path.exists(ubicacion_pdf):
-        # Si el archivo no existe, procede a generarlo y guardarlo
-        html_context = {
-            'contexto': 'variables',
-        }
+    dia_texto = numero_a_palabra(dia)
+    mes_texto = mes_a_palabra(mes)
 
-        # Crear un objeto HTML a partir de una plantilla o contenido HTML
-        html_content = render_to_string('documentos/acuerdoInicio.html', html_context)
-        html = HTML(string=html_content)
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'nombre': nombre,
+        'apellidop': apellidop,
+        'apellidom': apellidom,
+        'nacionalidad': nacionalidad,
+        'nombreac' : nombreac,
+        'apellidopac': apellidopac,
+        'apellidomac': apellidomac,
+        'lugar': lugar,
+        'dia': dia_texto,
+        'mes': mes_texto,
+        'anio': anio
+    }
 
-        # Generar el PDF
-        pdf_bytes = html.write_pdf()
+    # Obtener la plantilla HTML
+    template = get_template('documentos/acuerdoInicio.html')
+    html_content = template.render(context)
 
-        # Guardar el PDF en el Servidor
-        with open(ubicacion_pdf, "wb") as pdf_file:
-            pdf_file.write(pdf_bytes)
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
 
-    # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
-    response = FileResponse(open(ubicacion_pdf, 'rb'), content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
     return response
 
-# ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
-
+# ----- Genera el documento PDF derechos y obligaciones
 def derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"

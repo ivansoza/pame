@@ -17,13 +17,14 @@
     <strong>ACUERDO DE INICIO</strong>
 </p>
 <p>
-    En la [LUGAR] a los [DIA(S)] del [MES] del [AÑO], el [POSTGRADO] [NOMBRE DEL USUARIO] [PRIMER APELLIDO USUARIO] [SEGUNDO APELLIDO USUARIO], [PUESTO O CARGO] adscrito a la [ESTACION MIGRATORIA O ESTANCIA PROVISIONAL] del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
+    En {{lugar}} a los {{dia}} de {{mes}} del {{anio}}, el [POSTGRADO] [NOMBRE DEL USUARIO] [PRIMER APELLIDO USUARIO] [SEGUNDO APELLIDO USUARIO], [PUESTO O CARGO] adscrito a la [ESTACION MIGRATORIA O ESTANCIA PROVISIONAL] del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
 </p>
 <p class="centrado">
     <strong>HACE CONSTAR</strong>
 </p>
 <p>
-    Que derivado de la revisión migratoria practicada por personal adscrito a esta Dirección General de Control y Verificación Migratoria, fue detectado el extranjero [NOMBRE DEL EXTRANJERO] de nacionalidad [NACIONALIDAD DEL EXTRANJERO], sin que acreditara en ese momento su legal internación y estancia en territorio nacional, por lo que fue puesto a disposición de esta autoridad migratoria a fin de resolver conforme a las facultades que señala la Ley de Migración y su Reglamento.
+    Que derivado de la revisión migratoria practicada por personal adscrito a esta Dirección General de Control y Verificación Migratoria, fue detectado el extranjero 
+    <strong>{{nombre}} {{apellidop}} {{apellidom}}</strong> de nacionalidad <strong>{{nacionalidad}}</strong>, sin que acreditara en ese momento su legal internación y estancia en territorio nacional, por lo que fue puesto a disposición de esta autoridad migratoria a fin de resolver conforme a las facultades que señala la Ley de Migración y su Reglamento.
 </p>
 <p class="centrado">
     <strong>CONSTE</strong>
@@ -50,12 +51,12 @@
 </p>
 <div class="columnas">
     <div class="columna">
-        <p><strong>[PUESTO O CARGO de autoridad competente]</strong></p>
-        <p class="firma">[POSTGRADO] [NOMBRE DEL USUARIO] [PRIMER APELLIDO] [SEGUNDO APELLIDO] <br></p>
+        <p><strong>[PUESTO O CARGO DE AC]</strong></p>
+        <p class="firma">[POSTGRADO] {{nombreac}} {{apellidomac}} {{apellidopac}} <br></p>
     </div>
     <div class="columna">
         <p><strong>La persona extranjera</strong></p>
-        <p class="firma">[NOMBRE(S) DEL ESTRANJERO] [PRIMER AP] [SEGUNDO AP]</p>
+        <p class="firma">{{nombre}} {{apellidop}} {{apellidom}}</p>
     </div>
 </div>
 <p class="centrado">
@@ -69,4 +70,5 @@
         <p class="firma">[[NOMBRE DEL TESTIGO] [PRIMER AP] [SEGUNDO AP]</p>
     </div>
 </div>
+
 {% endblock %}
