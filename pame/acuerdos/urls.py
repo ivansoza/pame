@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('acuerdoInicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='acuerdoInicioPDF'),
     path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
+
+    # pdf
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
 
 

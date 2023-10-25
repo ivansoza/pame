@@ -150,5 +150,5 @@ class Repositorio (models.Model):
     archivo = models.FileField(verbose_name="Documento:",upload_to=upload, null=True, blank=True)
 
     def __str__(self):
-        return self.nup
+        return str(self.nup)
 

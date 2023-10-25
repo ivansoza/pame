@@ -195,37 +195,36 @@ def acuerdoInicio_pdf(request, extranjero_id):
 # ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
 
 def derechoObligaciones_pdf(request, extranjero_id):
-    # Obtén el objeto Extranjeros utilizando el ID proporcionado en la URL
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
-
-    # Generar el nombre del archivo PDF para la respuesta y para guardar en el modelo
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
-
-    # Definir el contexto para la plantilla
-    html_context = {'contexto': 'variables'}
-
-    # Crear un objeto HTML a partir de una plantilla o contenido HTML
-    html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Obtener el último NoProceso asociado al extranjero
     ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificación")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Derechos y Obligaciones", delaClasificacion=clasificacion)
+    usuario_actual = request.user
+    estacion = usuario_actual.estancia
 
-    # Obtener o crear una instancia de Documentos asociada a ese NoProceso
-    documentos, created = Documentos.objects.get_or_create(nup=ultimo_no_proceso)
 
-    try:
-        # Guarda el archivo PDF en el campo oficio_derechos_obligaciones del modelo Documentos
-        documentos.oficio_derechos_obligaciones.save(nombre_pdf, ContentFile(pdf_bytes))
-        documentos.save()
-        print("Documento de Derechos y Obligaciones guardado correctamente.")
-    except Exception as e:
-        print("Error al guardar el documento de Derechos y Obligaciones:", e)
+    documento_existente = Repositorio.objects.filter(delTipo=tipo_doc, delaEstacion=estacion, nup=ultimo_no_proceso).first()
 
-    # Devolver el PDF como una respuesta HTTP directamente desde los bytes generados
+    if documento_existente:
+        # Si ya existe, simplemente renderizamos el documento guardado
+        pdf_bytes = documento_existente.archivo.read()
+    else:
+        html_context = {'contexto': 'variables'}
+        html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
+        html = HTML(string=html_content)
+        pdf_bytes = html.write_pdf()
+        nombre_completo = usuario_actual.get_full_name()
+        repo = Repositorio(
+                    nup=ultimo_no_proceso,
+                    delTipo=tipo_doc,
+                    delaEstacion=estacion,
+                    delResponsable=nombre_completo,  # Asignamos el nombre completo
+                )
+        repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+        repo.save()
+
+
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
     return response
@@ -291,8 +290,7 @@ def constancia_llamada(request, extranjero_id=None):
         deseaLlamar = notificacion.deseaLlamar
         motivo = notificacion.motivoNoLlamada
         fecha = notificacion.fechaHoraNotificacion
-        firma = extranjero.firma.firma_imagen
-        print(firma)
+        firma = extranjero.firma
         nombre_pdf = f"Constancia_llamadas.pdf"
         
         html_context = {
