@@ -21,7 +21,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Max
 from django.contrib import messages
 from acuerdos.views import constancia_llamada
-from acuerdos.models import Documentos
+from acuerdos.models import Documentos, Repositorio, TiposDoc
+
 def homeLLamadasTelefonicas(request):
     return render(request,"LtIMN/LtIMN.html")
 
@@ -132,14 +133,19 @@ class ListLlamadas(ListView):
         puesta_id = self.kwargs.get('puesta_id')
         extranjero = Extranjero.objects.get(pk=llamada_id)
 
-        try:
-            # Obtén el último nup registrado del extranjero
-            ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
-            # Intenta obtener el documento oficio_llamada asociado a ese nup
-            documento = Documentos.objects.get(nup=ultimo_nup)
-            context['url_oficio_llamada'] = documento.oficio_llamada.url
-        except Documentos.DoesNotExist:
-            context['url_oficio_llamada'] = None
+
+    # Obtener el último nup registrado del extranjero
+        ultimo_nup = extranjero.noproceso_set.latest('consecutivo')
+        tipo_doc_constancia = TiposDoc.objects.get(descripcion="ConstanciaLlamada")
+        repositorio = Repositorio.objects.filter(nup=ultimo_nup, delTipo=tipo_doc_constancia).order_by('-fechaGeneracion').first()
+        if repositorio and repositorio.archivo:
+            url_oficio_llamada = repositorio.archivo.url
+        else:
+            url_oficio_llamada = None
+
+        context['url_oficio_llamada'] = url_oficio_llamada
+
+        
 
         context['extranjero_id'] = llamada_id  # ID del extranjero
         context['puesta_id'] = llamada.deLaPuestaIMN.id  
@@ -570,7 +576,7 @@ class validarNotificacion(CreateView):
         response = super().form_valid(form)
 
         # Luego, una vez que la instancia se haya guardado, llama a la función constancia_llamada.
-        constancia_llamada(extranjero_id=self.object.delExtranjero.id)
+        constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
 
         return response
     
@@ -831,6 +837,16 @@ class ListLlamadasGenerales(ListView):
         apellido_paterno = llamada.apellidoPaternoExtranjero
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
+
+        ultimo_nup = llamada.noproceso_set.latest('consecutivo')
+    # Buscar la instancia Repositorio con ese nup
+        try:
+            repositorio = Repositorio.objects.get(nup=ultimo_nup)
+            url_oficio_llamada = repositorio.archivo.url if repositorio.archivo else None
+        except Repositorio.DoesNotExist:
+            url_oficio_llamada = None
+
+        context['url_oficio_llamada'] = url_oficio_llamada
         context['extranjero_id'] = llamada_id  # ID del extranjero
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero

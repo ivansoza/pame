@@ -3,7 +3,7 @@ from catalogos.models import Estacion, Responsable
 from vigilancia.models import Extranjero, NoProceso
 from django.core.exceptions import ValidationError
 import os
-
+from usuarios.models import Usuario
 # class TestigoUno (models.Model):
 #     nombreTestigoUno = models.CharField(max_length=50, verbose_name='Nombre del primer testigo')
 #     apellidoPaternoTestigoUno = models.CharField(max_length=50, verbose_name='Apellido Paterno')
@@ -130,4 +130,30 @@ class Documentos(models.Model):
     oficio_derechos_obligaciones = models.FileField(upload_to=upload)
 
 
+class ClasificaDoc(models.Model):
+    clasificacion = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.clasificacion
+class TiposDoc (models.Model):
+    descripcion = models.CharField(max_length=50)
+    delaClasificacion = models.ForeignKey(ClasificaDoc, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.descripcion
+class Repositorio (models.Model):
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
+    fechaGeneracion = models.DateTimeField(auto_now_add=True)
+    delTipo = models.ForeignKey(TiposDoc, on_delete=models.CASCADE)
+    delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
+    delResponsable = models.CharField(max_length=255)  # CharField para guardar el nombre completo del usuario
+    archivo = models.FileField(verbose_name="Documento:",upload_to=upload, null=True, blank=True)
+
+    def delete(self, *args, **kwargs):
+            # Si el modelo tiene un archivo asociado, elimínalo
+            if self.archivo:
+                self.archivo.delete(save=False)
+            super(Repositorio, self).delete(*args, **kwargs)
+    def __str__(self):
+        return str(self.nup)
 
