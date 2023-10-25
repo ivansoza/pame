@@ -14,7 +14,7 @@ from datetime import datetime
 import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
-from acuerdos.models import Documentos
+from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
 from django.core.files.base import ContentFile
 from django.db.models import Max, OuterRef, Subquery
 
@@ -122,6 +122,34 @@ class DocumentosListView(ListView):
         return context
 
         
+class RepositorioListView(ListView):
+    model = Repositorio
+    template_name = 'verAllAcuerdos.html'  # El nombre de tu template para mostrar los documentos
+
+    def get_queryset(self):
+        nup_value = self.kwargs.get('nup')
+        return Repositorio.objects.filter(nup__nup=nup_value)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        nup_value = self.kwargs.get('nup')
+            
+        try:
+            no_proceso_instance = NoProceso.objects.get(nup=nup_value)
+            apellido_materno = no_proceso_instance.extranjero.apellidoMaternoExtranjero
+            if apellido_materno:  # Si hay apellido materno
+                extranjero_name = f"{no_proceso_instance.extranjero.nombreExtranjero} {no_proceso_instance.extranjero.apellidoPaternoExtranjero} {apellido_materno}"
+            else:  # Si no hay apellido materno
+                extranjero_name = f"{no_proceso_instance.extranjero.nombreExtranjero} {no_proceso_instance.extranjero.apellidoPaternoExtranjero}"
+            
+            context['nombre_extranjero'] = extranjero_name
+        except NoProceso.DoesNotExist:
+            context['nombre_extranjero'] = "Desconocido"
+        context['navbar'] = 'repositorio'  # Cambia esto según la página activa
+        context['seccion'] = 'verrepo'
+        return context
+
 
 # ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
@@ -232,7 +260,7 @@ def generate_pdfsinguardar(request, extranjero_id):
     return response
 
 # ----- Genera el documento PDF de la constancia de llamada 
-def constancia_llamada(request=None, extranjero_id=None):
+def constancia_llamada(request, extranjero_id=None):
     print("Iniciando constancia_llamada")
     
     try:
@@ -286,19 +314,20 @@ def constancia_llamada(request=None, extranjero_id=None):
         pdf_bytes = html.write_pdf()
 
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-        print("Ultimo NoProceso:", ultimo_no_proceso)
+        clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificación")
+        tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="ConstanciaLlamada", delaClasificacion=clasificacion)
+        usuario_actual = request.user
+        estacion = usuario_actual.estancia
+        nombre_completo = usuario_actual.get_full_name()
 
-        documentos, created = Documentos.objects.get_or_create(nup=ultimo_no_proceso)
-        print("Documentos:", documentos, "Creado:", created)
-
-        try:
-            # Guarda el archivo PDF en el campo oficio_llamada
-            documentos.oficio_llamada.save(nombre_pdf, ContentFile(pdf_bytes))
-            documentos.save()
-            print("Documento guardado correctamente.")
-        except Exception as e:
-            print("Error al guardar el documento:", e)
-
+        repo = Repositorio(
+                nup=ultimo_no_proceso,
+                delTipo=tipo_doc,
+                delaEstacion=estacion,
+                delResponsable=nombre_completo,  # Asignamos el nombre completo
+            )
+        repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+        repo.save()
         # Si se ha proporcionado un request, devolver una respuesta HTTP
         if request:
             response = HttpResponse(pdf_bytes, content_type='application/pdf')

@@ -3,7 +3,7 @@ from django.urls import path
 from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdoInicio_pdf, \
 derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
 listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, \
- listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno
+ listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView
 
 
 urlpatterns = [
@@ -13,7 +13,7 @@ urlpatterns = [
     # urls pame 
     path("deinicio/", acuerdo_inicio.as_view(), name="homeAcuerdoInicio"),
     path("repositorio/", listRepositorio.as_view(), name="repositorio"),
-    path('documentos/<str:nup>/', DocumentosListView.as_view(), name="ver_documentos"),
+    path('documentos/<str:nup>/', RepositorioListView.as_view(), name="ver_documentos"),
 
     path('acuerdoInicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='acuerdoInicioPDF'),
     path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
