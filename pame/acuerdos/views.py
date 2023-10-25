@@ -193,6 +193,22 @@ def acuerdoInicio_pdf(request, extranjero_id):
     return response
 
 # ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
+def mostrar_derechoObligaciones_pdf(request, extranjero_id):
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+    nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
+    
+    # Crear el contenido del PDF
+    html_context = {'contexto': 'variables'}  # Añade las variables que necesitas aquí
+    html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
+    html = HTML(string=html_content)
+    pdf_bytes = html.write_pdf()
+
+    # Generar la respuesta con el contenido del PDF
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+    
+    return response
+
 
 def derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)

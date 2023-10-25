@@ -99,17 +99,12 @@
                 <p>Sr(a)<strong style="color: rgb(161, 13, 13);"> {{nombreCompleto}}</strong>,</p>
                 <h5>Durante el tiempo que usted permanezca alojado en esta Estación Migratoria, tiene los siguientes derechos y obligaciones</h5>
               
-                {% if oficio_derechos_obligaciones %}
-                <!-- Si existe el registro, mostrar el PDF almacenado -->
-                <a href="{{ oficio_derechos_obligaciones.url }}" target="_blank" class="btn btn-sm btn-icon1 tooltip-link btn-generado">
-                    <i class="fas fa-file-pdf"></i>
-                </a>
-                {% else %}
+             
                     <!-- Si no existe el registro, generar y mostrar el PDF -->
-                    <a href="{% url 'derechosObligaciones' extranjero_id=extranjero.id %}" target="_blank" class="btn btn-sm btn-icon1 tooltip-link btn-generado">
+                    <a href="{% url 'mostrarderechosObligaciones' extranjero_id=extranjero.id %}" target="_blank" class="btn btn-sm btn-icon1  btn-generado">
                         <i class="fas fa-file-pdf"></i>
                     </a>
-                {% endif %}
+              
                 <br>
                 <p><strong>Responsable de la estación:</strong> <strong style="color: rgb(161, 13, 13);">{{responsable}}</strong></p>
                 <p><strong>Fecha:</strong> <strong> <span id="currentDate" style="color: rgb(161, 13, 13);"></span> </strong></p>
