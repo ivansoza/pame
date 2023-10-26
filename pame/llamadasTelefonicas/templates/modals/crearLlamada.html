@@ -51,14 +51,7 @@
                 <div id="observacionesDiv" {% if form.deseaLlamar.value == 'Si' %}style="display: none;"{% endif %}>
                     {{ form.observaciones|as_crispy_field }}
                 </div>
-            <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-6">
-                    {{ form.firmaExtranjero|as_crispy_field }}
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-6">
-                    {{ form.huellaExtranjero|as_crispy_field }}
-                </div>
-            </div>
+         
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
