@@ -133,17 +133,13 @@ class notificacionDOVP(TemplateView):
             extranjero_id = self.kwargs['extranjero_id']
             extranjero = Extranjero.objects.get(pk=extranjero_id)
             estacion = extranjero.deLaEstacion
-
-            # Usando el método para obtener el último NoProceso
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-
-            # Solo crea la Notificacion si hay un NoProceso asociado
             if ultimo_nup:
                 NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
                 
             guardar_derechoObligaciones_pdf(extranjero_id, request.user)
             messages.success(request, 'Notificación y PDF creados exitosamente.')
-            return redirect('listarExtranjeroVP', puesta_id=self.kwargs.get('puesta_id'))
+            return redirect('listarExtranjerosVP', puesta_id=self.kwargs.get('puesta_id'))
 
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
