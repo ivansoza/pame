@@ -1,10 +1,9 @@
 from django.urls import path
-
+from . import views
 from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdoInicio_pdf, \
 derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
 listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, \
  listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf
-
 
 urlpatterns = [
     # urls prueba documentos pdf 
@@ -15,7 +14,7 @@ urlpatterns = [
     path("repositorio/", listRepositorio.as_view(), name="repositorio"),
     path('documentos/<str:nup>/', RepositorioListView.as_view(), name="ver_documentos"),
 
-    path('acuerdoInicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='acuerdoInicioPDF'),
+    path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
     path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
 
     # pdf
