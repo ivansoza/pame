@@ -66,7 +66,11 @@ class notificacionDO(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         puesta_id = self.kwargs.get('puesta_id')
@@ -114,7 +118,11 @@ class notificacionDOAC(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         puesta_id = self.kwargs.get('puesta_id')
@@ -159,7 +167,12 @@ class notificacionDOVP(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+         
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         puesta_id = self.kwargs.get('puesta_id')
@@ -212,7 +225,11 @@ class notificacionDOGeneral(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         estatus = extranjero.estatus
