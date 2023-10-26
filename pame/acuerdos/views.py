@@ -269,6 +269,7 @@ def guardar_derechoObligaciones_pdf(extranjero_id, usuario):
         repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
         repo.save()
         
+# ----- Genera el documento PDF derechos y obligaciones
 def derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"

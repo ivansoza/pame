@@ -3711,7 +3711,7 @@ class qrs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.1.127:8082/seguridad/crear_firma/{extranjero_id}"
+        qr_link = f"https://sfti.tech/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero
         apellidoP = extranjero.apellidoPaternoExtranjero
