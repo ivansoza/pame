@@ -1,9 +1,17 @@
 {% extends "documentos/base.html" %}
 
+
+
 {% block header %}
-<br>[ESTACIÓN O ESTANCIA]
-<br>Expediente número: [NOMENCLATURA EXPEDIENTE]
-<br>[LUGAR Y FECHA LETRA]
+<style>
+    #textoMayusculas {
+        text-transform: uppercase;
+    }
+</style>
+
+<br><span id="textoMayusculas">{{estacion}}</span>
+<br>EXPEDIENTE NÚMERO: [NOMENCLATURA EXPEDIENTE]
+<br><span id="textoMayusculas">{{lugar}} - {{dia}} de {{mes}} del {{anio}}</span>
 {% endblock %}
 
 {% block title %}
@@ -17,7 +25,9 @@
     <strong>ACUERDO DE INICIO</strong>
 </p>
 <p>
-    En {{lugar}} a los {{dia}} de {{mes}} del {{anio}}, el [POSTGRADO] [NOMBRE DEL USUARIO] [PRIMER APELLIDO USUARIO] [SEGUNDO APELLIDO USUARIO], [PUESTO O CARGO] adscrito a la [ESTACION MIGRATORIA O ESTANCIA PROVISIONAL] del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
+    En {{lugar}} a los {{dia}} de {{mes}} del {{anio}}, el 
+    [POSTGRADO] {{nombreac}} {{apellidopac}} {{apellidomac}}, 
+    [PUESTO O CARGO] adscrito a {{estacion}} del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
 </p>
 <p class="centrado">
     <strong>HACE CONSTAR</strong>
@@ -46,7 +56,7 @@
     <strong>CÚMPLASE</strong>
 </p>
 <p>
-    Así lo acordó y firma el [POSTGRADO] [NOMBRE DEL USUARIO] [PRIMER APELLIDO USUARIO] [SEGUNDO APELLIDO USUARIO], [PUESTO O CARGO] 
+    Así lo acordó y firma el [POSTGRADO] {{nombreac}} {{apellidopac}} {{apellidomac}}, [PUESTO O CARGO] 
     del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente asistido de los testigos que al final firman para constancia del presente acto.
 </p>
 <div class="columnas">

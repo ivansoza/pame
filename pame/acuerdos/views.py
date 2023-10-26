@@ -188,6 +188,7 @@ def acuerdoInicio_pdf(request, extranjero_id):
     apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
     apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
     lugar = extranjero.deLaEstacion.estado
+    estacion = extranjero.deLaEstacion.nombre
     dia = extranjero.fechaRegistro.day
     mes = extranjero.fechaRegistro.month
     anio = extranjero.fechaRegistro.year
@@ -206,6 +207,7 @@ def acuerdoInicio_pdf(request, extranjero_id):
         'apellidopac': apellidopac,
         'apellidomac': apellidomac,
         'lugar': lugar,
+        'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
         'anio': anio
