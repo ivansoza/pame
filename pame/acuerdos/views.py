@@ -209,7 +209,31 @@ def mostrar_derechoObligaciones_pdf(request, extranjero_id):
     
     return response
 
+def guardar_derechoObligaciones_pdf(extranjero_id, usuario):
+    extranjero = get_object_or_404(Extranjero, id=extranjero_id)
+    nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
+    ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificación")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Derechos y Obligaciones", delaClasificacion=clasificacion)
+    estacion = usuario.estancia
 
+    documento_existente = Repositorio.objects.filter(delTipo=tipo_doc, delaEstacion=estacion, nup=ultimo_no_proceso).first()
+
+    if not documento_existente:
+        html_context = {'contexto': 'variables'}
+        html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
+        html = HTML(string=html_content)
+        pdf_bytes = html.write_pdf()
+        nombre_completo = usuario.get_full_name()
+        repo = Repositorio(
+                    nup=ultimo_no_proceso,
+                    delTipo=tipo_doc,
+                    delaEstacion=estacion,
+                    delResponsable=nombre_completo,
+                )
+        repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+        repo.save()
+        
 def derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
