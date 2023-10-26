@@ -13,6 +13,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib import messages
 from acuerdos.models import NotificacionesGlobales
 from acuerdos.models import Documentos
+from acuerdos.views import guardar_derechoObligaciones_pdf
 # Create your views here.
 
 
@@ -40,13 +41,17 @@ class notificacionDO(TemplateView):
             # Solo crea la Notificacion si hay un NoProceso asociado
             if ultimo_nup:
                 NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
-                
-            messages.success(request, 'Notificación creada exitosamente.')
+            
+            guardar_derechoObligaciones_pdf(extranjero_id, request.user)
+            messages.success(request, 'Notificación y PDF creados exitosamente.')
             return redirect('listarExtranjeros', puesta_id=self.kwargs.get('puesta_id'))
 
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
             return redirect('notificacionDO', extranjero_id=extranjero_id)
+        
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs['extranjero_id']
@@ -61,7 +66,11 @@ class notificacionDO(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         puesta_id = self.kwargs.get('puesta_id')
@@ -87,8 +96,8 @@ class notificacionDOAC(TemplateView):
             # Solo crea la Notificacion si hay un NoProceso asociado
             if ultimo_nup:
                 NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
-                
-            messages.success(request, 'Notificación creada exitosamente.')
+            guardar_derechoObligaciones_pdf(extranjero_id, request.user)
+            messages.success(request, 'Notificación y PDF creados exitosamente.')
             return redirect('listarExtranjeroAC', puesta_id=self.kwargs.get('puesta_id'))
 
         except Exception as e:
@@ -109,7 +118,11 @@ class notificacionDOAC(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         puesta_id = self.kwargs.get('puesta_id')
@@ -128,20 +141,17 @@ class notificacionDOVP(TemplateView):
             extranjero_id = self.kwargs['extranjero_id']
             extranjero = Extranjero.objects.get(pk=extranjero_id)
             estacion = extranjero.deLaEstacion
-
-            # Usando el método para obtener el último NoProceso
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-
-            # Solo crea la Notificacion si hay un NoProceso asociado
             if ultimo_nup:
                 NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
                 
-            messages.success(request, 'Notificación creada exitosamente.')
-            return redirect('listarExtranjeroVP', puesta_id=self.kwargs.get('puesta_id'))
+            guardar_derechoObligaciones_pdf(extranjero_id, request.user)
+            messages.success(request, 'Notificación y PDF creados exitosamente.')
+            return redirect('listarExtranjerosVP', puesta_id=self.kwargs.get('puesta_id'))
 
         except Exception as e:
             messages.error(request, f'Ocurrió un error: {str(e)}')
-            return redirect('notificacionDOVP', extranjero_id=extranjero_id)
+            return redirect('notificacionDOVP', extranjero_id=extranjero_id, puesta_id=self.kwargs.get('puesta_id'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -157,7 +167,12 @@ class notificacionDOVP(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+         
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         puesta_id = self.kwargs.get('puesta_id')
@@ -184,7 +199,8 @@ class notificacionDOGeneral(TemplateView):
             if ultimo_nup:
                 NotificacionDerechos.objects.create(no_proceso=ultimo_nup, estacion=estacion)
                 
-            messages.success(request, 'Notificación creada exitosamente.')
+            guardar_derechoObligaciones_pdf(extranjero_id, request.user)
+            messages.success(request, 'Notificación y PDF creados exitosamente.')
             estatus = extranjero.estatus
             if estatus == "Trasladado":
               return redirect('listTrasladados')
@@ -209,7 +225,11 @@ class notificacionDOGeneral(TemplateView):
         extranjero_id = self.kwargs['extranjero_id']
      # Obtener la instancia del Extranjero correspondiente
         extrannjero = Extranjero.objects.get(pk=extranjero_id)
-        nombre_completo = extrannjero.nombreExtranjero +" "+ extrannjero.apellidoPaternoExtranjero + extrannjero.apellidoMaternoExtranjero
+        if extranjero.apellidoMaternoExtranjero:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero + " " + extranjero.apellidoMaternoExtranjero
+        else:
+            nombre_completo = extranjero.nombreExtranjero +" "+ extranjero.apellidoPaternoExtranjero
+    
         estacion = extrannjero.deLaEstacion.responsable
         responsable = estacion.nombre+" "+estacion.apellidoPat+" "+estacion.apellidoMat
         estatus = extranjero.estatus

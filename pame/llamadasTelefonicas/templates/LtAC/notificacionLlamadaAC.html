@@ -279,7 +279,7 @@ if (isVerified) {
                                     reverseButtons: true,
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        abrir_modal("{% url 'validar_notificacion' llamada.id puesta.id %}");
+                                        abrir_modal("{% url 'validar-notificacion-ac' llamada.id puesta.id %}");
 
 
                                     }

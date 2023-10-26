@@ -33,6 +33,8 @@ local_settings.py
 # Ignorar archivos compilados o generados por static file preprocessors
 staticfiles/
 #static_collected/
+#staticfiles/
+static_collected/
 media/
 pame/settings.py
 

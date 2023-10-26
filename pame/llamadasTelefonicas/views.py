@@ -168,21 +168,13 @@ class crearLlamadas(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        # Obtén el ID del extranjero desde la URL
         llamada_id = self.kwargs.get('llamada_id')
-        # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=llamada_id)
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-
-# Obtener el ID (nup) del último registro NoProceso
         ultimo_no_proceso_id = ultimo_no_proceso.nup
-
-        # Rellena los campos en initial
         initial['nup'] = ultimo_no_proceso_id
-        # Rellena los campos en initial
         initial['noExtranjero'] = extranjero
         initial['estacionMigratoria'] = extranjero.deLaEstacion
-        
         return initial
 
     def form_valid(self, form):
@@ -303,21 +295,14 @@ class crearLlamadas_AC(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        # Obtén el ID del extranjero desde la URL
         llamada_id = self.kwargs.get('llamada_id')
-        # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=llamada_id)
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-
-# Obtener el ID (nup) del último registro NoProceso
         ultimo_no_proceso_id = ultimo_no_proceso.nup
-
-        # Rellena los campos en initial
         initial['nup'] = ultimo_no_proceso_id
-        # Rellena los campos en initial
         initial['noExtranjero'] = extranjero
         initial['estacionMigratoria'] = extranjero.deLaEstacion
-
+        return initial
     def form_valid(self, form):
         # Asigna la relación al campo noExtranjero
         llamada_id = self.kwargs.get('llamada_id')
@@ -337,10 +322,10 @@ class crearLlamadas_AC(CreateView):
         ame = llamada.apellidoMaternoExtranjero
         estancia_extranjero = llamada.deLaEstacion
         puesta_id = self.kwargs.get('puesta_id')
-        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['puesta']=PuestaDisposicionAC.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
-        context['nombre_extranjero2'] = nombre_extranjero+" "+ape+" "+ame
+        context['nombre_extranjero2'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
@@ -531,7 +516,7 @@ class crearLlamadasVP(CreateView):
         ape = llamada.apellidoPaternoExtranjero
         ame = llamada.apellidoMaternoExtranjero
         puesta_id = self.kwargs.get('puesta_id')
-        context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
+        context['puesta']=PuestaDisposicionVP.objects.get(id=puesta_id)
         context['llamada'] = llamada
         context['nombre_extranjero'] = nombre_extranjero
         context['estancia_extranjero'] = estancia_extranjero
@@ -552,13 +537,10 @@ class validarNotificacion(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        # Obtén el ID del extranjero desde la URL
         llamada_id = self.kwargs.get('llamada_id')
-        # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=llamada_id)
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
         ultimo_no_proceso_id = ultimo_no_proceso.nup
-        # Rellena los campos en initial
         initial['nup'] = ultimo_no_proceso_id
         initial['delExtranjero'] = extranjero        
         return initial
@@ -655,16 +637,10 @@ class validarNotificacionVP(CreateView):
 
     def get_initial(self):
         initial = super().get_initial()
-        # Obtén el ID del extranjero desde la URL
         llamada_id = self.kwargs.get('llamada_id')
-        # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=llamada_id)
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-
-# Obtener el ID (nup) del último registro NoProceso
         ultimo_no_proceso_id = ultimo_no_proceso.nup
-
-        # Rellena los campos en initial
         initial['nup'] = ultimo_no_proceso_id
         initial['delExtranjero'] = extranjero        
         return initial
