@@ -10,9 +10,10 @@ urlpatterns = [
     # path('crear-llamada/<int:llamada_id>/', crearLlamadas.as_view(), name='crear_llamada'),
     path('ver-llamadas-ac/<int:llamada_id>/<int:puesta_id>/', ListLlamadasAC.as_view(), name='ver_llamadasAC'),
     path('crear-llamada-ac/<int:llamada_id>/<int:puesta_id>/', crearLlamadasAC.as_view(), name='crear_llamadaAC'),
+    path('crear-llamada_ac/<int:llamada_id>/<int:puesta_id>/', crearLlamadas_AC.as_view(), name='crear_llamada_ac'),
+
     path('ver-llamadas-imn/<int:llamada_id>/<int:puesta_id>/', ListLlamadas.as_view(), name='ver_llamadasIMN'),
     path('crear-llamada/<int:llamada_id>/<int:puesta_id>/', crearLlamadas.as_view(), name='crear_llamada'),
-    path('crear-llamada_ac/<int:llamada_id>/<int:puesta_id>/', crearLlamadas_AC.as_view(), name='crear_llamada_ac'),
     path('notificar-llamada-inm/<int:llamada_id>/<int:puesta_id>/', notificacionLlamadaINM.as_view(), name='notificar-llamada-inm'),    
     path('notificar-llamada-ac/<int:llamada_id>/<int:puesta_id>/', notificacionLlamadaAC.as_view(), name='notificar-llamada-ac'),
     path('notificar-llamada-vp/<int:llamada_id>/<int:puesta_id>/', notificacionLlamadaVP.as_view(), name='notificar-llamada-vp'),
