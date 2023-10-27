@@ -485,8 +485,11 @@ class AcuerdoInicioCreateView(CreateView):
         # Por ejemplo:
         acuerdo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
         form.instance.delAcuerdo = acuerdo
+
         noproceso = NoProceso.objects.get(nup=self.kwargs['proceso_id'])
         form.instance.delExtanjero = noproceso.extranjero
+        form.instance.nup = noproceso  # <- Asegúrate de asignar el NoProceso al Acuerdo
+
         # Continúa con el proceso normal de guardado.
         return super().form_valid(form)
 
