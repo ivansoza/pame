@@ -17,6 +17,15 @@
 
 {% endblock dashboard %}
 {% block contenido %}
+<style>
+    #tiempoRestante {
+    font-size: 1.5rem; /* Tamaño de fuente */
+    color: #ffffff; /* Color de texto */
+    background-color: #2A4B41; /* Color de fondo */
+    padding: 5px 10px; /* Relleno interior */
+    border-radius: 5px; /* Bordes redondeados */
+}
+</style>
 <!-- TITULO PERTENENCIAS -->
 {% include "includes/tituloPertenencias.html" %}
 <!-- CARD PERTENENCIAS -->
@@ -28,9 +37,15 @@
    data-title="Verifica extranjero" >
    <i class="fas fa-fingerprint"></i>
 </a>
-<div class="titulo-general-container-card mb-4">
-    <h1 class="titulo-general">Lista de Pertenencias Personales 
-    </h1>
+<div style="display: flex; justify-content: space-between; align-items: center; ">
+    <div class="titulo-general-container-card mb-4">
+        <h1 class="titulo-general">Lista de Pertenencias Personales 
+        </h1>
+        
+    </div>
+    <div>
+       <p style="font-size: 1.5rem; display: none;" id="contador-reloj"> Tiempo restante: <span id="tiempoRestante">0:00</span> </p> 
+    </div>
 </div>
 <br>
 <!-- BOTON PARA CREAR UNA PERTENENCIA -->
