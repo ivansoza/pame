@@ -14,13 +14,12 @@ urlpatterns = [
     path("repositorio/", listRepositorio.as_view(), name="repositorio"),
     path('documentos/<str:nup>/', RepositorioListView.as_view(), name="ver_documentos"),
 
-    path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
     path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
 
     # pdf
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
     path('mostrar-derechos-obligaciones/<int:extranjero_id>', mostrar_derechoObligaciones_pdf, name='mostrarderechosObligaciones'),
-
+    path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
