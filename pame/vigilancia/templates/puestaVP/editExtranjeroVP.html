@@ -22,31 +22,33 @@
   </div>
 
 
-<form method="post" class="card p-3" enctype="multipart/form-data" >
+<form method="post" enctype="multipart/form-data" >
+    <div class="card p-3" enctype="multipart/form-data" >
+
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="col-sm-6 col-md-6 col-lg-4">
                 {{form.numeroExtranjero|as_crispy_field}}
                 <script>
                     document.getElementById('id_numeroExtranjero').readOnly = true;
                 </script>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-2" style='display:none'>
+            <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
                 {{form.deLaEstacion|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nombreExtranjero|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoPaternoExtranjero|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
         </div>
     
         <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.apellidoMaternoExtranjero|as_crispy_field}}
+            </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nacionalidad|as_crispy_field}}
             </div>
@@ -56,10 +58,19 @@
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.fechaNacimiento|as_crispy_field}}
             </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.estado_Civil|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.grado_academico|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.ocupacion|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.lugar_Origen|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 <div class="file-input-container">
                     <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
                      class="button-link"
@@ -70,14 +81,14 @@
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
                 {{form.tipoEstancia|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3" >
+            <div class="col-sm-12 col-md-6 col-lg-6" >
                 {{form.estatus|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{form.viajaSolo|as_crispy_field}}
             </div>
         </div>
     
@@ -86,15 +97,38 @@
                 {{form.deLaPuestaVP|as_crispy_field}}
             </div>
         </div>
+    </div>
+</div>
 
 
+<div method="post" class="card p-3" enctype="multipart/form-data" >
+    <h1>Datos de los padres del extranjero</h1>
+        {% csrf_token %}
+    
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.nombreDelPadre|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.nacionalidad_Padre|as_crispy_field }}
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.nombreDelaMadre|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.nacionalidad_Madre|as_crispy_field }}
+            </div>
+        </div>
             {% comment %} <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}"> {% endcomment %}
         <button class="btn btn-primary float-end btn-custom" type="submit">Guardar</button>
         <br>
         <a href="{% url 'listarExtranjerosVP' puesta.id %}" class="btn btn-custom1">Cancelar</a>
-  
-    </form>  
+    </div>
+</form>
+    
     {% include "includes/camera/modalCamera.html" %}
   
 {% endblock %}
