@@ -3978,7 +3978,7 @@ class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
     template_name = 'extranjeros/editarExtranjeroGeneral.html'
 
     def get_success_url(self):
-        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero_id = self.object.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
         messages.success(self.request, 'Datos del extranjero editados con éxito.')
         estatus = extranjero.estatus
@@ -4041,7 +4041,8 @@ class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
          context['seccion'] = 'trasladados'
         else:
          context['seccion'] = 'verextranjero'
-        
+        context['navbar'] = 'extranjeros' 
+
         return context
     
     def dispatch(self, request, *args, **kwargs):
