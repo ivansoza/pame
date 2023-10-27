@@ -113,20 +113,20 @@
                 <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
                 {% if extranjero.biometrico %}
                     {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
-                        <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Editar Datos Biométricos">
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
                             <i class="fas fa-fingerprint"></i>
                         </a>
                     {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
-                        <a class="btn btn-sm btn-icon2 tooltip-link" href="#" data-title="Editar Datos Biométricos">
+                        <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
                             <i class="fas fa-fingerprint"></i>
                         </a>
                     {% else %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Editar Datos Biométricos">
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
                             <i class="fas fa-fingerprint"></i>
                         </a>
                     {% endif %}
                 {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Agregar Datos Biométricos">
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "agregarBiometricosGenrales" extranjero.id %}" data-title="Agregar Datos Biométricos">
                         <i class="fas fa-fingerprint"></i>
                     </a>
                 {% endif %}
@@ -180,12 +180,12 @@
                     {% endif %}
                 {% endif %}
                 <!-- INICIO DE EDITAR EXTRANJERO -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Editar Extranjero">
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "editarExtranjeroGeneral" extranjero.id %}" data-title="Editar Extranjero">
                         <i class="fas fa-edit"></i>
                     </a>
                 <!-- INICIO DE ELIMINAR EXTRANJERO -->
                     <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="#"
+                    href="{% url "eliminarExtranjeroGeneral" extranjero.id %}"
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>

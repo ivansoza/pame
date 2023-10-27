@@ -31,8 +31,6 @@ local_settings.py
 *.log
 
 # Ignorar archivos compilados o generados por static file preprocessors
-staticfiles/
-#static_collected/
 #staticfiles/
 static_collected/
 media/

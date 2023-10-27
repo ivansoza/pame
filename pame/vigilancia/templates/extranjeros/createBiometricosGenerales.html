@@ -9,7 +9,7 @@
 {% endblock link %}
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjeros' puesta.id  %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarExtranjerosEstacion' %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
@@ -69,6 +69,11 @@
       </div>
     </div>
   </div>
+  <div class="titulo-general-container mt-3">
+    <h1 class="titulo-general">
+        Meadia Filiación
+    </h1>
+</div>
   <div class="card">
     <div class="card-body">
       <div class="row">
@@ -124,7 +129,7 @@
         <div class="col-12">
           <button class="btn btn-custom btn-primary btn-block" type="submit">Guardar</button>
           <br>
-          <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1 btn-block">Guardar Despues</a>
+          <a href="{% url 'listarExtranjerosEstacion'  %}" class="btn btn-custom1 btn-block">Guardar Despues</a>
 
         </div>
       </div>

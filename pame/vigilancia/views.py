@@ -3781,7 +3781,7 @@ class firmE(TemplateView):
 class firmExistente(TemplateView):
     template_name='firmaExistente.html'
 
-class AgregarBiometricoINM(CreateView):
+class AgregarBiometricoGeneral(CreateView):
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'extranjeros/createBiometricosGenerales.html'  # Cambiar a la ruta correcta
@@ -3790,8 +3790,11 @@ class AgregarBiometricoINM(CreateView):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
         messages.success(self.request, 'Biometrico Agregado con Éxito.')
-
-        return reverse('listarExtranjeros', args=[extranjero.deLaPuestaIMN.id])
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+          return reverse('listTrasladados')
+        else:
+          return reverse('listarExtranjerosEstacion')
     
     def get_initial(self):
         initial = super().get_initial()
@@ -3809,10 +3812,15 @@ class AgregarBiometricoINM(CreateView):
         context['form1'] = descripcionForms()
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta = extranjero.deLaPuestaIMN
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
+
         context['puesta'] = puesta
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
-        context['navbar'] = 'seguridad' 
-        context['seccion'] = 'seguridadINM' 
+        context['navbar'] = 'extranjeros' 
          # Datos iniciales para el segundo formulario (descripcionForms)
         biometrico_initial = {
           'Extranjero': extranjero,
@@ -3886,3 +3894,214 @@ class AgregarBiometricoINM(CreateView):
         return super().form_invalid(form)
 
      return super().form_valid(form)
+
+class EditarBiometricoGeneral(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+        'perm1': 'vigilancia.change_biometrico',
+    }
+    model = Biometrico
+    form_class = BiometricoFormINM
+    template_name = 'extranjeros/editarBiometricosGenerales.html' 
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+          return reverse('listTrasladados')
+        else:
+          return reverse('listarExtranjerosEstacion')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+    # Obtén el ID del extranjero del argumento en el URL
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        puesta = extranjero.deLaPuestaIMN
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
+        context['puesta'] = puesta
+        context['extranjero'] = extranjero  # Agregar el extranjero al contexto
+        context['navbar'] = 'extranjeros' 
+        descripcion_obj, created = descripcion.objects.get_or_create(delExtranjero=extranjero)
+        # Pasar el formulario de Descripcion al contexto con la instancia correspondiente
+        context['form1'] = descripcionForms(instance=descripcion_obj)
+
+        return context
+    def form_valid(self, form):
+        # Lógica de recorte
+        image = form.cleaned_data['fotografiaExtranjero']
+        
+        img_array = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(img, 1.3, 5)
+        region = None  # Definición inicial de la variable "region"
+
+        for (x,y,w,h) in faces:
+            margen_vertical_arriba = int(0.4 * h)  # 10% arriba para que el recorte no sea exactamente desde el inicio del cabello
+            margen_vertical_abajo = int(0.4 * h)  # 40% hacia abajo para incluir cuello y clavícula
+            margen_horizontal = int(0.2 * w)
+                
+            inicio_x = max(0, x - margen_horizontal)
+            inicio_y = max(0, y - margen_vertical_arriba)
+            fin_x = min(img.shape[1], x + w + margen_horizontal)
+            fin_y = min(img.shape[0], y + h + margen_vertical_abajo)
+                
+            region = img[inicio_y:fin_y, inicio_x:fin_x]
+
+        if region is not None and region.size > 0:
+            is_success, im_buf_arr = cv2.imencode(".jpg", region)
+            region_bytes = im_buf_arr.tobytes()
+            
+            biometrico = form.save(commit=False)
+            biometrico.fotografiaExtranjero.save(f'{image.name}_recortada.jpg', ContentFile(region_bytes), save=False)
+            
+            # Actualiza el face_encoding del objeto Biometrico
+            image_path = biometrico.fotografiaExtranjero.path
+            image_array = face_recognition.load_image_file(image_path)
+            face_encodings = face_recognition.face_encodings(image_array)
+            
+            if face_encodings:
+                biometrico.face_encoding = face_encodings[0].tolist()
+                biometrico.save()
+                
+                # Actualiza o crea el objeto UserFace1 correspondiente
+                user_face1, created = UserFace1.objects.update_or_create(
+                    extranjero=biometrico.Extranjero,
+                    defaults={'face_encoding': face_encodings[0].tolist()}
+                )
+        else:
+            messages.error(self.request, "No se detectó un rostro en la imagen. Por favor, sube una imagen con un rostro visible.")
+            return super().form_invalid(form)
+    
+
+        return super().form_valid(form)
+    
+class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
+    permission_required = {
+         'perm1': 'vigilancia.change_extranjero',
+    }
+    model = Extranjero
+    form_class = editExtranjeroINMForm
+    template_name = 'extranjeros/editarExtranjeroGeneral.html'
+
+    def get_success_url(self):
+        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Datos del extranjero editados con éxito.')
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+          return reverse('listTrasladados')
+        else:
+          return reverse('listarExtranjerosEstacion')   
+    def form_valid(self, form):
+        extranjero = form.save(commit=False)
+        old_extranjero = Extranjero.objects.get(pk=extranjero.pk)  # Obtén el extranjero original antes de modificar
+        instance = form.save(commit=False)
+        def handle_file(file_field_name):
+            file = self.request.FILES.get(file_field_name)
+            if file:
+                # Se separa el nombre del archivo y la extensión
+                name, ext = os.path.splitext(file.name)
+                
+                # Verifica si el archivo es un PDF
+                if ext.lower() == '.pdf':
+                    # Si es un PDF, simplemente lo guarda sin convertir
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        file
+                    )
+                else:
+                    # Si no es un PDF, lo convierte a PDF antes de guardar
+                    getattr(instance, file_field_name).save(
+                        f"{file_field_name}_{instance.id}.pdf",
+                        image_to_pdf(file)
+                    )
+
+        # Manejo de los archivos
+        handle_file('documentoIdentidad')
+        if old_extranjero.estatus == 'Activo' and extranjero.estatus == 'Inactivo':
+            # Cambio de estatus de Activo a Inactivo
+            estacion = extranjero.deLaEstacion
+            if estacion:
+                estacion.capacidad += 1
+                estacion.save()
+
+        elif old_extranjero.estatus == 'Inactivo' and extranjero.estatus == 'Activo':
+            # Cambio de estatus de Inactivo a Activo
+            estacion = extranjero.deLaEstacion
+            if estacion and estacion.capacidad > 0:
+                estacion.capacidad -= 1
+                estacion.save()
+
+        extranjero.save()
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['puesta'] = self.object.deLaPuestaIMN
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
+        
+        return context
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Obtén el registro que se va a editar
+        registro = self.get_object()
+
+        # Calcula la diferencia de tiempo
+        diferencia = timezone.now() - registro.horaRegistro
+
+        # Define el límite de tiempo permitido para la edición (dos días en este caso)
+        limite_de_tiempo = timedelta(days=1)
+
+        if diferencia > limite_de_tiempo:
+            # Si han pasado más de tres minutos, muestra un mensaje de error y redirige
+            messages.error(request, "No puedes editar este registro después de 1 dia.")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirige a la URL actual o a la página de inicio si no se puede determinar la URL actual
+
+        return super().dispatch(request, *args, **kwargs)
+    
+
+class DeleteExtranjeroGeneral(DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Extranjero
+    template_name = 'extranjeros/eliminarExtranjeroGeneral.html'
+
+    def get_success_url(self):
+        extranjero_id = self.object.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        messages.success(self.request, 'Extranjero Eliminado con Éxito.')
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+          return reverse('listTrasladados')
+        else:
+          return reverse('listarExtranjerosEstacion')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        estatus = extranjero.estatus
+        if estatus == "Trasladado":
+         context['seccion'] = 'trasladados'
+        else:
+         context['seccion'] = 'verextranjero'
+        
+        return context
