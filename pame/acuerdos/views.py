@@ -29,7 +29,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/nombramientoDefensor.html')
+    html_template = get_template('documentos/notificacionRepresentacion.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
