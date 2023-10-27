@@ -20,7 +20,9 @@ from .models import TipoAcuerdo,Acuerdo
 from .forms import AcuerdoInicioForm
 from django.shortcuts import redirect
 from django.urls import reverse
-
+from io import BytesIO
+import base64
+import qrcode
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -501,6 +503,17 @@ class AcuerdoInicioCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        sign_link = "https://tu_dominio.com/firmar?token=token_unico" # Cambia tu_dominio y token_unico por lo que necesites
+        
+        # Crear QR
+        img = qrcode.make(sign_link)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        image_stream = base64.b64encode(buf.getvalue()).decode()
+
+        # Pasar QR como dato en base64 a la plantilla
+        context['qr_code'] = image_stream
         context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
         context['seccion'] = 'inicio'
         context['navbar1'] = 'inicio'  # Cambia esto según la página activa

@@ -1,9 +1,15 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
 
 {% block contenido %}
+<img src="data:image/png;base64,{{ qr_code }}" alt="QR para firma" />
+
+<!-- Áreas para vista previa de las firmas -->
+<img id="firmaTestigoUnoPreview" src="#" alt="Vista previa firma testigo uno" />
+<img id="firmaTestigoDosPreview" src="#" alt="Vista previa firma testigo dos" />
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Guardar</button>
 </form>
-{% endblock contenido%}
+{% endblock contenido %}
