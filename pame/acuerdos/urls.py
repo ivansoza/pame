@@ -2,8 +2,8 @@ from django.urls import path
 from . import views
 from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdoInicio_pdf, \
 derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
-listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, \
- listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf
+    listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, nombramientoRepresentante_pdf, \
+    listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf
 
 urlpatterns = [
     # urls prueba documentos pdf 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
     path('mostrar-derechos-obligaciones/<int:extranjero_id>', mostrar_derechoObligaciones_pdf, name='mostrarderechosObligaciones'),
     path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
+    path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
