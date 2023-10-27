@@ -289,12 +289,7 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
-        if self.object.viajaSolo:
-            messages.success(self.request, 'Extranjero Creado con Éxito.')
-            return reverse('agregar_biometricoINM', args=[extranjero_id])
-        else:
-            messages.success(self.request, 'Extranjero Creado con Éxito.')
-            return reverse('listAcompanantesINM', args=[extranjero_id, puesta_id])
+        return reverse('listarExtranjeros', args=[ puesta_id])
                 
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -1283,13 +1278,8 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
-        if self.object.viajaSolo:
-            messages.success(self.request, 'Extranjero creado con éxito.')
-            return reverse('agregar_biometricoAC', args=[extranjero_id])
-        else:
-            messages.success(self.request, 'Extranjero creado con éxito.')
-            return reverse('listAcompanantesAC', args=[extranjero_id, puesta_id])
+        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado    
+        return reverse('listarExtranjeroAC', args=[puesta_id])
 
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -2320,12 +2310,7 @@ class createExtranjeroVP(CreateView):
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
-        if self.object.viajaSolo:
-            messages.success(self.request, 'Extranjero creado con éxito.')
-            return reverse('agregar_biometricoVP', args=[extranjero_id])
-        else:
-            messages.success(self.request, 'Extranjero creado con éxito.')
-            return reverse('list-acompanantes-vp', args=[extranjero_id, puesta_id])
+        return reverse('listarExtranjerosVP', args=[puesta_id])
                 
     def get_initial(self):
         puesta_id = self.kwargs['puesta_id']
@@ -3993,7 +3978,7 @@ class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
     template_name = 'extranjeros/editarExtranjeroGeneral.html'
 
     def get_success_url(self):
-        extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
+        extranjero_id = self.object.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
         messages.success(self.request, 'Datos del extranjero editados con éxito.')
         estatus = extranjero.estatus
@@ -4056,7 +4041,8 @@ class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
          context['seccion'] = 'trasladados'
         else:
          context['seccion'] = 'verextranjero'
-        
+        context['navbar'] = 'extranjeros' 
+
         return context
     
     def dispatch(self, request, *args, **kwargs):

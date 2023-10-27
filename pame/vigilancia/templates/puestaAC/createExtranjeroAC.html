@@ -32,7 +32,9 @@
 
 <!-- Botón para abrir el modal de la foto -->
 
-<form method="post" class="card p-3" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
+    <div class="card p-3" enctype="multipart/form-data">
+
     <div class="d-flex align-items-center justify-content-between">
         <h1>Datos del extranjero</h1>
         <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
@@ -72,9 +74,18 @@
         <div class="col-sm-12 col-md-4 col-lg-4">
             {{ form.fechaNacimiento|as_crispy_field }}
         </div>
-    </div>
-
-    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            {{ form.estado_Civil|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            {{ form.grado_academico|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            {{ form.ocupacion|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            {{ form.lugar_Origen|as_crispy_field }}
+        </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
             <div class="file-input-container">
                 <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
@@ -89,15 +100,41 @@
         <div class="col-sm-12 col-md-4 col-lg-4">
             {{ form.tipoEstancia|as_crispy_field }}
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-2">
-            {{ form.viajaSolo|as_crispy_field }}
-        </div>
-      
     </div>
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
             {{form.deLaPuestaAC|as_crispy_field}}  
+        </div>
+    </div>      
+</div>
+
+
+<div method="post" class="card p-3" enctype="multipart/form-data">
+    <div class="d-flex align-items-center justify-content-between">
+        <h1>Datos de los padres del extranjero</h1>
+    </div>
+    {% csrf_token %}
+    {{ form.puesta.as_hidden }}
+    
+
+    <div class="row">
+        
+        <div class="col-sm-12 col-md-4 col-lg-6">
+            {{ form.nombreDelPadre|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-6">
+            {{ form.nacionalidad_Padre|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-6">
+            {{ form.nombreDelaMadre|as_crispy_field }}
+        </div>
+        
+        <div class="col-sm-12 col-md-4 col-lg-6">
+            {{ form.nacionalidad_Madre|as_crispy_field }}
         </div>
     </div>
 

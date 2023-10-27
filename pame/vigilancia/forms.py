@@ -235,7 +235,7 @@ class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -265,7 +265,7 @@ class editExtranjeroINMForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus','deLaPuestaAC','deLaPuestaVP'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus','deLaPuestaAC','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -332,7 +332,7 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre']
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -362,7 +362,7 @@ class editExtranjeroACForms(forms.ModelForm):
         return data
     class Meta:
       model = Extranjero
-      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus','deLaPuestaIMN','deLaPuestaVP']
+      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus','deLaPuestaIMN','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre']
       widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -420,7 +420,7 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -449,7 +449,7 @@ class editExtranjeroVPForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus','deLaPuestaIMN','deLaPuestaAC'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus','deLaPuestaIMN','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
