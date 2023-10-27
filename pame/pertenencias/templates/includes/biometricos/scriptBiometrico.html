@@ -4,7 +4,6 @@
                      verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
                      verifiedObj.puestaId1 === '{{ puesta_id }}' && 
                      (new Date().getTime() - verifiedObj.time) < 300000;
-    let contadorTimeout;
 
     function actualizarTiempoRestante() {
                         const tiempoRestanteElement = document.getElementById('tiempoRestante');
@@ -25,7 +24,25 @@
                             const tiempoRestanteFormateado = `${minutos}:${segundos.toString().padStart(2, '0')}`;
                             
                             tiempoRestanteElement.textContent = tiempoRestanteFormateado;
-                            
+                            if (tiempoRestanteEnMilisegundos < 30000) { // Cambia el color cuando queda menos de 10 segundos
+                               tiempoRestanteElement.style.color = 'red'; // Cambia el color a rojo (ajusta según tus preferencias)
+                            } else {
+                               tiempoRestanteElement.style.color = '#F2E9E4'; // Vuelve al color original
+                            }
+                            if (tiempoRestanteFormateado == '0:00') { // Cambia el color cuando queda menos de 10 segundos
+                               Swal.fire({
+                                 icon: 'warning',
+                                 title: '¡Tiempo Agotado!',
+                                 text: 'El tiempo para verificar ha terminado.',
+                                 confirmButtonText: 'Cerrar',
+                                 confirmButtonColor: '#2A4B41',
+                               }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Comienza el contador al presionar el botón de confirmación
+                                    location.reload();
+                                }
+                             });
+                            }
                             setTimeout(actualizarTiempoRestante, 1000); // Actualiza cada segundo
                         }
                     }
@@ -314,7 +331,7 @@ function iniciarContador() {
             } else {
                 tiempoRestanteElement.style.color = '#F2E9E4'; // Vuelve al color original
             }
-            if (tiempoRestanteFormateado == '4:00') { // Cambia el color cuando queda menos de 10 segundos
+            if (tiempoRestanteFormateado == '0:00') { // Cambia el color cuando queda menos de 10 segundos
                 Swal.fire({
                     icon: 'warning',
                     title: '¡Tiempo Agotado!',
