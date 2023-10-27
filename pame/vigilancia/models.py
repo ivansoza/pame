@@ -7,12 +7,12 @@ class Nacionalidad(models.Model):
     identificador = models.CharField(max_length=5, verbose_name='ID')
     Abreviatura = models.CharField(max_length=200,verbose_name='País')
     nombre = models.CharField(max_length=200,verbose_name='Nacionalidad')
-    
     class Meta:
         verbose_name_plural = "Gentilicios"
-    
+
     def __str__(self):
         return self.Abreviatura
+
     
 # FUNCION PARA ASIGNAR UN NOMBRE DE CARPETA A PARTIR DE LA ESTACION, SU IDENTIFICADOR DE PROCESO Y SU FILE NAME 
 def user_directory_pathINM(instance, filename):
@@ -37,7 +37,7 @@ class PuestaDisposicionINM(models.Model):
         verbose_name_plural = "Puestas a Disposición INM"
         ordering = ['-fechaOficio']
 
-    def __str__(self):
+    def _str_(self):
         return self.identificadorProceso
     
     @property
@@ -69,7 +69,7 @@ class PuestaDisposicionAC(models.Model):
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
     
-    def __str__(self):
+    def _str_(self):
         return str(self.numeroOficio) 
     
 class PuestaDisposicionVP(models.Model):
@@ -78,7 +78,7 @@ class PuestaDisposicionVP(models.Model):
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación de origen", null=True, blank=True)
     class Meta:
         verbose_name_plural = "Puestas a Disposición VP"
-    def __str__(self):
+    def _str_(self):
         return str(self.numeroOficio) 
 
 
@@ -93,6 +93,30 @@ OPCION_ESTATUS_CHOICES=[
     ('Traslado','traslado'),
     ('Trasladado','trasladado'),
 ]
+GRADOS_ACADEMICOS = [
+    ('Doctorado', 'Doctorado'),
+    ('Maestría', 'Maestría'),
+    ('Licenciatura', 'Licenciatura'),
+    ('Bachillerato', 'Bachillerato'),
+    ('Diplomado', 'Diplomado'),
+    ('Técnico', 'Técnico'),
+    ('Secundaria', 'Secundaria'),
+    ('Primaria', 'Primaria'),
+    ('Sin educación formal', 'Sin educación formal'),
+    ('Otro', 'Otro (especificar)'),
+]
+ESTADOS_CIVILES = [
+    ('Soltero/a', 'Soltero/a'),
+    ('Casado/a', 'Casado/a'),
+    ('Viudo/a', 'Viudo/a'),
+    ('Divorciado/a', 'Divorciado/a'),
+    ('Separado/a', 'Separado/a'),
+    ('Conviviente', 'Conviviente'),
+    ('Union libre', 'Union libre'),
+    ('Pareja de hecho', 'Pareja de hecho'),
+    ('Otro', 'Otro (especificar)'),
+]
+
 class Extranjero(models.Model):
     fechaRegistro = models.DateField(verbose_name='Fecha de Registro', auto_now_add=True)
     horaRegistro = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
@@ -111,6 +135,18 @@ class Extranjero(models.Model):
     deLaPuestaIMN = models.ForeignKey(PuestaDisposicionINM, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta IMN')
     deLaPuestaAC = models.ForeignKey(PuestaDisposicionAC, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta AC')
     deLaPuestaVP = models.ForeignKey(PuestaDisposicionVP, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta VP')
+    
+    estado_Civil = models.CharField(verbose_name='Estado Civil',max_length=50 ,choices=ESTADOS_CIVILES)
+    grado_academico = models.CharField(verbose_name='Grado Academico', max_length=50, choices=GRADOS_ACADEMICOS)
+    ocupacion = models.CharField(verbose_name='Ocupación', max_length=50, blank=True, null=True, default="")
+    nombreDelPadre = models.CharField(verbose_name='Nombre del Padre', max_length=70, blank=True, null=True, default='')
+    nombreDelaMadre = models.CharField(verbose_name='Nombre de la Madre', max_length=70, blank=True, null=True, default='')
+    lugar_Origen = models.CharField(verbose_name='Origen', max_length=70, blank=True, null=True, default="")
+    domicilio = models.CharField(verbose_name='Domicilio', max_length=80, blank=True, null=True, default="")
+    nacionalidad_Padre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad del Padre', blank=True,null=True, related_name='extranjeros_nacionalidad_padre')
+    nacionalidad_Madre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad de la Madre',blank=True,null=True,related_name='extranjeros_nacionalidad_madre')
+
+    
     def save(self, *args, **kwargs):
     # Si el númeroExtranjero no está establecido, asigna un valor único basado en el ID del registro.
      if not self.numeroExtranjero:
@@ -122,7 +158,7 @@ class Extranjero(models.Model):
    
     class Meta:
         verbose_name_plural = "Extranjeros" 
-    def __str__(self):
+    def _str_(self):
          return self.nombreExtranjero
     
     def delete(self, *args, **kwargs):
@@ -249,7 +285,7 @@ class NoProceso(models.Model):
     comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)
 
-    def __str__(self):
+    def _str_(self):
        return self.nup
 
     @property
@@ -270,7 +306,7 @@ class Acompanante(models.Model):
     delAcompanante = models.ForeignKey(Extranjero, on_delete=models.CASCADE, blank=True, null=True, related_name='acompanantes_delAcompanante')
     relacion = models.ForeignKey(Relacion, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.delExtranjero} - {self.delAcompanante}"
 
     class Meta:
@@ -294,7 +330,7 @@ class Biometrico(models.Model):
     class Meta:
         verbose_name_plural = 'Biometricos'
 
-    def __str__(self):
+    def _str_(self):
         return str(self.Extranjero.nombreExtranjero) 
     
 class Firma(models.Model):
@@ -308,5 +344,5 @@ class UserFace(models.Model):
     image = models.ImageField(upload_to='user_faces/')
     face_encoding = models.JSONField(blank=True, null=True)  #
 
-    def __str__(self):
+    def _str_(self):
         return self.nombreExtranjero
