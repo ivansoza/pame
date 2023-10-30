@@ -17,7 +17,15 @@
 {% block contenido %}
 {% include "includes/tituloPertenencias.html" %}
 {% include "includes/cardPertenencias.html" %}
-
+<style>
+    #tiempoRestante {
+    font-size: 1.5rem; /* Tamaño de fuente */
+    color: #ffffff; /* Color de texto */
+    background-color: #2A4B41; /* Color de fondo */
+    padding: 5px 10px; /* Relleno interior */
+    border-radius: 5px; /* Bordes redondeados */
+}
+</style>
 
 <!-- BOTON DE FINGERPINT PARA VERIFICAR EL USUARIO  -->
 <a class='btn btn-verified tooltip-link' 
@@ -26,6 +34,17 @@
    data-title="Verifica extranjero" >
    <i class="fas fa-fingerprint"></i>
 </a>
+<div style="display: flex; justify-content: space-between; align-items: center; ">
+    <div class="titulo-general-container-card mb-4">
+        <h1 class="titulo-general">Lista de Pertenencias Personales 
+        </h1>
+        
+    </div>
+    <div>
+       <p style="font-size: 1.5rem; display: none;" id="contador-reloj"> Tiempo restante: <span id="tiempoRestante">0:00</span> </p> 
+    </div>
+</div>
+
 <!-- BOTON PARA CREAR UNA PERTENENCIA -->
 <a class='btn btn-custom btn-unverified' 
    data-bs-toggle="tooltip" 
