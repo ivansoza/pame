@@ -60,11 +60,9 @@ class Acuerdo(models.Model):
     nombreTestigoUno = models.CharField(max_length=50)
     apellidoPaternoTestigoUno = models.CharField(max_length=50)
     apellidoMaternoTestigoUno = models.CharField(max_length=50)
-    firmaTestigoUno = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
     nombreTestigoDos = models.CharField(max_length=50)
     apellidoPaternoTestigoDos = models.CharField(max_length=50)
     apellidoMaternoTestigoDos = models.CharField(max_length=50)
-    firmaTestigoDos = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
     nombreTraductor = models.CharField(max_length=50)
     apellidoPaternoTraductor = models.CharField(max_length=50)
     apellidoMaternoTraductor = models.CharField(max_length=50)
@@ -80,7 +78,14 @@ class Acuerdo(models.Model):
     declaracionExtanjero_comparecencia = models.TextField(null=True, blank = True)
     estacionDestino_traslado = models.CharField(max_length=50, null=True, blank = True)
     motivo_traslado = models.TextField(null=True, blank = True)
-    documentoAcuerdo= models.FileField(upload_to='files/', null=True, blank=True)
+
+class FirmaAcuerdo(models.Model):
+    acuerdo = models.ForeignKey(Acuerdo, on_delete=models.CASCADE)
+    firmaTestigoUno = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
+    firmaTestigoDos = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
+    firmaTraductor = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
+    firmaResponsable = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
+
 
 class PDFGenerado(models.Model):
     documento = models.CharField(max_length=255)

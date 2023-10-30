@@ -9,9 +9,7 @@ class AcuerdoInicioForm(forms.ModelForm):
             'nombreTestigoUno',
             'apellidoPaternoTestigoUno',
             'apellidoMaternoTestigoUno',
-            'firmaTestigoUno',
             'nombreTestigoDos',
             'apellidoPaternoTestigoDos',
             'apellidoMaternoTestigoDos',
-            'firmaTestigoDos',
         ]
