@@ -29,36 +29,42 @@
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="col-sm-6 col-md-6 col-lg-4">
                 {{form.numeroExtranjero|as_crispy_field}}
                 <script>
                     document.getElementById('id_numeroExtranjero').readOnly = true;
                 </script>
             </div>
-            <div class="col-sm-6 col-md-6 col-lg-2" style='display:none'>
+            <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
                 {{form.deLaEstacion|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nombreExtranjero|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoPaternoExtranjero|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
-        </div>
-    
-        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.domicilio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaNacimiento|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.edad|as_crispy_field}}
+            </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nacionalidad|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.genero|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.fechaNacimiento|as_crispy_field}}
-            </div>
+        </div>
+    
+        <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estado_Civil|as_crispy_field }}
             </div>
@@ -112,10 +118,10 @@
     
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.nombreDelaMadre|as_crispy_field }}
+                {{ form.nombreDelPadre|as_crispy_field }}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.nacionalidad_Madre|as_crispy_field }}
+                {{ form.nacionalidad_Padre|as_crispy_field }}
             </div>
         </div>
 

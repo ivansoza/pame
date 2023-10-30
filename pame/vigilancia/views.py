@@ -288,7 +288,8 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
     template_name = 'puestaINM/crearExtranjeroINM.html'     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
+        extranjero_id = self.object.id
+        # Obtén el ID del extranjero recién creado
         return reverse('listarExtranjeros', args=[ puesta_id])
                 
     def get_initial(self):
