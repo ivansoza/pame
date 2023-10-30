@@ -4,7 +4,7 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
 derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
     listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, nombramientoRepresentante_pdf, \
     listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
-    notificacionRepresentacion_pdf,AcuerdoInicioCreateView
+    notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf
 
 urlpatterns = [
     # urls prueba documentos pdf 
@@ -23,6 +23,7 @@ urlpatterns = [
     path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
+    path('inventariopv', inventarioPV_pdf, name='inventarioPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),

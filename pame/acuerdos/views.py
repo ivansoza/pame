@@ -289,6 +289,33 @@ def notificacionRepresentacion_pdf(request):
     
     return response
 
+# ----- Genera el documento PDF de Inventario de pertenencias y valores
+def inventarioPV_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/inventarioPV.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
 # ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
 def mostrar_derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
