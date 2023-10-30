@@ -5,7 +5,7 @@ from vigilancia.models import Extranjero
 from django.http import HttpResponse, HttpResponseNotFound
 from weasyprint import HTML
 from django.template.loader import render_to_string, get_template
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from vigilancia.models import Extranjero, Firma
 import os
 from datetime import datetime
@@ -15,8 +15,14 @@ from vigilancia.models import NoProceso
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
-
-
+from django.db.models import Exists, OuterRef
+from .models import TipoAcuerdo,Acuerdo
+from .forms import AcuerdoInicioForm
+from django.shortcuts import redirect
+from django.urls import reverse
+from io import BytesIO
+import base64
+import qrcode
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -478,6 +484,7 @@ class lisExtranjerosInicio(ListView):
             # Obtener la estación del usuario y el estado
             estacion_usuario = self.request.user.estancia
             estado = self.request.GET.get('estado_filtrado', 'activo')
+            TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
 
             # Filtrar extranjeros por estación y estado
             extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
@@ -501,9 +508,68 @@ class lisExtranjerosInicio(ListView):
             )
 
             return queryset
+    
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+  # Crear una lista de los últimos nup para todos los Extranjeros en el queryset
+            listado_nup = [obj.nup for obj in context['object_list']]
+
+            # Verificar qué NoProceso tienen un "Acuerdo Inicio" en el modelo Acuerdo
+            acuerdo_inicio_exists = Acuerdo.objects.filter(
+                nup__in=listado_nup,
+                delAcuerdo__tipo="Acuerdo Inicio"
+            ).values_list('nup', flat=True)
+
+            context['acuerdos_inicio'] = set(acuerdo_inicio_exists)
+            context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+            context['seccion'] = 'inicio'
+            context['navbar1'] = 'inicio'  # Cambia esto según la página activa
+
+            context['seccion1'] = 'inicio'
+
+            return context
+class AcuerdoInicioCreateView(CreateView):
+    model = Acuerdo
+    form_class = AcuerdoInicioForm
+    template_name = 'modals/crearAcuerdoInicio.html'  # Debes especificar la ubicación del template que usarás.
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['extranjero'] = Extranjero.objects.get(numeroExtranjero=self.kwargs['proceso_id'])
+        return context
+
+    def form_valid(self, form):
+        # Aquí puedes hacer ajustes antes de guardar el objeto, como llenar campos adicionales.
+        # Por ejemplo:
+        acuerdo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
+        form.instance.delAcuerdo = acuerdo
+
+        noproceso = NoProceso.objects.get(nup=self.kwargs['proceso_id'])
+        form.instance.delExtanjero = noproceso.extranjero
+        form.instance.nup = noproceso  # <- Asegúrate de asignar el NoProceso al Acuerdo
+
+        # Continúa con el proceso normal de guardado.
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Puedes redirigir al usuario a donde quieras después de guardar el objeto.
+        # Por ejemplo, de vuelta a la página de detalles del extranjero:
+        return reverse('lisExtranjerosInicio')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        sign_link = "https://tu_dominio.com/firmar?token=token_unico" # Cambia tu_dominio y token_unico por lo que necesites
+        
+        # Crear QR
+        img = qrcode.make(sign_link)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        image_stream = base64.b64encode(buf.getvalue()).decode()
+
+        # Pasar QR como dato en base64 a la plantilla
+        context['qr_code'] = image_stream
         context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
         context['seccion'] = 'inicio'
         context['navbar1'] = 'inicio'  # Cambia esto según la página activa

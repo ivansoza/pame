@@ -3,27 +3,73 @@
     let isVerified = verifiedObj.time && 
                      verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
                      verifiedObj.puestaId1 === '{{ puesta_id }}' && 
-
                      (new Date().getTime() - verifiedObj.time) < 300000;
-    
+
+    function actualizarTiempoRestante() {
+                        const tiempoRestanteElement = document.getElementById('tiempoRestante');
+                
+                        const tiempoActual = new Date().getTime();
+                        const tiempoVerificacion = verifiedObj.time + 300000; // Ajusta esto según tus necesidades
+                
+                        const tiempoRestanteEnMilisegundos = tiempoVerificacion - tiempoActual;
+                
+                        if (tiempoRestanteEnMilisegundos <= 0) {
+                            tiempoRestanteElement.textContent = '0:00';
+                            bloquearBotones();
+                        } else {
+                            const minutos = Math.floor(tiempoRestanteEnMilisegundos / 60000);
+                            const segundos = Math.floor((tiempoRestanteEnMilisegundos % 60000) / 1000);
+                
+                            // Formatea el tiempo restante como "minutos:segundos"
+                            const tiempoRestanteFormateado = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+                            
+                            tiempoRestanteElement.textContent = tiempoRestanteFormateado;
+                            if (tiempoRestanteEnMilisegundos < 30000) { // Cambia el color cuando queda menos de 10 segundos
+                               tiempoRestanteElement.style.color = 'red'; // Cambia el color a rojo (ajusta según tus preferencias)
+                            } else {
+                               tiempoRestanteElement.style.color = '#F2E9E4'; // Vuelve al color original
+                            }
+                            if (tiempoRestanteFormateado == '0:00') { // Cambia el color cuando queda menos de 10 segundos
+                               Swal.fire({
+                                 icon: 'warning',
+                                 title: '¡Tiempo Agotado!',
+                                 text: 'El tiempo para verificar ha terminado.',
+                                 confirmButtonText: 'Cerrar',
+                                 confirmButtonColor: '#2A4B41',
+                               }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Comienza el contador al presionar el botón de confirmación
+                                    location.reload();
+                                }
+                             });
+                            }
+                            setTimeout(actualizarTiempoRestante, 1000); // Actualiza cada segundo
+                        }
+                    }
+                
+                    // Llama a la función para comenzar el contador regresivo
     if (isVerified) {
         // También debemos establecer un nuevo temporizador para manejar el caso en que la página no se recargue
         setTimeout(() => {
             isVerified = false;
             localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
             bloquearBotones();
-
+            
         }, 300000 - (new Date().getTime() - verifiedObj.time));
         // Lo elimina
         document.querySelectorAll('.btn-verified').forEach(function(btn) {
+            actualizarTiempoRestante();
             btn.remove();
         });
-
+        
         document.querySelectorAll('.btn-unverified').forEach(function(btn) {
             btn.classList.remove('btn-unverified');
         });
+        document.getElementById('contador-reloj').style.display = 'inline-block';
         
     }else {
+        document.getElementById('contador-reloj').style.display = 'none';
+
         document.querySelectorAll('.btn-verified').forEach(function(btn) {
             btn.addEventListener('click', function(event) {
                 event.preventDefault();
@@ -128,7 +174,11 @@
                                             icon: 'success',
                                             title: '¡Coincidencia Exitosa!',
                                             confirmButtonColor: '#2A4B41',
-
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                // Comienza el contador al presionar el botón de confirmación
+                                                iniciarContador();
+                                            }
                                         });
                                         document.querySelectorAll('.btn-unverified').forEach(function(btn) {
                                             btn.classList.remove('btn-unverified');
@@ -255,4 +305,46 @@
             btn.classList.add('btn-unverified');
         });
     }
+</script>
+<script>
+function iniciarContador() {
+    const tiempoVerificacion = new Date().getTime() + 300000; // 300000 milisegundos (5 minutos)
+    
+    function actualizarContador() {
+        const tiempoRestanteElement = document.getElementById('tiempoRestante');
+        const tiempoActual = new Date().getTime();
+        const tiempoRestanteEnMilisegundos = tiempoVerificacion - tiempoActual;
+        document.getElementById('contador-reloj').style.display = 'inline-block';
+
+        if (tiempoRestanteEnMilisegundos <= 0) {
+            tiempoRestanteElement.textContent = '0:00';
+            bloquearBotones();
+            
+        } else {
+            const minutos = Math.floor(tiempoRestanteEnMilisegundos / 60000);
+            const segundos = Math.floor((tiempoRestanteEnMilisegundos % 60000) / 1000);
+            const tiempoRestanteFormateado = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+            
+            tiempoRestanteElement.textContent = tiempoRestanteFormateado;
+            if (tiempoRestanteEnMilisegundos < 30000) { // Cambia el color cuando queda menos de 10 segundos
+                tiempoRestanteElement.style.color = 'red'; // Cambia el color a rojo (ajusta según tus preferencias)
+            } else {
+                tiempoRestanteElement.style.color = '#F2E9E4'; // Vuelve al color original
+            }
+            if (tiempoRestanteFormateado == '0:00') { // Cambia el color cuando queda menos de 10 segundos
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Tiempo Agotado!',
+                    text: 'El tiempo para verificar ha terminado.',
+                    confirmButtonText: 'Cerrar',
+                    confirmButtonColor: '#2A4B41',
+                });
+            }
+            setTimeout(actualizarContador, 1000);
+        }
+    }
+
+    // Comienza el contador
+    actualizarContador();
+}
 </script>

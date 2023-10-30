@@ -42,9 +42,16 @@
                 <td>{{ extranjero.extranjero.nacionalidad }}</td>
 
                 <td align="center">
-                    <a href="{% url 'inicioPDF' extranjero_id=extranjero.extranjero.id %}" target="_blank" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Ver Oficio" >
+                
+                    {% if extranjero.nup in acuerdos_inicio %}
+                    <a href="{% url 'inicioPDF' extranjero_id=extranjero.extranjero.id %}" target="_blank" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Ver Oficio">
                         <i class="fas fa-eye"></i>
                     </a>
+                {% else %}
+                    <a href="{% url 'crearAcuerdoInicio' proceso_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-crear" data-title="Crear Acuerdo Inicio">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                {% endif %}
                 </td>                         
             </tr>
             {% endfor %}
