@@ -13,12 +13,25 @@ class Nacionalidad(models.Model):
     def __str__(self):
         return self.Abreviatura
 
+GRADO_ACADEMICO = [
+    ('Doc.', 'Doctorado'),
+    ('M.', 'Maestría'),
+    ('Lic.', 'Licenciatura'),
+    ('Bach.', 'Bachillerato'),
+    ('Dip.', 'Diplomado'),
+    ('Téc.', 'Técnico'),
+    ('Sec.', 'Secundaria'),
+    ('Prim.', 'Primaria'),
+    ('C.', 'Sin educación formal'),
+]
+
     
 # FUNCION PARA ASIGNAR UN NOMBRE DE CARPETA A PARTIR DE LA ESTACION, SU IDENTIFICADOR DE PROCESO Y SU FILE NAME 
 def user_directory_pathINM(instance, filename):
     estacion = instance.deLaEstacion.identificador if instance.deLaEstacion else 'sin_estacion'
     identificador_proceso = instance.identificadorProceso if instance.identificadorProceso else 'sin_identificador'
     return f'{estacion}/PUESTAINM/{identificador_proceso}/{filename}'
+
 
 class PuestaDisposicionINM(models.Model):
     identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
@@ -32,7 +45,9 @@ class PuestaDisposicionINM(models.Model):
     oficioComision = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
-    
+    gradoinm = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
+    gradoinm2 = models.CharField(verbose_name='Grado de Autoridad Asignada 2:', max_length=50, choices=GRADO_ACADEMICO)
+
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
         ordering = ['-fechaOficio']
@@ -66,6 +81,9 @@ class PuestaDisposicionAC(models.Model):
     municipio =models.CharField(max_length=50)
     certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
+    grado = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
+    grado2 = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
+
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
     

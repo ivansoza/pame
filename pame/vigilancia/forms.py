@@ -41,6 +41,9 @@ class ValidacionArchivosPDF(forms.Form):
         return archivo
 
 class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
+    models=PuestaDisposicionINM
+    fields = ['gradoinm','gradoinm2']
+    
     numeroOficio = forms.CharField(
         label= "Número de Oficio:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: 162729'})
@@ -80,6 +83,7 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
          # widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
      )
     
+    
     def clean_oficioPuesta(self):
         return self.clean_archivo('oficioPuesta')
     
@@ -104,6 +108,8 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
 
 
 class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
+    models = PuestaDisposicionAC
+    fields = ['grado','grado2']
 
     
     numeroOficio = forms.CharField(
