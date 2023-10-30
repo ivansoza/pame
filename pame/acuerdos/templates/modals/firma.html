@@ -56,12 +56,10 @@
 
 <body>
     <h1 style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Captura de firma</h1>
-    <form method="post" enctype="multipart/form-data">
         <input type="hidden" name="firma_imagen" id="inputFirmaImagen">
 
         <div id="contenedor-principal">
             <div id="lienzo-container">
-                {{nombre}}
                 <canvas id="pizarra"></canvas>
             </div>
             <div id="botones-container">
@@ -73,7 +71,6 @@
             </div>
         </div>
 
-    </form>
 
     <script>
         // JavaScript para manejar la firma en el canvas
