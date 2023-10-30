@@ -3618,18 +3618,28 @@ class listarExtranjerosEstacion(LoginRequiredMixin,ListView):
         ahora = timezone.now() # Hora Actual
 
         for extranjero in context['extranjeros']:
-            tiempo_transcurrido = ahora - extranjero.horaRegistro
-            horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
-            horas_transcurridas = int(horas_transcurridas)
-            minutos_transcurridos = int(minutos_transcurridos * 60)
+            # Obtener el último NoProceso asociado a este extranjero
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
 
-            # Limitar a un máximo de 36 horas
-            if horas_transcurridas > 36:
-                horas_transcurridas = 36
-                minutos_transcurridos = 0
+            if ultimo_nup:
+                # Obtener la hora de registro del último NoProceso
+                hora_registro_nup = ultimo_nup.horaRegistroNup
 
-            extranjero.horas_transcurridas = horas_transcurridas
-            extranjero.minutos_transcurridos = minutos_transcurridos
+                tiempo_transcurrido = ahora - hora_registro_nup
+                horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
+                horas_transcurridas = int(horas_transcurridas)
+                minutos_transcurridos = int(minutos_transcurridos * 60)
+
+                # Limitar a un máximo de 36 horas
+                if horas_transcurridas > 36:
+                    horas_transcurridas = 36
+                    minutos_transcurridos = 0
+
+                extranjero.horas_transcurridas = horas_transcurridas
+                extranjero.minutos_transcurridos = minutos_transcurridos
+            else:
+                extranjero.horas_transcurridas = 0
+                extranjero.minutos_transcurridos = 0
 
             
         for extranjero in context['extranjeros']:

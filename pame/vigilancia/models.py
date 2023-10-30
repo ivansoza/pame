@@ -288,6 +288,7 @@ class NoProceso(models.Model):
     agno = models.DateField(auto_now_add=True)
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
+    horaRegistroNup = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
     status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
     comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)
