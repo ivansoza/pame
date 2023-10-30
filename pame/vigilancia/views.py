@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion, NoProceso
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
@@ -74,23 +75,26 @@ import qrcode
 from vigilancia.models import Firma
 from .forms import FirmaForm
 from django.core.files.base import ContentFile
+from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
 
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.permissions_required = kwargs.get('permissions_required', {})
 
     def test_func(self):
         user = self.request.user
+        if not user.is_authenticated:
+            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            return redirect('permisoDenegado')  # Cambia 'acceso_denegado' a la URL adecuada
+
         for permission, codename in self.permissions_required.items():
             if not user.has_perm(codename):
                 raise PermissionDenied(f"No tienes el permiso necesario: {permission}")
         return True
-   
-    def test_func(self):
-        return all(self.request.user.has_perm(perm) for perm in self.permission_required.values())
- 
+
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             # Si el usuario está autenticado pero no tiene el permiso, redirige a una página de acceso denegado
@@ -169,11 +173,14 @@ def homePuestaVP (request):
     return render(request, "home/puestas/homePuestaVP.html")
 
 #------------------------ Puesta por INM-----------------------------
-class inicioINMList(ListView):
+class inicioINMList(LoginRequiredMixin,ListView,CreatePermissionRequiredMixin):
+    permission_required = {
+        'perm1': 'vigilancia.view_puestadisposicioninm',
+    }
     model = PuestaDisposicionINM          
     template_name = "puestaINM/homePuestaINM.html" 
     context_object_name = 'puestasinm'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado
         user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
@@ -230,7 +237,7 @@ class estadisticasPuestaINM(ListView):
 
 
 
-class createPuestaINM(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
+class createPuestaINM(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicioninm',
     }
@@ -238,7 +245,7 @@ class createPuestaINM(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     form_class = puestDisposicionINMForm      
     template_name = 'puestaINM/createPuestaINM.html'  
     success_url = reverse_lazy('homePuestaINM')
-
+    login_url = '/permisoDenegado/'  # Reedirige en caso de no estar logueado 
     def get_initial(self):
         initial = super().get_initial()
 
@@ -279,13 +286,14 @@ class createPuestaINM(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
         self.handle_file(instance,'oficioComision')
         return super(createPuestaINM, self).form_valid(form)
 
-class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
+class createExtranjeroINM(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_extranjero',
     }
     model =Extranjero             
     form_class = extranjeroFormsInm    
-    template_name = 'puestaINM/crearExtranjeroINM.html'     
+    template_name = 'puestaINM/crearExtranjeroINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
@@ -404,11 +412,14 @@ class createExtranjeroINM(CreatePermissionRequiredMixin,CreateView):
         return context
     
 
-class listarExtranjeros(ListView):
+class listarExtranjeros(LoginRequiredMixin,ListView, CreatePermissionRequiredMixin):
+    permission_required = {
+        'perm1': 'vigilancia.view_extranjero',
+    }
     model = Extranjero
     template_name = 'puestaINM/listExtranjeros.html'
     context_object_name = 'extranjeros'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
         estado = self.request.GET.get('estado_filtrado', 'activo') 
@@ -480,14 +491,14 @@ class listarExtranjeros(ListView):
      context['seccion'] = 'seguridadINM'
      return context
      
-class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
+class EditarExtranjeroINM(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = editExtranjeroINMForm
     template_name = 'puestaINM/editarExtranjeroINM.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         messages.success(self.request, 'Datos del extranjero editados con éxito.')
         return reverse('listarExtranjeros', args=[self.object.deLaPuestaIMN.id])
@@ -560,13 +571,14 @@ class EditarExtranjeroINM(CreatePermissionRequiredMixin,UpdateView):
 
         return super().dispatch(request, *args, **kwargs)
     
-class EditarExtranjeroINMProceso(CreatePermissionRequiredMixin,UpdateView):
+class EditarExtranjeroINMProceso(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = editExtranjeroINMForm
     template_name = 'puestaINM/editarExtranjeroINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_initial(self):
         initial = super().get_initial()
         puesta_id = self.kwargs['puesta_id']
@@ -684,11 +696,12 @@ class EditarExtranjeroINMProceso(CreatePermissionRequiredMixin,UpdateView):
         return context
     
     
-class AgregarBiometricoINM(CreateView):
+class AgregarBiometricoINM(LoginRequiredMixin,CreateView):
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'puestaINM/createBiometricosINM.html'  # Cambiar a la ruta correcta
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    redirect_field_name = 'next'  # Nombre del campo para el mensaje
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -793,14 +806,14 @@ class AgregarBiometricoINM(CreateView):
     
 
 
-class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
+class EditarBiometricoINM(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
     }
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'puestaINM/editBiometricosINM.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -875,13 +888,13 @@ class EditarBiometricoINM(CreatePermissionRequiredMixin,UpdateView):
         return super().form_valid(form)
         
 
-class DeleteExtranjeroINM(DeleteView):
+class DeleteExtranjeroINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroINM.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaIMN.id
         messages.success(self.request, 'Extranjero Eliminado con Éxito.')
@@ -895,10 +908,10 @@ class DeleteExtranjeroINM(DeleteView):
         
         return context
 
-class acompananteList(ListView):
+class acompananteList(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = "puestaINM/listAcompananteINM.html" 
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -933,14 +946,14 @@ class acompananteList(ListView):
         
         return context
     
-class AgregarAcompananteViewINM(CreatePermissionRequiredMixin,CreateView):
+class AgregarAcompananteViewINM(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_acompanante',
     }
     model = Acompanante
     form_class = AcompananteForm
     template_name = 'modal/acompananteINM.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
@@ -965,13 +978,13 @@ class AgregarAcompananteViewINM(CreatePermissionRequiredMixin,CreateView):
         context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
         return context
     
-class DeleteAcompananteINM(DeleteView):
+class DeleteAcompananteINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
     template_name = 'modal/eliminarAcompananteINM.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         acompanante = self.object
         extranjero_id = acompanante.delExtranjero.id
@@ -984,13 +997,13 @@ class DeleteAcompananteINM(DeleteView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
-class DeleteAcompananteINM1(DeleteView):
+class DeleteAcompananteINM1(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
     template_name = 'modal/eliminarAcompananteINM1.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         acompanante = self.object
         extranjero_id = acompanante.delAcompanante.id
@@ -1007,13 +1020,13 @@ class DeleteAcompananteINM1(DeleteView):
         return context
     
 
-class DeleteAcompananteAC(DeleteView):
+class DeleteAcompananteAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
     template_name = 'modal/eliminarAcompananteAC.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         acompanante = self.object
         extranjero_id = acompanante.delExtranjero.id
@@ -1026,13 +1039,13 @@ class DeleteAcompananteAC(DeleteView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
-class DeleteAcompananteAC1(DeleteView):
+class DeleteAcompananteAC1(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
     template_name = 'modal/eliminarAcompananteAC1.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         acompanante = self.object
         extranjero_id = acompanante.delAcompanante.id
@@ -1050,7 +1063,7 @@ class DeleteAcompananteAC1(DeleteView):
     
     
     
-class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
+class createExtranjeroAcomINM(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_extranjero',
     }
@@ -1058,7 +1071,7 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
     form_class = extranjeroFormsInm    
     template_name = 'puestaINM/crearAcompananteINM.html' 
     # success_url = reverse_lazy('homePuestaINM')
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
@@ -1181,11 +1194,11 @@ class createExtranjeroAcomINM(CreatePermissionRequiredMixin,CreateView):
 #------------------------ Fin Puesta por INM-----------------------------
 
 #------------------------  Puesta por AC -----------------------------
-class inicioACList(ListView):
+class inicioACList(LoginRequiredMixin,ListView):
     model = PuestaDisposicionAC
     template_name = "puestaAC/homePuestaAC.html" 
     context_object_name = 'puestaAC'
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado
         user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
@@ -1219,7 +1232,7 @@ class inicioACList(ListView):
 
         return context
     
-class createPuestaAC(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
+class createPuestaAC(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicionac',
     }
@@ -1227,7 +1240,7 @@ class createPuestaAC(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     form_class = puestaDisposicionACForm      
     template_name = 'puestaAC/createPuestaAC.html'  
     success_url = reverse_lazy('homePuestaAC')
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_initial(self):
         initial = super().get_initial()
         Usuario = get_user_model()
@@ -1268,14 +1281,14 @@ class createPuestaAC(HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
         messages.success(self.request, 'La puesta por autoridad competente se ha creado con éxito.')
         return super().get_success_url()
     
-class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
+class createExtranjeroAC(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_extranjero',
     }
     model =Extranjero             
     form_class = extranjeroFormsAC    
     template_name = 'puestaAC/createExtranjeroAC.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado    
@@ -1402,11 +1415,11 @@ class createExtranjeroAC(CreatePermissionRequiredMixin,CreateView):
 
         return context
 
-class listarExtranjerosAC(ListView):
+class listarExtranjerosAC(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = 'puestaAC/listExtranjerosAC.html'
     context_object_name = 'extranjeros'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
         estado = self.request.GET.get('estado_filtrado', 'activo') 
@@ -1468,13 +1481,14 @@ class listarExtranjerosAC(ListView):
 
         return context
 
-class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
+class EditarExtranjeroAC(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def form_valid(self, form):
         # Guarda el formulario, pero no comitea a la base de datos aún
         instance = form.save(commit=False)
@@ -1558,13 +1572,14 @@ class EditarExtranjeroAC(CreatePermissionRequiredMixin,UpdateView):
 
         return super().dispatch(request, *args, **kwargs)
     
-class EditarExtranjeroACProceso(CreatePermissionRequiredMixin,UpdateView):
+class EditarExtranjeroACProceso(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = editExtranjeroACForms
     template_name = 'puestaAC/editarExtranjeroAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_initial(self):
         initial = super().get_initial()
         puesta_id = self.kwargs['puesta_id']
@@ -1683,11 +1698,11 @@ class EditarExtranjeroACProceso(CreatePermissionRequiredMixin,UpdateView):
         return context
     
 
-class AgregarBiometricoAC(CreateView):
+class AgregarBiometricoAC(LoginRequiredMixin,CreateView):
     model = Biometrico
     form_class = BiometricoFormAC
     template_name = 'puestaAC/createBiometricosAC.html'  # Cambiar a la ruta correcta
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -1787,14 +1802,14 @@ class AgregarBiometricoAC(CreateView):
 
         return context
 
-class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
+class EditarBiometricoAC(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
     }
     model = Biometrico
     form_class = BiometricoFormAC
     template_name = 'puestaAC/editBiometricosAC.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -1868,13 +1883,13 @@ class EditarBiometricoAC(CreatePermissionRequiredMixin,UpdateView):
         
         
 
-class DeleteExtranjeroAC(DeleteView):
+class DeleteExtranjeroAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroAC.html'
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaAC.id
         messages.success(self.request, 'Extranjero eliminado con éxito.')
@@ -1888,14 +1903,14 @@ class DeleteExtranjeroAC(DeleteView):
 
         return context
 
-class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
+class createAcompananteAC(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_extranjero',
     }
     model =Extranjero             
     form_class = extranjeroFormsAC    
     template_name = 'puestaAC/createAcompananteAC.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
@@ -2018,10 +2033,10 @@ class createAcompananteAC(CreatePermissionRequiredMixin,CreateView):
 
         return context
     
-class ListAcompanantesAC(ListView):
+class ListAcompanantesAC(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = 'puestaAC/listAcompanantesAC.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -2057,12 +2072,12 @@ class ListAcompanantesAC(ListView):
         return context
 
 
-class AgregarAcompananteViewAC(CreateView):
+class AgregarAcompananteViewAC(LoginRequiredMixin,CreateView):
     model = Acompanante
     form_class = AcompananteForm
     # template_name = 'puestaAC/agregar_acompananteAC.html'
     template_name = 'modal/acompananteAC.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
@@ -2090,11 +2105,11 @@ class AgregarAcompananteViewAC(CreateView):
 
 
 
-class CrearRelacionAcompananteAC(CreateView):
+class CrearRelacionAcompananteAC(LoginRequiredMixin,CreateView):
     model = Acompanante
     form_class = AcompananteForm
     template_name= 'puestaAC/listAcompanantesAC.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
@@ -2112,7 +2127,8 @@ class CrearRelacionAcompananteAC(CreateView):
         puesta_id = extranjero_principal.deLaPuestaAC_id
         return redirect('listAcompanantesAC', extranjero_principal.id, puesta_id)
     
-class CrearRelacionView(View):
+class CrearRelacionView(LoginRequiredMixin,View):
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def post(self, request, extranjero_id, relacion_id):
         extranjero_principal = Extranjero.objects.get(pk=extranjero_id)
         relacion = Relacion.objects.get(pk=relacion_id)
@@ -2158,11 +2174,11 @@ class CalcularTamanoDiscoView(DetailView):
 from .models import PuestaDisposicionVP
 from .forms import puestaVPForm, extranjeroFormsVP, editExtranjeroVPForm
 #------------------------ Puesta por VP-----------------------------
-class inicioVPList(ListView):
+class inicioVPList(LoginRequiredMixin,ListView):
     model = PuestaDisposicionVP       
     template_name = "puestaVP/homePuestaVP.html" 
     context_object_name = 'puestasvp'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado
         user_profile = self.request.user  # Ajusta según cómo se llama la relación en tu modelo de usuario
@@ -2196,12 +2212,12 @@ class inicioVPList(ListView):
 
         return context
     
-class createPuestaVP(CreateView):
+class createPuestaVP(LoginRequiredMixin,CreateView):
     model = PuestaDisposicionVP             
     form_class = puestaVPForm     
     template_name = 'puestaVP/createPuestaVP.html'  
     success_url = reverse_lazy('homePuestasVP')
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_initial(self):
         initial = super().get_initial()
 
@@ -2235,11 +2251,11 @@ class createPuestaVP(CreateView):
         messages.success(self.request, 'La puesta de voluntad se ha creado con éxito.')
         return super().get_success_url()
 
-class listarExtranjerosVP(ListView):
+class listarExtranjerosVP(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = 'puestaVP/listExtranjeroVP.html'
     context_object_name = 'extranjeros'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         puesta_id = self.kwargs['puesta_id']
         estado = self.request.GET.get('estado_filtrado', 'activo') 
@@ -2302,11 +2318,11 @@ class listarExtranjerosVP(ListView):
         
         return context
     
-class createExtranjeroVP(CreateView):
+class createExtranjeroVP(LoginRequiredMixin,CreateView):
     model =Extranjero             
     form_class = extranjeroFormsVP  
     template_name = 'puestaVP/createExtranjeroVP.html' 
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
@@ -2434,10 +2450,10 @@ class createExtranjeroVP(CreateView):
     
 
 
-class listarAcompanantesVP(ListView):
+class listarAcompanantesVP(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = "puestaVP/listAcompananteVP.html" 
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -2472,11 +2488,11 @@ class listarAcompanantesVP(ListView):
         
         return context
     
-class EditarExtranjeroVP(UpdateView):
+class EditarExtranjeroVP(LoginRequiredMixin,UpdateView):
     model = Extranjero
     form_class = editExtranjeroVPForm
     template_name = 'puestaVP/editExtranjeroVP.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         messages.success(self.request, 'Datos del extranjero editados con éxito.')
 
@@ -2552,13 +2568,14 @@ class EditarExtranjeroVP(UpdateView):
 
         return super().dispatch(request, *args, **kwargs)
 
-class EditarExtranjeroVPProceso(CreatePermissionRequiredMixin,UpdateView):
+class EditarExtranjeroVPProceso(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = editExtranjeroVPForm
     template_name = 'puestaVP/editExtranjeroVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_initial(self):
         initial = super().get_initial()
         puesta_id = self.kwargs['puesta_id']
@@ -2676,10 +2693,10 @@ class EditarExtranjeroVPProceso(CreatePermissionRequiredMixin,UpdateView):
         
         return context
     
-class DeleteExtranjeroVP(DeleteView):
+class DeleteExtranjeroVP(LoginRequiredMixin,DeleteView):
     model = Extranjero
     template_name = 'modal/eliminarExtranjeroVP.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.object.deLaPuestaVP.id
         messages.success(self.request, 'Extranjero eliminado con éxito.')
@@ -2695,11 +2712,11 @@ class DeleteExtranjeroVP(DeleteView):
    
 
 #-----------------------Agregar Biometricos-------------
-class AgregarBiometricoVP(CreateView):
+class AgregarBiometricoVP(LoginRequiredMixin,CreateView):
     model = Biometrico
     form_class = BiometricoFormVP
     template_name = 'puestaVP/createBiometricosVP.html'  # Cambiar a la ruta correcta
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -2800,14 +2817,14 @@ class AgregarBiometricoVP(CreateView):
 
      return super().form_valid(form)
     
-class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
+class EditarBiometricoVP(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
     }
     model = Biometrico
     form_class = BiometricoFormVP
     template_name = 'puestaVP/editBiometricosVP.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -2883,14 +2900,14 @@ class EditarBiometricoVP(CreatePermissionRequiredMixin,UpdateView):
             return super().form_valid(form)
         
     
-class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
+class createAcompananteVP(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_extranjero',
     }
     model =Extranjero             
     form_class = extranjeroFormsVP    
     template_name = 'puestaVP/createAcompananteVP.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
         extranjero_principal_id = self.kwargs.get('extranjero_principal_id')  # Obtén el ID del extranjero principal del contexto
@@ -3016,11 +3033,11 @@ class createAcompananteVP(CreatePermissionRequiredMixin,CreateView):
         return context
     
 
-class AgregarAcompananteViewVP(CreateView):
+class AgregarAcompananteViewVP(LoginRequiredMixin,CreateView):
     model = Acompanante
     form_class = AcompananteForm
     template_name = 'modal/acompananteVP.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_principal_id = self.kwargs['extranjero_principal_id']
         extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
@@ -3042,13 +3059,13 @@ class AgregarAcompananteViewVP(CreateView):
         context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
         return context
 
-class DeleteAcompananteVP(DeleteView):
+class DeleteAcompananteVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
     template_name = 'modal/eliminarAcompananteVP.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         acompanante = self.object
         extranjero_id = acompanante.delExtranjero.id
@@ -3064,13 +3081,13 @@ class DeleteAcompananteVP(DeleteView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         
         return context
-class DeleteAcompananteVP1(DeleteView):
+class DeleteAcompananteVP1(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Acompanante
     template_name = 'modal/eliminarAcompananteVP1.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión   
     def get_success_url(self):
         acompanante = self.object
         extranjero_id = acompanante.delAcompanante.id
@@ -3087,11 +3104,11 @@ class DeleteAcompananteVP1(DeleteView):
         return context
     
 
-class listarTraslado(ListView):
+class listarTraslado(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = "traslados/inicioTraslado.html"
     context_object_name = 'traslado'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
     # Obtener el perfil del usuario logueado y su estación.
         user_profile = self.request.user
@@ -3133,7 +3150,7 @@ class listarTraslado(ListView):
         return context
     
 
-
+@login_required
 def solicitar_traslado(request,self, traslado_id):
     if request.method == 'POST':
         if 'extranjeros[]' in request.POST:
@@ -3165,12 +3182,12 @@ def solicitar_traslado(request,self, traslado_id):
 
 
 
-class TrasladoCreateView(CreateView):
+class TrasladoCreateView(LoginRequiredMixin,CreateView):
     model = Traslado
     form_class = TrasladoForm
     template_name = 'traslados/traslado_form.html'  # Este será el nombre del archivo HTML que crearás a continuación.
     success_url = reverse_lazy('traslado')  # Ajusta este nombre según tu archivo urls.py
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_initial(self):
         initial = super().get_initial()
         initial['estacion_origen'] = self.kwargs['origen_id']
@@ -3205,36 +3222,7 @@ def procesar_traslado(request):
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-
-
-
-# def compare_faces(request):
-#     result = None
-
-#     if request.method == "POST":
-#         form = CompareFacesForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             image1 = form.cleaned_data['image1']
-#             image2 = form.cleaned_data['image2']
-
-#             # Convertir las imágenes a arrays
-#             img1_array = face_recognition.load_image_file(image1)
-#             img2_array = face_recognition.load_image_file(image2)
-
-#             # Obtener los encodings
-#             encodings1 = face_recognition.face_encodings(img1_array)
-#             encodings2 = face_recognition.face_encodings(img2_array)
-
-#             if encodings1 and encodings2:  # Verificar que se detectaron rostros
-#                 matches = face_recognition.compare_faces([encodings1[0]], encodings2[0])
-#                 result = matches[0]
-#             else:
-#                 result = "No se detectó rostro en una o ambas imágenes."
-#     else:
-#         form = CompareFacesForm()
-
-#     return render(request, 'compare_faces.html', {'form': form, 'result': result})
-
+@login_required
 def compare_faces(request):
     result = None
     similarity = None  # Para guardar la similitud (distancia)
@@ -3270,12 +3258,12 @@ def compare_faces(request):
 
 
 
-class UserFaceCreateView(CreateView):
+class UserFaceCreateView(LoginRequiredMixin,CreateView):
     model = UserFace
     form_class = UserFaceForm
     template_name = 'face_recognition/guardar_fotos.html'
     success_url = reverse_lazy('create_user_face')
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def form_valid(self, form):
         form.instance.image.save(form.instance.image.name, form.instance.image, save=True)
         image_path = form.instance.image.path
@@ -3310,7 +3298,7 @@ class UserFaceCreateView(CreateView):
 
 
 
-
+@login_required
 def search_face(request):
     result = None
     
@@ -3534,7 +3522,7 @@ def manejar_imagen3(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
-    
+@login_required    
 def compare_faces(request):
     if request.method == "POST":
         imagen = request.FILES.get('image')
@@ -3583,11 +3571,11 @@ def compare_faces(request):
     
 
 
-class ResumenViewINM(DetailView):
+class ResumenViewINM(LoginRequiredMixin,DetailView):
     model = Extranjero
     template_name = 'puestaINM/resumenExtranjeroINM.html'
     context_object_name = 'extranjero'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero = self.object
@@ -3600,11 +3588,11 @@ class ResumenViewINM(DetailView):
 
 # Listar extranjeros de forma global por estacion
 
-class listarExtranjerosEstacion(ListView):
+class listarExtranjerosEstacion(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = 'extranjeros/listExtranjerosEstacion.html'
     context_object_name = 'extranjeros'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_queryset(self):
         # Obtener la estación del usuario actualmente autenticado.
         estacion_usuario = self.request.user.estancia
@@ -3691,7 +3679,8 @@ class listarExtranjerosEstacion(ListView):
      
     
 
-class qrs(TemplateView):
+class qrs(LoginRequiredMixin,TemplateView):
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     template_name='qr.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -3766,11 +3755,11 @@ class firmE(TemplateView):
 class firmExistente(TemplateView):
     template_name='firmaExistente.html'
 
-class AgregarBiometricoGeneral(CreateView):
+class AgregarBiometricoGeneral(LoginRequiredMixin,CreateView):
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'extranjeros/createBiometricosGenerales.html'  # Cambiar a la ruta correcta
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -3880,14 +3869,14 @@ class AgregarBiometricoGeneral(CreateView):
 
      return super().form_valid(form)
 
-class EditarBiometricoGeneral(CreatePermissionRequiredMixin,UpdateView):
+class EditarBiometricoGeneral(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.change_biometrico',
     }
     model = Biometrico
     form_class = BiometricoFormINM
     template_name = 'extranjeros/editarBiometricosGenerales.html' 
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.Extranjero.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -3969,14 +3958,14 @@ class EditarBiometricoGeneral(CreatePermissionRequiredMixin,UpdateView):
 
         return super().form_valid(form)
     
-class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
+class EditarExtranjeroGeneral(LoginRequiredMixin,CreatePermissionRequiredMixin,UpdateView):
     permission_required = {
          'perm1': 'vigilancia.change_extranjero',
     }
     model = Extranjero
     form_class = editExtranjeroINMForm
     template_name = 'extranjeros/editarExtranjeroGeneral.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -4063,13 +4052,13 @@ class EditarExtranjeroGeneral(CreatePermissionRequiredMixin,UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
 
-class DeleteExtranjeroGeneral(DeleteView):
+class DeleteExtranjeroGeneral(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_extranjero',
     }
     model = Extranjero
     template_name = 'extranjeros/eliminarExtranjeroGeneral.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         extranjero_id = self.object.id  # Obtén el ID del extranjero del objeto biometrico
         extranjero = Extranjero.objects.get(id=extranjero_id)
