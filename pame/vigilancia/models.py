@@ -174,6 +174,13 @@ class Extranjero(models.Model):
             return bool(self.biometrico.fotografiaExtranjero)
         except Biometrico.DoesNotExist:
             return False
+        
+    @property
+    def tiene_firma(self):
+        try:
+            return bool(self.firma.firma_imagen)
+        except Firma.DoesNotExist:
+            return False
 
 estatura_choices = (
         ('1.70', '1.70 m o más'),

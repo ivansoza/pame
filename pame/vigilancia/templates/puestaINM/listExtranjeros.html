@@ -55,7 +55,7 @@
                     </a>
                 {% else %}
 
-                {% if extranjero.tiene_fotografia %}
+                {% if extranjero.tiene_fotografia and extranjero.tiene_firma%}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                       <i class="fas fa-phone"></i>
                     </a>
@@ -246,8 +246,8 @@
     function showBioAlert() {
         Swal.fire({
             icon: 'warning',
-            title: '¡Falta Fotografía!',
-            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+            title: '¡Falta Fotografía y/o Firma!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
             confirmButtonColor: '#2A4B41'
         });
     }
