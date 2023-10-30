@@ -51,6 +51,13 @@
                     <a href="{% url 'crearAcuerdoInicio' proceso_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-crear" data-title="Crear Acuerdo Inicio">
                         <i class="fas fa-plus"></i>
                     </a>
+
+
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="#"
+                    data-title="generar" onclick="abrir_modal(this.href); return false;">
+                    <i class="fas fa-plus"></i>
+                    </a>
                 {% endif %}
                 </td>                         
             </tr>
@@ -58,5 +65,32 @@
         </tbody>
     </table>
 </div>
+
+<!-- Codigo para abrir el modal   -->
+<div class="modal fade" id="abrirmodalAcuerdoInicio" role="dialog">
+</div>
 {% endblock contenido  %}
+
+
+
+{% block script %}
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal(url){
+        $('#abrirmodalAcuerdoInicio').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+
+    function showBioAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: '¡Falta Fotografía!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+            confirmButtonColor: '#2A4B41'
+        });
+    }
+</script>
+
+{% endblock script %}
 

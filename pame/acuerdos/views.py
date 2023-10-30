@@ -523,23 +523,6 @@ class AcuerdoInicioCreateView(CreateView):
         context['seccion1'] = 'inicio'
 
         return context
-class GuardarTestigosAjaxView(View):
-
-    def post(self, request, *args, **kwargs):
-        form = TuFormulario(request.POST)
-        if form.is_valid():
-            acuerdo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
-            form.instance.delAcuerdo = acuerdo
-
-            noproceso = NoProceso.objects.get(nup=self.kwargs['proceso_id'])
-            form.instance.delExtanjero = noproceso.extranjero
-            form.instance.nup = noproceso
-
-            form.save()
-
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
     
 class lisExtranjerosComparecencia(ListView):
 
