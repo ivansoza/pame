@@ -214,10 +214,12 @@ class inicioINMList(LoginRequiredMixin,ListView,CreatePermissionRequiredMixin):
 
         return context
 
-class estadisticasPuestaINM(ListView):
+class estadisticasPuestaINM(LoginRequiredMixin,ListView):
     model=PuestaDisposicionINM
     template_name = "puestaINM/estadisticasINM.html" 
     context_object_name = 'puestainm'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado

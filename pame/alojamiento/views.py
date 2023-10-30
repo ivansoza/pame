@@ -15,14 +15,18 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 
 # Create your views here.
-class ListTraslado(ListView):
+class ListTraslado(LoginRequiredMixin,ListView):
     model = Traslado          
     template_name = "origen/listPuestasTraslado.html" 
     context_object_name = 'puestasTraslado'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado
@@ -57,10 +61,12 @@ class ListTraslado(ListView):
 
         return context
 
-class estadisticasPuestaINM(ListView):
+class estadisticasPuestaINM(LoginRequiredMixin,ListView):
     model=Traslado
     template_name =  "listPuestasTraslado.html" 
     context_object_name = 'puestainm'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado
@@ -75,10 +81,12 @@ class estadisticasPuestaINM(ListView):
         context['seccion'] = 'traslado'  # Cambia esto según la página activa
         return context
     
-class listarEstaciones(ListView):
+class listarEstaciones(LoginRequiredMixin,ListView):
     model = Extranjero
     template_name = "origen/selecEstacion.html"
     context_object_name = 'traslado'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         user_profile = self.request.user
@@ -150,10 +158,12 @@ class listarEstaciones(ListView):
 
 
 
-class TrasladoCreateView(CreateView):
+class TrasladoCreateView(LoginRequiredMixin,CreateView):
     model = Traslado
     form_class = TrasladoForm
-    template_name = 'modal/crearPuestaTraslado.html'  
+    template_name = 'modal/crearPuestaTraslado.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
   
     def get_success_url(self):
         destino_id = self.object.estacion_destino_id
@@ -190,10 +200,12 @@ class TrasladoCreateView(CreateView):
         initial['estacion_destino'] = self.kwargs['destino_id']
         return initial
 
-class cambiarStatus(UpdateView):
+class cambiarStatus(LoginRequiredMixin,UpdateView):
     model = Traslado
     form_class = EstatusTrasladoForm
     template_name = 'modal/seleccionarSttausdeTraslado.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         # Si el estatus cambió a ACEPTADO
@@ -222,10 +234,12 @@ class cambiarStatus(UpdateView):
             
             return initial
 
-class ListTrasladoDestino(ListView):
+class ListTrasladoDestino(LoginRequiredMixin,ListView):
     model = Traslado
     template_name = "destino/listPuestasArribo.html"
     context_object_name = 'trasladosRecibidos'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Filtrar los traslados por la estación destino del usuario logueado
@@ -250,10 +264,12 @@ class ListTrasladoDestino(ListView):
 
         return context
     
-class ListaExtranjerosTraslado(ListView):
+class ListaExtranjerosTraslado(LoginRequiredMixin,ListView):
     model = ExtranjeroTraslado
     template_name = "origen/detallesPuestaTraslado.html"
     context_object_name = 'extranjeros'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Obtenemos el ID del traslado desde la URL
@@ -279,10 +295,12 @@ class ListaExtranjerosTraslado(ListView):
         return context
     
 
-class EtatusTrasladoUpdate(UpdateView):
+class EtatusTrasladoUpdate(LoginRequiredMixin,UpdateView):
     model = Traslado
     form_class = EstatusTrasladoForm  # Usa tu formulario modificado
     template_name = 'modals/editarEnseresINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -303,9 +321,11 @@ class EtatusTrasladoUpdate(UpdateView):
         return form
     
 
-class DeleteExtranjeroPuestaTraslado(DeleteView):
+class DeleteExtranjeroPuestaTraslado(LoginRequiredMixin,DeleteView):
     model = ExtranjeroTraslado
     template_name = 'modal/eliminarExtranjerodePuestaTraslado.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.object.delTraslado.id
@@ -320,10 +340,12 @@ class DeleteExtranjeroPuestaTraslado(DeleteView):
         context['seccion'] = 'traslado'  # Cambia esto según la página activa
         return context
 
-class ListaExtranjerosTrasladoDestino(ListView):
+class ListaExtranjerosTrasladoDestino(LoginRequiredMixin,ListView):
     model = ExtranjeroTraslado
     template_name = "destino/verExtranjerosTraslado.html"
     context_object_name = 'extranjeros'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Obtenemos el ID del traslado desde la URL
@@ -449,10 +471,12 @@ def generate_pdf(request, extranjero_id):
     response['Content-Disposition'] = 'inline; filename="Acuerdo de Traslado {{nombre_extranjero}}.pdf"'
     return response
 
-class cambiarStatusExtranjero(UpdateView):
+class cambiarStatusExtranjero(LoginRequiredMixin,UpdateView):
     model = ExtranjeroTraslado
     form_class = EstatusTrasladoFormExtranjero
     template_name = 'modal/seleccionarSttausdeTraslado1.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         # Aquí verificamos si el status ha cambiado y si es así, ajustamos la fecha de aceptación
@@ -466,10 +490,12 @@ class cambiarStatusExtranjero(UpdateView):
         return reverse('listaExtranjerosTrasladoDestino', args=[puesta_id])
     
 
-class seguimientoPuesta(DetailView):
+class seguimientoPuesta(LoginRequiredMixin,DetailView):
     model = Traslado
     template_name = "origen/seguimientoPuesta.html" 
     context_object_name = 'Traslado'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -479,10 +505,12 @@ class seguimientoPuesta(DetailView):
  # Cambia esto según la página activa
         return context 
     
-class seguimientoPuestaDestino(DetailView):
+class seguimientoPuestaDestino(LoginRequiredMixin,DetailView):
     model = Traslado
     template_name = "destino/seguimientoPuestaDestino.html" 
     context_object_name = 'Traslado'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
