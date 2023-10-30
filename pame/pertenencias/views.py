@@ -21,6 +21,8 @@ import face_recognition
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Max
+from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from io import BytesIO
 from PIL import Image  # Asegúrate de importar Image de PIL o Pillow
@@ -30,10 +32,10 @@ from datetime import date
 #aqui empiezan las pertenencias de VP ------------------------>>>>>>>
 
 # aqui cominezan las pertenencias electronicas ----------------->>>>
-class CrearPertenenciasElectronicasViewVP(CreateView):
+class CrearPertenenciasElectronicasViewVP(LoginRequiredMixin,CreateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasVPForm
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
   # Usa tu formulario modificado
     template_name = 'pertenenciasVP/pertenenciaselectronicasVP.html'
 
@@ -63,13 +65,13 @@ class CrearPertenenciasElectronicasViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
 
-class DeletePertenenciaselectronicasVP(DeleteView):
+class DeletePertenenciaselectronicasVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencia_aparatos
     template_name = 'pertenenciasVP/eliminarpertenenciaselectronicasVP.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id

@@ -15,6 +15,7 @@ from vigilancia.models import NoProceso
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
+from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
 from django.db.models import Exists, OuterRef
 from .models import TipoAcuerdo,Acuerdo
 from .forms import AcuerdoInicioForm
@@ -344,6 +345,7 @@ def generate_pdfsinguardar(request, extranjero_id):
 
 
 # ----- Genera el documento PDF de la constancia de llamada 
+@login_required(login_url="/permisoDenegado/")
 def constancia_llamada(request, extranjero_id=None):
     print("Iniciando constancia_llamada")
     
