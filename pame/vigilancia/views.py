@@ -214,10 +214,12 @@ class inicioINMList(LoginRequiredMixin,ListView,CreatePermissionRequiredMixin):
 
         return context
 
-class estadisticasPuestaINM(ListView):
+class estadisticasPuestaINM(LoginRequiredMixin,ListView):
     model=PuestaDisposicionINM
     template_name = "puestaINM/estadisticasINM.html" 
     context_object_name = 'puestainm'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         # Filtrar las puestas por estación del usuario logueado
@@ -296,7 +298,8 @@ class createExtranjeroINM(LoginRequiredMixin,CreatePermissionRequiredMixin,Creat
     login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión     
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
-        extranjero_id = self.object.id  # Obtén el ID del extranjero recién creado
+        extranjero_id = self.object.id
+        # Obtén el ID del extranjero recién creado
         return reverse('listarExtranjeros', args=[ puesta_id])
                 
     def get_initial(self):

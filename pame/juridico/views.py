@@ -14,6 +14,8 @@ from django.contrib import messages
 from acuerdos.models import NotificacionesGlobales
 from acuerdos.models import Documentos
 from acuerdos.views import guardar_derechoObligaciones_pdf
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 # Create your views here.
 
 
@@ -27,8 +29,10 @@ def homeJuridico(request):
 def homeJuridicoResponsable(request):
     return render (request, "home/homeJuridicoResponsable.html")
 
-class notificacionDO(TemplateView):
+class notificacionDO(LoginRequiredMixin,TemplateView):
     template_name ='home/notificacion_d_o.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def post(self, request, *args, **kwargs):
         try:
             extranjero_id = self.kwargs['extranjero_id']
@@ -82,8 +86,10 @@ class notificacionDO(TemplateView):
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
     
-class notificacionDOAC(TemplateView):
+class notificacionDOAC(LoginRequiredMixin,TemplateView):
     template_name ='notificacionDOAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def post(self, request, *args, **kwargs):
         try:
             extranjero_id = self.kwargs['extranjero_id']
@@ -134,8 +140,10 @@ class notificacionDOAC(TemplateView):
         context['seccion'] = 'seguridadAC'  # Cambia esto según la página activa
         return context
     
-class notificacionDOVP(TemplateView):
+class notificacionDOVP(LoginRequiredMixin,TemplateView):
     template_name ='notificacionDOVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def post(self, request, *args, **kwargs):
         try:
             extranjero_id = self.kwargs['extranjero_id']
@@ -184,8 +192,10 @@ class notificacionDOVP(TemplateView):
         context['seccion'] = 'seguridadVP'  # Cambia esto según la página activa
         return context
 
-class notificacionDOGeneral(TemplateView):
+class notificacionDOGeneral(LoginRequiredMixin,TemplateView):
     template_name ='notificacionGeneralDO.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def post(self, request, *args, **kwargs):
         try:
             extranjero_id = self.kwargs['extranjero_id']

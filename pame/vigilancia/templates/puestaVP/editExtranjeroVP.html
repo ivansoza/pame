@@ -50,13 +50,19 @@
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.domicilio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaNacimiento|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.edad|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nacionalidad|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.genero|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.fechaNacimiento|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estado_Civil|as_crispy_field }}
@@ -67,10 +73,21 @@
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.ocupacion|as_crispy_field }}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.lugar_Origen|as_crispy_field }}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.tipoEstancia|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6" >
+                {{form.estatus|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 <div class="file-input-container">
                     <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
                      class="button-link"
@@ -80,15 +97,6 @@
                     </a>
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                {{form.tipoEstancia|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-6" >
-                {{form.estatus|as_crispy_field}}
             </div>
         </div>
     

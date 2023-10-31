@@ -16,6 +16,7 @@ from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
@@ -43,8 +44,10 @@ def pdf(request):
     return response
 
 # ----- Lista Extranjeros para ver o generar Acuerdo de Inicio -----
-class acuerdo_inicio(ListView):
+class acuerdo_inicio(LoginRequiredMixin,ListView):
     template_name = 'acuerdoInicio.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get(self, request):
         extranjeros = Extranjero.objects.filter(estatus='Activo')
@@ -67,11 +70,13 @@ class acuerdo_inicio(ListView):
 
 
 
-class listRepositorio(ListView):
+class listRepositorio(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjeros.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -107,9 +112,11 @@ class listRepositorio(ListView):
         context['seccion'] = 'verrepo'
         return context
 
-class DocumentosListView(ListView):
+class DocumentosListView(LoginRequiredMixin,ListView):
     model = Documentos
     template_name = 'verAllAcuerdos.html'  # El nombre de tu template para mostrar los documentos
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         nup_value = self.kwargs.get('nup')
@@ -121,9 +128,11 @@ class DocumentosListView(ListView):
         return context
 
         
-class RepositorioListView(ListView):
+class RepositorioListView(LoginRequiredMixin,ListView):
     model = Repositorio
     template_name = 'verAllAcuerdos.html'  # El nombre de tu template para mostrar los documentos
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         nup_value = self.kwargs.get('nup')
@@ -414,11 +423,13 @@ def constancia_llamada(request, extranjero_id=None):
 
 # Lista de acuerdo inicio 
 
-class lisExtranjerosInicio(ListView):
+class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjerosInicio.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -458,11 +469,13 @@ class lisExtranjerosInicio(ListView):
 
         return context
     
-class lisExtranjerosComparecencia(ListView):
+class lisExtranjerosComparecencia(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjerosComparecencia.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -502,11 +515,13 @@ class lisExtranjerosComparecencia(ListView):
         return context
     
 
-class lisExtranjerosPresentacion(ListView):
+class lisExtranjerosPresentacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjerosPresentacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -549,11 +564,13 @@ class lisExtranjerosPresentacion(ListView):
 
 # lista de extranjeros de especiales
 
-class listExtranjerosAcumulacion(ListView):
+class listExtranjerosAcumulacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosAcumulacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -592,11 +609,13 @@ class listExtranjerosAcumulacion(ListView):
         context['seccion1'] = 'acumulacion'
         return context
 
-class listExtranjerosConclusion(ListView):
+class listExtranjerosConclusion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosConclusion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -637,11 +656,13 @@ class listExtranjerosConclusion(ListView):
     
 
 
-class listExtranjerosTraslado(ListView):
+class listExtranjerosTraslado(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosTraslado.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -680,11 +701,13 @@ class listExtranjerosTraslado(ListView):
         context['seccion1'] = 'traslado'
         return context
     
-class listExtranjerosSeparacion(ListView):
+class listExtranjerosSeparacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosSeparacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -723,11 +746,13 @@ class listExtranjerosSeparacion(ListView):
         context['seccion1'] = 'separacion'
         return context
     
-class listExtranjerosRadicacion(ListView):
+class listExtranjerosRadicacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosRadicacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -766,11 +791,13 @@ class listExtranjerosRadicacion(ListView):
         context['seccion1'] = 'radicacion'
         return context
     
-class listExtranjerosRecepcion(ListView):
+class listExtranjerosRecepcion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosRecepcion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -809,11 +836,13 @@ class listExtranjerosRecepcion(ListView):
         context['seccion1'] = 'recepcion'
         return context
     
-class listExtranjerosArticulo(ListView):
+class listExtranjerosArticulo(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosArticulo.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -852,11 +881,13 @@ class listExtranjerosArticulo(ListView):
         context['seccion1'] = 'articulo'
         return context
     
-class listExtranjerosComar(ListView):
+class listExtranjerosComar(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosComar.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -896,7 +927,7 @@ class listExtranjerosComar(ListView):
         return context
     
 
-class listExtranjerosDeportacion(ListView):
+class listExtranjerosDeportacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosDeportacion.html'
@@ -939,7 +970,7 @@ class listExtranjerosDeportacion(ListView):
         context['seccion1'] = 'deportacion'
         return context
     
-class listExtranjerosLibre(ListView):
+class listExtranjerosLibre(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosLibre.html'
@@ -982,7 +1013,7 @@ class listExtranjerosLibre(ListView):
         context['seccion1'] = 'libre'
         return context
     
-class listExtranjerosRetorno(ListView):
+class listExtranjerosRetorno(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosRetorno.html'

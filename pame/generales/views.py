@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.views.generic import TemplateView
 # Create your views here.
 from .models import ImagenCarrousel
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def home(request):
@@ -62,8 +63,10 @@ class CustomLoginView(LoginView):
         else:
             return reverse_lazy('home')
         
-class DefensoriaLoginView(LoginView):
+class DefensoriaLoginView(LoginRequiredMixin,LoginView):
     template_name = 'registration/loginDefenseria.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     # Implementa el comportamiento específico para este tipo de login aquí
     def form_invalid(self, form):
