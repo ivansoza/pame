@@ -49,11 +49,7 @@
                         <i class="fas fa-eye"></i>
                     </a>
                 {% else %}
-                    <a href="{% url 'crearAcuerdoInicio' proceso_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-crear" data-title="Crear Acuerdo Inicio">
-                        <i class="fas fa-plus"></i>
-                    </a>
-
-
+                
                     <a class="btn btn-sm btn-icon3 tooltip-link"
                     href="{% url "registro_acuerdo_inicio" proceso_id=extranjero.nup%}"
                     data-title="generar" onclick="abrir_modal(this.href); return false;">
