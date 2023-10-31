@@ -181,6 +181,14 @@ class Extranjero(models.Model):
             return bool(self.firma.firma_imagen)
         except Firma.DoesNotExist:
             return False
+    def verificar_relaciones(self, tipo_relacion):
+        if tipo_relacion in ('Padre', 'Madre'):
+            padres_count = self.acompanantes_delExtranjero.filter(relacion__in=['Padre', 'Madre']).count()
+            return padres_count < 2
+        elif tipo_relacion in ('Esposo', 'Esposa'):
+            conyuge_count = self.acompanantes_delExtranjero.filter(relacion__in=['Esposo', 'Esposa']).count()
+            return conyuge_count < 1
+        return True
 
 estatura_choices = (
         ('1.70', '1.70 m o más'),

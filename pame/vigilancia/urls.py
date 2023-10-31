@@ -3,9 +3,9 @@ from django.urls import path, include
 from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarExtranjeros, EditarExtranjeroINM, DeleteExtranjeroINM,AgregarBiometricoINM, EditarBiometricoINM,acompananteList, createExtranjeroAcomINM,AgregarAcompananteViewINM, DeleteAcompananteINM, DeleteAcompananteINM1, EditarExtranjeroINMProceso, ResumenViewINM
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1, EditarExtranjeroACProceso
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1, EditarExtranjeroVPProceso
-from .views import CalcularTamanoDiscoView, listarTraslado
+from .views import CalcularTamanoDiscoView, listarTraslado, AgregarRelacionGeneral, DeleteAcompananteGeneral
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
-from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado
+from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado, listarAcompanantesEstacion, acompananteListGeneral
 from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs, verificar_firma, FirmaCreateView, firmE, firmExistente, AgregarBiometricoGeneral, EditarBiometricoGeneral, EditarExtranjeroGeneral, DeleteExtranjeroGeneral
 
 from .views import compare_faces, UserFaceCreateView, search_face, guardar_firma
@@ -30,10 +30,8 @@ urlpatterns = [
     path('eliminar-extranjero/<int:pk>/', DeleteExtranjeroINM.as_view(), name='eliminarExtranjeroINM'),
     path('agregar_biometricoINM/<int:extranjero_id>/', AgregarBiometricoINM.as_view(), name='agregar_biometricoINM'),
     path('editar_biometricoINM/<int:pk>/', EditarBiometricoINM.as_view(), name='editar_biometricoINM'),
-    path('listAcompanantesINM/<int:extranjero_id>/<int:puesta_id>/', acompananteList.as_view(),name='listAcompanantesINM'),
     path('crearAcompananteINM/<int:puesta_id>/<int:extranjero_principal_id>/', createExtranjeroAcomINM.as_view(), name='crearAcompananteINM'),
     path('agregar_acompananteINM/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarAcompananteViewINM.as_view(), name='agregar_acompananteINM'),
-    path('DeleteAcompananteINM/<int:pk>/', DeleteAcompananteINM.as_view(), name='delete_acompananteINM'),
     path('DeleteAcompananteINM1/<int:pk>/', DeleteAcompananteINM1.as_view(), name='delete_acompananteINM1'),
     path('csalcular/<int:pk>/', CalcularTamanoDiscoView.as_view(), name='calcular'),
     path('editarExtranjeroINMproceso/<int:pk>/<int:puesta_id>/', EditarExtranjeroINMProceso.as_view(), name='editarExtranjeroINMproceso'),
@@ -111,6 +109,10 @@ urlpatterns = [
     path('editarBiometricoGeneral/<int:pk>/', EditarBiometricoGeneral.as_view(), name='editarBiometricoGeneral'),
     path('editarExtranjeroGeneral/<int:pk>/', EditarExtranjeroGeneral.as_view(), name='editarExtranjeroGeneral'),
     path('eliminarExtranjeroGeneral/<int:pk>/', DeleteExtranjeroGeneral.as_view(), name='eliminarExtranjeroGeneral'),
+    path('listar-acompanante-dd/', listarAcompanantesEstacion.as_view(), name='listarAcompanantesEstacion'),
+    path('listAcompanantesss/<int:extranjero_id>/', acompananteListGeneral.as_view(),name='listAcompanantesss'),
+    path('agregar_acompanantegeneral/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarRelacionGeneral.as_view(), name='agregar_acompanantegeneral'),
+    path('DeleteAcompanantegenerales/<int:pk>/', DeleteAcompananteGeneral.as_view(), name='DeleteAcompanantegenerales'),
 
 ]
 

@@ -5,7 +5,7 @@ import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
 from .models import Firma
-
+from catalogos.models import Relacion 
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
         archivo = self.cleaned_data.get(field_name)
@@ -375,6 +375,13 @@ class AcompananteForm(forms.ModelForm):
     class Meta:
         model = Acompanante
         fields = ['relacion']
+
+    relacion = forms.ModelChoiceField(
+        queryset=Relacion.objects.all(),
+        to_field_name='tipoRelacion',  # Ajusta esto al campo que quieras usar como valor
+        empty_label='Selecciona una relación'
+    )
+    
 
 #----------------- formulario puesta Disposicion VP ----------------------------------------------------
 
