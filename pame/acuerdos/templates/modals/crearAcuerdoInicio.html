@@ -12,7 +12,7 @@
     }
 
     #qrCode img {
-        max-width: 80%;  /* Ajusta este valor según tus necesidades */
+        max-width: 50%;  /* Ajusta este valor según tus necesidades */
         width: 100%;
         display: block;
         margin: 0 auto;  /* Centra la imagen horizontalmente */
@@ -70,20 +70,24 @@
 
             <div id="qrCode" style="display:none;">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h4>Firma del Testigo 1</h4>
-                        <h5 id="nombreTestigoUno" style="color:#873542;">Nombre del Testigo Uno</h5>
-                        <h5>Escanea el siguiente código QR para el Testigo Uno:</h5>
-                        <img id="qrImageTestigoUno" src="" alt="Código QR Testigo Uno">
-                    </div>
-            
-                    <!-- Testigo Dos -->
-                    <div class="col-md-6">
-                        <h4>Firma del Testigo 2</h4>
-                        <h5 id="nombreTestigoDos" style="color: #873542;">Nombre del Testigo Dos</h5>
-                        <h5>Escanea el siguiente código QR para el Testigo Dos:</h5>
-                        <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
-                    </div>
+                 <!-- Firma del Testigo 1 -->
+                        <div class="col-md-12" id="testigoUnoSection">
+                            <h4>Firma del Testigo 1</h4>
+                            <h5 id="nombreTestigoUno" style="color:#873542;">Nombre del Testigo Uno</h5>
+                            <h5>Escanea el siguiente código QR para el Testigo Uno:</h5>
+                            <img id="qrImageTestigoUno" src="" alt="Código QR Testigo Uno">
+                            <div id="successMessageTestigoUno" style="display:none;">Firma capturada exitosamente</div>
+                            <button id="nextToTestigoDos" style="display:none;">Continuar</button>
+                        </div>
+
+                        <!-- Firma del Testigo 2 -->
+                        <div class="col-md-12" id="testigoDosSection" style="display:none;">
+                            <h4>Firma del Testigo 2</h4>
+                            <h5 id="nombreTestigoDos" style="color: #873542;">Nombre del Testigo Dos</h5>
+                            <h5>Escanea el siguiente código QR para el Testigo Dos:</h5>
+                            <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
+                            <div id="successMessageTestigoDos" style="display:none;">Firma capturada exitosamente</div>
+                        </div>
                 </div>
             </div>
             
@@ -92,7 +96,7 @@
         
         <script>
             var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-    
+        
             $.ajaxSetup({
                 beforeSend: function(xhr, settings) {
                     if (!this.crossDomain) {
@@ -100,15 +104,15 @@
                     }
                 }
             });
-    
+        
             var firmasCapturadas = {
                 testigoUno: false,
                 testigoDos: false
             };
-    
+        
             var intervaloTestigoUno;
             var intervaloTestigoDos;
-    
+        
             function comprobarFirmasCompletas() {
                 if (firmasCapturadas.testigoUno && firmasCapturadas.testigoDos) {
                     clearInterval(intervaloTestigoUno);
@@ -116,27 +120,31 @@
                     mostrarAlertaFirmas();
                 }
             }
-    
+        
             function verificarFirmaTestigoUno(acuerdoId) {
                 $.get('/acuerdos/check_firma_testigo_uno/' + acuerdoId + '/')
                 .done(function(data) {
                     if (data.status == 'success') {
                         firmasCapturadas.testigoUno = true;
-                        comprobarFirmasCompletas();
+                        clearInterval(intervaloTestigoUno);
+                        $("#successMessageTestigoUno").show();
+                        $("#nextToTestigoDos").show();
                     }
                 });
             }
-    
+        
             function verificarFirmaTestigoDos(acuerdoId) {
                 $.get('/acuerdos/check_firma_testigo_dos/' + acuerdoId + '/')
                 .done(function(data) {
                     if (data.status == 'success') {
                         firmasCapturadas.testigoDos = true;
+                        clearInterval(intervaloTestigoDos);
+                        $("#successMessageTestigoDos").show();
                         comprobarFirmasCompletas();
                     }
                 });
             }
-    
+        
             function mostrarAlertaFirmas() {
                 Swal.fire({
                     icon: 'success',
@@ -146,37 +154,30 @@
                     $("#myModal").modal("hide");
                 });
             }
-    
+        
             $("#nextStep").click(function() {
-                console.log("Botón Siguiente ha sido presionado.");
-    
                 var procesoId = "{{ proceso_id }}";
                 $.post("/acuerdos/registro_acuerdo_inicio/" + procesoId + "/", $("#acuerdoInicioForm").serialize())
                 .done(function(data) {
                     var acuerdoId = data.acuerdo_id;
                     $("#acuerdoInicioFormDiv").hide();
                     $("#qrCode").show();
-    
+                    $("#testigoUnoSection").show();
+                    $("#testigoDosSection").hide();
+        
                     $("#qrImageTestigoUno").attr("src", "/acuerdos/generar_qr/testigo_uno/" + acuerdoId + "/");
-                    $("#qrImageTestigoDos").attr("src", "/acuerdos/generar_qr/testigo_dos/" + acuerdoId + "/");
                     var nombreCompletoTestigoUno = $("#id_nombreTestigoUno").val() + " " + $("#id_apellidoPaternoTestigoUno").val() + " " + $("#id_apellidoMaternoTestigoUno").val();
-                    var nombreCompletoTestigoDos = $("#id_nombreTestigoDos").val() + " " + $("#id_apellidoPaternoTestigoDos").val() + " " + $("#id_apellidoMaternoTestigoDos").val();
-            
                     $("#nombreTestigoUno").text(nombreCompletoTestigoUno);
-                    $("#nombreTestigoDos").text(nombreCompletoTestigoDos);
-    
+        
                     intervaloTestigoUno = setInterval(function() { verificarFirmaTestigoUno(acuerdoId); }, 1000);
-                    intervaloTestigoDos = setInterval(function() { verificarFirmaTestigoDos(acuerdoId); }, 1000);
                 })
                 .fail(function(xhr) {
                     if (xhr.status == 400) {
                         var errors = JSON.parse(xhr.responseText).errors;
                         var errorMessage = "Por favor, corrija los siguientes errores:\n\n";
-    
                         for (var field in errors) {
                             errorMessage += "- " + JSON.parse(errors[field])[0].message + "\n";
                         }
-    
                         Swal.fire({
                             icon: 'error',
                             title: 'Errores en el formulario',
@@ -191,7 +192,19 @@
                     }
                 });
             });
+        
+            $("#nextToTestigoDos").click(function() {
+                $("#testigoUnoSection").hide();
+                $("#testigoDosSection").show();
+                var acuerdoId = $("#qrImageTestigoUno").attr("src").split("/").slice(-2, -1)[0]; // Obtenemos el acuerdoId desde la URL del QR
+                $("#qrImageTestigoDos").attr("src", "/acuerdos/generar_qr/testigo_dos/" + acuerdoId + "/");
+                var nombreCompletoTestigoDos = $("#id_nombreTestigoDos").val() + " " + $("#id_apellidoPaternoTestigoDos").val() + " " + $("#id_apellidoMaternoTestigoDos").val();
+                $("#nombreTestigoDos").text(nombreCompletoTestigoDos);
+        
+                intervaloTestigoDos = setInterval(function() { verificarFirmaTestigoDos(acuerdoId); }, 1000);
+            });
         </script>
+        
         
     </div>
 </div>
