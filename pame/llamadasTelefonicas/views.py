@@ -22,13 +22,17 @@ from django.db.models import Max
 from django.contrib import messages
 from acuerdos.views import constancia_llamada
 from acuerdos.models import Documentos, Repositorio, TiposDoc
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 def homeLLamadasTelefonicas(request):
     return render(request,"LtIMN/LtIMN.html")
 
 
-class notificacionLlamadaINM(TemplateView):
+class notificacionLlamadaINM(LoginRequiredMixin,TemplateView):
     template_name = 'LtIMN/notificacionLlamada.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
@@ -82,8 +86,10 @@ class notificacionLlamadaINM(TemplateView):
      return context
 
 
-class llamadasTelefonicas(View):
+class llamadasTelefonicas(LoginRequiredMixin,View):
     template_name = 'LtIMN/LtIMN.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get(self, request):
         extranjero = Extranjero.objects.first()
@@ -104,9 +110,11 @@ class llamadasTelefonicas(View):
   
 
 #-------------------------LISTA DE LLLAMADAS PARA LA PUESTA DE INM 
-class ListLlamadas(ListView):
+class ListLlamadas(LoginRequiredMixin,ListView):
     model= LlamadasTelefonicas
     template_name = 'LtIMN/LtIMN.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
@@ -156,10 +164,12 @@ class ListLlamadas(ListView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class crearLlamadas(CreateView):
+class crearLlamadas(LoginRequiredMixin,CreateView):
     template_name = 'modals/crearLlamada.html'
     form_class = LlamadasTelefonicasForm
     model = LlamadasTelefonicas
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -205,9 +215,11 @@ class crearLlamadas(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
 #-----------------------LISTA DE LLAMADAS PARA LA PUESTA AC ------------------------------------------------------------- 
-class ListLlamadasAC(ListView):
+class ListLlamadasAC(LoginRequiredMixin,ListView):
     model= LlamadasTelefonicas
     template_name = 'LtAC/LtAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     
     def get_queryset(self):
@@ -253,10 +265,12 @@ class ListLlamadasAC(ListView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class crearLlamadasAC(CreateView):
+class crearLlamadasAC(LoginRequiredMixin,CreateView):
     template_name = 'LtAC/crearLlamadaAC.html'
     form_class = LlamadasTelefonicasForm
     model = LlamadasTelefonicas
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         return reverse('ver_llamadasAC', args=[self.object.noExtranjero.id])
@@ -283,10 +297,12 @@ class crearLlamadasAC(CreateView):
         form.instance.noExtranjero = extranjero
         return super().form_valid(form)
 
-class crearLlamadas_AC(CreateView):
+class crearLlamadas_AC(LoginRequiredMixin,CreateView):
     template_name = 'modals/crearLlamadaAC.html'
     form_class = LlamadasTelefonicasForm
     model = LlamadasTelefonicas
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -331,8 +347,10 @@ class crearLlamadas_AC(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class notificacionLlamadaAC(TemplateView):
+class notificacionLlamadaAC(LoginRequiredMixin,TemplateView):
     template_name = 'LtAC/notificacionLlamadaAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
@@ -378,8 +396,10 @@ class notificacionLlamadaAC(TemplateView):
     
      return context
 #---------------------------------------------------------------------------------------------------------------------
-class notificacionLlamadaVP(TemplateView):
+class notificacionLlamadaVP(LoginRequiredMixin,TemplateView):
     template_name = 'LtVP/notificacionLlamadaVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
@@ -423,9 +443,11 @@ class notificacionLlamadaVP(TemplateView):
     
      return context
     
-class ListLlamadasVP(ListView):
+class ListLlamadasVP(LoginRequiredMixin,ListView):
     model= LlamadasTelefonicas
     template_name = 'LtVP/LtVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         extranjero = Extranjero.objects.get(pk=llamada_id)
@@ -468,10 +490,12 @@ class ListLlamadasVP(ListView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class crearLlamadasVP(CreateView):
+class crearLlamadasVP(LoginRequiredMixin,CreateView):
     template_name = 'modals/crearLlamadaVP.html'
     form_class = LlamadasTelefonicasForm
     model = LlamadasTelefonicas
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -525,10 +549,12 @@ class crearLlamadasVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class validarNotificacion(CreateView):
+class validarNotificacion(LoginRequiredMixin,CreateView):
     template_name = 'modals/notificacionLlamada.html'
     form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
     model = Notificacion
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -572,10 +598,12 @@ class validarNotificacion(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
 
-class validarNotificacionAC(CreateView):
+class validarNotificacionAC(LoginRequiredMixin,CreateView):
     template_name = 'modals/notificacion_ac.html'
     form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
     model = Notificacion
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -625,10 +653,12 @@ class validarNotificacionAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class validarNotificacionVP(CreateView):
+class validarNotificacionVP(LoginRequiredMixin,CreateView):
     template_name = 'modals/notificar_vp.html'
     form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
     model = Notificacion
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         puesta_id = self.kwargs['puesta_id']
@@ -776,9 +806,11 @@ def compare_faces(request):
 
 # llamadas generales 
 
-class ListLlamadasGenerales(ListView):
+class ListLlamadasGenerales(LoginRequiredMixin,ListView):
     model= LlamadasTelefonicas
     template_name = 'generales/listLlamadas.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
@@ -824,8 +856,10 @@ class ListLlamadasGenerales(ListView):
         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         return context
     
-class notificacionLlamadaGenerales(TemplateView):
+class notificacionLlamadaGenerales(LoginRequiredMixin,TemplateView):
     template_name = 'generales/notificacionLlamadaGen.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         llamada_id = self.kwargs['llamada_id']
         return LlamadasTelefonicas.objects.filter(noExtranjero=llamada_id)
@@ -881,10 +915,12 @@ class notificacionLlamadaGenerales(TemplateView):
      return context
 
 
-class validarNotificacionGenerales(CreateView):
+class validarNotificacionGenerales(LoginRequiredMixin,CreateView):
     template_name = 'modals/notificacionLlamadaGen.html'
     form_class = notifificacionLlamada  # Aquí estás utilizando el formulario correctamente
     model = Notificacion
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
      
@@ -938,10 +974,12 @@ class validarNotificacionGenerales(CreateView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         return context
     
-class crearLlamadasGenerales(CreateView):
+class crearLlamadasGenerales(LoginRequiredMixin,CreateView):
     template_name = 'modals/crearLlamadaGenerales.html'
     form_class = LlamadasTelefonicasForm
     model = LlamadasTelefonicas
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         return reverse('listLLamadasGen', args=[self.object.noExtranjero.id])

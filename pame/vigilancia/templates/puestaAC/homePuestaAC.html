@@ -125,7 +125,7 @@
                 <tr>
                     <td>{{ puesta.identificadorProceso }}</td>
                     <td>{{ puesta.fechaOficio }}</td>
-                    <td>{{ puesta.nombreAutoridadSignaUno}} | {{ puesta.nombreAutoridadSignaDos}}</td>
+                    <td>{{ puesta.grado}} {{ puesta.nombreAutoridadSignaUno}} | {{ puesta.grado2}} {{ puesta.nombreAutoridadSignaDos}}</td>          
                     <td>{{ puesta.puntoRevision }}</td>
                     <td>
                         <a class="btn btn-sm btn-icon3 tooltip-link" href=" {% url 'crearExtranjeroAC' puesta.id%}" data-title="Agregar Extranjeros">

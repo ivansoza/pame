@@ -199,9 +199,9 @@
 
             </td>
             <td style="text-align: center; 
-            {% if extranjero.horas_transcurridas < 12 %}background-color: green; color: black;
-            {% elif extranjero.horas_transcurridas < 24 %}background-color: yellow; color: black;
-            {% elif extranjero.horas_transcurridas < 36 %}background-color: orange; color: black;
+            {% if extranjero.horas_transcurridas < 12 %}background-color: #2A4B41; color: white;
+            {% elif extranjero.horas_transcurridas < 24 %}background-color: #B0976B; color: white;
+            {% elif extranjero.horas_transcurridas < 36 %}background-color: #873542; color: white;
             {% else %}background-color: red; color: black;
             {% endif %}">
             {{ extranjero.horas_transcurridas }} horas {{ extranjero.minutos_transcurridos }} minutos

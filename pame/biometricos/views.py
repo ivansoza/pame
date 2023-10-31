@@ -21,6 +21,8 @@ from django.views.generic import CreateView, ListView, DetailView
 from .forms import CompareFacesForm, UserFaceForm, SearchFaceForm, SearchFaceForm1
 from .models import UserFace, UserFace1
 from vigilancia.models import Biometrico
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 
@@ -59,11 +61,13 @@ def compare_faces(request):
 
 
 
-class UserFaceCreateView(CreateView):
+class UserFaceCreateView(LoginRequiredMixin,CreateView):
     model = UserFace
     form_class = UserFaceForm
     template_name = 'face/guardar_fotos.html'
     success_url = reverse_lazy('create_user_face')
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def form_valid(self, form):
         form.instance.image.save(form.instance.image.name, form.instance.image, save=True)
