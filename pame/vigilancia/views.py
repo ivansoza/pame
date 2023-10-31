@@ -3618,18 +3618,28 @@ class listarExtranjerosEstacion(LoginRequiredMixin,ListView):
         ahora = timezone.now() # Hora Actual
 
         for extranjero in context['extranjeros']:
-            tiempo_transcurrido = ahora - extranjero.horaRegistro
-            horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
-            horas_transcurridas = int(horas_transcurridas)
-            minutos_transcurridos = int(minutos_transcurridos * 60)
+            # Obtener el último NoProceso asociado a este extranjero
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
 
-            # Limitar a un máximo de 36 horas
-            if horas_transcurridas > 36:
-                horas_transcurridas = 36
-                minutos_transcurridos = 0
+            if ultimo_nup:
+                # Obtener la hora de registro del último NoProceso
+                hora_registro_nup = ultimo_nup.horaRegistroNup
 
-            extranjero.horas_transcurridas = horas_transcurridas
-            extranjero.minutos_transcurridos = minutos_transcurridos
+                tiempo_transcurrido = ahora - hora_registro_nup
+                horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
+                horas_transcurridas = int(horas_transcurridas)
+                minutos_transcurridos = int(minutos_transcurridos * 60)
+
+                # Limitar a un máximo de 36 horas
+                if horas_transcurridas > 36:
+                    horas_transcurridas = 36
+                    minutos_transcurridos = 0
+
+                extranjero.horas_transcurridas = horas_transcurridas
+                extranjero.minutos_transcurridos = minutos_transcurridos
+            else:
+                extranjero.horas_transcurridas = 0
+                extranjero.minutos_transcurridos = 0
 
             
         for extranjero in context['extranjeros']:
@@ -4079,4 +4089,150 @@ class DeleteExtranjeroGeneral(LoginRequiredMixin,DeleteView):
         else:
          context['seccion'] = 'verextranjero'
         
+        return context
+    
+class listarAcompanantesEstacion(LoginRequiredMixin,ListView):
+    model = Extranjero
+    template_name = 'extranjeros/listAcompanantes.html'
+    context_object_name = 'extranjeros'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    def get_queryset(self):
+        # Obtener la estación del usuario actualmente autenticado.
+        estacion_usuario = self.request.user.estancia
+
+        estado = self.request.GET.get('estado_filtrado', 'activo')
+        # Filtrar por estación del usuario y ordenar por nombre de extranjero.
+        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('nombreExtranjero')
+
+        if estado == 'activo':
+            queryset = queryset.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            queryset = queryset.filter(estatus='Inactivo')
+        return queryset
+
+
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'acompanante'  # Cambia esto según la página activa
+        context['nombre_estacion'] = self.request.user.estancia.nombre
+        return context
+
+class acompananteListGeneral(LoginRequiredMixin,ListView):
+    model = Extranjero
+    template_name = "extranjeros/agregarAcompanante.html" 
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        extranjero_principal_id = self.kwargs.get('extranjero_id')
+
+        # Obtener datos del extranjero principal
+        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        user = self.request.user
+        estacion_usuario = user.estancia
+        # Obtener la lista de extranjeros de la misma puesta
+        extranjeros_estacion = Extranjero.objects.filter(deLaEstacion=estacion_usuario, estatus='Activo').exclude(pk=extranjero_principal_id)
+
+        # Filtrar extranjeros no relacionados
+        extranjeros_no_relacionados = extranjeros_estacion.exclude(
+            Q(acompanantes_delExtranjero__delAcompanante=extranjero_principal) |
+            Q(acompanantes_delAcompanante__delExtranjero=extranjero_principal)
+        )
+
+        # Filtrar las relaciones donde el extranjero principal es delExtranjero y no está relacionado como delAcompanante
+        relaciones_del_extranjero = Acompanante.objects.filter(delExtranjero=extranjero_principal).exclude(delAcompanante=extranjero_principal)
+        
+        # Filtrar las relaciones donde el extranjero principal es delAcompanante y no está relacionado como delExtranjero
+        relaciones_del_acompanante = Acompanante.objects.filter(delAcompanante=extranjero_principal).exclude(delExtranjero=extranjero_principal)
+
+        context['extranjero_principal'] = extranjero_principal
+        context['extranjeros_no_relacionados'] = extranjeros_no_relacionados
+        context['relaciones_del_extranjero'] = relaciones_del_extranjero
+        context['relaciones_del_acompanante'] = relaciones_del_acompanante
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'acompanante'  # Cambia esto según la página activa  # Cambia esto según la página activa
+        
+        return context
+
+
+
+
+
+class AgregarRelacionGeneral(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
+    permission_required = {
+        'perm1': 'vigilancia.add_acompanante',
+    }
+    model = Acompanante
+    form_class = AcompananteForm
+    template_name = 'extranjeros/crearRelacion.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    def get_success_url(self):
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_principal = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        messages.success(self.request, 'Acompañante Agregado con Éxito.')
+
+        return reverse_lazy('listAcompanantesss', kwargs={'extranjero_id': extranjero_principal.id})
+    
+    def form_valid(self, form):
+     extranjero_principal_id = self.kwargs['extranjero_principal_id']
+     extranjero_id = self.kwargs['extranjero_id']
+     relacion = form.cleaned_data['relacion']
+     extranjero = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+     # Verificar si ya existen dos padres y un cónyuge
+     if relacion.tipoRelacion in ('Padre', 'Madre', 'Padres'):
+        padres_count = Acompanante.objects.filter(
+            delExtranjero_id=extranjero_principal_id,
+            relacion__tipoRelacion__in=['Padre', 'Madre', 'Padres']
+        ).count()
+
+        if padres_count >= 2:
+            messages.warning(self.request, 'Ya existen dos padres relacionados con este usuario.')
+            return HttpResponseRedirect(reverse('listAcompanantesss', kwargs={'extranjero_id': extranjero_principal_id}))
+     elif relacion.tipoRelacion in ('Esposo', 'Esposa', 'Espos@'):
+        conyuge_count = Acompanante.objects.filter(
+            delExtranjero_id=extranjero_principal_id,
+            relacion__tipoRelacion__in=['Esposo', 'Esposa', 'Espos@']
+        ).count()
+
+        if conyuge_count >= 1:
+            messages.warning(self.request, 'Ya existe un cónyuge relacionado con este usuario.')
+
+            return HttpResponseRedirect(reverse('listAcompanantesss', kwargs={'extranjero_id': extranjero_principal_id}))
+        
+    
+     form.instance.delExtranjero_id = extranjero_principal_id
+     form.instance.delAcompanante_id = extranjero_id
+
+     return super().form_valid(form)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_principal_id = self.kwargs['extranjero_principal_id']
+        extranjero_id = self.kwargs['extranjero_id']
+        context['extranjero_principal'] = get_object_or_404(Extranjero, pk=extranjero_principal_id)
+        context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero_id)
+        context['error_occurred'] = True
+
+        return context
+    
+class DeleteAcompananteGeneral(LoginRequiredMixin,DeleteView):
+    permission_required = {
+        'perm1': 'vigilancia.delete_extranjero',
+    }
+    model = Acompanante
+    template_name = 'extranjeros/eliminarRelacion.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    def get_success_url(self):
+        acompanante = self.object
+        extranjero_id = acompanante.delExtranjero.id
+        messages.success(self.request, 'Acompañante Eliminado con Éxito.')
+        return reverse_lazy('listAcompanantesss', args=[extranjero_id])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'acompanante'  # Cambia esto según la página activa
         return context

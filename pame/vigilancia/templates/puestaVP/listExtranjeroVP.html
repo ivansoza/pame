@@ -177,9 +177,7 @@
                 </a>
             {% endif %}
 
-            <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesVP' extranjero.id puesta.id   %}" data-title="Acompańante">
-                <i class="fas fa-handshake"></i>
-            </a>
+          
             {% if extranjero.tiene_inventario %}
             <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}

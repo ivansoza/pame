@@ -181,6 +181,14 @@ class Extranjero(models.Model):
             return bool(self.firma.firma_imagen)
         except Firma.DoesNotExist:
             return False
+    def verificar_relaciones(self, tipo_relacion):
+        if tipo_relacion in ('Padre', 'Madre'):
+            padres_count = self.acompanantes_delExtranjero.filter(relacion__in=['Padre', 'Madre']).count()
+            return padres_count < 2
+        elif tipo_relacion in ('Esposo', 'Esposa'):
+            conyuge_count = self.acompanantes_delExtranjero.filter(relacion__in=['Esposo', 'Esposa']).count()
+            return conyuge_count < 1
+        return True
 
 estatura_choices = (
         ('1.70', '1.70 m o más'),
@@ -288,6 +296,7 @@ class NoProceso(models.Model):
     agno = models.DateField(auto_now_add=True)
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
+    horaRegistroNup = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
     status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
     comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)

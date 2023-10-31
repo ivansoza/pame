@@ -67,6 +67,8 @@ class Estancia(models.Model):
     tipoEstancia = models.CharField(max_length=50)
     def __str__(self) -> str:
         return self.tipoEstancia
+    
+
 
 class Relacion(models.Model):
     tipoRelacion = models.CharField(max_length=50)

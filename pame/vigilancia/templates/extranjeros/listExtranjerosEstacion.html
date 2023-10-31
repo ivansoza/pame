@@ -8,7 +8,7 @@
 
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
     <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
@@ -16,7 +16,7 @@
 
   <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
-        Lista de Extranjeros de la Estación: {{nombre_estacion}}
+        Lista de Extranjeros de la Estación:  <span class="puesta-color" ><strong>{{nombre_estacion}}</strong></span>
     </h1>
   </div>
 <br>
@@ -137,10 +137,7 @@
                     </a>
                 {% endif %}
 
-                <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Acompańante">
-                        <i class="fas fa-handshake"></i>
-                    </a>
+               
                 {% if extranjero.inventario_set.all  %}
                 <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
@@ -229,7 +226,6 @@
 </div>
 
 
-<a href="{% url 'homePuestaINM' %}" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
 
 
