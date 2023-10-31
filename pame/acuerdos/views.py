@@ -26,6 +26,13 @@ import base64
 import qrcode
 from django.http import JsonResponse
 from django.views import View
+from django.http import HttpResponseBadRequest
+
+from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
+from .models import FirmaAcuerdo
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -526,6 +533,105 @@ class AcuerdoInicioCreateView(CreateView):
 
         return context
     
+def registro_acuerdo_inicio(request, proceso_id):
+    # Obtener el NoProceso usando proceso_id
+    try:
+        noproceso = NoProceso.objects.get(nup=proceso_id)
+    except NoProceso.DoesNotExist:
+        return JsonResponse({'status':'ERROR', 'message':'NoProceso no encontrado'}, status=404)
+    
+    if request.method == 'POST':
+        step = request.POST.get('step')
+
+        if step == '1':
+            form_acuerdo_inicio = AcuerdoInicioForm(request.POST)
+            if form_acuerdo_inicio.is_valid():
+                # Establecer campos por defecto antes de guardar
+                acuerdo = form_acuerdo_inicio.save(commit=False) # No guardar todavía
+                acuerdo_tipo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
+                acuerdo.delAcuerdo = acuerdo_tipo
+                acuerdo.delExtanjero = noproceso.extranjero
+                acuerdo.nup = noproceso
+                acuerdo.save()  # Ahora guardar
+
+                return JsonResponse({'status':'OK', 'acuerdo_id':acuerdo.id})
+            else:
+                errors = form_acuerdo_inicio.errors.as_json()
+                return JsonResponse({'status':'ERROR', 'errors':errors}, status=400)
+
+    else:
+        form_acuerdo_inicio = AcuerdoInicioForm()
+    return render(request, "modals/crearAcuerdoInicio.html", {'form_acuerdo': form_acuerdo_inicio, 'proceso_id': proceso_id})
+
+
+def generar_qr_acuerdos(request, acuerdo_id, testigo):
+    if testigo == "testigo_uno":
+        url = f"http://127.0.0.1:8082/acuerdos/firma_testigo_uno/{acuerdo_id}/"
+    elif testigo == "testigo_dos":
+        url = f"http://127.0.0.1:8082/acuerdos/firma_testigo_dos/{acuerdo_id}/"
+    else:
+        return HttpResponseBadRequest("Testigo no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+class FirmaTestigoUnoCreateView(CreateView):
+    model = FirmaAcuerdo
+    form_class = FirmaTestigoUnoForm
+    template_name = 'firma/firma_testigo_uno_create.html'
+    success_url = reverse_lazy('menu')  # Cambia 'some_success_url' al URL de éxito que desees
+
+    def form_valid(self, form):
+        acuerdo_id = self.kwargs.get('acuerdo_id')
+        acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+        
+        # Asociar el acuerdo con la firma
+        form.instance.acuerdo = acuerdo
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
+        return context
+
+class FirmaTestigoDosCreateView(CreateView):
+    model = FirmaAcuerdo
+    form_class = FirmaTestigoDosForm
+    template_name = 'firma/firma_testigo_dos_create.html'
+    success_url = reverse_lazy('menu')  # Cambia al URL de éxito que desees
+
+    def form_valid(self, form):
+        acuerdo_id = self.kwargs.get('acuerdo_id')
+        acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+        
+        # Asociar el acuerdo con la firma
+        form.instance.acuerdo = acuerdo
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
+        return context
+    
+@csrf_exempt
+def check_firma_testigo_uno(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaTestigoUno:
+            return JsonResponse({'status': 'success', 'message': 'Firma del Testigo Uno encontrada'})
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Uno aún no registrada'}, status=404)
+
+@csrf_exempt
+def check_firma_testigo_dos(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaTestigoDos:
+            return JsonResponse({'status': 'success', 'message': 'Firma del Testigo Dos encontrada'})
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Dos aún no registrada'}, status=404)
 class lisExtranjerosComparecencia(ListView):
 
     model = NoProceso

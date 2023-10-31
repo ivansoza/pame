@@ -1,4 +1,7 @@
 {% load static %}
+{% load crispy_forms_tags %}
+
+
 <style>
     .custom-header-color {
         background-color: #8B2941;
@@ -7,32 +10,185 @@
     .custom-close-button {
         color: white;
     }
+
+    #qrCode img {
+        max-width: 80%;  /* Ajusta este valor según tus necesidades */
+        width: 100%;
+        display: block;
+        margin: 0 auto;  /* Centra la imagen horizontalmente */
+    }
 </style>
 
 
 
-<div class="modal-dialog modal-lg" role="document" >
+<div class="modal-dialog modal-lg" role="document" id="myModal">
     <div class="modal-content">
         <div class="modal-header custom-header-color">
-            <h2 class="modal-title">Acuerdo inicio </h2>
+            <h2 class="modal-title">Registro de los Testigos </h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        {% load crispy_forms_tags %}
+        <div class="modal-body">
 
-        {% comment %} <form action="{% url "agregar_acompananteAC" extranjero_principal.id extranjero.id %}" method="POST">
-            {% csrf_token %}
-            <div class="modal-body">
-                {{ form|crispy }}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-custom2">Confirmar</button>
-            </div>
-        </form> {% endcomment %}
+            <div id="acuerdoInicioFormDiv">
 
+                <form id="acuerdoInicioForm">
+                    {% csrf_token %}
+                    <input  name="proceso_id" value="{{ proceso_id }}">
+
+                 <h3>Datos del Testigo Uno</h3>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_acuerdo.nombreTestigoUno|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_acuerdo.apellidoPaternoTestigoUno|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_acuerdo.apellidoMaternoTestigoUno|as_crispy_field }}
+                        </div>
+                    </div>
+                    <h3>Datos del Testigo Dos</h3>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_acuerdo.nombreTestigoDos|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_acuerdo.apellidoPaternoTestigoDos|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_acuerdo.apellidoMaternoTestigoDos|as_crispy_field }}
+                        </div>
+                    </div> 
+                    <input type="hidden" name="step" value="1">
+                    <button type="button" id="nextStep">Siguiente</button>
+                </form>
+            </div>
+
+            <div id="qrCode" style="display:none;">
+                <div class="row">
+                    <!-- Testigo Uno -->
+                    <div class="col-md-6">
+                        <h4>Firma del Testigo 1</h4>
+                        <h5>Escanea el siguiente código QR para el Testigo Uno:</h5>
+                        <img id="qrImageTestigoUno" src="" alt="Código QR Testigo Uno">
+                    </div>
+            
+                    <!-- Testigo Dos -->
+                    <div class="col-md-6">
+                        <h4>Firma del Testigo 2</h4>
+                        <h5>Escanea el siguiente código QR para el Testigo Dos:</h5>
+                        <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+ 
+        
+        <script>
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+    
+            var firmasCapturadas = {
+                testigoUno: false,
+                testigoDos: false
+            };
+    
+            var intervaloTestigoUno;
+            var intervaloTestigoDos;
+    
+            function comprobarFirmasCompletas() {
+                if (firmasCapturadas.testigoUno && firmasCapturadas.testigoDos) {
+                    clearInterval(intervaloTestigoUno);
+                    clearInterval(intervaloTestigoDos);
+                    mostrarAlertaFirmas();
+                }
+            }
+    
+            function verificarFirmaTestigoUno(acuerdoId) {
+                $.get('/acuerdos/check_firma_testigo_uno/' + acuerdoId + '/')
+                .done(function(data) {
+                    if (data.status == 'success') {
+                        firmasCapturadas.testigoUno = true;
+                        comprobarFirmasCompletas();
+                    }
+                });
+            }
+    
+            function verificarFirmaTestigoDos(acuerdoId) {
+                $.get('/acuerdos/check_firma_testigo_dos/' + acuerdoId + '/')
+                .done(function(data) {
+                    if (data.status == 'success') {
+                        firmasCapturadas.testigoDos = true;
+                        comprobarFirmasCompletas();
+                    }
+                });
+            }
+    
+            function mostrarAlertaFirmas() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Firmas Capturadas',
+                    text: 'Las firmas han sido registradas con éxito.'
+                }).then(function() {
+                    $("#myModal").modal("hide");
+                });
+            }
+    
+            $("#nextStep").click(function() {
+                console.log("Botón Siguiente ha sido presionado.");
+    
+                var procesoId = "{{ proceso_id }}";
+                $.post("/acuerdos/registro_acuerdo_inicio/" + procesoId + "/", $("#acuerdoInicioForm").serialize())
+                .done(function(data) {
+                    var acuerdoId = data.acuerdo_id;
+                    $("#acuerdoInicioFormDiv").hide();
+                    $("#qrCode").show();
+    
+                    $("#qrImageTestigoUno").attr("src", "/acuerdos/generar_qr/testigo_uno/" + acuerdoId + "/");
+                    $("#qrImageTestigoDos").attr("src", "/acuerdos/generar_qr/testigo_dos/" + acuerdoId + "/");
+    
+                    intervaloTestigoUno = setInterval(function() { verificarFirmaTestigoUno(acuerdoId); }, 1000);
+                    intervaloTestigoDos = setInterval(function() { verificarFirmaTestigoDos(acuerdoId); }, 1000);
+                })
+                .fail(function(xhr) {
+                    if (xhr.status == 400) {
+                        var errors = JSON.parse(xhr.responseText).errors;
+                        var errorMessage = "Por favor, corrija los siguientes errores:\n\n";
+    
+                        for (var field in errors) {
+                            errorMessage += "- " + JSON.parse(errors[field])[0].message + "\n";
+                        }
+    
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Errores en el formulario',
+                            text: errorMessage
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error inesperado.'
+                        });
+                    }
+                });
+            });
+        </script>
+        
     </div>
 </div>
+
 
 
