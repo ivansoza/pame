@@ -73,10 +73,11 @@ class valoresjoyas(models.Model): # valores de joyas y otros -------->>>>>>>
     class Meta:
         verbose_name_plural = "valoresjoyas"
     
-class documentospertenencias(models.Model): #docuemntos del extranjero ------------------->>>>>>>>>
-    tipodocumento = models.CharField(max_length=200, verbose_name='Tipodocumento')
-    descripcion = models.CharField(max_length=300, verbose_name='Descripcion')
-    delInventario = models.ForeignKey(Inventario,on_delete=models.CASCADE, verbose_name='Numero del Inventario')
+class documentospertenencias(models.Model):  # Documentos del extranjero
+    tipodocumento = models.CharField(max_length=200, verbose_name='Tipo de documento')
+    descripcion = models.CharField(max_length=300, verbose_name='Descripción')
+    delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Número del inventario')
+
     def __str__(self) -> str:
         return '__all__'
     
