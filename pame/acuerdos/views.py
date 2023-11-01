@@ -705,7 +705,7 @@ class FirmaTestigoUnoCreateView(CreateView):
     model = FirmaAcuerdo
     form_class = FirmaTestigoUnoForm
     template_name = 'firma/firma_testigo_uno_create.html'
-    success_url = reverse_lazy('menu')  # Cambia 'some_success_url' al URL de éxito que desees
+    success_url = reverse_lazy('firma_exitosa')  # Cambia 'some_success_url' al URL de éxito que desees
 
     def form_valid(self, form):
         acuerdo_id = self.kwargs.get('acuerdo_id')
@@ -724,7 +724,7 @@ class FirmaTestigoDosCreateView(CreateView):
     model = FirmaAcuerdo
     form_class = FirmaTestigoDosForm
     template_name = 'firma/firma_testigo_dos_create.html'
-    success_url = reverse_lazy('menu')  # Cambia al URL de éxito que desees
+    success_url = reverse_lazy('firma_exitosa')  # Cambia al URL de éxito que desees
 
     def form_valid(self, form):
         acuerdo_id = self.kwargs.get('acuerdo_id')
