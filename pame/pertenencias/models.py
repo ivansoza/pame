@@ -89,7 +89,7 @@ class Valores(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     cantidad = models.FloatField(verbose_name='Cantidad')
     Obsevaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
-    delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
+    delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Número de Inventario')
     
     def __str__(self) -> str:
         return self.descripcion
@@ -98,12 +98,12 @@ class Valores(models.Model):
         verbose_name_plural = "Valores"
 
 ENSERES = (
-    ("Papel Higienico","Papel Higienico"),
+    ("Papel Higiénico","Papel Higiénico"),  # Añadido acento en "Higiénico"
     ("Kit Personal","Kit Personal"),
-    ("Pañal Desechable","Pañal Desechable"),
+    ("Pañal Desechable","Pañal Desechable"),  # Añadido acento en "Pañal"
     ("Toalla Sanitaria","Toalla Sanitaria"),
     ("Colchoneta","Colchoneta"),
-    ("Manta Termica","Manta Termica"),
+    ("Manta Térmica","Manta Térmica"),  # Añadido acento en "Térmica"
     ("Otros","Otros"),
 )
 class EnseresBasicos(models.Model):
