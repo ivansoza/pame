@@ -2,7 +2,7 @@ from typing import Any
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from vigilancia.models import Extranjero
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from weasyprint import HTML
 from django.template.loader import render_to_string, get_template
 from django.views.generic import ListView, CreateView
@@ -46,7 +46,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/acuerdoInicio.html')
+    html_template = get_template('documentos/listaLlamadas.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
@@ -213,6 +213,7 @@ def acuerdoInicio_pdf(request, extranjero_id):
     apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
     apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
     lugar = extranjero.deLaEstacion.estado
+    estacion = extranjero.deLaEstacion.nombre
     dia = extranjero.fechaRegistro.day
     mes = extranjero.fechaRegistro.month
     anio = extranjero.fechaRegistro.year
@@ -231,6 +232,7 @@ def acuerdoInicio_pdf(request, extranjero_id):
         'apellidopac': apellidopac,
         'apellidomac': apellidomac,
         'lugar': lugar,
+        'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
         'anio': anio
@@ -238,6 +240,114 @@ def acuerdoInicio_pdf(request, extranjero_id):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/acuerdoInicio.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Acuerdo de nombramiento de representante legal
+def nombramientoRepresentante_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/nombramientoRepresentante.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Notificacion de representacion
+def notificacionRepresentacion_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/notificacionRepresentacion.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF de Inventario de pertenencias y valores
+def inventarioPV_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/inventarioPV.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
+def listaLlamadas_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/listaLlamadas.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
