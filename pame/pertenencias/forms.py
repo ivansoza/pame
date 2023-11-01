@@ -51,7 +51,6 @@ class valoresefectivoForm(forms.ModelForm):
         fields = '__all__'
         widgets ={
             'importe': forms.NumberInput(attrs={'placeholder': 'Importe'}),
-            'moneda': forms.TextInput(attrs={'placeholder': 'Moneda'}),
             'delInventario': forms.TextInput(attrs={'style': 'display:none;'})
         }
   
@@ -68,7 +67,6 @@ class valorejoyasForm(forms.ModelForm):
         model = valoresjoyas
         fields = '__all__'
         widgets ={
-            'metal': forms.TextInput(attrs={'placeholder': 'Metal'}),
             'descripcion': forms.TextInput(attrs={'placeholder': 'Descripcion'}),
             'delInventario': forms.TextInput(attrs={'style': 'display:none;'})
         }
