@@ -1,0 +1,143 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
+{% endblock link %}
+
+
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+
+  <div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Listado de Extranjeros para Establecer Relaciones de Acompañantes
+    </h1>
+  </div>
+<br>
+<div class="table-responsive">
+
+
+<table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    
+    <thead>
+
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido(s)</th>
+            <th>Nacionalidad</th>
+            <th>Tipo de Puesta</th>
+            <th style="width: 5%;">Acompañantes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for extranjero in extranjeros %}
+        <tr>
+            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>
+                {% if extranjero.apellidoPaternoExtranjero %}
+                    {{ extranjero.apellidoPaternoExtranjero }}
+                {% endif %}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero }}
+                {% endif %}</td>
+            <td>{{ extranjero.nacionalidad }}</td>
+            <td>{% if extranjero.deLaPuestaIMN %}
+                 Instituto Nacional de Migración
+                {% elif extranjero.deLaPuestaAC %}
+                  Autoridad Competente
+                {% else %}
+                  Voluntario
+                {% endif %}
+                </td>
+            <td>
+                <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listAcompanantesss" extranjero.id %}" data-title="Acompańante">
+                        <i class="fas fa-handshake"></i>
+                    </a>
+
+            </td>       
+        </tr>
+        {% endfor %}
+
+        <tfoot>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido(s)</th>
+                <th>Nacionalidad</th>
+                <th>Tipo de Puesta</th>
+                <!-- <th>Puesta</th> -->
+                <th style="width: 5%;">Acompañantes</th>
+            </tr>
+        </tfoot>
+
+    </tbody>
+</table>
+</div>
+
+
+
+
+
+<!-- Modal para eliminar el extranjero  -->
+<div class="modal fade" id="eliminarextranjero" role="dialog">
+</div>
+{% endblock contenido %}
+{% comment %} {% block datatable %}
+
+ {
+    text: 'Crear Extranjero',
+    className: 'btn btn-custom mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '#';
+   }
+  },
+  
+{% endblock datatable %} {% endcomment %}
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_eliminar(url){
+        $('#eliminarextranjero').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+
+    function showBioAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: '¡Falta Fotografía y/o Firma!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
+            confirmButtonColor: '#2A4B41'
+        });
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const estadoFiltradoSelect = document.getElementById('estado_filtrado');
+        estadoFiltradoSelect.addEventListener('change', function() {
+            this.form.submit();
+        });
+    });
+</script>
+
+{% block filtro %}
+"order": [[0, "asc"]],
+{% endblock filtro %}
+{% if error_occurred %}
+<script>
+    // Recarga la página después de 3 segundos (ajusta el tiempo según tus necesidades)
+    setTimeout(function () {
+        location.reload();
+    }, 3000);
+</script>
+{% endif %}
+{% endblock script %}

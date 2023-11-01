@@ -60,7 +60,7 @@
                       <i class="fas fa-phone"></i>
                   </a>
               {% else %}
-              {% if extranjero.tiene_fotografia %}
+                {% if extranjero.tiene_fotografia and extranjero.tiene_firma%}
                   <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificarLlamadaGen'  extranjero.id  %}" data-title="Llamadas Telefonicas">
                     <i class="fas fa-phone"></i>
                   </a>
@@ -100,7 +100,7 @@
                        {% if extranjero.tiene_fotografia %}
 
                            <a class="btn btn-sm btn-icon1 tooltip-link"
-                           href="{% url "notificacionGeneralDO" extranjero.id%}"  data-title="Generar Notificación">
+                           href="{% url "notificacionGeneralDO" extranjero.id%}"  data-title="Notificación de Derechos">
                                <i class="fas fa-balance-scale"></i>
                            </a>
                        {% else %}
@@ -171,8 +171,8 @@
                             function showBioAlert() {
                                 Swal.fire({
                                     icon: 'warning',
-                                    title: '¡Falta Fotografía!',
-                                    text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+                                    title: '¡Falta Fotografía y/o Firma!',
+                                    text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
                                     confirmButtonColor: '#2A4B41'
                                 });
                             }

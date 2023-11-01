@@ -191,6 +191,21 @@ class Extranjero(models.Model):
             return bool(self.biometrico.fotografiaExtranjero)
         except Biometrico.DoesNotExist:
             return False
+        
+    @property
+    def tiene_firma(self):
+        try:
+            return bool(self.firma.firma_imagen)
+        except Firma.DoesNotExist:
+            return False
+    def verificar_relaciones(self, tipo_relacion):
+        if tipo_relacion in ('Padre', 'Madre'):
+            padres_count = self.acompanantes_delExtranjero.filter(relacion__in=['Padre', 'Madre']).count()
+            return padres_count < 2
+        elif tipo_relacion in ('Esposo', 'Esposa'):
+            conyuge_count = self.acompanantes_delExtranjero.filter(relacion__in=['Esposo', 'Esposa']).count()
+            return conyuge_count < 1
+        return True
 
 estatura_choices = (
         ('1.70', '1.70 m o más'),
@@ -274,19 +289,21 @@ class descripcion(models.Model):
     delExtranjero = models.OneToOneField(
         Extranjero, on_delete=models.CASCADE,
         primary_key=True,
+        verbose_name='Datos del extranjero'
     )
-    estatura = models.CharField(max_length=20, choices=estatura_choices)
-    cejas = models.CharField(max_length=50, choices=cejas_choices)
-    nariz = models.CharField(max_length=50, choices=nariz_choices)
-    labios = models.CharField(max_length=50, choices=labios_choices)
+    estatura = models.CharField(max_length=20, choices=estatura_choices, verbose_name='Estatura')
+    cejas = models.CharField(max_length=50, choices=cejas_choices, verbose_name='Cejas')
+    nariz = models.CharField(max_length=50, choices=nariz_choices, verbose_name='Nariz')
+    labios = models.CharField(max_length=50, choices=labios_choices, verbose_name='Labios')
     tipoCabello = models.CharField(max_length=50, choices=tipoCabello_choices, verbose_name='Tipo de cabello')
-    bigote = models.CharField(max_length=50, blank=True, null=True, choices=bigote_choices)
-    complexion = models.CharField(max_length=50, choices=complexion_choices)
-    frente = models.CharField(max_length=50, choices=frente_choices)
-    colorOjos=models.CharField(max_length=50, verbose_name='Color de Ojos', choices=colorOjos_choices)
-    boca = models.CharField(max_length=50, choices=boca_choices)
-    segnasParticulares = models.CharField(max_length=50, verbose_name='Señas Particulares', choices=segnasParticulares_choices)
-    observaciones = models.CharField(max_length=50)  
+    bigote = models.CharField(max_length=50, blank=True, null=True, choices=bigote_choices, verbose_name='Bigote')
+    complexion = models.CharField(max_length=50, choices=complexion_choices, verbose_name='Complexión')
+    frente = models.CharField(max_length=50, choices=frente_choices, verbose_name='Frente')
+    colorOjos = models.CharField(max_length=50, verbose_name='Color de ojos', choices=colorOjos_choices)
+    boca = models.CharField(max_length=50, choices=boca_choices, verbose_name='Boca')
+    segnasParticulares = models.CharField(max_length=50, verbose_name='Señas particulares', choices=segnasParticulares_choices)
+    observaciones = models.CharField(max_length=50, verbose_name='Observaciones')
+
 
 STATUS_PROCESO_CHOICES= (
     ('Activo', 'Activo'),
@@ -298,6 +315,7 @@ class NoProceso(models.Model):
     agno = models.DateField(auto_now_add=True)
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     consecutivo = models.IntegerField()
+    horaRegistroNup = models.DateTimeField(verbose_name='Hora de Registro', auto_now_add=True)
     status = models.CharField(max_length=50, choices=STATUS_PROCESO_CHOICES)
     comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)

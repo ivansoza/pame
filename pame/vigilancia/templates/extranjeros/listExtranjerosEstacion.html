@@ -8,7 +8,7 @@
 
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
     <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
@@ -16,7 +16,7 @@
 
   <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
-        Lista de Extranjeros de la Estación: {{nombre_estacion}}
+        Lista de Extranjeros de la Estación:  <span class="puesta-color" ><strong>{{nombre_estacion}}</strong></span>
     </h1>
   </div>
 <br>
@@ -64,7 +64,7 @@
                       <i class="fas fa-phone"></i>
                   </a>
               {% else %}
-              {% if extranjero.tiene_fotografia %}
+                {% if extranjero.tiene_fotografia and extranjero.tiene_firma%}
                   <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificarLlamadaGen'  extranjero.id  %}" data-title="Llamadas Telefonicas">
                     <i class="fas fa-phone"></i>
                   </a>
@@ -105,7 +105,7 @@
                             {% if extranjero.tiene_fotografia %}
     
                                 <a class="btn btn-sm btn-icon1 tooltip-link"
-                                href="{% url "notificacionGeneralDO" extranjero.id%}"  data-title="Generar Notificación">
+                                href="{% url "notificacionGeneralDO" extranjero.id%}"  data-title="Notificación de Derechos">
                                     <i class="fas fa-balance-scale"></i>
                                 </a>
                             {% else %}
@@ -137,10 +137,7 @@
                     </a>
                 {% endif %}
 
-                <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Acompańante">
-                        <i class="fas fa-handshake"></i>
-                    </a>
+               
                 {% if extranjero.inventario_set.all  %}
                 <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
@@ -202,9 +199,9 @@
 
             </td>
             <td style="text-align: center; 
-            {% if extranjero.horas_transcurridas < 12 %}background-color: green; color: black;
-            {% elif extranjero.horas_transcurridas < 24 %}background-color: yellow; color: black;
-            {% elif extranjero.horas_transcurridas < 36 %}background-color: orange; color: black;
+            {% if extranjero.horas_transcurridas < 12 %}background-color: #2A4B41; color: white;
+            {% elif extranjero.horas_transcurridas < 24 %}background-color: #B0976B; color: white;
+            {% elif extranjero.horas_transcurridas < 36 %}background-color: #873542; color: white;
             {% else %}background-color: red; color: black;
             {% endif %}">
             {{ extranjero.horas_transcurridas }} horas {{ extranjero.minutos_transcurridos }} minutos
@@ -229,7 +226,6 @@
 </div>
 
 
-<a href="{% url 'homePuestaINM' %}" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
 
 
@@ -262,8 +258,8 @@
     function showBioAlert() {
         Swal.fire({
             icon: 'warning',
-            title: '¡Falta Fotografía!',
-            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+            title: '¡Falta Fotografía y/o Firma!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
             confirmButtonColor: '#2A4B41'
         });
     }

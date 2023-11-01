@@ -73,10 +73,11 @@ class valoresjoyas(models.Model): # valores de joyas y otros -------->>>>>>>
     class Meta:
         verbose_name_plural = "valoresjoyas"
     
-class documentospertenencias(models.Model): #docuemntos del extranjero ------------------->>>>>>>>>
-    tipodocumento = models.CharField(max_length=200, verbose_name='Tipodocumento')
-    descripcion = models.CharField(max_length=300, verbose_name='Descripcion')
-    delInventario = models.ForeignKey(Inventario,on_delete=models.CASCADE, verbose_name='Numero del Inventario')
+class documentospertenencias(models.Model):  # Documentos del extranjero
+    tipodocumento = models.CharField(max_length=200, verbose_name='Tipo de documento')
+    descripcion = models.CharField(max_length=300, verbose_name='Descripción')
+    delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Número del inventario')
+
     def __str__(self) -> str:
         return '__all__'
     
@@ -88,7 +89,7 @@ class Valores(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     cantidad = models.FloatField(verbose_name='Cantidad')
     Obsevaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
-    delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
+    delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Número de Inventario')
     
     def __str__(self) -> str:
         return self.descripcion
@@ -97,12 +98,12 @@ class Valores(models.Model):
         verbose_name_plural = "Valores"
 
 ENSERES = (
-    ("Papel Higienico","Papel Higienico"),
+    ("Papel Higiénico","Papel Higiénico"),  # Añadido acento en "Higiénico"
     ("Kit Personal","Kit Personal"),
-    ("Pañal Desechable","Pañal Desechable"),
+    ("Pañal Desechable","Pañal Desechable"),  # Añadido acento en "Pañal"
     ("Toalla Sanitaria","Toalla Sanitaria"),
     ("Colchoneta","Colchoneta"),
-    ("Manta Termica","Manta Termica"),
+    ("Manta Térmica","Manta Térmica"),  # Añadido acento en "Térmica"
     ("Otros","Otros"),
 )
 class EnseresBasicos(models.Model):

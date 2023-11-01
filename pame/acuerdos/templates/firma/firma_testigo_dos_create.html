@@ -1,0 +1,16 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+<div class="container">
+    <h2>Registrar Firma - Testigo Dos</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>
+
+{% endblock contenido %}

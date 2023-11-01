@@ -50,7 +50,6 @@ class notificacionLlamadaINM(LoginRequiredMixin,TemplateView):
 # Obtener el ID (nup) del último registro NoProceso
      ultimo_no_proceso_id = ultimo_no_proceso.nup
 
-     print(f"ID del último NoProceso: {ultimo_no_proceso_id}") 
      nombre_extranjero = llamada.nombreExtranjero
      estancia_extranjero = llamada.deLaEstacion
      apellido_paterno = llamada.apellidoPaternoExtranjero
@@ -877,7 +876,6 @@ class notificacionLlamadaGenerales(LoginRequiredMixin,TemplateView):
 # Obtener el ID (nup) del último registro NoProceso
      ultimo_no_proceso_id = ultimo_no_proceso.nup
 
-     print(f"ID del último NoProceso: {ultimo_no_proceso_id}") 
      nombre_extranjero = llamada.nombreExtranjero
      estancia_extranjero = llamada.deLaEstacion
      apellido_paterno = llamada.apellidoPaternoExtranjero
