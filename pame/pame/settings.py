@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'alojamiento',
     'preventconcurrentlogins',
     'django_session_timeout',
+    'notificaciones',
     
 ]
 

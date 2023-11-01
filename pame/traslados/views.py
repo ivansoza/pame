@@ -512,6 +512,9 @@ class cambiarStatusExtranjero(LoginRequiredMixin,UpdateView):
             if estacion:
                 estacion.capacidad -= 1
                 estacion.save()
+            
+            if 'statusTraslado' in form.changed_data and form.instance.statusTraslado ==2:
+                form.instance.motivo_rechazo = form.cleaned_data.get('motivo_rechazo','')
 
 
         return super(cambiarStatusExtranjero, self).form_valid(form)
@@ -520,7 +523,6 @@ class cambiarStatusExtranjero(LoginRequiredMixin,UpdateView):
         puesta_id = self.object.delTraslado.id
         messages.success(self.request, 'Status cambiado.')
         return reverse('listaExtranjerosTrasladoDestino', args=[puesta_id])
-    
 
 class seguimientoPuesta(LoginRequiredMixin,DetailView):
     model = Traslado
