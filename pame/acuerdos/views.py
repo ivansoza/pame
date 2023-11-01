@@ -34,7 +34,10 @@ from .models import FirmaAcuerdo
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import base64
+import io
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -739,6 +742,58 @@ class FirmaTestigoDosCreateView(CreateView):
         context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
         return context
     
+def firma_testigo_uno(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaTestigoUnoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaTestigoUno']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigoUno_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigoUno.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigoUnoForm()
+
+    return render(request, 'firma/firma_testigo_uno_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
+
+def firma_testigo_dos(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaTestigoDosForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaTestigoDos']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigoDos_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigoDos.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigoDosForm()
+
+    return render(request, 'firma/firma_testigo_dos_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
+
 @csrf_exempt
 def check_firma_testigo_uno(request, acuerdo_id):
     firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
