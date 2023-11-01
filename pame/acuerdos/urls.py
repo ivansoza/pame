@@ -24,7 +24,7 @@ urlpatterns = [
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('inventariopv', inventarioPV_pdf, name='inventarioPDF'),
-    path('listaLlamadas', listaLlamadas_pdf, name='listaLlamadasPDF'),
+    path('listaLlamadas/<int:extranjero_id>', listaLlamadas_pdf, name='listaLlamadasPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
