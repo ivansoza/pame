@@ -372,6 +372,15 @@
 
             <ul class="nav nav-treeview"style="margin-left: 20px;">
               <li class="nav-item">
+                <a href="{% url 'listarAcompanantesEstacion' %}" class="nav-link {% if seccion == 'acompanante' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Acompañantes</p>
+                </a>
+              </li>
+            </ul>
+
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
                 <a href="{% url 'listTrasladados' %}" class="nav-link {% if seccion == 'trasladados' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Ver Trasladados</p>
@@ -614,24 +623,35 @@
           <!-- Fin  Cocina -->
           <!--   Medico -->
           {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
+          <li class="nav-item {% if navbar == 'medico' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'medico' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-heartbeat"></i>
               <p>
                 Servicios Médicos
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            {% if user.estancia.servicioMedico %}
             <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
-                <a href="#" class="nav-link ">
+                <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Pacientes</p>
+                  <p>Consultas y certificado medico</p>
                 </a>
               </li>
             </ul>
           </li>
+          {% else %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Carga de certificado medico</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+          {% endif %}
           {% endif %}
           <!-- Fin  Extranjeros -->
 
@@ -863,7 +883,14 @@
                 icon: 'error',
                 title: 'Oops...',
                 text: "{{ message }}",
-                footer: '<a href="">Why do I have this issue?</a>'
+                confirmButtonColor: '#2A4B41'
+              });
+              {% elif message.tags == "warning" %}
+              Swal.fire({
+                icon: 'warning',
+                title: 'Acción denegada',
+                text: "{{ message }}",
+                confirmButtonColor: '#2A4B41'
               });
             {% endif %}
           {% endfor %}

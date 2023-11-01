@@ -1,4 +1,5 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
 
 {% load static %}
 
@@ -48,9 +49,14 @@
                         <i class="fas fa-eye"></i>
                     </a>
                 {% else %}
-                    <a href="{% url 'crearAcuerdoInicio' proceso_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-crear" data-title="Crear Acuerdo Inicio">
-                        <i class="fas fa-plus"></i>
+                
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="{% url "registro_acuerdo_inicio" proceso_id=extranjero.nup%}"
+                    data-title="generar" onclick="abrir_modal(this.href); return false;">
+                    <i class="fas fa-plus"></i>
                     </a>
+
+           
                 {% endif %}
                 </td>                         
             </tr>
@@ -58,5 +64,44 @@
         </tbody>
     </table>
 </div>
+
+<!-- Codigo para abrir el modal   -->
+<div class="modal fade" id="abrirmodalAcuerdoInicio" role="dialog">
+</div>
+
+
+
+
 {% endblock contenido  %}
+
+
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+
+
+    function abrir_modal(url){
+        $('#abrirmodalAcuerdoInicio').load(url, function(){
+            var myModal = new bootstrap.Modal(this, {
+                keyboard: false,
+                backdrop: 'static'
+            });
+            myModal.show();
+        });
+    }
+    
+    function showBioAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: '¡Falta Fotografía!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+            confirmButtonColor: '#2A4B41'
+        });
+    }
+</script>
+
+{% endblock script %}
 

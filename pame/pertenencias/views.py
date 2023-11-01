@@ -21,6 +21,8 @@ import face_recognition
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Max
+from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from io import BytesIO
 from PIL import Image  # Asegúrate de importar Image de PIL o Pillow
@@ -30,10 +32,36 @@ from datetime import date
 #aqui empiezan las pertenencias de VP ------------------------>>>>>>>
 
 # aqui cominezan las pertenencias electronicas ----------------->>>>
-class CrearPertenenciasElectronicasViewVP(CreateView):
+class CreatePermissionRequiredMixin(UserPassesTestMixin):
+    login_url = '/permisoDenegado/'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.permissions_required = kwargs.get('permissions_required', {})
+
+    def test_func(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            return redirect('permisoDenegado')  # Cambia 'acceso_denegado' a la URL adecuada
+
+        for permission, codename in self.permissions_required.items():
+            if not user.has_perm(codename):
+                raise PermissionDenied(f"No tienes el permiso necesario: {permission}")
+        return True
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            # Si el usuario está autenticado pero no tiene el permiso, redirige a una página de acceso denegado
+            return redirect('permisoDenegado')  # Cambia 'acceso_denegado' a la URL adecuada
+        else:
+            # Si el usuario no está autenticado, redirige a la página de inicio de sesión
+            return redirect(self.login_url)
+
+class CrearPertenenciasElectronicasViewVP(LoginRequiredMixin,CreateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasVPForm
-    
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
   # Usa tu formulario modificado
     template_name = 'pertenenciasVP/pertenenciaselectronicasVP.html'
 
@@ -63,13 +91,13 @@ class CrearPertenenciasElectronicasViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
 
-class DeletePertenenciaselectronicasVP(DeleteView):
+class DeletePertenenciaselectronicasVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencia_aparatos
     template_name = 'pertenenciasVP/eliminarpertenenciaselectronicasVP.html'
-
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
         puesta_id = self.object.delInventario.noExtranjero.deLaPuestaVP.id
@@ -86,10 +114,12 @@ class DeletePertenenciaselectronicasVP(DeleteView):
         
         return context
     
-class EditarPertenenciaselectronicasViewVP(UpdateView):
+class EditarPertenenciaselectronicasViewVP(LoginRequiredMixin,UpdateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/editarpertenenciaselectronicasVP.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -108,10 +138,12 @@ class EditarPertenenciaselectronicasViewVP(UpdateView):
 # aqu terminan las pertenencias electrinicas ----------------->>>>
 # aqui cominezan las pertenencias valores efectivo ----------------->>>>
 
-class CrearvaloresefectivoViewVP(CreateView):
+class CrearvaloresefectivoViewVP(LoginRequiredMixin,CreateView):
     model = valoresefectivo
     form_class = valoresefectivoVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/crearvaloresefectivoVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -139,12 +171,14 @@ class CrearvaloresefectivoViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class eliminarvaloresefectivoVP(DeleteView):
+class eliminarvaloresefectivoVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresefectivo
     template_name = 'pertenenciasVP/eliminarvaloresefectivoVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -162,10 +196,12 @@ class eliminarvaloresefectivoVP(DeleteView):
         
         return context
     
-class editarvaloresefectivoVP(UpdateView):
+class editarvaloresefectivoVP(LoginRequiredMixin,UpdateView):
     model = valoresefectivo
     form_class = valoresefectivoVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/editarvaloresefectivoVP.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -186,10 +222,12 @@ class editarvaloresefectivoVP(UpdateView):
 
 # aqui cominezan las pertenencias valores joyas ----------------->>>>
 
-class CrearvaloresjoyasViewVP(CreateView):
+class CrearvaloresjoyasViewVP(LoginRequiredMixin,CreateView):
     model = valoresjoyas
     form_class = valorejoyasVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/crearvaloresalhajasVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -217,12 +255,14 @@ class CrearvaloresjoyasViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class eliminarvaloresjoyasVP(DeleteView):
+class eliminarvaloresjoyasVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresjoyas
     template_name = 'pertenenciasVP/eliminarvaloresalhajasVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -240,10 +280,12 @@ class eliminarvaloresjoyasVP(DeleteView):
         
         return context
     
-class editarvaloresjoyasVP(UpdateView):
+class editarvaloresjoyasVP(LoginRequiredMixin,UpdateView):
     model = valoresjoyas
     form_class = valorejoyasVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/editarvaloresalhajasVP.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -264,10 +306,12 @@ class editarvaloresjoyasVP(UpdateView):
 
 # # aqui cominezan las pertenencias documentos ----------------->>>>
 
-class CrearvaloresdocumentosViewVP(CreateView):
+class CrearvaloresdocumentosViewVP(LoginRequiredMixin,CreateView):
     model = documentospertenencias
     form_class = documentospertenenciasVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/creardocumentosVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -295,12 +339,14 @@ class CrearvaloresdocumentosViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class eliminarvaloresdocumentosVP(DeleteView):
+class eliminarvaloresdocumentosVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = documentospertenencias
     template_name = 'pertenenciasVP/eliminardocumentosVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -318,10 +364,12 @@ class eliminarvaloresdocumentosVP(DeleteView):
         
         return context
     
-class editarvaloresdocumentosVP(UpdateView):
+class editarvaloresdocumentosVP(LoginRequiredMixin,UpdateView):
     model = documentospertenencias
     form_class = documentospertenenciasVPForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/editardocumentosVP.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -347,10 +395,12 @@ class editarvaloresdocumentosVP(UpdateView):
 #aqui empiezan las pertenencias de AC ------------------------>>>>>>>
 
 # aqui cominezan las pertenencias electronicas ----------------->>>>
-class CrearPertenenciasElectronicasViewAC(CreateView):
+class CrearPertenenciasElectronicasViewAC(LoginRequiredMixin,CreateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/pertenenciaselectronicasAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -378,12 +428,14 @@ class CrearPertenenciasElectronicasViewAC(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
 
-class DeletePertenenciaselectronicasAC(DeleteView):
+class DeletePertenenciaselectronicasAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencia_aparatos
     template_name = 'pertenenciasAC/eliminarpertenenciaselectronicasAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -401,10 +453,11 @@ class DeletePertenenciaselectronicasAC(DeleteView):
         
         return context
     
-class EditarPertenenciaselectronicasViewAC(UpdateView):
+class EditarPertenenciaselectronicasViewAC(LoginRequiredMixin,UpdateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/editarpertenenciaselectronicasAC.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -423,10 +476,12 @@ class EditarPertenenciaselectronicasViewAC(UpdateView):
 # aqu terminan las pertenencias electrinicas ----------------->>>>
 # aqui cominezan las pertenencias valores efectivo ----------------->>>>
 
-class CrearvaloresefectivoViewAC(CreateView):
+class CrearvaloresefectivoViewAC(LoginRequiredMixin,CreateView):
     model = valoresefectivo
     form_class = valoresefectivoACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/agregarvaloresefectivo.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -454,12 +509,14 @@ class CrearvaloresefectivoViewAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class eliminarvaloresefectivoAC(DeleteView):
+class eliminarvaloresefectivoAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresefectivo
     template_name = 'pertenenciasAC/eliminarvaloresefectivo.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -477,10 +534,12 @@ class eliminarvaloresefectivoAC(DeleteView):
         
         return context
     
-class editarvaloresefectivoAC(UpdateView):
+class editarvaloresefectivoAC(LoginRequiredMixin,UpdateView):
     model = valoresefectivo
     form_class = valoresefectivoACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/editarvaloresefectivo.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -501,10 +560,12 @@ class editarvaloresefectivoAC(UpdateView):
 
 # aqui cominezan las pertenencias valores joyas ----------------->>>>
 
-class CrearvaloresjoyasViewAC(CreateView):
+class CrearvaloresjoyasViewAC(LoginRequiredMixin,CreateView):
     model = valoresjoyas
     form_class = valorejoyasACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/crearvaloresalhajas.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -532,12 +593,14 @@ class CrearvaloresjoyasViewAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class eliminarvaloresjoyasAC(DeleteView):
+class eliminarvaloresjoyasAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresjoyas
     template_name = 'pertenenciasAC/eliminarvaloresalhajas.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -555,10 +618,12 @@ class eliminarvaloresjoyasAC(DeleteView):
         
         return context
     
-class editarvaloresjoyasAC(UpdateView):
+class editarvaloresjoyasAC(LoginRequiredMixin,UpdateView):
     model = valoresjoyas
     form_class = valorejoyasACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/editarvaloresalhajas.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -579,10 +644,12 @@ class editarvaloresjoyasAC(UpdateView):
 
 # # aqui cominezan las pertenencias documentos ----------------->>>>
 
-class CrearvaloresdocumentosViewAC(CreateView):
+class CrearvaloresdocumentosViewAC(LoginRequiredMixin,CreateView):
     model = documentospertenencias
     form_class = documentospertenenciasACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/creardocumentosAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -610,12 +677,14 @@ class CrearvaloresdocumentosViewAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class eliminarvaloresdocumentosAC(DeleteView):
+class eliminarvaloresdocumentosAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = documentospertenencias
     template_name = 'pertenenciasAC/eliminardocumentoAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -633,10 +702,12 @@ class eliminarvaloresdocumentosAC(DeleteView):
         
         return context
     
-class editarvaloresdocumentosAC(UpdateView):
+class editarvaloresdocumentosAC(LoginRequiredMixin,UpdateView):
     model = documentospertenencias
     form_class = documentospertenenciasACForm  # Usa tu formulario modificado
     template_name = 'pertenenciasAC/editardocumentosAC.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -662,10 +733,12 @@ class editarvaloresdocumentosAC(UpdateView):
 
 # aqui cominezan las pertenencias valores efectivo ----------------->>>>
 
-class CrearvaloresefectivoViewINM(CreateView):
+class CrearvaloresefectivoViewINM(LoginRequiredMixin,CreateView):
     model = valoresefectivo
     form_class = valoresefectivoForm  # Usa tu formulario modificado
     template_name = 'modals/crearvaloresefectivoINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -693,12 +766,13 @@ class CrearvaloresefectivoViewINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class eliminarvaloresefectivoINM(DeleteView):
+class eliminarvaloresefectivoINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresefectivo
     template_name = 'modals/eliminarvaloresefectivoINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -716,10 +790,12 @@ class eliminarvaloresefectivoINM(DeleteView):
         
         return context
     
-class editarvaloresefectivoINM(UpdateView):
+class editarvaloresefectivoINM(LoginRequiredMixin,UpdateView):
     model = valoresefectivo
     form_class = valoresefectivoForm  # Usa tu formulario modificado
     template_name = 'modals/editarvaloresefectivoINM.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -740,10 +816,12 @@ class editarvaloresefectivoINM(UpdateView):
 
 # aqui cominezan las pertenencias valores joyas ----------------->>>>
 
-class CrearvaloresjoyasViewINM(CreateView):
+class CrearvaloresjoyasViewINM(LoginRequiredMixin,CreateView):
     model = valoresjoyas
     form_class = valorejoyasForm  # Usa tu formulario modificado
     template_name = 'modals/crearvaloresjoyasINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -771,12 +849,14 @@ class CrearvaloresjoyasViewINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class eliminarvaloresjoyasINM(DeleteView):
+class eliminarvaloresjoyasINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresjoyas
     template_name = 'modals/eliminarvaloresjoyasINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -794,10 +874,12 @@ class eliminarvaloresjoyasINM(DeleteView):
         
         return context
     
-class editarvaloresjoyasINM(UpdateView):
+class editarvaloresjoyasINM(LoginRequiredMixin,UpdateView):
     model = valoresjoyas
     form_class = valorejoyasForm  # Usa tu formulario modificado
     template_name = 'modals/editarvaloresjoyasINM.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -818,10 +900,12 @@ class editarvaloresjoyasINM(UpdateView):
 
 # # aqui cominezan las pertenencias documentos ----------------->>>>
 
-class CrearvaloresdocumentosViewINM(CreateView):
+class CrearvaloresdocumentosViewINM(LoginRequiredMixin,CreateView):
     model = documentospertenencias
     form_class = documentospertenenciasForm  # Usa tu formulario modificado
     template_name = 'modals/creardocumentosINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -849,12 +933,14 @@ class CrearvaloresdocumentosViewINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class eliminarvaloresdocumentosINM(DeleteView):
+class eliminarvaloresdocumentosINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = documentospertenencias
     template_name = 'modals/eliminardocumentosINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -872,7 +958,7 @@ class eliminarvaloresdocumentosINM(DeleteView):
         
         return context
     
-class editarvaloresdocumentosINM(UpdateView):
+class editarvaloresdocumentosINM(LoginRequiredMixin,UpdateView):
     model = documentospertenencias
     form_class = documentospertenenciasForm  # Usa tu formulario modificado
     template_name = 'modals/editardocumentosINM.html'  # Crea este template
@@ -894,7 +980,7 @@ class editarvaloresdocumentosINM(UpdateView):
 # # aqu terminan las pertenencias documentos ----------------->>>>
 
 
-class PermissionRequiredMixin(UserPassesTestMixin):
+class PermissionRequiredMixin(LoginRequiredMixin,UserPassesTestMixin):
     login_url = '/permisoDenegado/'
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -926,13 +1012,15 @@ def homePertenencias (request):
 
 
 #Creacion del inventario 
-class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
+class CrearInventarioViewINM(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'pertenencias.add_inventario',
     }
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenenciasINM/agregarInventarioINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
@@ -977,9 +1065,11 @@ class CrearInventarioViewINM(PermissionRequiredMixin,CreateView):
         return reverse('ver_pertenenciasINM', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
 #---------------------------------------------------------
-class ListaPertenenciasViewINM(ListView):
+class ListaPertenenciasViewINM(LoginRequiredMixin,ListView):
     model = Pertenencias
     template_name = 'pertenenciasINM/listPertenenciasINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -1017,10 +1107,12 @@ class ListaPertenenciasViewINM(ListView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class ListaEnseresViewINM(ListView):
+class ListaEnseresViewINM(LoginRequiredMixin,ListView):
     model = EnseresBasicos
     template_name = 'pertenenciasINM/listEnseresINM.html'
     context_object_name = 'enseresinm'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         extranjero_id= self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(pk=extranjero_id)
@@ -1051,10 +1143,12 @@ class ListaEnseresViewINM(ListView):
         context['seccion'] = 'seguridadINM'
         return context
 
-class CrearEnseresINM(CreateView):
+class CrearEnseresINM(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'pertenenciasINM/crearEnseresINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
@@ -1098,10 +1192,12 @@ class CrearEnseresINM(CreateView):
         return super().form_valid(form)
 
     
-class CrearEnseresModaINM(CreateView):
+class CrearEnseresModaINM(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'modals/inm/crearEnseresModaINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -1140,10 +1236,12 @@ class CrearEnseresModaINM(CreateView):
         form.instance.noExtranjero= extranjero
         return super().form_valid(form)
 
-class EditarEnseresViewINM(UpdateView):
+class EditarEnseresViewINM(LoginRequiredMixin,UpdateView):
     model = EnseresBasicos
     form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/inm/editarEnseresINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -1159,12 +1257,14 @@ class EditarEnseresViewINM(UpdateView):
         return context
 
     
-class DeleteEnseresINM(DeleteView):
+class DeleteEnseresINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = EnseresBasicos
     template_name = 'modals/inm/eliminarEnseres.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -1178,10 +1278,12 @@ class DeleteEnseresINM(DeleteView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class CrearPertenenciasViewINM(CreateView):
+class CrearPertenenciasViewINM(LoginRequiredMixin,CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/crearPertenenciasINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -1208,10 +1310,12 @@ class CrearPertenenciasViewINM(CreateView):
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
         return context
-class CrearPertenenciasElectronicasViewINM(CreateView):
+class CrearPertenenciasElectronicasViewINM(LoginRequiredMixin,CreateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasForm  # Usa tu formulario modificado
     template_name = 'modals/pertenenciaselectronicasINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -1239,12 +1343,14 @@ class CrearPertenenciasElectronicasViewINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
 
-class DeletePertenenciasINM(DeleteView):
+class DeletePertenenciasINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencias
     template_name = 'modals/eliminarPertenenciaINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1262,10 +1368,12 @@ class DeletePertenenciasINM(DeleteView):
         
         return context
     
-class EditarPertenenciasViewINM(UpdateView):
+class EditarPertenenciasViewINM(LoginRequiredMixin,UpdateView):
     model = Pertenencias
     form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/editPertenenciasINM.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1282,12 +1390,14 @@ class EditarPertenenciasViewINM(UpdateView):
     
     
 # aqui cominezan las pertenencias electronicas ----------------->>>>
-class DeletePertenenciaselectronicasINM(DeleteView):
+class DeletePertenenciaselectronicasINM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencia_aparatos
     template_name = 'modals/eliminarpertenenciaselectronicasINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1305,10 +1415,12 @@ class DeletePertenenciaselectronicasINM(DeleteView):
         
         return context
     
-class EditarPertenenciaselectronicasViewINM(UpdateView):
+class EditarPertenenciaselectronicasViewINM(LoginRequiredMixin,UpdateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasForm  # Usa tu formulario modificado
     template_name = 'modals/editarpertenenciaselectronicasINM.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1325,10 +1437,12 @@ class EditarPertenenciaselectronicasViewINM(UpdateView):
     
 
 # aqu terminan las pertenencias electrinicas ----------------->>>>
-class EditarPertenenciasViewAC(UpdateView):
+class EditarPertenenciasViewAC(LoginRequiredMixin,UpdateView):
     model = Pertenencias
     form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/editPertenenciasAC.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1343,9 +1457,11 @@ class EditarPertenenciasViewAC(UpdateView):
         context['seccion'] = 'seguridadAC'
         return context
 
-class ListaPertenenciasValorViewINM(ListView):
+class ListaPertenenciasValorViewINM(LoginRequiredMixin,ListView):
     model = Valores
     template_name = 'pertenenciasINM/listPertenenciasValorINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -1363,10 +1479,12 @@ class ListaPertenenciasValorViewINM(ListView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class CrearPertenenciasValoresViewINM(CreateView):
+class CrearPertenenciasValoresViewINM(LoginRequiredMixin,CreateView):
     model = Valores
     form_class = ValoresForm  # Usa tu formulario modificado
     template_name = 'modals/crearPertenenciasValorINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -1394,13 +1512,15 @@ class CrearPertenenciasValoresViewINM(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class UpdatePertenenciasValorINM(UpdateView):
+class UpdatePertenenciasValorINM(LoginRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
     form_class = EditarValoresForm 
     template_name = 'modals/editarPertenenciaValorINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1415,7 +1535,7 @@ class UpdatePertenenciasValorINM(UpdateView):
         
         return context
     
-class UpdatePertenenciasValorAC(UpdateView):
+class UpdatePertenenciasValorAC(LoginRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.delete_valor',
     }
@@ -1423,6 +1543,8 @@ class UpdatePertenenciasValorAC(UpdateView):
     form_class = EditarValoresForm 
 
     template_name = 'modals/editarPertenenciaValorAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1438,12 +1560,14 @@ class UpdatePertenenciasValorAC(UpdateView):
         
         return context
 
-class DeletePertenenciasIValorNM(DeleteView):
+class DeletePertenenciasIValorNM(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
     template_name = 'modals/eliminarPertenenciaValorINM.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1460,10 +1584,12 @@ class DeletePertenenciasIValorNM(DeleteView):
         return context
     #-------------------------------------
 #------------------------INVENTARIO AC -----------------
-class CrearInventarioViewAC(CreateView):
+class CrearInventarioViewAC(LoginRequiredMixin,CreateView):
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenenciasAC/agregarInventarioAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         # Lógica relacionada con el extranjero y estaciones
@@ -1539,9 +1665,11 @@ class CrearInventarioViewAC(CreateView):
         return reverse('ver_pertenenciasAC', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
 
-class ListaPertenenciasViewAC(ListView):
+class ListaPertenenciasViewAC(LoginRequiredMixin,ListView):
     model = Pertenencias
     template_name = 'pertenenciasAC/listPertenenciasAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -1577,10 +1705,12 @@ class ListaPertenenciasViewAC(ListView):
         context['inventario'] = inventario
         return context
 
-class CrearPertenenciasViewAC(CreateView):
+class CrearPertenenciasViewAC(LoginRequiredMixin,CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
     template_name = 'modals/crearPertenenciasAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -1611,12 +1741,14 @@ class CrearPertenenciasViewAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class DeletePertenenciasAC(DeleteView):
+class DeletePertenenciasAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencias
     template_name = 'modals/eliminarPertenenciaAc.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1632,9 +1764,11 @@ class DeletePertenenciasAC(DeleteView):
         
         return context
 
-class ListaPertenenciasValorViewAC(ListView):
+class ListaPertenenciasValorViewAC(LoginRequiredMixin,ListView):
     model = Valores
     template_name = 'pertenenciasAC/listPertenenciasValorAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -1665,10 +1799,12 @@ class ListaPertenenciasValorViewAC(ListView):
         
         return context
     
-class CrearPertenenciasValoresViewAC(CreateView):
+class CrearPertenenciasValoresViewAC(LoginRequiredMixin,CreateView):
     model = Valores
     form_class = ValoresForm  # Usa tu formulario modificado
     template_name = 'modals/crearPertenenciaValorAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -1696,12 +1832,14 @@ class CrearPertenenciasValoresViewAC(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class DeletePertenenciasValoresAC(DeleteView):
+class DeletePertenenciasValoresAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Valores
     template_name = 'modals/eliminarPertenenciaValorAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -1717,10 +1855,12 @@ class DeletePertenenciasValoresAC(DeleteView):
         return context
 
 
-class ListaEnseresViewAC(ListView):
+class ListaEnseresViewAC(LoginRequiredMixin,ListView):
     model = EnseresBasicos
     template_name = 'pertenenciasAC/listEnseresAC.html'
     context_object_name = 'enseresac'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         extranjero_id= self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(pk=extranjero_id)
@@ -1752,10 +1892,12 @@ class ListaEnseresViewAC(ListView):
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         return context
     
-class CrearEnseresAC(CreateView):
+class CrearEnseresAC(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'pertenenciasAC/crearEnseresAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
@@ -1798,10 +1940,12 @@ class CrearEnseresAC(CreateView):
         return initial
 
     
-class EditarEnseresViewAC(UpdateView):
+class EditarEnseresViewAC(LoginRequiredMixin,UpdateView):
     model = EnseresBasicos
     form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/ac/editarEnseresAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -1817,12 +1961,14 @@ class EditarEnseresViewAC(UpdateView):
 
 
     
-class DeleteEnseresAC(DeleteView):
+class DeleteEnseresAC(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = EnseresBasicos
     template_name = 'modals/ac/eliminarEnseresAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -1837,10 +1983,12 @@ class DeleteEnseresAC(DeleteView):
         return context
     
 
-class CrearEnseresModaAC(CreateView):
+class CrearEnseresModaAC(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'modals/ac/crearEnseresModaAC.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -1883,13 +2031,15 @@ class CrearEnseresModaAC(CreateView):
 
 
     
-class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
+class CrearInventarioViewVP(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'pertenencias.add_inventario',
     }
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenenciasVP/agregarInventarioVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         extranjero_id = self.kwargs['extranjero_id']
@@ -1932,9 +2082,11 @@ class CrearInventarioViewVP(PermissionRequiredMixin,CreateView):
 
         return reverse('ver_pertenenciasVP', kwargs={'inventario_id': inventario_id, 'puesta_id': puesta_id})
     
-class ListaPertenenciasViewVP(ListView):
+class ListaPertenenciasViewVP(LoginRequiredMixin,ListView):
     model = Pertenencias
     template_name = 'pertenenciasVP/listPertenenciasVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -1963,10 +2115,12 @@ class ListaPertenenciasViewVP(ListView):
         context['inventario'] = inventario
         return context
     
-class CrearPertenenciasViewVP(CreateView):
+class CrearPertenenciasViewVP(LoginRequiredMixin,CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/crearpertenenciasVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -1994,12 +2148,14 @@ class CrearPertenenciasViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class DeletePertenenciasVP(DeleteView):
+class DeletePertenenciasVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencias
     template_name = 'pertenenciasVP/eliminarpertenenciasVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2015,10 +2171,12 @@ class DeletePertenenciasVP(DeleteView):
         return context
     
 
-class EditarPertenenciasViewVP(UpdateView):
+class EditarPertenenciasViewVP(LoginRequiredMixin,UpdateView):
     model = Pertenencias
     form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'pertenenciasVP/editarpertenenciasVP.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2033,9 +2191,11 @@ class EditarPertenenciasViewVP(UpdateView):
         context['seccion'] = 'seguridadVP'
         return context
 
-class ListaPertenenciasValorViewVP(ListView):
+class ListaPertenenciasValorViewVP(LoginRequiredMixin,ListView):
     model = Valores
     template_name = 'pertenenciasVP/listPertenenciasValorVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -2053,10 +2213,12 @@ class ListaPertenenciasValorViewVP(ListView):
         context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
         return context
     
-class CrearPertenenciasValoresViewVP(CreateView):
+class CrearPertenenciasValoresViewVP(LoginRequiredMixin,CreateView):
     model = Valores
     form_class = ValoresForm  # Usa tu formulario modificado
     template_name = 'modals/vp/crearPertenenciasValorVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -2084,12 +2246,14 @@ class CrearPertenenciasValoresViewVP(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class DeletePertenenciasValorVP(DeleteView):
+class DeletePertenenciasValorVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
     template_name = 'modals/vp/eliminarPertenenciaValorVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2105,13 +2269,15 @@ class DeletePertenenciasValorVP(DeleteView):
         
         return context
     
-class UpdatePertenenciasValorVP(UpdateView):
+class UpdatePertenenciasValorVP(LoginRequiredMixin,UpdateView):
     permission_required = {
         'perm1': 'vigilancia.delete_valor',
     }
     model = Valores
     form_class = EditarValoresForm 
     template_name = 'modals/vp/editarPertenenciasValorVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2126,10 +2292,12 @@ class UpdatePertenenciasValorVP(UpdateView):
 
         return context
     
-class ListaEnseresViewUP(ListView):
+class ListaEnseresViewUP(LoginRequiredMixin,ListView):
     model = EnseresBasicos
     template_name = 'pertenenciasVP/listEnseresVP.html'
     context_object_name = 'enseresvp'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         extranjero_id= self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(pk=extranjero_id)
@@ -2160,10 +2328,12 @@ class ListaEnseresViewUP(ListView):
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         return context
     
-class CrearEnseresVP(CreateView):
+class CrearEnseresVP(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'pertenenciasVP/crearEnseresVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         extranjero_id = self.object.noExtranjero.id  # Obtén el ID del extranjero del objeto biometrico
@@ -2206,10 +2376,12 @@ class CrearEnseresVP(CreateView):
         return initial
 
 
-class CrearEnseresModalVP(CreateView):
+class CrearEnseresModalVP(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'modals/vp/crearEnseresModalVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -2247,12 +2419,14 @@ class CrearEnseresModalVP(CreateView):
         initial['noExtranjero'] = extranjero_id
         return initial
     
-class DeleteEnseresVP(DeleteView):
+class DeleteEnseresVP(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = EnseresBasicos
     template_name = 'modals/vp/eliminarEnseresVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -2266,10 +2440,12 @@ class DeleteEnseresVP(DeleteView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class EditarEnseresViewVP(UpdateView):
+class EditarEnseresViewVP(LoginRequiredMixin,UpdateView):
     model = EnseresBasicos
     form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/vp/editarEnseresVP.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -2387,10 +2563,12 @@ def compare_faces(request):
 # ESTA SERA LA SECCION PARA TODOS LOS EXTRANJEROS 
 # INICIA ENSERES
 
-class ListaEnseresView(ListView):
+class ListaEnseresView(LoginRequiredMixin,ListView):
     model = EnseresBasicos
     template_name = 'pertenencias/listEnseres.html'
     context_object_name = 'enseres'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_queryset(self):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(pk=extranjero_id)
@@ -2423,10 +2601,12 @@ class ListaEnseresView(ListView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         return context
 
-class CrearEnseres(CreateView):
+class CrearEnseres(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'pertenencias/agregarEnseres.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         extranjero_id = self.kwargs['extranjero_id']
@@ -2476,10 +2656,12 @@ class CrearEnseres(CreateView):
         return super().form_valid(form)
 
     
-class CrearEnseresModa(CreateView):
+class CrearEnseresModa(LoginRequiredMixin,CreateView):
     model= EnseresBasicos
     form_class = EnseresForm
     template_name = 'modals/general/crearEnseresModal.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -2517,10 +2699,12 @@ class CrearEnseresModa(CreateView):
         form.instance.noExtranjero= extranjero
         return super().form_valid(form)
 
-class EditarEnseresView(UpdateView):
+class EditarEnseresView(LoginRequiredMixin,UpdateView):
     model = EnseresBasicos
     form_class = EnseresFormUpdate  # Usa tu formulario modificado
     template_name = 'modals/general/editarEnseres.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -2534,12 +2718,14 @@ class EditarEnseresView(UpdateView):
         context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
         return context
 
-class DeleteEnseres(DeleteView):
+class DeleteEnseres(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = EnseresBasicos
     template_name = 'modals/general/eliminarEnseres.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.noExtranjero.id
@@ -2553,9 +2739,11 @@ class DeleteEnseres(DeleteView):
         return context
 
 #-------------------VistasGenerales-----------------------------------
-class ListaPertenenciasViewGeneral(ListView):
+class ListaPertenenciasViewGeneral(LoginRequiredMixin,ListView):
     model = Pertenencias
     template_name = 'pertenencias/listPertenencias.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
         inventario_id = self.kwargs['inventario_id']
@@ -2595,13 +2783,15 @@ class ListaPertenenciasViewGeneral(ListView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         return context
 
-class CrearInventarioViewGeneral(PermissionRequiredMixin,CreateView):
+class CrearInventarioViewGeneral(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'pertenencias.add_inventario',
     }
     model = Inventario
     form_class = InventarioForm
     template_name = 'pertenencias/inventarioGeneral.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     def get_success_url(self):
         extranjero_id = self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
@@ -2653,10 +2843,12 @@ class CrearInventarioViewGeneral(PermissionRequiredMixin,CreateView):
         context['extranjero_id'] = extranjero_id
         return context
     
-class CrearPertenenciasViewGeneral(CreateView):
+class CrearPertenenciasViewGeneral(LoginRequiredMixin,CreateView):
     model = Pertenencias
     form_class = PertenenciaForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/agregarPertenenciasPersonales.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -2683,10 +2875,12 @@ class CrearPertenenciasViewGeneral(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class EditarPertenenciasViewGenerales(UpdateView):
+class EditarPertenenciasViewGenerales(LoginRequiredMixin,UpdateView):
     model = Pertenencias
     form_class = EditPertenenciaForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/editarPertenenciasPersonal.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         enseres_id = self.object.delInventario.id
@@ -2699,12 +2893,14 @@ class EditarPertenenciasViewGenerales(UpdateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class DeletePertenenciasGeneral(DeleteView):
+class DeletePertenenciasGeneral(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencias
     template_name = 'pertenencias/modals/eliminarPertenenciasPersonales.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2720,10 +2916,12 @@ class DeletePertenenciasGeneral(DeleteView):
         
         return context
     
-class CrearPertenenciasElectronicasVieGeneral(CreateView):
+class CrearPertenenciasElectronicasVieGeneral(LoginRequiredMixin,CreateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasACForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/agregarElectro.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -2751,10 +2949,12 @@ class CrearPertenenciasElectronicasVieGeneral(CreateView):
         return context
     
     
-class EditarPertenenciaselectronicasViewGeneral(UpdateView):
+class EditarPertenenciaselectronicasViewGeneral(LoginRequiredMixin,UpdateView):
     model = Pertenencia_aparatos
     form_class = pertenenciaselectronicasACForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/editarElectro.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2767,12 +2967,13 @@ class EditarPertenenciaselectronicasViewGeneral(UpdateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class DeletePertenenciaselectronicasGenerales(DeleteView):
+class DeletePertenenciaselectronicasGenerales(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = Pertenencia_aparatos
     template_name = 'pertenencias/modals/eliminarElectro.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2788,10 +2989,12 @@ class DeletePertenenciaselectronicasGenerales(DeleteView):
         
         return context
     
-class CrearvaloresefectivoViewGeneral(CreateView):
+class CrearvaloresefectivoViewGeneral(LoginRequiredMixin,CreateView):
     model = valoresefectivo
     form_class = valoresefectivoACForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/crearEfectivo.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -2818,12 +3021,14 @@ class CrearvaloresefectivoViewGeneral(CreateView):
         context['seccion'] = 'seguridadAC'
         return context
     
-class eliminarvaloresefectivoGeneral(DeleteView):
+class eliminarvaloresefectivoGeneral(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresefectivo
     template_name = 'pertenencias/modals/eliminarEfectivo.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2839,10 +3044,12 @@ class eliminarvaloresefectivoGeneral(DeleteView):
         
         return context
     
-class editarvaloresefectivoGeneral(UpdateView):
+class editarvaloresefectivoGeneral(LoginRequiredMixin,UpdateView):
     model = valoresefectivo
     form_class = valoresefectivoForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/editarEfectivo.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2855,10 +3062,12 @@ class editarvaloresefectivoGeneral(UpdateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class CrearvaloresjoyasViewGeneral(CreateView):
+class CrearvaloresjoyasViewGeneral(LoginRequiredMixin,CreateView):
     model = valoresjoyas
     form_class = valorejoyasVPForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/agregarJoyas.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -2884,12 +3093,14 @@ class CrearvaloresjoyasViewGeneral(CreateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class eliminarvaloresjoyasGeneral(DeleteView):
+class eliminarvaloresjoyasGeneral(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = valoresjoyas
     template_name = 'pertenencias/modals/eliminarJoyas.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2905,10 +3116,11 @@ class eliminarvaloresjoyasGeneral(DeleteView):
         
         return context
     
-class editarvaloresjoyasGeneral(UpdateView):
+class editarvaloresjoyasGeneral(LoginRequiredMixin,UpdateView):
     model = valoresjoyas
     form_class = valorejoyasVPForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/editarJoyas.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2921,10 +3133,12 @@ class editarvaloresjoyasGeneral(UpdateView):
         context['seccion'] = 'seguridadVP'
         return context
     
-class CrearvaloresdocumentosViewGeneral(CreateView):
+class CrearvaloresdocumentosViewGeneral(LoginRequiredMixin,CreateView):
     model = documentospertenencias
     form_class = documentospertenenciasForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/agregarDocumento.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def form_valid(self, form):
         inventario_id = self.kwargs['inventario_id']
@@ -2950,12 +3164,13 @@ class CrearvaloresdocumentosViewGeneral(CreateView):
         context['seccion'] = 'seguridadINM'
         return context
     
-class eliminarvaloresdocumentosGeneral(DeleteView):
+class eliminarvaloresdocumentosGeneral(LoginRequiredMixin,DeleteView):
     permission_required = {
         'perm1': 'vigilancia.delete_pertenencia',
     }
     model = documentospertenencias
     template_name = 'pertenencias/modals/eliminarDocumento.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id
@@ -2971,10 +3186,12 @@ class eliminarvaloresdocumentosGeneral(DeleteView):
         
         return context
     
-class editarvaloresdocumentosGeneral(UpdateView):
+class editarvaloresdocumentosGeneral(LoginRequiredMixin,UpdateView):
     model = documentospertenencias
     form_class = documentospertenenciasForm  # Usa tu formulario modificado
     template_name = 'pertenencias/modals/editarDocumento.html'  # Crea este template
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_success_url(self):
         inventario_id = self.object.delInventario.id

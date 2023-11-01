@@ -23,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-50)&z+hib^$mh!wl%w=u$=95!1=5%6ttd3%s=73x4luay*d2v7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = False
 DEBUG = True
-
 #Despliegue en AMAZON
 # ALLOWED_HOSTS = ["3.17.57.188"]
 ALLOWED_HOSTS = ['*']
@@ -125,6 +125,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pame.wsgi.application'
+
+
+"URL DE LA PAGINA PARA RENDERIZAR LOS QR "
+# BASE_URL = "https://sfti.tech/"
+BASE_URL = "http://127.0.0.1:8082/"
 
 
 # Database

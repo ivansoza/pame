@@ -55,7 +55,7 @@
                     </a>
                 {% else %}
 
-                {% if extranjero.tiene_fotografia %}
+                {% if extranjero.tiene_fotografia and extranjero.tiene_firma%}
                     <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'notificar-llamada-inm'  extranjero.id puesta.id %}" data-title="Llamadas Telefonicas">
                       <i class="fas fa-phone"></i>
                     </a>
@@ -131,9 +131,7 @@
                 {% endif %}
 
                 <!-- INICIO DE AGREGAR ACOMPAÑANTE -->
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'listAcompanantesINM' extranjero.id puesta.id   %}" data-title="Acompańante">
-                        <i class="fas fa-handshake"></i>
-                    </a>
+                    
                 {% if extranjero.tiene_inventario %}
                     <!-- INICIO DE AGREGAR PERTENENCIAS -->
                 {% with first_inventario=extranjero.inventario_set.first %}
@@ -224,7 +222,7 @@
 {% block datatable %}
 
  {
-    text: 'Crear Extranjero',
+    text: 'Agregar Extranjero',
     className: 'btn btn-custom mr-2',
     action: function (e, dt, node, config) {
       // Redirigir a la URL relativa a la ubicación actual
@@ -246,8 +244,8 @@
     function showBioAlert() {
         Swal.fire({
             icon: 'warning',
-            title: '¡Falta Fotografía!',
-            text: 'Necesitas capturar datos biométricos del extranjero antes de asignar enseres.',
+            title: '¡Falta Fotografía y/o Firma!',
+            text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
             confirmButtonColor: '#2A4B41'
         });
     }

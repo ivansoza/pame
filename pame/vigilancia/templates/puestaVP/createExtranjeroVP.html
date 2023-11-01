@@ -46,6 +46,18 @@
             <div class="col-sm-12 col-md-4 col-lg-4" style='placeholder:"Ej:Lopez"'>
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
+            <div class="col-sm-12 col-md-4 col-lg-4" style='placeholder:"Ej:Lopez"'>
+                {{form.domicilio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaNacimiento|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4" style='placeholder:"Ej:Lopez"'>
+                {{form.edad|as_crispy_field}}
+                <script>
+                    document.getElementById('id_edad').readOnly = true;
+                </script>
+            </div>
         </div>
     
         <div class="row">
@@ -54,9 +66,6 @@
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.genero|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.fechaNacimiento|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estado_Civil|as_crispy_field }}
@@ -70,10 +79,10 @@
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.lugar_Origen|as_crispy_field }}
             </div>
-         
-            <div class="col-sm-12 col-md-4 col-lg-4">
+        <div class='row'>
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 <div class="file-input-container">
-                    <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
+                    <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-6"
                      class="button-link"
                     onclick="abrir_modal_eliminar(this.href); return false;"
                      data-input-id="id_documentoIdentidad">
@@ -82,9 +91,10 @@
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.tipoEstancia|as_crispy_field}}
             </div>
+        </div>
         </div>
     
         <div class="row">
@@ -100,16 +110,6 @@
         </div>        
         {% csrf_token %}
             {{ form.puesta.as_hidden }}
-        
-            <div class="row">
-                <div class="col-sm-12 col-md-4 col-lg-6">
-                    {{ form.nombreDelaMadre|as_crispy_field }}
-                </div>
-                
-                <div class="col-sm-12 col-md-4 col-lg-6">
-                    {{ form.nacionalidad_Madre|as_crispy_field }}
-                </div>
-            </div>
 
             <div class="row">
                 
@@ -120,7 +120,16 @@
                     {{ form.nacionalidad_Padre|as_crispy_field }}
                 </div>
             </div>
-    
+        
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-6">
+                    {{ form.nombreDelaMadre|as_crispy_field }}
+                </div>
+                
+                <div class="col-sm-12 col-md-4 col-lg-6">
+                    {{ form.nacionalidad_Madre|as_crispy_field }}
+                </div>
+            </div>
     
             <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
             <br>

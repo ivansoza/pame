@@ -52,13 +52,19 @@
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.nacionalidad|as_crispy_field}}
+                {{form.domicilio|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.fechaNacimiento|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.edad|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.genero|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.fechaNacimiento|as_crispy_field}}
+                {{form.nacionalidad|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estado_Civil|as_crispy_field }}
@@ -69,10 +75,12 @@
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.ocupacion|as_crispy_field }}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.lugar_Origen|as_crispy_field }}
             </div> 
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{form.tipoEstancia|as_crispy_field}}
             </div>
         </div>

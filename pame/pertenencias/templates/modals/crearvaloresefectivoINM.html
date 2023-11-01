@@ -15,7 +15,7 @@
 <div class="modal-dialog modal-lg" role="document" >
     <div class="modal-content">
         <div class="modal-header custom-header-color"> <!-- Agrega la clase personalizada aquí -->
-            <h2 class="modal-title">Agregar Valores Efectivo </h2>
+            <h2 class="modal-title">Agregar Valores en Efectivo </h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -37,7 +37,7 @@
                     <div class="col-sm-12 col-md-6 col-lg-12">
                         {{form.moneda|as_crispy_field}}
                     </div>
-                    <div class="col-sm-12 col-md-6 col-lg-12">
+                    <div class="col-sm-12 col-md-6 col-lg-12" style='visibility: hidden' >
                         {{form.delInventario|as_crispy_field}}
                     </div>
                 </div>

@@ -16,6 +16,8 @@ from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
 from llamadasTelefonicas.models import LlamadasTelefonicas
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
+from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Exists, OuterRef
 from .models import TipoAcuerdo,Acuerdo
 from .forms import AcuerdoInicioForm
@@ -24,6 +26,16 @@ from django.urls import reverse
 from io import BytesIO
 import base64
 import qrcode
+from django.http import JsonResponse
+from django.views import View
+from django.http import HttpResponseBadRequest
+
+from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
+from .models import FirmaAcuerdo
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -49,8 +61,10 @@ def pdf(request):
     return response
 
 # ----- Lista Extranjeros para ver o generar Acuerdo de Inicio -----
-class acuerdo_inicio(ListView):
+class acuerdo_inicio(LoginRequiredMixin,ListView):
     template_name = 'acuerdoInicio.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get(self, request):
         extranjeros = Extranjero.objects.filter(estatus='Activo')
@@ -73,11 +87,13 @@ class acuerdo_inicio(ListView):
 
 
 
-class listRepositorio(ListView):
+class listRepositorio(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjeros.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -113,9 +129,11 @@ class listRepositorio(ListView):
         context['seccion'] = 'verrepo'
         return context
 
-class DocumentosListView(ListView):
+class DocumentosListView(LoginRequiredMixin,ListView):
     model = Documentos
     template_name = 'verAllAcuerdos.html'  # El nombre de tu template para mostrar los documentos
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         nup_value = self.kwargs.get('nup')
@@ -127,9 +145,11 @@ class DocumentosListView(ListView):
         return context
 
         
-class RepositorioListView(ListView):
+class RepositorioListView(LoginRequiredMixin,ListView):
     model = Repositorio
     template_name = 'verAllAcuerdos.html'  # El nombre de tu template para mostrar los documentos
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
 
     def get_queryset(self):
         nup_value = self.kwargs.get('nup')
@@ -470,6 +490,7 @@ def generate_pdfsinguardar(request, extranjero_id):
 
 
 # ----- Genera el documento PDF de la constancia de llamada 
+@login_required(login_url="/permisoDenegado/")
 def constancia_llamada(request, extranjero_id=None):
     print("Iniciando constancia_llamada")
     
@@ -546,11 +567,13 @@ def constancia_llamada(request, extranjero_id=None):
 
 # Lista de acuerdo inicio 
 
-class lisExtranjerosInicio(ListView):
+class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjerosInicio.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -650,11 +673,114 @@ class AcuerdoInicioCreateView(CreateView):
 
         return context
     
-class lisExtranjerosComparecencia(ListView):
+def registro_acuerdo_inicio(request, proceso_id):
+    # Obtener el NoProceso usando proceso_id
+    try:
+        noproceso = NoProceso.objects.get(nup=proceso_id)
+    except NoProceso.DoesNotExist:
+        return JsonResponse({'status':'ERROR', 'message':'NoProceso no encontrado'}, status=404)
+    
+    if request.method == 'POST':
+        step = request.POST.get('step')
+
+        if step == '1':
+            form_acuerdo_inicio = AcuerdoInicioForm(request.POST)
+            if form_acuerdo_inicio.is_valid():
+                # Establecer campos por defecto antes de guardar
+                acuerdo = form_acuerdo_inicio.save(commit=False) # No guardar todavía
+                acuerdo_tipo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
+                acuerdo.delAcuerdo = acuerdo_tipo
+                acuerdo.delExtanjero = noproceso.extranjero
+                acuerdo.nup = noproceso
+                acuerdo.save()  # Ahora guardar
+
+                return JsonResponse({'status':'OK', 'acuerdo_id':acuerdo.id})
+            else:
+                errors = form_acuerdo_inicio.errors.as_json()
+                return JsonResponse({'status':'ERROR', 'errors':errors}, status=400)
+
+    else:
+        form_acuerdo_inicio = AcuerdoInicioForm()
+    return render(request, "modals/crearAcuerdoInicio.html", {'form_acuerdo': form_acuerdo_inicio, 'proceso_id': proceso_id})
+
+
+def generar_qr_acuerdos(request, acuerdo_id, testigo):
+    base_url = settings.BASE_URL
+
+    if testigo == "testigo_uno":
+        url = f"{base_url}acuerdos/firma_testigo_uno/{acuerdo_id}/"
+    elif testigo == "testigo_dos":
+        url = f"{base_url}acuerdos/firma_testigo_dos/{acuerdo_id}/"
+    else:
+        return HttpResponseBadRequest("Testigo no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+class FirmaTestigoUnoCreateView(CreateView):
+    model = FirmaAcuerdo
+    form_class = FirmaTestigoUnoForm
+    template_name = 'firma/firma_testigo_uno_create.html'
+    success_url = reverse_lazy('menu')  # Cambia 'some_success_url' al URL de éxito que desees
+
+    def form_valid(self, form):
+        acuerdo_id = self.kwargs.get('acuerdo_id')
+        acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+        
+        # Asociar el acuerdo con la firma
+        form.instance.acuerdo = acuerdo
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
+        return context
+
+class FirmaTestigoDosCreateView(CreateView):
+    model = FirmaAcuerdo
+    form_class = FirmaTestigoDosForm
+    template_name = 'firma/firma_testigo_dos_create.html'
+    success_url = reverse_lazy('menu')  # Cambia al URL de éxito que desees
+
+    def form_valid(self, form):
+        acuerdo_id = self.kwargs.get('acuerdo_id')
+        acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+        
+        # Asociar el acuerdo con la firma
+        form.instance.acuerdo = acuerdo
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
+        return context
+    
+@csrf_exempt
+def check_firma_testigo_uno(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaTestigoUno:
+            return JsonResponse({'status': 'success', 'message': 'Firma del Testigo Uno encontrada'})
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Uno aún no registrada'}, status=404)
+
+@csrf_exempt
+def check_firma_testigo_dos(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaTestigoDos:
+            return JsonResponse({'status': 'success', 'message': 'Firma del Testigo Dos encontrada'})
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Dos aún no registrada'}, status=404)
+class lisExtranjerosComparecencia(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjerosComparecencia.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -694,11 +820,13 @@ class lisExtranjerosComparecencia(ListView):
         return context
     
 
-class lisExtranjerosPresentacion(ListView):
+class lisExtranjerosPresentacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'inicio/listExtranjerosPresentacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -741,11 +869,13 @@ class lisExtranjerosPresentacion(ListView):
 
 # lista de extranjeros de especiales
 
-class listExtranjerosAcumulacion(ListView):
+class listExtranjerosAcumulacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosAcumulacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -784,11 +914,13 @@ class listExtranjerosAcumulacion(ListView):
         context['seccion1'] = 'acumulacion'
         return context
 
-class listExtranjerosConclusion(ListView):
+class listExtranjerosConclusion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosConclusion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -829,11 +961,13 @@ class listExtranjerosConclusion(ListView):
     
 
 
-class listExtranjerosTraslado(ListView):
+class listExtranjerosTraslado(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosTraslado.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -872,11 +1006,13 @@ class listExtranjerosTraslado(ListView):
         context['seccion1'] = 'traslado'
         return context
     
-class listExtranjerosSeparacion(ListView):
+class listExtranjerosSeparacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosSeparacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -915,11 +1051,13 @@ class listExtranjerosSeparacion(ListView):
         context['seccion1'] = 'separacion'
         return context
     
-class listExtranjerosRadicacion(ListView):
+class listExtranjerosRadicacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosRadicacion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -958,11 +1096,13 @@ class listExtranjerosRadicacion(ListView):
         context['seccion1'] = 'radicacion'
         return context
     
-class listExtranjerosRecepcion(ListView):
+class listExtranjerosRecepcion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'especiales/listExtranjerosRecepcion.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -1001,11 +1141,13 @@ class listExtranjerosRecepcion(ListView):
         context['seccion1'] = 'recepcion'
         return context
     
-class listExtranjerosArticulo(ListView):
+class listExtranjerosArticulo(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosArticulo.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -1044,11 +1186,13 @@ class listExtranjerosArticulo(ListView):
         context['seccion1'] = 'articulo'
         return context
     
-class listExtranjerosComar(ListView):
+class listExtranjerosComar(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosComar.html'
     context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
     
     def get_queryset(self):
             # Obtener la estación del usuario y el estado
@@ -1088,7 +1232,7 @@ class listExtranjerosComar(ListView):
         return context
     
 
-class listExtranjerosDeportacion(ListView):
+class listExtranjerosDeportacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosDeportacion.html'
@@ -1131,7 +1275,7 @@ class listExtranjerosDeportacion(ListView):
         context['seccion1'] = 'deportacion'
         return context
     
-class listExtranjerosLibre(ListView):
+class listExtranjerosLibre(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosLibre.html'
@@ -1174,7 +1318,7 @@ class listExtranjerosLibre(ListView):
         context['seccion1'] = 'libre'
         return context
     
-class listExtranjerosRetorno(ListView):
+class listExtranjerosRetorno(LoginRequiredMixin,ListView):
 
     model = NoProceso
     template_name = 'resoluciones/listExtranjerosRetorno.html'

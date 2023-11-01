@@ -1,0 +1,17 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
+{% endblock link %}
+
+
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+ <h1 style="text-align: center;">Certificado Medico {{nombre}}</h1>
+{% endblock contenido %}

@@ -1,7 +1,7 @@
 from asyncio import format_helpers
 from django.contrib import admin
 from .models import TipoAcuerdo, Acuerdo, PDFGenerado, NotificacionesGlobales, Documentos, TiposDoc, ClasificaDoc
-from .models import Repositorio, NoProceso, Extranjero
+from .models import Repositorio, NoProceso, Extranjero, FirmaAcuerdo
 from vigilancia.models import NoProceso, Extranjero
 class RepositorioAdmin(admin.ModelAdmin):
     list_display = ('nup', 'fechaGeneracion', 'delTipo', 'delaEstacion', 'delResponsable', 'archivo_link')
@@ -42,3 +42,4 @@ class DocumentsAdmin(admin.ModelAdmin):
     list_display=("nup", "acuerdo_inicio","oficio_llamada","oficio_derechos_obligaciones")
 
 admin.site.register(Documentos, DocumentsAdmin)
+admin.site.register(FirmaAcuerdo)

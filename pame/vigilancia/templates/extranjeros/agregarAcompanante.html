@@ -1,0 +1,220 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+
+{% endblock link %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listarAcompanantesEstacion' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+
+{% block contenido %}
+
+
+  
+
+
+<style>
+    /* Personaliza el tamaño de la barra de búsqueda */
+    div.dataTables_wrapper div.dataTables_filter input {
+      width: 300px; /* Cambia el tamaño según tus necesidades */
+    }
+  </style>
+
+  <div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Agregar Acompañantes 
+    
+    </h1>
+  </div>
+
+
+  {% include "includes/datosExtranjero.html" %}
+
+
+
+
+<!---------------------- CARD ------------------>
+
+<div class="row">
+    <div class="col">
+        <div class="titulo-general-container-card mb-4">
+            <h1 class="titulo-general">Lista de Acompañantes para: {{ extranjero_principal.nombreExtranjero}} 
+            {% if extranjero_principal.apellidoPaternoExtranjero %}
+                    {{ extranjero_principal.apellidoPaternoExtranjero }}
+                {% endif %}
+                {% if extranjero_principal.apellidoMaternoExtranjero %}
+                    {{ extranjero_principal.apellidoMaternoExtranjero }}
+                {% endif %}
+            </h1>
+        </div>
+
+        
+
+        
+      <div class="card w-100">
+        <div class="card-body">
+          <h5 class="card-title">
+         
+          </h5>
+
+<div class="table-responsive">
+    <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido(s)</th>
+                <th>Nacionalidad</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for extranjero in extranjeros_no_relacionados %}
+            <tr>
+                <td>{{ extranjero.nombreExtranjero }}</td>
+                <td>{% if extranjero.apellidoPaternoExtranjero %}
+                    {{ extranjero.apellidoPaternoExtranjero }}
+                {% endif %}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero }}
+                {% endif %}</td>
+                <td>{{ extranjero.nacionalidad }}</td>
+                <td>       
+            
+                    <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
+                    href="{% url 'agregar_acompanantegeneral' extranjero_principal.id extranjero.id %}"
+                    data-title="Agregar Acompañante" onclick="abrir_modal_edicion(this.href); return false;">
+                    <i class="fas fa-plus"></i>
+                </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+                
+        </div>
+      </div>
+    </div>
+  
+    <div class="col-sm-1 d-none d-md-flex align-items-center justify-content-center hide-on-small">
+        <div class="card">
+          <div class="card-body text-center">
+            <i class="fa fa-arrow-right fa-1x" aria-hidden="true"></i>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="col">
+        <div class="titulo-general-container-card mb-4">
+            <h1 class="titulo-general">Relación de Acompañantes</h1>
+        </div>
+
+        <div class="card w-100">
+          <div class="card-body">
+            <div class="table-responsive">
+                <table id="puestaAC-table" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Acompañante</th>
+                            <th>Relación</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for relacion in relaciones_del_extranjero %}
+                        <tr>
+                            <td>{{ relacion.delAcompanante.nombreExtranjero }}</td>
+                            <td>{{ relacion.relacion }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'DeleteAcompanantegenerales' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
+                                <i class="fas fa-trash-alt"></i>
+                                </a>                   
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% for relacion in relaciones_del_acompanante %}
+                        <tr>
+                            <td>{{ relacion.delExtranjero.nombreExtranjero }}</td>
+                            <td>{{ relacion.relacion }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'DeleteAcompanantegenerales' relacion.pk%}" data-title="Eliminar Relacion" onclick="abrir_modal_eliminar(this.href); return false;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>             
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+             </div>
+                  
+          </div>
+        </div>
+      </div>
+  </div>
+<!---------------------- CARD ------------------>
+
+
+
+
+<a href="{% url 'listarAcompanantesEstacion' %}" class="btn btn-custom mb-4">Volver a la Lista de Puestas</a>
+
+<div class="modal fade" id="edicion" role="dialog">
+
+</div>
+
+
+<div class="modal fade" id="eliminar" role="dialog">
+
+</div>
+
+{% endblock contenido %}
+
+{% block datatable %}
+{% comment %} {
+    text: '<i class="fas fa-plus"></i>',
+    className: 'btn btn-custom1 mr-2',
+    action: function (e, dt, node, config) {
+      window.location.href = '{% url 'crearAcompananteINM' puesta.id extranjero_principal.id  %}';
+    }
+  }, {% endcomment %}
+  
+{% endblock datatable %}
+
+{% block datatable2 %}
+
+{% endblock datatable2 %}
+
+{% block script %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_edicion(url){
+        $('#edicion').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+    
+    </script>
+
+    <script type="text/javascript">
+        var $ = jQuery.noConflict();
+        function abrir_modal_eliminar(url){
+            $('#eliminar').load(url, function(){
+                $(this).modal('show');
+            })
+        }
+        
+    </script>
+{% endblock script %}
+
+
