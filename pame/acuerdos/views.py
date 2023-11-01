@@ -33,6 +33,7 @@ from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -686,10 +687,12 @@ def registro_acuerdo_inicio(request, proceso_id):
 
 
 def generar_qr_acuerdos(request, acuerdo_id, testigo):
+    base_url = settings.BASE_URL
+
     if testigo == "testigo_uno":
-        url = f"https://sfti.tech/acuerdos/firma_testigo_uno/{acuerdo_id}/"
+        url = f"{base_url}acuerdos/firma_testigo_uno/{acuerdo_id}/"
     elif testigo == "testigo_dos":
-        url = f"https://sfti.tech//acuerdos/firma_testigo_dos/{acuerdo_id}/"
+        url = f"{base_url}acuerdos/firma_testigo_dos/{acuerdo_id}/"
     else:
         return HttpResponseBadRequest("Testigo no válido")
 
