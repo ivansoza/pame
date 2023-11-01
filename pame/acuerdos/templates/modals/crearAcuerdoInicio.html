@@ -35,7 +35,6 @@
 
                 <form id="acuerdoInicioForm">
                     {% csrf_token %}
-                    <input  name="proceso_id" value="{{ proceso_id }}">
 
                  <h3>Datos del Testigo Uno</h3>
 
@@ -81,15 +80,32 @@
                         </div>
 
                         <!-- Firma del Testigo 2 -->
+                    <!-- Firma del Testigo 2 -->
                         <div class="col-md-12" id="testigoDosSection" style="display:none;">
                             <h4>Firma del Testigo 2</h4>
                             <h5 id="nombreTestigoDos" style="color: #873542;">Nombre del Testigo Dos</h5>
                             <h5>Escanea el siguiente código QR para el Testigo Dos:</h5>
                             <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
                             <div id="successMessageTestigoDos" style="display:none;">Firma capturada exitosamente</div>
+                            <button id="nextToPDFGeneration" style="display:none;">Continuar</button>
                         </div>
                 </div>
             </div>
+
+            <div id="generatePDFSection" style="display:none;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <!-- Ícono de FontAwesome para representar un PDF -->
+                        <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+                        <br>
+                        <br>
+                        <br>
+
+                        <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+                    </div>
+                </div>
+            </div>
+            
             
         </div>
  
@@ -117,9 +133,20 @@
                 if (firmasCapturadas.testigoUno && firmasCapturadas.testigoDos) {
                     clearInterval(intervaloTestigoUno);
                     clearInterval(intervaloTestigoDos);
-                    mostrarAlertaFirmas();
+                    mostrarSeccionGenerarPDF();
                 }
             }
+            function mostrarSeccionGenerarPDF() {
+                console.log("La función mostrarSeccionGenerarPDF ha sido llamada.");
+                $("#qrCode").hide();
+                $("#generatePDFSection").show();
+            }
+            
+            $("#nextToPDFGeneration").click(function() {
+                console.log("Botón nextToPDFGeneration presionado.");
+                mostrarSeccionGenerarPDF();
+            });
+        
         
             function verificarFirmaTestigoUno(acuerdoId) {
                 $.get('/acuerdos/check_firma_testigo_uno/' + acuerdoId + '/')
@@ -140,18 +167,8 @@
                         firmasCapturadas.testigoDos = true;
                         clearInterval(intervaloTestigoDos);
                         $("#successMessageTestigoDos").show();
-                        comprobarFirmasCompletas();
+                        $("#nextToPDFGeneration").show();
                     }
-                });
-            }
-        
-            function mostrarAlertaFirmas() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Firmas Capturadas',
-                    text: 'Las firmas han sido registradas con éxito.'
-                }).then(function() {
-                    $("#myModal").modal("hide");
                 });
             }
         
@@ -203,7 +220,14 @@
         
                 intervaloTestigoDos = setInterval(function() { verificarFirmaTestigoDos(acuerdoId); }, 1000);
             });
+        
+            $("#generatePDFBtn").click(function() {
+                window.open(this.href, '_blank');
+                window.location.href = "{% url 'lisExtranjerosInicio' %}";
+                return false;  
+            });
         </script>
+        
         
         
     </div>
