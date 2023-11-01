@@ -687,9 +687,9 @@ def registro_acuerdo_inicio(request, proceso_id):
 
 def generar_qr_acuerdos(request, acuerdo_id, testigo):
     if testigo == "testigo_uno":
-        url = f"http://127.0.0.1:8082/acuerdos/firma_testigo_uno/{acuerdo_id}/"
+        url = f"https://sfti.tech/acuerdos/firma_testigo_uno/{acuerdo_id}/"
     elif testigo == "testigo_dos":
-        url = f"http://127.0.0.1:8082/acuerdos/firma_testigo_dos/{acuerdo_id}/"
+        url = f"https://sfti.tech//acuerdos/firma_testigo_dos/{acuerdo_id}/"
     else:
         return HttpResponseBadRequest("Testigo no válido")
 
