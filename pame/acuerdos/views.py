@@ -13,6 +13,7 @@ import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
+from llamadasTelefonicas.models import LlamadasTelefonicas
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
@@ -340,14 +341,31 @@ def inventarioPV_pdf(request):
     return response
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
-def listaLlamadas_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
+def listaLlamadas_pdf(request, extranjero_id):
+    extranjero = Extranjero.objects.get(id=extranjero_id)
+    llamadas = LlamadasTelefonicas.objects.filter(noExtranjero=extranjero_id)
 
-    #consultas 
+
+    #consultas
+    nombre = extranjero.nombreExtranjero 
+    paterno = extranjero.apellidoPaternoExtranjero
+    materno = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad.nombre
+    ingreso = extranjero.fechaRegistro
+
+    fechas_llamadas = [llamada.fechaHoraLlamada.strftime('%d/%m/%y') for llamada in llamadas]
+
+    
 
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'nombreEx': nombre,
+        'paterno': paterno,
+        'materno': materno,
+        'nacionalidad': nacionalidad,
+        'ingreso': ingreso,
+        'fechas_llamadas': fechas_llamadas,
     }
 
     # Obtener la plantilla HTML
