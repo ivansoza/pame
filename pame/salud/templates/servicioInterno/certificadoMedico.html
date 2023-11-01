@@ -1,0 +1,60 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
+{% endblock link %}
+
+
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+ <h1 style="text-align: center;">Certificado Medico {{nombre}}</h1>
+ <form method="post" enctype="multipart/form-data">
+    <div  class="card p-3" enctype="multipart/form-data">
+
+    <div class="d-flex align-items-center justify-content-between">
+        <h1>Datos del extranjero</h1>
+        <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
+            <i class="fas fa-user"></i> <!-- Icono de usuario -->
+        </button>
+    </div>
+    {% csrf_token %}
+    {{ form.puesta.as_hidden }}
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-3" style='display:none' >
+            {{ form.extranjero|as_crispy_field }}
+            <script>
+                document.getElementById('id_extranjero').readOnly = true;
+            </script>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-2" style='display:none'>
+            {{ form.nup|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            {{ form.hepatitis|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            {{ form.tuberculosis|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            {{ form.paludismo|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            {{ form.dengue|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            {{ form.colera|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-3">
+            {{ form.diabetes|as_crispy_field }}
+        </div>
+    </div>
+    <button type="submit">Enviar</button>
+  </form>
+{% endblock contenido %}
