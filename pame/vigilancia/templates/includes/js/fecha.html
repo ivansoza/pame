@@ -1,12 +1,31 @@
 <script>
-        $(document).ready(function(){
-            $('#date').on('input', function(){
-                var value = $(this).val();
-                var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{2})(\d{4})?/, "$1/$2/$3").trim('/');
-        
-                if (newValue !== value || newValue.length > 10) {
-                    $(this).val(newValue.substring(0, 10));
+    $(document).ready(function() {
+        $('#date').on('input', function() {
+            var value = $(this).val();
+            var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{2})(\d{4})?/, "$1/$2/$3").trim('/');
+
+            if (newValue !== value || newValue.length > 10) {
+                $(this).val(newValue.substring(0, 10));
+            }
+
+            // Calcula la edad y actualiza el campo de edad
+            var dob = $(this).val();
+            if (dob) {
+                var birthDate = new Date(dob);
+                var today = new Date();
+                var age = today.getFullYear() - birthDate.getFullYear();
+
+                // Comprueba si ya pasó el cumpleaños de este año
+                if (today < new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate())) {
+                    age--;
                 }
-            });
+
+                // Actualiza el campo de edad
+                $('#id_edad').val(age);
+            } else {
+                // Si la fecha de nacimiento no es válida, deja el campo de edad en blanco
+                $('#id_edad').val('');
+            }
         });
+    });
 </script>

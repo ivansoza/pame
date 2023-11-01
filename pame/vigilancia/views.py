@@ -3698,7 +3698,7 @@ class qrs(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"https://sfti.tech/seguridad/crear_firma/{extranjero_id}"
+        qr_link = f"http://192.168.100.41:8082/seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero
         apellidoP = extranjero.apellidoPaternoExtranjero
@@ -3756,7 +3756,7 @@ class FirmaCreateView(CreateView):
     def get_success_url(self):
         # Redirige a donde desees después de guardar la firma
         return reverse_lazy('firma_exitosa')
-    
+   
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['extranjero_id'] = self.kwargs.get('extranjero_id')
