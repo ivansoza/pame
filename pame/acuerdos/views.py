@@ -241,7 +241,7 @@ def acuerdoInicio_pdf(request, nup_id):
         'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
-        'anio': anio,-
+        'anio': anio,
         'acuerdo': acuerdo,
 
     }
