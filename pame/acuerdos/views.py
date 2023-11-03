@@ -241,7 +241,7 @@ def acuerdoInicio_pdf(request, nup_id):
         'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
-        'anio': anio,-
+        'anio': anio,
         'acuerdo': acuerdo,
 
     }
@@ -355,6 +355,7 @@ def listaLlamadas_pdf(request, extranjero_id):
     materno = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad.nombre
     ingreso = extranjero.fechaRegistro
+    firma = extranjero.firma
 
     fechas_llamadas = [llamada.fechaHoraLlamada.strftime('%d/%m/%y') for llamada in llamadas]
 
@@ -369,6 +370,7 @@ def listaLlamadas_pdf(request, extranjero_id):
         'nacionalidad': nacionalidad,
         'ingreso': ingreso,
         'fechas_llamadas': fechas_llamadas,
+        'firma': firma
     }
 
     # Obtener la plantilla HTML
