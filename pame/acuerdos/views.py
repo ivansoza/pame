@@ -13,6 +13,7 @@ import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
+from llamadasTelefonicas.models import LlamadasTelefonicas
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
@@ -34,7 +35,10 @@ from .models import FirmaAcuerdo
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import base64
+import io
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -203,9 +207,10 @@ def mes_a_palabra(mes):
     return meses[mes - 1]  # Restamos 1 porque los meses se cuentan desde 1 enero a 12 diciembre 
 
 # ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
-def acuerdoInicio_pdf(request, extranjero_id):
-    extranjero = Extranjero.objects.get(id=extranjero_id)
-
+def acuerdoInicio_pdf(request, nup_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+    acuerdo = get_object_or_404(Acuerdo, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
     nombre = extranjero.nombreExtranjero
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero
@@ -236,7 +241,9 @@ def acuerdoInicio_pdf(request, extranjero_id):
         'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
-        'anio': anio
+        'anio': anio,
+        'acuerdo': acuerdo,
+
     }
 
     # Obtener la plantilla HTML
@@ -337,14 +344,31 @@ def inventarioPV_pdf(request):
     return response
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
-def listaLlamadas_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
+def listaLlamadas_pdf(request, extranjero_id):
+    extranjero = Extranjero.objects.get(id=extranjero_id)
+    llamadas = LlamadasTelefonicas.objects.filter(noExtranjero=extranjero_id)
 
-    #consultas 
+
+    #consultas
+    nombre = extranjero.nombreExtranjero 
+    paterno = extranjero.apellidoPaternoExtranjero
+    materno = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad.nombre
+    ingreso = extranjero.fechaRegistro
+
+    fechas_llamadas = [llamada.fechaHoraLlamada.strftime('%d/%m/%y') for llamada in llamadas]
+
+    
 
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'nombreEx': nombre,
+        'paterno': paterno,
+        'materno': materno,
+        'nacionalidad': nacionalidad,
+        'ingreso': ingreso,
+        'fechas_llamadas': fechas_llamadas,
     }
 
     # Obtener la plantilla HTML
@@ -705,7 +729,7 @@ class FirmaTestigoUnoCreateView(CreateView):
     model = FirmaAcuerdo
     form_class = FirmaTestigoUnoForm
     template_name = 'firma/firma_testigo_uno_create.html'
-    success_url = reverse_lazy('menu')  # Cambia 'some_success_url' al URL de éxito que desees
+    success_url = reverse_lazy('firma_exitosa')  # Cambia 'some_success_url' al URL de éxito que desees
 
     def form_valid(self, form):
         acuerdo_id = self.kwargs.get('acuerdo_id')
@@ -724,7 +748,7 @@ class FirmaTestigoDosCreateView(CreateView):
     model = FirmaAcuerdo
     form_class = FirmaTestigoDosForm
     template_name = 'firma/firma_testigo_dos_create.html'
-    success_url = reverse_lazy('menu')  # Cambia al URL de éxito que desees
+    success_url = reverse_lazy('firma_exitosa')  # Cambia al URL de éxito que desees
 
     def form_valid(self, form):
         acuerdo_id = self.kwargs.get('acuerdo_id')
@@ -739,6 +763,58 @@ class FirmaTestigoDosCreateView(CreateView):
         context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
         return context
     
+def firma_testigo_uno(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaTestigoUnoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaTestigoUno']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigoUno_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigoUno.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigoUnoForm()
+
+    return render(request, 'firma/firma_testigo_uno_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
+
+def firma_testigo_dos(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaTestigoDosForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaTestigoDos']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigoDos_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigoDos.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigoDosForm()
+
+    return render(request, 'firma/firma_testigo_dos_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
+
 @csrf_exempt
 def check_firma_testigo_uno(request, acuerdo_id):
     firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)

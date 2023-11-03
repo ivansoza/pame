@@ -22,11 +22,13 @@ class AcuerdoInicioForm(forms.ModelForm):
         }
 
 class FirmaTestigoUnoForm(forms.ModelForm):
+    firmaTestigoUno = forms.CharField(widget=forms.HiddenInput())
     class Meta:
         model = FirmaAcuerdo
         fields = ["firmaTestigoUno"]
 
 class FirmaTestigoDosForm(forms.ModelForm):
+    firmaTestigoDos = forms.CharField(widget=forms.HiddenInput())
     class Meta:
         model = FirmaAcuerdo
         fields = ["firmaTestigoDos"]

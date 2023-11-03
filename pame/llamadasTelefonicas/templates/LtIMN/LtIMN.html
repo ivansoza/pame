@@ -65,7 +65,7 @@
     </tbody>
 </table>
 {{ objetos.fechaHoraLlamada }}
-<a class="btn btn-custom6" href="#">Imprimir Documento</a>
+<a class="btn btn-custom6" href="{% url 'listaLlamadasPDF' llamada.id %}" target="_blank">Imprimir Documento</a>
 {% if url_oficio_llamada %}
     <a href="{{ url_oficio_llamada }}" target="_blank" class="btn btn-custom6">
         Ver constancia de llamada
