@@ -23,7 +23,7 @@ urlpatterns = [
     # pdf
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
     path('mostrar-derechos-obligaciones/<int:extranjero_id>', mostrar_derechoObligaciones_pdf, name='mostrarderechosObligaciones'),
-    path('inicioPDF/<int:extranjero_id>', acuerdoInicio_pdf, name='inicioPDF'),
+    path('inicioPDF/<str:nup_id>/', acuerdoInicio_pdf, name='inicioPDF'),
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('inventariopv', inventarioPV_pdf, name='inventarioPDF'),

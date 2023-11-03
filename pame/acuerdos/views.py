@@ -207,9 +207,10 @@ def mes_a_palabra(mes):
     return meses[mes - 1]  # Restamos 1 porque los meses se cuentan desde 1 enero a 12 diciembre 
 
 # ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
-def acuerdoInicio_pdf(request, extranjero_id):
-    extranjero = Extranjero.objects.get(id=extranjero_id)
-
+def acuerdoInicio_pdf(request, nup_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+    acuerdo = get_object_or_404(Acuerdo, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
     nombre = extranjero.nombreExtranjero
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero
@@ -240,7 +241,9 @@ def acuerdoInicio_pdf(request, extranjero_id):
         'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
-        'anio': anio
+        'anio': anio,-
+        'acuerdo': acuerdo,
+
     }
 
     # Obtener la plantilla HTML
