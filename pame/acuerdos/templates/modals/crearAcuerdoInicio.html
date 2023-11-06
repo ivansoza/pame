@@ -76,6 +76,8 @@
                             <h5>Escanea el siguiente código QR para el Testigo Uno:</h5>
                             <img id="qrImageTestigoUno" src="" alt="Código QR Testigo Uno">
                             <div id="successMessageTestigoUno" style="display:none;">Firma capturada exitosamente</div>
+                            <img id="firmaTestigoUno" src="" alt="Firma Testigo Uno" style="max-width:100%;display:none;"> <!-- Esta es la nueva línea -->
+
                             <button id="nextToTestigoDos" style="display:none;">Continuar</button>
                         </div>
 
@@ -87,6 +89,8 @@
                             <h5>Escanea el siguiente código QR para el Testigo Dos:</h5>
                             <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
                             <div id="successMessageTestigoDos" style="display:none;">Firma capturada exitosamente</div>
+                            <img id="firmaTestigoDos" src="" alt="Firma Testigo Dos" style="max-width:100%;display:none;"> <!-- Esta es la nueva línea -->
+
                             <button id="nextToPDFGeneration" style="display:none;">Continuar</button>
                         </div>
                 </div>
@@ -155,6 +159,9 @@
                         firmasCapturadas.testigoUno = true;
                         clearInterval(intervaloTestigoUno);
                         $("#successMessageTestigoUno").show();
+                        $("#qrImageTestigoUno").hide(); // Ocultamos el QR
+
+                        $("#firmaTestigoUno").attr("src", data.image_url).show(); // Asumiendo que tienes un elemento img con id 'firmaTestigoUno'
                         $("#nextToTestigoDos").show();
                     }
                 });
@@ -167,6 +174,10 @@
                         firmasCapturadas.testigoDos = true;
                         clearInterval(intervaloTestigoDos);
                         $("#successMessageTestigoDos").show();
+                        $("#qrImageTestigoDos").hide(); // Ocultamos el QR
+
+                        $("#firmaTestigoDos").attr("src", data.image_url).show(); // Asumiendo que tienes un elemento img con id 'firmaTestigoUno'
+
                         $("#nextToPDFGeneration").show();
                     }
                 });
