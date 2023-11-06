@@ -38,6 +38,8 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
+from django.core.files.storage import default_storage
+
 import io
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -184,8 +186,7 @@ def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
     ubicacion_pdf = os.path.join("pame/media/files", nombre_pdf)
     exists = os.path.exists(ubicacion_pdf)
-    # print(f"PDF para extranjero {extranjero_id}: {exists}")
-    # print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
+
     return exists
 
 # ----- Funcion para cambiar los numeros del dia a palabra
@@ -500,28 +501,22 @@ def generate_pdfsinguardar(request, extranjero_id):
 # ----- Genera el documento PDF de la constancia de llamada 
 @login_required(login_url="/permisoDenegado/")
 def constancia_llamada(request, extranjero_id=None):
-    print("Iniciando constancia_llamada")
     
     try:
         extranjero = Extranjero.objects.get(id=extranjero_id)
     except Extranjero.DoesNotExist:
-        print(f"No se encontró Extranjero con ID {extranjero_id}")
         return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
     
-    print("Extranjero obtenido:", extranjero)
     
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
 
-    print("Notificaciones:", notificaciones)
 
     if notificaciones.exists():
-        print("Entrando al bloque de notificaciones existentes")
 
         notificacion = notificaciones.latest('nup')
-        print("Notificacion:", notificacion)
         id = extranjero.pk
         nombre = extranjero.nombreExtranjero
         apellidop = extranjero.apellidoPaternoExtranjero
@@ -816,13 +811,18 @@ def firma_testigo_dos(request, acuerdo_id):
         form = FirmaTestigoDosForm()
 
     return render(request, 'firma/firma_testigo_dos_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
-
 @csrf_exempt
 def check_firma_testigo_uno(request, acuerdo_id):
     firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
     for firma in firmas:
         if firma.firmaTestigoUno:
-            return JsonResponse({'status': 'success', 'message': 'Firma del Testigo Uno encontrada'})
+            # Obtener la URL de la imagen
+            image_url = request.build_absolute_uri(firma.firmaTestigoUno.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo Uno encontrada',
+                'image_url': image_url
+            })
     
     return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Uno aún no registrada'}, status=404)
 
@@ -831,7 +831,13 @@ def check_firma_testigo_dos(request, acuerdo_id):
     firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
     for firma in firmas:
         if firma.firmaTestigoDos:
-            return JsonResponse({'status': 'success', 'message': 'Firma del Testigo Dos encontrada'})
+            # Obtener la URL de la imagen
+            image_url = request.build_absolute_uri(firma.firmaTestigoDos.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo Dos encontrada',
+                'image_url': image_url
+            })
     
     return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Dos aún no registrada'}, status=404)
 class lisExtranjerosComparecencia(LoginRequiredMixin,ListView):
