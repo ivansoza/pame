@@ -57,6 +57,27 @@
                 {% endif %}
                 </td>
             <td>
+
+                                <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
+                                {% if extranjero.biometrico %}
+                                {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
+                                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
+                                        <i class="fas fa-fingerprint"></i>
+                                    </a>
+                                {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
+                                    <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
+                                        <i class="fas fa-fingerprint"></i>
+                                    </a>
+                                {% else %}
+                                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
+                                        <i class="fas fa-fingerprint"></i>
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "agregarBiometricosGenrales" extranjero.id%}" data-title="Agregar Datos Biométricos">
+                                    <i class="fas fa-fingerprint"></i>
+                                </a>
+                            {% endif %}
             
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.tiene_notificacion %}
@@ -116,26 +137,7 @@
     
                      {% endif %}
 
-                <!-- INICIO DE SEMAFORIZACION DE BIOMETRICOS  -->
-                {% if extranjero.biometrico %}
-                    {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
-                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
-                            <i class="fas fa-fingerprint"></i>
-                        </a>
-                    {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
-                        <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
-                            <i class="fas fa-fingerprint"></i>
-                        </a>
-                    {% else %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "editarBiometricoGeneral" extranjero.id %}" data-title="Editar Datos Biométricos">
-                            <i class="fas fa-fingerprint"></i>
-                        </a>
-                    {% endif %}
-                {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "agregarBiometricosGenrales" extranjero.id%}" data-title="Agregar Datos Biométricos">
-                        <i class="fas fa-fingerprint"></i>
-                    </a>
-                {% endif %}
+
 
                
                 {% if extranjero.inventario_set.all  %}
