@@ -36,19 +36,19 @@
             <td style="width: 40%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);"><strong>Fecha</strong>&nbsp;</td>
             <td style="width: 55%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);"><strong>Firma</strong> </td>
         </tr>
-        <!-- {% for i in fechas_llamadas %} -->
-            <!-- {% if i %} -->
+        {% for i in fechas_enseres %}
+            {% if i %}
                 <tr>
                     <td style="width: 5%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">{{ forloop.counter }}</td>
                     <td style="width: 40%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">{{ i }}</td>
                     <td style="width: 55%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">
-                        <!-- {% if i %} -->
+                        {% if i %}
                             <img src="http://127.0.0.1:8000{{ firma.firma_imagen.url }}" alt="Firma" style="display: block; margin: 0 auto; max-width: 50%; max-height: 50%;">
-                        <!-- {% endif %} -->
+                        {% endif %}
                     </td>
                 </tr>
-            <!-- {% endif %} -->
-        <!-- {% endfor %} -->
+            {% endif %}
+        {% endfor %}
     </tbody>
 </table>
 <div class="columnas">

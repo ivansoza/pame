@@ -53,7 +53,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/constanciaEnseres.html')
+    html_template = get_template('documentos/formatoEnseres.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
@@ -397,8 +397,9 @@ def constanciaEnseres_pdf(request, nup_id):
     materno = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad.nombre
     ingreso = extranjero.fechaRegistro
+    firma = extranjero.firma
 
-    fechas_enseres = []
+    fechas_enseres = [enseres.fechaEntrega.strftime('%d/%m/%y') for enseres in extranjero.enseresbasicos_set.all()]
 
     # Definir el contexto de datos para tu plantilla
     context = {
@@ -408,6 +409,8 @@ def constanciaEnseres_pdf(request, nup_id):
         'materno': materno,
         'nacionalidad': nacionalidad,
         'ingreso': ingreso,
+        'fechas_enseres': fechas_enseres,
+        'firma': firma
     }
 
     # Obtener la plantilla HTML
