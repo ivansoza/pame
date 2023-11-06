@@ -82,7 +82,7 @@ class PuestaDisposicionAC(models.Model):
     certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     grado = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
-    grado2 = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
+    grado2 = models.CharField(verbose_name='Grado de Autoridad Asignada 2:', max_length=50, choices=GRADO_ACADEMICO)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
@@ -301,7 +301,7 @@ class descripcion(models.Model):
     colorOjos = models.CharField(max_length=50, verbose_name='Color de ojos', choices=colorOjos_choices)
     boca = models.CharField(max_length=50, choices=boca_choices, verbose_name='Boca')
     segnasParticulares = models.CharField(max_length=50, verbose_name='Señas particulares', choices=segnasParticulares_choices)
-    observaciones = models.CharField(max_length=50, verbose_name='Observaciones')
+    observaciones = models.CharField(max_length=300, verbose_name='Observaciones')
 
 
 STATUS_PROCESO_CHOICES= (

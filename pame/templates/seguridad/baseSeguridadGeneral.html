@@ -825,31 +825,31 @@
         {% endblock datatable %}        
         
         {% block datatable2 %}
-          {extend: 'copy',
-          text: '<i class="fas fa-clone"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Copy',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {extend: 'excel',
-          text: '<i class="fas fa-file-excel"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Excel',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {extend: 'print',
-          text: '<i class="fas fa-print"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Excel',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {% endblock datatable2 %}
+        {extend: 'copy',
+        text: '<i class="fas fa-clone"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Copiar a Documento',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {extend: 'excel',
+        text: '<i class="fas fa-file-excel"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Exportar a Excel',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {extend: 'print',
+        text: '<i class="fas fa-print"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Imprimir',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {% endblock datatable2 %}
       ],
       "language": {
                   "sProcessing": "Procesando...",

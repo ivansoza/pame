@@ -97,7 +97,7 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
         return self.clean_archivo('oficioComision')
     
     puntoRevision = forms.CharField(
-        label= "Punto de Revision:",
+        label= "Punto de Revisión:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
     
@@ -162,7 +162,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
         return self.clean_archivo('oficioComision')
 
     puntoRevision = forms.CharField(
-        label= "Punto de Revision:",
+        label= "Punto de Revisión:",
 
         widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
@@ -187,7 +187,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
     )
 
     certificadoMedico = forms.FileField(
-        label= "Certificado Medico:",
+        label= "Certificado Médico:",
         required=False,
 
         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})

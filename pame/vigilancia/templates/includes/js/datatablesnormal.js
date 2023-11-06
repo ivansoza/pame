@@ -20,7 +20,7 @@
           }
           },
           {
-            text: 'Regresar al menu',
+            text: 'Regresar al menú',
             className: 'btn btn-custom1 mr-2',
             action: function (e, dt, node, config) {
                 // Redirigir a la URL relativa a la ubicación actual
