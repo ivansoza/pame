@@ -157,12 +157,11 @@ class Extranjero(models.Model):
     ocupacion = models.CharField(verbose_name='Ocupación', max_length=50, blank=True, null=True, default="")
     nombreDelPadre = models.CharField(verbose_name='Nombre completo del padre', max_length=70, blank=True, null=True, default='')
     nombreDelaMadre = models.CharField(verbose_name='Nombre completo de la madre', max_length=70, blank=True, null=True, default='')
-    lugar_Origen = models.CharField(verbose_name='Origen', max_length=70, blank=True, null=True, default="")
     domicilio = models.CharField(verbose_name='Domicilio', max_length=80, blank=True, null=True, default="")
     nacionalidad_Padre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad del padre', blank=True,null=True, related_name='extranjeros_nacionalidad_padre')
     nacionalidad_Madre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad de la madre',blank=True,null=True,related_name='extranjeros_nacionalidad_madre')
     edad = models.IntegerField(verbose_name='Edad')    
-    domicilio = models.CharField(verbose_name="Domicilio y/o recidencia", max_length=150, blank=True, null=True, default="")
+    domicilio = models.CharField(verbose_name="Domicilio y/o residencia ", max_length=150, blank=True, null=True, default="")
     
     def save(self, *args, **kwargs):
     # Si el númeroExtranjero no está establecido, asigna un valor único basado en el ID del registro.

@@ -3403,7 +3403,63 @@ def manejar_imagen(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
-    
+@csrf_exempt
+def manejar_imagen4(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+
+
+        try:
+            # Conversion de la imagen subida
+            imagen_bytes_io = BytesIO(imagen.read())
+            imagen_pil = Image.open(imagen_bytes_io)
+
+            if imagen_pil.mode != 'RGB':
+                imagen_pil = imagen_pil.convert('RGB')
+
+            imagen_array = np.array(imagen_pil)
+
+            if not isinstance(imagen_array, np.ndarray):
+                return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+            # Obteniendo los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen_array)
+
+            if not encodings_subido:
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+            uploaded_encoding = encodings_subido[0]
+            tolerance = 0.5  # Puedes ajustar este valor
+
+            # Buscar similitud en todas las imágenes almacenadas
+            similar_face_id = None
+
+            for biometrico in Biometrico.objects.all():
+                face_encoding_almacenado = biometrico.face_encoding
+
+                if not face_encoding_almacenado:
+                    continue
+
+                distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+                distance_value = float(distance[0])
+
+                if distance_value < tolerance:
+                    # Si se encuentra una coincidencia, guarda el ID del registro correspondiente
+                    similar_face_id = biometrico.Extranjero_id
+                    
+                    
+                    break  # No es necesario buscar más si se encuentra una coincidencia
+
+            if similar_face_id is not None:
+                    return JsonResponse({'match': True, 'extranjero_id': similar_face_id,})
+            else:
+                # Si no se encontraron coincidencias
+                return JsonResponse({'match': False})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 @csrf_exempt
 def manejar_imagen2(request):
     if request.method == "POST":
