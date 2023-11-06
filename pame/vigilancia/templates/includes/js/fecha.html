@@ -2,7 +2,7 @@
     $(document).ready(function() {
         $('#date').on('input', function() {
             var value = $(this).val();
-            var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{2})(\d{2})(\d{4})?/, "$1/$2/$3").trim('/');
+            var newValue = value.replace(/[^0-9]/g, '').replace(/(\d{4})(\d{2})(\d{2})/, "$1/$2/$3").trim('/');
 
             if (newValue !== value || newValue.length > 10) {
                 $(this).val(newValue.substring(0, 10));

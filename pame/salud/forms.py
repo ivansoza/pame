@@ -1,18 +1,12 @@
 from django import forms
-from .models import Patologicos, ExploracionFisica, PadecimientoActual, ExpedienteMedico
+from .models import CertificadoMedico
 
-class patlogicosForms(forms.ModelForm):
+class certificadoMedicoForms(forms.ModelForm):
     class Meta:
-        model = Patologicos
+        model = CertificadoMedico
         fields = '__all__'
+    def __init__(self, *args, **kwargs):
+        super(certificadoMedicoForms, self).__init__(*args, **kwargs)
+        for campo in self.fields:
+            self.fields[campo].widget.attrs['disabled'] = 'disabled'
 
-
-class exploracionFisicaForms(forms.ModelForm):
-    class Meta:
-        model = ExploracionFisica
-        fields = '__all__'
-
-class padecimientoActualForms(forms.ModelForm):
-    class Meta:
-        model = PadecimientoActual
-        fields = '__all__'

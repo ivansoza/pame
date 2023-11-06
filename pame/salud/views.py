@@ -2,8 +2,11 @@ from django.shortcuts import render
 from django.views.generic import ListView, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from vigilancia.models import Extranjero
-from .models import Patologicos
-from .forms import patlogicosForms
+from .models import CertificadoMedico
+from catalogos.models import Estacion
+from .forms import certificadoMedicoForms
+from django.contrib.auth import get_user_model
+
 # Create your views here.
 
 def homeMedico(request):
@@ -46,14 +49,23 @@ class listaExtranjerosEstacion(LoginRequiredMixin, ListView):
     
 class certificadoMedico(LoginRequiredMixin, CreateView):
     template_name = 'servicioInterno/certificadoMedico.html'
-    model = Patologicos  # Utiliza el modelo para crear objetos
-    form_class = patlogicosForms
+    model = CertificadoMedico # Utiliza el modelo para crear objetos
+    form_class = certificadoMedicoForms
     login_url = '/permisoDenegado/'
 
     def get_initial(self):
         initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        initial['delaEstacion'] = estacion
         extranjero_id = self.kwargs.get('pk')
-        extranjero = Extranjero.objects.get(id=extranjero_id)
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+        initial['nup'] = ultimo_no_proceso_id
         initial['extranjero'] = extranjero
         return initial
 
@@ -64,7 +76,7 @@ class certificadoMedico(LoginRequiredMixin, CreateView):
         nombre = extranjero.nombreExtranjero
         context['nombre'] = nombre
         context['navbar'] = 'medico'
-        context['seccion'] = 'interno'
+        context['seccion'] = 'interno'        
         return context
     
 

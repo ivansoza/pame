@@ -4,7 +4,7 @@ from .views import inicioINMList, createPuestaINM, createExtranjeroINM, listarEx
 from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtranjerosAC,EditarExtranjeroAC,DeleteExtranjeroAC, AgregarBiometricoAC, EditarBiometricoAC, createAcompananteAC, ListAcompanantesAC, AgregarAcompananteViewAC, DeleteAcompananteAC ,DeleteAcompananteAC1, EditarExtranjeroACProceso
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1, EditarExtranjeroVPProceso
 from .views import CalcularTamanoDiscoView, listarTraslado, AgregarRelacionGeneral, DeleteAcompananteGeneral
-from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3
+from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3, manejar_imagen4
 from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado, listarAcompanantesEstacion, acompananteListGeneral
 from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs, verificar_firma, FirmaCreateView, firmE, firmExistente, AgregarBiometricoGeneral, EditarBiometricoGeneral, EditarExtranjeroGeneral, DeleteExtranjeroGeneral
 
@@ -85,6 +85,8 @@ urlpatterns = [
     path('manejar_imagen/', manejar_imagen, name='manejar_imagen'),
     path('manejar_imagen2/', manejar_imagen2, name='manejar_imagen2'),
     path('manejar_imagen3/', manejar_imagen3, name='manejar_imagen3'),
+    path('manejar_imagen4/', manejar_imagen4, name='manejar_imagen4'),
+
     path('qr/<int:extranjero_id>/', qrs.as_view(), name='qr'),
 
 
