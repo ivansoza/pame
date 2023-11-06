@@ -5,7 +5,7 @@
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/cards/style.css' %}?v1.2ssss">
 {% endblock link %}
-{% block seccion  %}Menu{% endblock seccion  %}
+{% block seccion  %}{% endblock seccion  %}
 
 
 {% block contenido  %}
@@ -44,7 +44,7 @@
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 mb-4">
         <div class="card mx-auto">
           <div class="icon">
-            <img src=" {% static 'img/icons/iconPuestaINM.jpg' %} " alt="Icono de imagen" class="imagen-icono">
+            <img src=" {% static 'img/icons/iconVP.png' %} " alt="Icono de imagen" class="imagen-icono">
           </div>
           <p class="titulo" >VER PUESTAS POR (VP)</p>
           <a href="{% url 'homePuestasVP' %}" class="card-button">Ir</a>

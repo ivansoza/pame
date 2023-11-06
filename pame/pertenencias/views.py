@@ -2524,8 +2524,7 @@ def compare_faces(request):
             return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
 
         extranjero_id = int(extranjero_id_str)  # Convertir a entero
-        print(type(extranjero_id))  # <class 'int'>
-        print(extranjero_id)  
+       
         try:
             # Obtener el objeto Biometrico asociado con el Extranjero_id
       # Debería ser un número entero válido

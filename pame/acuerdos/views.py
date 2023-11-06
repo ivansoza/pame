@@ -2,10 +2,10 @@ from typing import Any
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from vigilancia.models import Extranjero
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from weasyprint import HTML
 from django.template.loader import render_to_string, get_template
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from vigilancia.models import Extranjero, Firma
 import os
 from datetime import datetime
@@ -13,12 +13,34 @@ import locale
 from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
+from llamadasTelefonicas.models import LlamadasTelefonicas
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Exists, OuterRef
+from .models import TipoAcuerdo,Acuerdo
+from .forms import AcuerdoInicioForm
+from django.shortcuts import redirect
+from django.urls import reverse
+from io import BytesIO
+import base64
+import qrcode
+from django.http import JsonResponse
+from django.views import View
+from django.http import HttpResponseBadRequest
 
+from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
+from .models import FirmaAcuerdo
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import base64
+from django.core.files.storage import default_storage
 
+import io
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -31,7 +53,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/acuerdoInicio.html')
+    html_template = get_template('documentos/listaLlamadas.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
@@ -164,8 +186,7 @@ def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
     ubicacion_pdf = os.path.join("pame/media/files", nombre_pdf)
     exists = os.path.exists(ubicacion_pdf)
-    # print(f"PDF para extranjero {extranjero_id}: {exists}")
-    # print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
+
     return exists
 
 # ----- Funcion para cambiar los numeros del dia a palabra
@@ -187,9 +208,10 @@ def mes_a_palabra(mes):
     return meses[mes - 1]  # Restamos 1 porque los meses se cuentan desde 1 enero a 12 diciembre 
 
 # ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
-def acuerdoInicio_pdf(request, extranjero_id):
-    extranjero = Extranjero.objects.get(id=extranjero_id)
-
+def acuerdoInicio_pdf(request, nup_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+    acuerdo = get_object_or_404(Acuerdo, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
     nombre = extranjero.nombreExtranjero
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero
@@ -198,6 +220,7 @@ def acuerdoInicio_pdf(request, extranjero_id):
     apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
     apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
     lugar = extranjero.deLaEstacion.estado
+    estacion = extranjero.deLaEstacion.nombre
     dia = extranjero.fechaRegistro.day
     mes = extranjero.fechaRegistro.month
     anio = extranjero.fechaRegistro.year
@@ -216,13 +239,141 @@ def acuerdoInicio_pdf(request, extranjero_id):
         'apellidopac': apellidopac,
         'apellidomac': apellidomac,
         'lugar': lugar,
+        'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
-        'anio': anio
+        'anio': anio,
+        'acuerdo': acuerdo,
+
     }
 
     # Obtener la plantilla HTML
     template = get_template('documentos/acuerdoInicio.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Acuerdo de nombramiento de representante legal
+def nombramientoRepresentante_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/nombramientoRepresentante.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Notificacion de representacion
+def notificacionRepresentacion_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/notificacionRepresentacion.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF de Inventario de pertenencias y valores
+def inventarioPV_pdf(request):
+    # extranjero = Extranjero.objects.get(id=extranjero_id)
+
+    #consultas 
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/inventarioPV.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
+def listaLlamadas_pdf(request, extranjero_id):
+    extranjero = Extranjero.objects.get(id=extranjero_id)
+    llamadas = LlamadasTelefonicas.objects.filter(noExtranjero=extranjero_id)
+
+
+    #consultas
+    nombre = extranjero.nombreExtranjero 
+    paterno = extranjero.apellidoPaternoExtranjero
+    materno = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad.nombre
+    ingreso = extranjero.fechaRegistro
+
+    fechas_llamadas = [llamada.fechaHoraLlamada.strftime('%d/%m/%y') for llamada in llamadas]
+
+    
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'nombreEx': nombre,
+        'paterno': paterno,
+        'materno': materno,
+        'nacionalidad': nacionalidad,
+        'ingreso': ingreso,
+        'fechas_llamadas': fechas_llamadas,
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/listaLlamadas.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
@@ -348,28 +499,22 @@ def generate_pdfsinguardar(request, extranjero_id):
 # ----- Genera el documento PDF de la constancia de llamada 
 @login_required(login_url="/permisoDenegado/")
 def constancia_llamada(request, extranjero_id=None):
-    print("Iniciando constancia_llamada")
     
     try:
         extranjero = Extranjero.objects.get(id=extranjero_id)
     except Extranjero.DoesNotExist:
-        print(f"No se encontró Extranjero con ID {extranjero_id}")
         return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
     
-    print("Extranjero obtenido:", extranjero)
     
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
 
-    print("Notificaciones:", notificaciones)
 
     if notificaciones.exists():
-        print("Entrando al bloque de notificaciones existentes")
 
         notificacion = notificaciones.latest('nup')
-        print("Notificacion:", notificacion)
         id = extranjero.pk
         nombre = extranjero.nombreExtranjero
         apellidop = extranjero.apellidoPaternoExtranjero
@@ -435,6 +580,7 @@ class lisExtranjerosInicio(LoginRequiredMixin,ListView):
             # Obtener la estación del usuario y el estado
             estacion_usuario = self.request.user.estancia
             estado = self.request.GET.get('estado_filtrado', 'activo')
+            TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
 
             # Filtrar extranjeros por estación y estado
             extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
@@ -458,9 +604,68 @@ class lisExtranjerosInicio(LoginRequiredMixin,ListView):
             )
 
             return queryset
+    
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+  # Crear una lista de los últimos nup para todos los Extranjeros en el queryset
+            listado_nup = [obj.nup for obj in context['object_list']]
+
+            # Verificar qué NoProceso tienen un "Acuerdo Inicio" en el modelo Acuerdo
+            acuerdo_inicio_exists = Acuerdo.objects.filter(
+                nup__in=listado_nup,
+                delAcuerdo__tipo="Acuerdo Inicio"
+            ).values_list('nup', flat=True)
+
+            context['acuerdos_inicio'] = set(acuerdo_inicio_exists)
+            context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+            context['seccion'] = 'inicio'
+            context['navbar1'] = 'inicio'  # Cambia esto según la página activa
+
+            context['seccion1'] = 'inicio'
+
+            return context
+class AcuerdoInicioCreateView(CreateView):
+    model = Acuerdo
+    form_class = AcuerdoInicioForm
+    template_name = 'modals/crearAcuerdoInicio.html'  # Debes especificar la ubicación del template que usarás.
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['extranjero'] = Extranjero.objects.get(numeroExtranjero=self.kwargs['proceso_id'])
+        return context
+
+    def form_valid(self, form):
+        # Aquí puedes hacer ajustes antes de guardar el objeto, como llenar campos adicionales.
+        # Por ejemplo:
+        acuerdo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
+        form.instance.delAcuerdo = acuerdo
+
+        noproceso = NoProceso.objects.get(nup=self.kwargs['proceso_id'])
+        form.instance.delExtanjero = noproceso.extranjero
+        form.instance.nup = noproceso  # <- Asegúrate de asignar el NoProceso al Acuerdo
+
+        # Continúa con el proceso normal de guardado.
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Puedes redirigir al usuario a donde quieras después de guardar el objeto.
+        # Por ejemplo, de vuelta a la página de detalles del extranjero:
+        return reverse('lisExtranjerosInicio')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        sign_link = "https://tu_dominio.com/firmar?token=token_unico" # Cambia tu_dominio y token_unico por lo que necesites
+        
+        # Crear QR
+        img = qrcode.make(sign_link)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        image_stream = base64.b64encode(buf.getvalue()).decode()
+
+        # Pasar QR como dato en base64 a la plantilla
+        context['qr_code'] = image_stream
         context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
         context['seccion'] = 'inicio'
         context['navbar1'] = 'inicio'  # Cambia esto según la página activa
@@ -469,6 +674,170 @@ class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
         return context
     
+def registro_acuerdo_inicio(request, proceso_id):
+    # Obtener el NoProceso usando proceso_id
+    try:
+        noproceso = NoProceso.objects.get(nup=proceso_id)
+    except NoProceso.DoesNotExist:
+        return JsonResponse({'status':'ERROR', 'message':'NoProceso no encontrado'}, status=404)
+    
+    if request.method == 'POST':
+        step = request.POST.get('step')
+
+        if step == '1':
+            form_acuerdo_inicio = AcuerdoInicioForm(request.POST)
+            if form_acuerdo_inicio.is_valid():
+                # Establecer campos por defecto antes de guardar
+                acuerdo = form_acuerdo_inicio.save(commit=False) # No guardar todavía
+                acuerdo_tipo, _ = TipoAcuerdo.objects.get_or_create(tipo="Acuerdo Inicio")
+                acuerdo.delAcuerdo = acuerdo_tipo
+                acuerdo.delExtanjero = noproceso.extranjero
+                acuerdo.nup = noproceso
+                acuerdo.save()  # Ahora guardar
+
+                return JsonResponse({'status':'OK', 'acuerdo_id':acuerdo.id})
+            else:
+                errors = form_acuerdo_inicio.errors.as_json()
+                return JsonResponse({'status':'ERROR', 'errors':errors}, status=400)
+
+    else:
+        form_acuerdo_inicio = AcuerdoInicioForm()
+    return render(request, "modals/crearAcuerdoInicio.html", {'form_acuerdo': form_acuerdo_inicio, 'proceso_id': proceso_id})
+
+
+def generar_qr_acuerdos(request, acuerdo_id, testigo):
+    base_url = settings.BASE_URL
+
+    if testigo == "testigo_uno":
+        url = f"{base_url}acuerdos/firma_testigo_uno/{acuerdo_id}/"
+    elif testigo == "testigo_dos":
+        url = f"{base_url}acuerdos/firma_testigo_dos/{acuerdo_id}/"
+    else:
+        return HttpResponseBadRequest("Testigo no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+class FirmaTestigoUnoCreateView(CreateView):
+    model = FirmaAcuerdo
+    form_class = FirmaTestigoUnoForm
+    template_name = 'firma/firma_testigo_uno_create.html'
+    success_url = reverse_lazy('firma_exitosa')  # Cambia 'some_success_url' al URL de éxito que desees
+
+    def form_valid(self, form):
+        acuerdo_id = self.kwargs.get('acuerdo_id')
+        acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+        
+        # Asociar el acuerdo con la firma
+        form.instance.acuerdo = acuerdo
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
+        return context
+
+class FirmaTestigoDosCreateView(CreateView):
+    model = FirmaAcuerdo
+    form_class = FirmaTestigoDosForm
+    template_name = 'firma/firma_testigo_dos_create.html'
+    success_url = reverse_lazy('firma_exitosa')  # Cambia al URL de éxito que desees
+
+    def form_valid(self, form):
+        acuerdo_id = self.kwargs.get('acuerdo_id')
+        acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+        
+        # Asociar el acuerdo con la firma
+        form.instance.acuerdo = acuerdo
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
+        return context
+    
+def firma_testigo_uno(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaTestigoUnoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaTestigoUno']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigoUno_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigoUno.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigoUnoForm()
+
+    return render(request, 'firma/firma_testigo_uno_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
+
+def firma_testigo_dos(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaTestigoDosForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaTestigoDos']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigoDos_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigoDos.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigoDosForm()
+
+    return render(request, 'firma/firma_testigo_dos_create.html', {'form': form, 'acuerdo_id': acuerdo_id})
+@csrf_exempt
+def check_firma_testigo_uno(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaTestigoUno:
+            # Obtener la URL de la imagen
+            image_url = request.build_absolute_uri(firma.firmaTestigoUno.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo Uno encontrada',
+                'image_url': image_url
+            })
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Uno aún no registrada'}, status=404)
+
+@csrf_exempt
+def check_firma_testigo_dos(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaTestigoDos:
+            # Obtener la URL de la imagen
+            image_url = request.build_absolute_uri(firma.firmaTestigoDos.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo Dos encontrada',
+                'image_url': image_url
+            })
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Dos aún no registrada'}, status=404)
 class lisExtranjerosComparecencia(LoginRequiredMixin,ListView):
 
     model = NoProceso

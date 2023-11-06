@@ -288,19 +288,21 @@ class descripcion(models.Model):
     delExtranjero = models.OneToOneField(
         Extranjero, on_delete=models.CASCADE,
         primary_key=True,
+        verbose_name='Datos del extranjero'
     )
-    estatura = models.CharField(max_length=20, choices=estatura_choices)
-    cejas = models.CharField(max_length=50, choices=cejas_choices)
-    nariz = models.CharField(max_length=50, choices=nariz_choices)
-    labios = models.CharField(max_length=50, choices=labios_choices)
+    estatura = models.CharField(max_length=20, choices=estatura_choices, verbose_name='Estatura')
+    cejas = models.CharField(max_length=50, choices=cejas_choices, verbose_name='Cejas')
+    nariz = models.CharField(max_length=50, choices=nariz_choices, verbose_name='Nariz')
+    labios = models.CharField(max_length=50, choices=labios_choices, verbose_name='Labios')
     tipoCabello = models.CharField(max_length=50, choices=tipoCabello_choices, verbose_name='Tipo de cabello')
-    bigote = models.CharField(max_length=50, blank=True, null=True, choices=bigote_choices)
-    complexion = models.CharField(max_length=50, choices=complexion_choices)
-    frente = models.CharField(max_length=50, choices=frente_choices)
-    colorOjos=models.CharField(max_length=50, verbose_name='Color de Ojos', choices=colorOjos_choices)
-    boca = models.CharField(max_length=50, choices=boca_choices)
-    segnasParticulares = models.CharField(max_length=50, verbose_name='Señas Particulares', choices=segnasParticulares_choices)
-    observaciones = models.CharField(max_length=50)  
+    bigote = models.CharField(max_length=50, blank=True, null=True, choices=bigote_choices, verbose_name='Bigote')
+    complexion = models.CharField(max_length=50, choices=complexion_choices, verbose_name='Complexión')
+    frente = models.CharField(max_length=50, choices=frente_choices, verbose_name='Frente')
+    colorOjos = models.CharField(max_length=50, verbose_name='Color de ojos', choices=colorOjos_choices)
+    boca = models.CharField(max_length=50, choices=boca_choices, verbose_name='Boca')
+    segnasParticulares = models.CharField(max_length=50, verbose_name='Señas particulares', choices=segnasParticulares_choices)
+    observaciones = models.CharField(max_length=50, verbose_name='Observaciones')
+
 
 STATUS_PROCESO_CHOICES= (
     ('Activo', 'Activo'),

@@ -174,7 +174,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
 
     numeroCarpeta = forms.CharField(
         label= "Número de Carpeta:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Carpeta 1'})
+        widget=forms.TextInput(attrs={'placeholder':'Ej: 1934392'})
     )
     
     entidadFederativa = forms.CharField(

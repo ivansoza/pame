@@ -3749,12 +3749,13 @@ class listarExtranjerosEstacion(LoginRequiredMixin,ListView):
     
 
 class qrs(LoginRequiredMixin,TemplateView):
+    
     login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
     template_name='qr.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('extranjero_id')
-        qr_link = f"http://192.168.100.41:8082/seguridad/crear_firma/{extranjero_id}"
+        qr_link = f"{settings.BASE_URL}seguridad/crear_firma/{extranjero_id}"
         extranjero = get_object_or_404(Extranjero, id=extranjero_id)
         nombre = extranjero.nombreExtranjero
         apellidoP = extranjero.apellidoPaternoExtranjero
@@ -3763,7 +3764,7 @@ class qrs(LoginRequiredMixin,TemplateView):
         context['nombre'] = nombre
         context['apellidoP'] = apellidoP
         context['apellidoM'] = apellidoM
-
+        
         return context
     
 def verificar_firma(request, extranjero_id):

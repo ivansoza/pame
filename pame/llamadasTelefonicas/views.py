@@ -50,7 +50,6 @@ class notificacionLlamadaINM(LoginRequiredMixin,TemplateView):
 # Obtener el ID (nup) del último registro NoProceso
      ultimo_no_proceso_id = ultimo_no_proceso.nup
 
-     print(f"ID del último NoProceso: {ultimo_no_proceso_id}") 
      nombre_extranjero = llamada.nombreExtranjero
      estancia_extranjero = llamada.deLaEstacion
      apellido_paterno = llamada.apellidoPaternoExtranjero
@@ -706,9 +705,7 @@ def manejar_imagen(request):
     if request.method == "POST":
         imagen = request.FILES.get('image')
         extranjero_id_str = request.POST.get('llamada_id')
-        print(imagen)
-        print(extranjero_id_str)
-
+     
         if extranjero_id_str is None or not extranjero_id_str.isdigit():
             return JsonResponse({'error': 'Invalid llamada_id'}, status=400)
 
@@ -766,8 +763,7 @@ def compare_faces(request):
             return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
 
         extranjero_id = int(extranjero_id_str)  # Convertir a entero
-        print(type(extranjero_id))  # <class 'int'>
-        print(extranjero_id)  
+       
         try:
             # Obtener el objeto Biometrico asociado con el Extranjero_id
       # Debería ser un número entero válido
@@ -877,7 +873,6 @@ class notificacionLlamadaGenerales(LoginRequiredMixin,TemplateView):
 # Obtener el ID (nup) del último registro NoProceso
      ultimo_no_proceso_id = ultimo_no_proceso.nup
 
-     print(f"ID del último NoProceso: {ultimo_no_proceso_id}") 
      nombre_extranjero = llamada.nombreExtranjero
      estancia_extranjero = llamada.deLaEstacion
      apellido_paterno = llamada.apellidoPaternoExtranjero

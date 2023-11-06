@@ -103,7 +103,7 @@ urlpatterns = [
     path('guardar_firma/<int:extranjero_id>/', guardar_firma, name='guardar_firma'),
     path('verificar_firma/<int:extranjero_id>/', verificar_firma, name='verificar_firma'),
 
-
+        # firma
     path('crear_firma/<int:extranjero_id>/', FirmaCreateView.as_view(), name='crear_firma'),
     path('firma_exitosa/', firmE.as_view(), name='firma_exitosa'),
     path('firma_existente/', firmExistente.as_view(), name='firma_existente'),

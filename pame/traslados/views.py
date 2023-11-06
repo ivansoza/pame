@@ -681,19 +681,19 @@ class extranjeroTrasladadoList(LoginRequiredMixin,ListView):
     
 
         for extranjero in context['extranjeros']:
-         ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+                ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
 
-        if ultimo_nup:
-                notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
-                if notificacion:
-                    extranjero.tiene_notificacion_derechos = True
-                    extranjero.fecha_aceptacion = notificacion.fechaAceptacion
-                    extranjero.estacion_notificacion = notificacion.estacion
-                else:
-                    extranjero.tiene_notificacion_derechos = False
-                    extranjero.fecha_aceptacion = None
-                    extranjero.hora_aceptacion = None
-                    extranjero.estacion_notificacion = None
+                if ultimo_nup:
+                    notificacion = NotificacionDerechos.objects.filter(no_proceso_id=ultimo_nup).first()
+                    if notificacion:
+                        extranjero.tiene_notificacion_derechos = True
+                        extranjero.fecha_aceptacion = notificacion.fechaAceptacion
+                        extranjero.estacion_notificacion = notificacion.estacion
+                    else:
+                        extranjero.tiene_notificacion_derechos = False
+                        extranjero.fecha_aceptacion = None
+                        extranjero.estacion_notificacion = None
+
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         context['seccion'] = 'trasladados'  # Cambia esto según la página activa
         return context

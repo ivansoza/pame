@@ -90,6 +90,27 @@
             <td>{{ extranjero.nacionalidad }}</td> 
 
             <td>
+
+                {% if extranjero.biometrico %}
+                {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
+                        <i class="fas fa-fingerprint"></i>
+                    </a>
+                {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
+                    <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
+                        <i class="fas fa-fingerprint"></i>
+                    </a>
+                {% else %}
+                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
+                        <i class="fas fa-fingerprint"></i>
+                    </a>
+                {% endif %}
+            {% else %}
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'agregar_biometricoVP' extranjero.id %}" data-title="Agregar Datos Biométricos">
+                    <i class="fas fa-fingerprint"></i>
+                </a>
+            {% endif %}
+
    
                 <!-- NOTIFICACION DE LLAMADA  -->
                 {% if extranjero.tiene_notificacion %}
@@ -146,7 +167,7 @@
                             {% if extranjero.tiene_fotografia %}
     
                                 <a class="btn btn-sm btn-icon1 tooltip-link"
-                                href="{% url "notificacionDOVP" extranjero.id puesta.id  %}"  data-title="Generar Notificación">
+                                href="{% url "notificacionDOVP" extranjero.id puesta.id  %}"  data-title="Notificación de Derechos">
                                     <i class="fas fa-balance-scale"></i>
                                 </a>
                             {% else %}
@@ -157,26 +178,7 @@
 
     
                      {% endif %}
-                {% if extranjero.biometrico %}
-                {% if extranjero.biometrico.fotografiaExtranjero and extranjero.biometrico.huellaExtranjero and extranjero.biometrico.firmaExtranjero %}
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
-                        <i class="fas fa-fingerprint"></i>
-                    </a>
-                {% elif extranjero.biometrico.fotografiaExtranjero or extranjero.biometrico.huellaExtranjero or extranjero.biometrico.firmaExtranjero %}
-                    <a class="btn btn-sm btn-icon2 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
-                        <i class="fas fa-fingerprint"></i>
-                    </a>
-                {% else %}
-                    <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'editar_biometricoVP' extranjero.biometrico.Extranjero.id %}" data-title="Editar Datos Biométricos">
-                        <i class="fas fa-fingerprint"></i>
-                    </a>
-                {% endif %}
-            {% else %}
-                <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'agregar_biometricoVP' extranjero.id %}" data-title="Agregar Datos Biométricos">
-                    <i class="fas fa-fingerprint"></i>
-                </a>
-            {% endif %}
-
+   
           
             {% if extranjero.tiene_inventario %}
             <!-- INICIO DE AGREGAR PERTENENCIAS -->
@@ -285,7 +287,7 @@
 
 {% block datatable %}
  {
-    text: 'Crear Extranjero',
+    text: 'Agregar Extranjero',
     className: 'btn btn-custom mr-2',
     action: function (e, dt, node, config) {
       window.location.href = '{% url 'crearExtranjeroVP' puesta.id %}';
