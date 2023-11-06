@@ -186,8 +186,7 @@ def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
     ubicacion_pdf = os.path.join("pame/media/files", nombre_pdf)
     exists = os.path.exists(ubicacion_pdf)
-    # print(f"PDF para extranjero {extranjero_id}: {exists}")
-    # print(f"Ruta del archivo PDF para extranjero {extranjero_id}: {ubicacion_pdf}")
+
     return exists
 
 # ----- Funcion para cambiar los numeros del dia a palabra
@@ -500,28 +499,22 @@ def generate_pdfsinguardar(request, extranjero_id):
 # ----- Genera el documento PDF de la constancia de llamada 
 @login_required(login_url="/permisoDenegado/")
 def constancia_llamada(request, extranjero_id=None):
-    print("Iniciando constancia_llamada")
     
     try:
         extranjero = Extranjero.objects.get(id=extranjero_id)
     except Extranjero.DoesNotExist:
-        print(f"No se encontró Extranjero con ID {extranjero_id}")
         return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
     
-    print("Extranjero obtenido:", extranjero)
     
     locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
 
-    print("Notificaciones:", notificaciones)
 
     if notificaciones.exists():
-        print("Entrando al bloque de notificaciones existentes")
 
         notificacion = notificaciones.latest('nup')
-        print("Notificacion:", notificacion)
         id = extranjero.pk
         nombre = extranjero.nombreExtranjero
         apellidop = extranjero.apellidoPaternoExtranjero

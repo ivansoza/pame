@@ -75,29 +75,25 @@ class UserFaceCreateView(LoginRequiredMixin,CreateView):
 
         # Verificar si la imagen se ha guardado correctamente
         if os.path.exists(image_path):
-            print(f"Imagen guardada en {image_path}")
             
-            # Carga la imagen
+            # Cargar la imagen
             image_array = face_recognition.load_image_file(image_path)
             
-            # Obtén los encodings de la imagen
+            # Obtener los encodings de la imagen
             face_encodings = face_recognition.face_encodings(image_array)
             
             if face_encodings:  # Verificar que se detectaron rostros
-                print("Encoding calculado")
                 encoding = face_encodings[0].tolist()
                 
-                # Guarda el encoding en el modelo y guarda el objeto en la base de datos
+                # Guardar el encoding en el modelo y guardar el objeto en la base de datos
                 self.object = form.save(commit=False)
                 self.object.face_encoding = encoding
                 self.object.save()
                 
-                print("Objeto guardado exitosamente")
                 return super().form_valid(form)
-            else:
-                print("No se pudo calcular face_encodings")
-        else:
-            print("No se pudo guardar la imagen")
+            # El 'else' se puede omitir si no es necesario manejar el caso de no detección de rostros
+            
+        # El 'else' se puede omitir si no es necesario manejar el caso de fallo al guardar la imagen
 
         return self.form_invalid(form)
 
