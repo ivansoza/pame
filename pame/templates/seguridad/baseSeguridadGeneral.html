@@ -294,6 +294,29 @@
             </ul>
           </li>
               <!-- Cierre de Puesta disposición -->
+              <li class="nav-item {% if navbar == 'comparecencia' %}menu-is-opening menu-open{% endif %}">
+                <a href="#" class="nav-link {% if navbar == 'comparecencia' %}active first-li{% endif %}">
+                  <i class="nav-icon fas fa-gavel"></i>
+                  <p>
+                    Comparecencia
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+    
+                <ul class="nav nav-treeview" style="margin-left: 20px;">
+                  <li class="nav-item">
+                    <a href="{% url 'lisExtranjerosComparecencia' %}" class="nav-link {% if seccion == 'comparecencia' %}active {% endif %}">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Generar Comparecencia</p>
+                    </a>
+                  </li>
+    
+             
+                
+                </ul>
+              </li>
+                        
+          
                     <!--  Traslado -->
 
           <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
@@ -802,31 +825,31 @@
         {% endblock datatable %}        
         
         {% block datatable2 %}
-          {extend: 'copy',
-          text: '<i class="fas fa-clone"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Copy',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {extend: 'excel',
-          text: '<i class="fas fa-file-excel"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Excel',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {extend: 'print',
-          text: '<i class="fas fa-print"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Excel',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {% endblock datatable2 %}
+        {extend: 'copy',
+        text: '<i class="fas fa-clone"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Copiar a Documento',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {extend: 'excel',
+        text: '<i class="fas fa-file-excel"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Exportar a Excel',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {extend: 'print',
+        text: '<i class="fas fa-print"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Imprimir',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {% endblock datatable2 %}
       ],
       "language": {
                   "sProcessing": "Procesando...",

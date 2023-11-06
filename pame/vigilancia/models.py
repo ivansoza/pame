@@ -82,7 +82,7 @@ class PuestaDisposicionAC(models.Model):
     certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     grado = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
-    grado2 = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
+    grado2 = models.CharField(verbose_name='Grado de Autoridad Asignada 2:', max_length=50, choices=GRADO_ACADEMICO)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
@@ -139,9 +139,10 @@ class Extranjero(models.Model):
     numeroExtranjero = models.CharField(verbose_name='Número de Extranjero', max_length=25, null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
     nombreExtranjero = models.CharField(verbose_name='Nombre de Extranjero', max_length=50, blank=True)
-    apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno de Extranjero', max_length=50, blank=True)
+    apellidoPaternoExtranjero = models.CharField(verbose_name='Apellido Paterno', max_length=50, blank=True)
     apellidoMaternoExtranjero = models.CharField(verbose_name='Apellido Materno', max_length=50, blank=True, null=True, default=" ")
     nacionalidad = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad')
+    origen = models.CharField(verbose_name="Origen", max_length=50)
     genero = models.IntegerField(verbose_name='Género', choices=OPCION_GENERO_CHOICES)
     fechaNacimiento = models.DateField(verbose_name='Fecha de Nacimiento')
     documentoIdentidad = models.FileField(upload_to='files/', verbose_name='Documento de Identidad', null=True, blank=True)
@@ -153,16 +154,14 @@ class Extranjero(models.Model):
     deLaPuestaVP = models.ForeignKey(PuestaDisposicionVP, on_delete=models.CASCADE, blank=True, null=True, related_name='extranjeros', verbose_name='Puesta VP')
     
     estado_Civil = models.CharField(verbose_name='Estado Civil',max_length=50 ,choices=ESTADOS_CIVILES)
-    grado_academico = models.CharField(verbose_name='Grado academico', max_length=50, choices=GRADOS_ACADEMICOS)
+    grado_academico = models.CharField(verbose_name='Grado Académico', max_length=50, choices=GRADOS_ACADEMICOS)
     ocupacion = models.CharField(verbose_name='Ocupación', max_length=50, blank=True, null=True, default="")
-    nombreDelPadre = models.CharField(verbose_name='Nombre completo del padre', max_length=70, blank=True, null=True, default='')
-    nombreDelaMadre = models.CharField(verbose_name='Nombre completo de la madre', max_length=70, blank=True, null=True, default='')
-    lugar_Origen = models.CharField(verbose_name='Origen', max_length=70, blank=True, null=True, default="")
-    domicilio = models.CharField(verbose_name='Domicilio', max_length=80, blank=True, null=True, default="")
+    nombreDelPadre = models.CharField(verbose_name='Nombre Completo del Padre', max_length=70, blank=True, null=True, default='')
+    nombreDelaMadre = models.CharField(verbose_name='Nombre Completo de la Madre', max_length=70, blank=True, null=True, default='')
     nacionalidad_Padre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad del padre', blank=True,null=True, related_name='extranjeros_nacionalidad_padre')
     nacionalidad_Madre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad de la madre',blank=True,null=True,related_name='extranjeros_nacionalidad_madre')
     edad = models.IntegerField(verbose_name='Edad')    
-    domicilio = models.CharField(verbose_name="Domicilio y/o recidencia", max_length=150, blank=True, null=True, default="")
+    domicilio = models.CharField(verbose_name="Domicilio y/o Residencia ", max_length=150, blank=True, null=True, default="")
     
     def save(self, *args, **kwargs):
     # Si el númeroExtranjero no está establecido, asigna un valor único basado en el ID del registro.
@@ -302,7 +301,7 @@ class descripcion(models.Model):
     colorOjos = models.CharField(max_length=50, verbose_name='Color de ojos', choices=colorOjos_choices)
     boca = models.CharField(max_length=50, choices=boca_choices, verbose_name='Boca')
     segnasParticulares = models.CharField(max_length=50, verbose_name='Señas particulares', choices=segnasParticulares_choices)
-    observaciones = models.CharField(max_length=50, verbose_name='Observaciones')
+    observaciones = models.CharField(max_length=300, verbose_name='Observaciones')
 
 
 STATUS_PROCESO_CHOICES= (

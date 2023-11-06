@@ -28,27 +28,21 @@
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-4">
-                {{form.numeroExtranjero|as_crispy_field}}
-                <script>
-                    document.getElementById('id_numeroExtranjero').readOnly = true;
-                </script>
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-4" style='display:none'>
-                {{form.deLaEstacion|as_crispy_field}}
-            </div>
+      
+      
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nombreExtranjero|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoPaternoExtranjero|as_crispy_field}}
             </div>
-        </div>
-    
-        <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
+        </div>
+    
+        <div class="row">
+       
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.domicilio|as_crispy_field}}
             </div>
@@ -56,7 +50,10 @@
                 {{form.fechaNacimiento|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.edad|as_crispy_field}}
+                {{ form.edad|as_crispy_field }}
+                <script>
+                    document.getElementById('id_edad').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nacionalidad|as_crispy_field}}
@@ -67,26 +64,14 @@
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estado_Civil|as_crispy_field }}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.grado_academico|as_crispy_field }}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.ocupacion|as_crispy_field }}
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.lugar_Origen|as_crispy_field }}
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                {{form.tipoEstancia|as_crispy_field}}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6" >
-                {{form.estatus|as_crispy_field}}
-            </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 <div class="file-input-container">
                     <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
@@ -98,13 +83,14 @@
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
             </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
-                {{form.deLaPuestaVP|as_crispy_field}}
+            
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.tipoEstancia|as_crispy_field}}
             </div>
         </div>
+
+   
+    
     </div>
 </div>
 
