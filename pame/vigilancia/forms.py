@@ -210,7 +210,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
 class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "YYYY/MM/DD"}),
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
         input_formats=['%d/%m/%Y'],
     )
 
@@ -238,10 +238,38 @@ class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
 
     )
 
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+    )
+
+    domicilio = forms.CharField(
+        label= "Domicilio y/o Residencia:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Av. Moctezuma"}),
+    )
+    origen = forms.CharField(
+        label= "Origen:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Medellin"}),
+    )
+    ocupacion = forms.CharField(
+        label= "Ocupación:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Docente"}),
+    )
+    nombreDelPadre = forms.CharField(
+        label="Nombre completo del padre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+    )
+
+    nombreDelaMadre = forms.CharField(
+        label="Nombre completo de la madre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+    
+    )
+
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -256,7 +284,7 @@ class editExtranjeroINMForm(forms.ModelForm):
 
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "YYYY/MM/DD"}),
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
         input_formats=['%d/%m/%Y'],
     )
 
@@ -271,7 +299,7 @@ class editExtranjeroINMForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus','deLaPuestaAC','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -301,7 +329,7 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
 
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "YYYY/MM/DD"}),
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
         input_formats=['%d/%m/%Y'],
     )
 
@@ -327,6 +355,34 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
     )
 
     
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+    )
+
+    domicilio = forms.CharField(
+        label= "Domicilio y/o Residencia:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Av. Moctezuma"}),
+    )
+    origen = forms.CharField(
+        label= "Origen:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Medellin"}),
+    )
+    ocupacion = forms.CharField(
+        label= "Ocupación:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Docente"}),
+    )
+    nombreDelPadre = forms.CharField(
+        label="Nombre completo del padre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+    )
+
+    nombreDelaMadre = forms.CharField(
+        label="Nombre completo de la madre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+    
+    )
+
    
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
@@ -338,7 +394,7 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -353,7 +409,7 @@ class editExtranjeroACForms(forms.ModelForm):
 
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "YYYY/MM/DD"}),
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
         input_formats=['%d/%m/%Y'],
     )
 
@@ -368,7 +424,7 @@ class editExtranjeroACForms(forms.ModelForm):
         return data
     class Meta:
       model = Extranjero
-      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus','deLaPuestaIMN','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
+      fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
       widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -399,7 +455,7 @@ class puestaVPForm(forms.ModelForm):
 class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "YYYY/MM/DD"}),
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
         input_formats=['%d/%m/%Y'],
     )
 
@@ -422,6 +478,34 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
         label= "Apellido Paterno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
     )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+    )
+
+    domicilio = forms.CharField(
+        label= "Domicilio y/o Residencia:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Av. Moctezuma"}),
+    )
+    origen = forms.CharField(
+        label= "Origen:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Medellin"}),
+    )
+    ocupacion = forms.CharField(
+        label= "Ocupación:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Docente"}),
+    )
+    nombreDelPadre = forms.CharField(
+        label="Nombre completo del padre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+    )
+
+    nombreDelaMadre = forms.CharField(
+        label="Nombre completo de la madre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+    
+    )
+
     
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
@@ -433,7 +517,7 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -447,7 +531,7 @@ class editExtranjeroVPForm(forms.ModelForm):
 
     fechaNacimiento = forms.DateField(
         label="Fecha de Nacimiento:",
-        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "YYYY/MM/DD"}),
+        widget=forms.DateInput(attrs={'type': 'text', 'id': 'date', 'placeholder': "DD/MM/YYYY"}),
         input_formats=['%d/%m/%Y'],
     )
 
@@ -462,13 +546,11 @@ class editExtranjeroVPForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus','deLaPuestaIMN','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','domicilio','fechaNacimiento','edad','nacionalidad','genero','estado_Civil','grado_academico','ocupacion','documentoIdentidad','tipoEstancia','nombreDelPadre','nacionalidad_Padre','nombreDelaMadre','nacionalidad_Madre'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
-            'deLaPuestaVP': forms.Select(attrs={'class': 'form-control'}),
-            'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
 
 
