@@ -1133,11 +1133,13 @@ class ListaEnseresViewINM(LoginRequiredMixin,ListView):
         extranjero_id= self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta_id = self.kwargs.get('puesta_id')
+        nup = extranjero.noproceso_set.latest('consecutivo').nup
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         context['today_registered'] = self.today_registered  # Agrega al contexto si se registró hoy
+        context['nup'] = nup
 
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'

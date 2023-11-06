@@ -39,8 +39,8 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.core.files.storage import default_storage
-
 import io
+
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
@@ -53,7 +53,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/listaLlamadas.html')
+    html_template = get_template('documentos/constanciaEnseres.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
@@ -89,8 +89,6 @@ class acuerdo_inicio(LoginRequiredMixin,ListView):
             'extranjeros_pdf': pdf_existencia
             }
         return render(request, self.template_name, context)
-
-
 
 class listRepositorio(LoginRequiredMixin,ListView):
 
@@ -148,7 +146,6 @@ class DocumentosListView(LoginRequiredMixin,ListView):
         context['navbar'] = 'repositorio'  # Cambia esto según la página activa
         context['seccion'] = 'verrepo'
         return context
-
         
 class RepositorioListView(LoginRequiredMixin,ListView):
     model = Repositorio
@@ -179,7 +176,6 @@ class RepositorioListView(LoginRequiredMixin,ListView):
         context['navbar'] = 'repositorio'  # Cambia esto según la página activa
         context['seccion'] = 'verrepo'
         return context
-
 
 # ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
@@ -390,6 +386,46 @@ def listaLlamadas_pdf(request, extranjero_id):
     
     return response
 
+# ----- Genera el documento PDF, de Constancia de entrega de enseres basicos de aseo personal
+def constanciaEnseres_pdf(request, nup_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+
+    #consultas 
+    nombre = extranjero.nombreExtranjero
+    paterno = extranjero.apellidoPaternoExtranjero
+    materno = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad.nombre
+    ingreso = extranjero.fechaRegistro
+
+    fechas_enseres = []
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'nombre': nombre,
+        'paterno': paterno,
+        'materno': materno,
+        'nacionalidad': nacionalidad,
+        'ingreso': ingreso,
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/constanciaEnseres.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
 # ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
 def mostrar_derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
@@ -497,7 +533,6 @@ def generate_pdfsinguardar(request, extranjero_id):
     
     return response
 
-
 # ----- Genera el documento PDF de la constancia de llamada 
 @login_required(login_url="/permisoDenegado/")
 def constancia_llamada(request, extranjero_id=None):
@@ -567,9 +602,7 @@ def constancia_llamada(request, extranjero_id=None):
             response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
             return response
 
-
 # Lista de acuerdo inicio 
-
 class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
     model = NoProceso
@@ -626,6 +659,7 @@ class lisExtranjerosInicio(LoginRequiredMixin,ListView):
             context['seccion1'] = 'inicio'
 
             return context
+    
 class AcuerdoInicioCreateView(CreateView):
     model = Acuerdo
     form_class = AcuerdoInicioForm
@@ -705,7 +739,6 @@ def registro_acuerdo_inicio(request, proceso_id):
     else:
         form_acuerdo_inicio = AcuerdoInicioForm()
     return render(request, "modals/crearAcuerdoInicio.html", {'form_acuerdo': form_acuerdo_inicio, 'proceso_id': proceso_id})
-
 
 def generar_qr_acuerdos(request, acuerdo_id, testigo):
     base_url = settings.BASE_URL
@@ -931,10 +964,7 @@ class lisExtranjerosPresentacion(LoginRequiredMixin,ListView):
         context['seccion1'] = 'presentacion'
         return context
     
-
-
 # lista de extranjeros de especiales
-
 class listExtranjerosAcumulacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
@@ -1024,8 +1054,6 @@ class listExtranjerosConclusion(LoginRequiredMixin,ListView):
         context['seccion'] = 'especiales'
         context['seccion1'] = 'conclusion'
         return context
-    
-
 
 class listExtranjerosTraslado(LoginRequiredMixin,ListView):
 
@@ -1297,7 +1325,6 @@ class listExtranjerosComar(LoginRequiredMixin,ListView):
         context['seccion1'] = 'comar'
         return context
     
-
 class listExtranjerosDeportacion(LoginRequiredMixin,ListView):
 
     model = NoProceso
