@@ -258,11 +258,15 @@ class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
     nombreDelPadre = forms.CharField(
         label="Nombre completo del padre:",
         widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     )
 
     nombreDelaMadre = forms.CharField(
         label="Nombre completo de la madre:",
         widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     
     )
 
@@ -375,11 +379,15 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
     nombreDelPadre = forms.CharField(
         label="Nombre completo del padre:",
         widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     )
 
     nombreDelaMadre = forms.CharField(
         label="Nombre completo de la madre:",
         widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     
     )
 
@@ -394,7 +402,7 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','domicilio','fechaNacimiento','edad','nacionalidad','genero','estado_Civil','grado_academico','ocupacion','documentoIdentidad','tipoEstancia','deLaPuestaAC','nombreDelPadre','nacionalidad_Padre','nombreDelaMadre','nacionalidad_Madre','origen']
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -498,11 +506,15 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
     nombreDelPadre = forms.CharField(
         label="Nombre completo del padre:",
         widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     )
 
     nombreDelaMadre = forms.CharField(
         label="Nombre completo de la madre:",
         widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     
     )
 
@@ -517,7 +529,7 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad','origen'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
