@@ -282,6 +282,8 @@
                                         reverseButtons: true,
                                     }).then((result) => {
                                         if (result.isConfirmed) {
+                                            console.log("El ID de la llamada es: {{ llamada.id }}");
+
                                             abrir_modal("{% url 'validar_notificacionGen' llamada.id%}");
 
 

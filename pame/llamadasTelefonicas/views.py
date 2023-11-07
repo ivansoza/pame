@@ -832,12 +832,16 @@ class ListLlamadasGenerales(LoginRequiredMixin,ListView):
         apellido_materno = llamada.apellidoMaternoExtranjero
         no_puesta = llamada.numeroExtranjero
 
-        ultimo_nup = llamada.noproceso_set.latest('consecutivo')
-    # Buscar la instancia Repositorio con ese nup
-        try:
-            repositorio = Repositorio.objects.get(nup=ultimo_nup)
-            url_oficio_llamada = repositorio.archivo.url if repositorio.archivo else None
-        except Repositorio.DoesNotExist:
+        extranjero = Extranjero.objects.get(pk=llamada_id)
+
+
+    # Obtener el último nup registrado del extranjero
+        ultimo_nup = extranjero.noproceso_set.latest('consecutivo')
+        tipo_doc_constancia = TiposDoc.objects.get(descripcion="ConstanciaLlamada")
+        repositorio = Repositorio.objects.filter(nup=ultimo_nup, delTipo=tipo_doc_constancia).order_by('-fechaGeneracion').first()
+        if repositorio and repositorio.archivo:
+            url_oficio_llamada = repositorio.archivo.url
+        else:
             url_oficio_llamada = None
 
         context['url_oficio_llamada'] = url_oficio_llamada
@@ -928,11 +932,7 @@ class validarNotificacionGenerales(LoginRequiredMixin,CreateView):
         # Obtén la instancia del extranjero correspondiente al ID
         extranjero = Extranjero.objects.get(id=llamada_id)
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
-
-# Obtener el ID (nup) del último registro NoProceso
         ultimo_no_proceso_id = ultimo_no_proceso.nup
-
-        # Rellena los campos en initial
         initial['nup'] = ultimo_no_proceso_id
         initial['delExtranjero'] = extranjero        
         return initial
@@ -945,8 +945,10 @@ class validarNotificacionGenerales(LoginRequiredMixin,CreateView):
 
         form.instance.noExtranjero = extranjero
         messages.success(self.request, 'Notificación enviada con éxito.')
+        response = super().form_valid(form)
+        constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
 
-        return super().form_valid(form)
+        return response
     
     
     def get_context_data(self, **kwargs):
