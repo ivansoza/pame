@@ -303,7 +303,7 @@ class editExtranjeroINMForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad','deLaPuestaIMN','deLaPuestaAC','deLaPuestaVP'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -432,7 +432,7 @@ class editExtranjeroACForms(forms.ModelForm):
         return data
     class Meta:
       model = Extranjero
-      fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
+      fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad','deLaPuestaIMN','deLaPuestaAC','deLaPuestaVP']
       widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -558,7 +558,7 @@ class editExtranjeroVPForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','domicilio','fechaNacimiento','edad','nacionalidad','genero','estado_Civil','grado_academico','ocupacion','documentoIdentidad','tipoEstancia','nombreDelPadre','nacionalidad_Padre','nombreDelaMadre','nacionalidad_Madre'] 
+        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','domicilio','fechaNacimiento','edad','nacionalidad','genero','estado_Civil','grado_academico','ocupacion','documentoIdentidad','tipoEstancia','nombreDelPadre','nacionalidad_Padre','nombreDelaMadre','nacionalidad_Madre','deLaPuestaIMN','deLaPuestaAC','deLaPuestaVP'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),

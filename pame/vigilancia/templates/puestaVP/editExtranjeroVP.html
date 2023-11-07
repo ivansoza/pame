@@ -116,6 +116,12 @@
                 {{ form.nacionalidad_Madre|as_crispy_field }}
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
+                {{form.deLaPuestaVP|as_crispy_field}}
+            </div>
+        </div>
             {% comment %} <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}"> {% endcomment %}
         <button class="btn btn-primary float-end btn-custom" type="submit">Guardar</button>
         <br>

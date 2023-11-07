@@ -124,6 +124,12 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
+                {{form.deLaPuestaAC|as_crispy_field}}
+            </div>
+        </div>
+
             {% comment %} <input type="hidden" name="deLaPuestaIMN" value="{{ puesta_id }}"> {% endcomment %}
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
         <br>

@@ -115,6 +115,12 @@
                     {{ form.nacionalidad_Madre|as_crispy_field }}
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
+                    {{form.deLaPuestaIMN|as_crispy_field}}
+                </div>
+            </div>
             <button class="btn btn-primary float-end btn-custom" type="submit">Guardar</button>
             <br>
             <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom1">Cancelar</a>
