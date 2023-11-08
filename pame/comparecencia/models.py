@@ -1,5 +1,5 @@
 from django.db import models
-from vigilancia.models import Extranjero, NoProceso
+from vigilancia.models import Extranjero, NoProceso, AutoridadesActuantes
 
 # Create your models here.
 OPCION_ESTADOCIVIL_CHOICES=[
@@ -42,10 +42,10 @@ class Comparecencia(models.Model):
     declaracion = models.TextField(blank=True, null=True)
     solicitaRefugio= models.BooleanField(blank=True, null=True)
     victimaDelito= models.BooleanField(blank=True, null=True)
-    autoridadActuante=models.CharField(max_length=50,blank=True, null=True)
+    autoridadActuante=models.ForeignKey(AutoridadesActuantes,related_name='Autoridadactuante', on_delete=models.CASCADE, verbose_name='Autoridad')
     representanteLegal=models.CharField(max_length=50,blank=True, null=True)
     cedulaRepresentanteLegal=models.CharField(max_length=50,blank=True, null=True)
-    traductor=models.CharField(max_length=50, blank=True, null=True)
+    traductor=models.ForeignKey(AutoridadesActuantes,related_name='Traductor', on_delete=models.CASCADE, verbose_name='Traductor')
     testigo1=models.CharField(max_length=50, blank=True, null=True)
     grado_academico_testigo1=models.CharField(max_length=50, blank=True, null=True)
     testigo2=models.CharField(max_length=50, blank=True, null=True)
