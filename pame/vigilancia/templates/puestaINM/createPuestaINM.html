@@ -19,20 +19,28 @@
     <form id="Puesta" method="post" class="card p-3 mt-5" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.identificadorProceso|as_crispy_field}}
                 <!-- Campo no editable desde la plantilla html -->
                 <script>
                     document.getElementById('id_identificadorProceso').readOnly = true;
                 </script>
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.numeroOficio|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="col-sm-12 col-md-6 col-lg-4">
                 {{form.puntoRevision|as_crispy_field}}
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
+        </div>        
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.nombreAutoridadSignaUno|as_crispy_field}}
+            </div>  
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.nombreAutoridadSignaDos|as_crispy_field}} 
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.fechaOficio|as_crispy_field}}
                 <script>
                     var fechaOficioField = document.getElementById("id_fechaOficio");
@@ -40,30 +48,8 @@
                     fechaOficioField.value = fechaActual;
                 </script>
             </div>
-            
-        </div>        
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.nombreAutoridadSignaUno|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.cargoAutoridadSignaUno|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.gradoinm|as_crispy_field}}
-            </div>  
         </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.nombreAutoridadSignaDos|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.cargoAutoridadSignaDos|as_crispy_field}}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.gradoinm2|as_crispy_field}}
-            </div> 
-        </div>   
+               
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-1 text-center d-flex align-items-center justify-content-center">
                 <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"

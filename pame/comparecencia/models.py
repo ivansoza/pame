@@ -1,4 +1,5 @@
 from django.db import models
+from vigilancia.models import Extranjero, NoProceso
 
 # Create your models here.
 OPCION_ESTADOCIVIL_CHOICES=[
@@ -18,22 +19,62 @@ OPCIONES_ESCOLARIDAD_CHOICES=[
 ]
 
 class Comparecencia(models.Model):
-    fechaComparecencia = models.DateField(verbose_name='Fecha Comparecencia')
-    horaComparecencia = models.DateTimeField(verbose_name='Hora Comparecencia')
-    estadoCivil = models.IntegerField(choices=OPCION_ESTADOCIVIL_CHOICES, verbose_name='Estado Civil')
-    escolaridad = models.IntegerField(choices=OPCIONES_ESCOLARIDAD_CHOICES, verbose_name='Escolaridad')
-    ocupacion = models.CharField(max_length=50, verbose_name='Ocupación')
-    lugarOrigen =models.CharField(max_length=50, verbose_name='Lugar de Origen')
-    calleDomicilioPais = models.CharField(max_length=50, verbose_name='Calle')
-    numeroDomicilioPais = models.IntegerField(verbose_name='Numero')
-    localidadPais = models.CharField(max_length=50, verbose_name='Localidad')
-    domicilioEnMexico = models.BooleanField(verbose_name='Domicilio en México')
-    nombrePadre = models.CharField(max_length=50, verbose_name='Nombre del Padre')
-    apellidoPaternoPadre = models.CharField(max_length=50, verbose_name='Apellido Paterno del Padre')
-    apellidoMaternoPadre = models.CharField(max_length=50, verbose_name='Apellido Materno del Padre')
-    nombreMadre = models.CharField(max_length=50, verbose_name='Nombre de la Madre')
-    apellidoPaternoMadre = models.CharField(max_length=50, verbose_name='Apellido Paterno de la Madre')
-    apellidoMaternoMadre = models.CharField(max_length=50, verbose_name='Apellido Materno de la Madre')
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, related_name="comparecencias")
+    fechahoraComparecencia = models.DateTimeField(auto_now_add=True)
+    estadoCivil = models.CharField(max_length=50,blank=True, null=True)
+    escolaridad = models.CharField(max_length=50,blank=True, null=True)
+    ocupacion = models.CharField(max_length=50,blank=True, null=True)
+    nacionalidad = models.CharField(max_length=50,blank=True, null=True)
+    DomicilioPais = models.CharField(max_length=50,blank=True, null=True)
+    lugarOrigen =models.CharField(max_length=50,blank=True, null=True)
+    domicilioEnMexico = models.BooleanField(blank=True, null=True)
+    nombrePadre = models.CharField(max_length=50,blank=True, null=True)
+    apellidoPaternoPadre = models.CharField(max_length=50,blank=True, null=True)
+    apellidoMaternoPadre = models.CharField(max_length=50,blank=True, null=True)
+    nacionalidadPadre= models.CharField(max_length=50,blank=True, null=True)
+    nombreMadre = models.CharField(max_length=50,blank=True, null=True)
+    apellidoPaternoMadre = models.CharField(max_length=50,blank=True, null=True)
+    apellidoMaternoMadre = models.CharField(max_length=50,blank=True, null=True)
+    nacionalidadMadre= models.CharField(max_length=50,blank=True, null=True)
+    fechaIngresoMexico= models.DateField(blank=True, null=True)
+    lugarIngresoMexico= models.CharField(max_length=50,blank=True, null=True)
+    formaIngresoMexico= models.CharField(max_length=50,blank=True, null=True)
+    declaracion = models.TextField(blank=True, null=True)
+    solicitaRefugio= models.BooleanField(blank=True, null=True)
+    victimaDelito= models.BooleanField(blank=True, null=True)
+    autoridadActuante=models.CharField(max_length=50,blank=True, null=True)
+    representanteLegal=models.CharField(max_length=50,blank=True, null=True)
+    cedulaRepresentanteLegal=models.CharField(max_length=50,blank=True, null=True)
+    traductor=models.CharField(max_length=50, blank=True, null=True)
+    testigo1=models.CharField(max_length=50, blank=True, null=True)
+    grado_academico_testigo1=models.CharField(max_length=50, blank=True, null=True)
+    testigo2=models.CharField(max_length=50, blank=True, null=True)
+    grado_academico_testigo2=models.CharField(max_length=50, blank=True, null=True)
+
+
+
+class Refugio(models.Model):
+    notificacionComar= models.TextField()
+    fechaNotificacion= models.DateField()
+    delExtranjero= models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    contstanciaAdmisnion = models.CharField(max_length=100)
+    acuerdoSuspension = models.CharField(max_length=100)
+        
+class VictimaDelito(models.Model):
+    notificacionAutoridad = models.TextField()
+    fechaNotificacion= models.DateField()
+    delExtranjero= models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    documentoMigratorio = models.CharField(max_length=100)
+    asunto = models.TextField()
+    documentoFGR = models.CharField(max_length=100)
+
+class Consular(models.Model):
+    lugar= models.CharField(max_length=50)
+    fechaNotificacionConsular= models.DateField()
+    horaNotificacionConsular = models.DateTimeField()
+    consulado= models.CharField(max_length=50)
+    tipoResolucion = models.CharField(max_length=50)
+    delExtranjero= models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    numeroOficio = models.CharField(max_length=50)
+    asunto = models.TextField() 
     
-    def __str__(self) -> str:
-        return '__all__'

@@ -655,6 +655,25 @@
               </p>
             </a>
             {% if user.estancia.servicioMedico %}
+             {% if tiene_perfil_medico %}
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Perfil Medico</p>
+                </a>
+              </li>
+            </ul>
+            {% else %}
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Perfil Medico</p>
+                </a>
+              </li>
+            </ul>
+            {% endif %}
             <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
                 <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
@@ -677,7 +696,32 @@
           {% endif %}
           {% endif %}
           <!-- Fin  Extranjeros -->
+          <li class="nav-item {% if navbar == 'catalogos' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'catalogos' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-book"></i>
+              <p>
+                Catalogos
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
 
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "listaAutoridad" %}" class="nav-link {% if seccion == 'autoridades' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Autoridades</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "agregaraAutoridadActuante" %}" class="nav-link {% if seccion == 'actuantes' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Autoridades Actuantes</p>
+                </a>
+              </li>
+            </ul>
+          </li>
         
           </li>
         </ul>

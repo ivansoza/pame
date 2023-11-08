@@ -49,10 +49,24 @@
             
             <td>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "certificadoMedicoExtranjero" extranjero.id%} " data-title="Certificado Medico">
+                {% if extranjero.tiene_certificadoMedico %}
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="Certificado Medico Registrado">
                     <i class="fas fa-file-medical"></i>
                 </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Consulta Medica">
+                
+                {% else %}
+                 {% if tiene_perfil_medico %}
+                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "certificadoMedicoExtranjero" extranjero.id%} " data-title="Certificado Medico">
+                    <i class="fas fa-file-medical"></i>
+                </a>
+                  {% else %}
+                  <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert2(); return false;" data-title="Certificado Medico Registrado">
+                    <i class="fas fa-file-medical"></i>
+                </a>
+                 {% endif %}
+                   
+                {% endif %}
+                <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Consulta Medica">
                     <i class="fas fa-stethoscope"></i>
                 </a>
             </td>
@@ -106,10 +120,29 @@
 
     function showBioAlert() {
         Swal.fire({
-            icon: 'warning',
-            title: '¡Falta Fotografía y/o Firma!',
-            text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
+            title: 'Detalles del certificado',
+            html: `
+                <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+                <br>
+
+
+                <strong>Estación:</strong> {{ estacion }}
+            `,
+            icon: 'success',
+            confirmButtonText: 'Entendido',
             confirmButtonColor: '#2A4B41'
+
+        });
+    }
+
+    function showBioAlert2() {
+        Swal.fire({
+            title: 'Se necesita que el usuario tenga registro de perfil medico',
+            
+            icon: 'warning',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#2A4B41'
+
         });
     }
 </script>

@@ -1,5 +1,5 @@
 from django.db import models
-from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion
+from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion, AutoridadesActuantes
 from PIL import Image, ExifTags
 
 
@@ -37,16 +37,12 @@ class PuestaDisposicionINM(models.Model):
     identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
     numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
     fechaOficio = models.DateTimeField(verbose_name='Fecha de Oficio',auto_now_add=True)
-    nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
-    cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
-    nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
-    cargoAutoridadSignaDos = models.CharField(verbose_name='Cargo de Autoridad que firma (2)', max_length=100)
+    nombreAutoridadSignaUno = models.ForeignKey(AutoridadesActuantes,related_name='Autoridad1', on_delete=models.CASCADE, verbose_name='Autoridad 1')
+    nombreAutoridadSignaDos = models.ForeignKey(AutoridadesActuantes,related_name='Autoridad2', on_delete=models.CASCADE, verbose_name='Autoridad 2')
     oficioPuesta = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Puesta', null=True, blank=True)
     oficioComision = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
-    gradoinm = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
-    gradoinm2 = models.CharField(verbose_name='Grado de Autoridad Asignada 2:', max_length=50, choices=GRADO_ACADEMICO)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
@@ -68,10 +64,8 @@ class PuestaDisposicionAC(models.Model):
     identificadorProceso = models.CharField(verbose_name='Número de Proceso', max_length=50)
     numeroOficio = models.CharField(verbose_name='Número de Oficio', max_length=50)
     fechaOficio = models.DateField(verbose_name='Fecha de Oficio')
-    nombreAutoridadSignaUno = models.CharField(verbose_name='Nombre de Autoridad que firma (1)', max_length=100)
-    cargoAutoridadSignaUno = models.CharField(verbose_name='Cargo de Autoridad que firma (1)', max_length=100)
-    nombreAutoridadSignaDos = models.CharField(verbose_name='Nombre de Autoridad que firma (2)', max_length=100)
-    cargoAutoridadSignaDos = models.CharField(verbose_name='Cargo de Autoridad que firma (2)', max_length=100)
+    nombreAutoridadSignaUno = models.ForeignKey(AutoridadesActuantes,related_name='AutoridadAC1', on_delete=models.CASCADE, verbose_name='Autoridad 1')
+    nombreAutoridadSignaDos = models.ForeignKey(AutoridadesActuantes,related_name='AutoridadAC2', on_delete=models.CASCADE, verbose_name='Autoridad 2')
     oficioPuesta = models.FileField(upload_to=user_directory_pathAC, verbose_name='Oficio de Puesta', null=True, blank=True)
     oficioComision = models.FileField(upload_to=user_directory_pathAC, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
@@ -81,8 +75,6 @@ class PuestaDisposicionAC(models.Model):
     municipio =models.CharField(max_length=50)
     certificadoMedico = models.FileField(upload_to=user_directory_pathAC, verbose_name='Certificado Médico', null=True, blank=True)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
-    grado = models.CharField(verbose_name='Grado de Autoridad Asignada 1:', max_length=50, choices=GRADO_ACADEMICO)
-    grado2 = models.CharField(verbose_name='Grado de Autoridad Asignada 2:', max_length=50, choices=GRADO_ACADEMICO)
 
     class Meta:
         verbose_name_plural = "Puestas a Disposicion AC"
