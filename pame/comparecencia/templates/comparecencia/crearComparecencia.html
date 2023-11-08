@@ -1,0 +1,166 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
+{% endblock link %}
+
+{% block titulo %}Crear Comparecencia {% endblock titulo %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'lisExtranjerosComparecencia' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+
+{% block contenido  %}
+
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Crear Comparecencia
+    </h1>
+</div>
+
+
+<form method="post">
+    <div  class="card p-3" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.nup|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.estadoCivil|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.escolaridad|as_crispy_field}}
+            </div>
+            
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.ocupacion|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.nacionalidad|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.DomicilioPais|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.lugarOrigen|as_crispy_field}}
+            </div>
+            
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.domicilioEnMexico|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.nombrePadre|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.apellidoPaternoPadre|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.apellidoMaternoPadre|as_crispy_field}}
+            </div>
+            
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.nacionalidadPadre|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.nombreMadre|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.apellidoPaternoMadre|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.apellidoMaternoMadre|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.nacionalidadMadre|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.fechaIngresoMexico|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.lugarIngresoMexico|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.formaIngresoMexico|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.declaracion|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.solicitaRefugio|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.victimaDelito|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.autoridadActuante|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.representanteLegal|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.cedulaRepresentanteLegal|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.traductor|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.testigo1|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.grado_academico_testigo1|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.cedulaRepresentanteLegal|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.traductor|as_crispy_field}}
+            </div> 
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.testigo1|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.grado_academico_testigo1|as_crispy_field}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.testigo2|as_crispy_field}}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" >
+                {{form.grado_academico_testigo2|as_crispy_field}}
+            </div> 
+        
+        </div>
+        
+
+
+        <button type="submit" class="btn btn-primary">Crear Comparecencia</button>
+
+    </div>
+</form>
+
+{% endblock contenido%}

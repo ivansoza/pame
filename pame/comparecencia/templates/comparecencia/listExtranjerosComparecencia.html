@@ -47,8 +47,8 @@
                 <td>{{ extranjero.extranjero.nacionalidad }}</td>
 
                 <td align="center">
-                    <a href="{% url "ver_documentos" extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Ver Oficio">
-                        <i class="fas fa-eye"></i>
+                    <a href="{% url 'crear_comparecencia' nup_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Crear Comparecencia">
+                        <i class="fas fa-file"></i>
                     </a>
                 </td>                         
             </tr>

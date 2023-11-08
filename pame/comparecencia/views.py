@@ -5,9 +5,10 @@ from vigilancia.models import NoProceso, Extranjero
 # Create your views here.
 from django.db.models import OuterRef, Subquery
 
-
+from .models import Comparecencia
 from django.views.generic import ListView, CreateView
-
+from django.urls import reverse_lazy
+from .forms import ComparecenciaForm
 def homeComparecencia(request):
     return render(request,"homeComparecencia.html")
 
@@ -50,3 +51,20 @@ class listExtranjerosComparecencia(ListView):
             context['seccion'] = 'comparecencia'
     
             return context
+    
+
+class CrearComparecencia(CreateView):
+    model = Comparecencia
+    form_class = ComparecenciaForm
+
+    template_name = 'comparecencia/crearComparecencia.html'
+    success_url = reverse_lazy('lisExtranjerosComparecencia')  # Reemplazar con el nombre de tu URL de lista de comparecencias
+
+    def get_initial(self):
+        nup_id = self.kwargs.get('nup_id')
+        # Asegúrate de que 'nup' es el campo correcto en tu modelo NoProceso
+        no_proceso = NoProceso.objects.get(nup=nup_id)
+        return {
+            'nup': no_proceso,
+            # ... otros campos iniciales
+        }
