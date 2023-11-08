@@ -14,6 +14,7 @@ from llamadasTelefonicas.models import Notificacion
 from vigilancia.models import NoProceso
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc , Repositorio
 from llamadasTelefonicas.models import LlamadasTelefonicas
+from pertenencias.models import EnseresBasicos
 from django.core.files.base import ContentFile
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
@@ -415,6 +416,59 @@ def constanciaEnseres_pdf(request, nup_id):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/constanciaEnseres.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de formato de enseres basicos 
+def formatoEnseres_pdf(request, nup_id, enseres_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+    enseres_asignados = EnseresBasicos.objects.filter(noExtranjero=extranjero, nup=no_proceso, id=enseres_id)
+
+    
+    # Convierte los enseres a una cadena legible para mostrar en el PDF
+    enseres_asignados_str = ', '.join(enseres_asignados[0].enseres) if enseres_asignados else ''
+
+    # Obtiene los enseres extras 
+    enseres_extras = enseres_asignados[0].enseresExtras if enseres_asignados else ''
+
+    #consultas 
+    nombre = extranjero.nombreExtranjero
+    paterno = extranjero.apellidoPaternoExtranjero
+    materno = extranjero.apellidoMaternoExtranjero
+    nacionalidad = extranjero.nacionalidad.nombre
+    ingreso = extranjero.fechaRegistro
+    firma = extranjero.firma
+
+    fechas_enseres = [enseres.fechaEntrega.strftime('%d/%m/%y') for enseres in extranjero.enseresbasicos_set.all()]
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'nombre': nombre,
+        'paterno': paterno,
+        'materno': materno,
+        'nacionalidad': nacionalidad,
+        'ingreso': ingreso,
+        'fechas_enseres': fechas_enseres,
+        'firma': firma,
+        'enseres_asignados': enseres_asignados_str,
+        'enseres_extras': enseres_extras
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/formatoEnseres.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML

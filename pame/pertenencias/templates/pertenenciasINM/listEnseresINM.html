@@ -48,11 +48,10 @@
             <td>{{ enseres.horaEntrega }}</td>
             <td>
                 <a class="btn btn-sm btn-icon3a tooltip-link"
-                href="#"
+                href="{% url 'fenseresPDF' nup enseres.id %}" target="_blank"
                 data-title="Formato enseres">
                 <i class="fas fa-file-pdf"></i>
                 </a>
-
 
                 <a class="btn btn-sm btn-icon3a tooltip-link"
                 href="{% url 'editarEnseresINM' enseres.id%}"
