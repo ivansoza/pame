@@ -47,7 +47,11 @@
             </td>
             <td>{{ enseres.horaEntrega }}</td>
             <td>
-
+                <a class="btn btn-sm btn-icon3a tooltip-link"
+                href="{% url 'fenseresPDF' nup enseres.id %}" target="_blank"
+                data-title="Formato enseres">
+                <i class="fas fa-file-pdf"></i>
+                </a>
 
                 <a class="btn btn-sm btn-icon3a tooltip-link"
                 href="{% url 'editarEnseresINM' enseres.id%}"
@@ -63,7 +67,10 @@
         {% endfor %}
     </tbody>
 </table>
-<hr>
+<!-- tag -->
+<a class="btn btn-custom6" href="{% url 'enseresPDF' nup %}" target="_blank">Imprimir Documento</a>
+<br><br>
+
 <a href="{% url 'listarExtranjeros' puesta.id %}" class="btn btn-custom5">Volver</a>
 
 <div class="modal fade" id="abrir_modal_universal" role="dialog">

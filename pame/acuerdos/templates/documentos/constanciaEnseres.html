@@ -1,25 +1,24 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[OFICINA O ESTACION] 
+<br>[OFICINA O ESTACION]
 {% endblock %}
 
 {% block title %}
-<title>Constancia de llamadas telefónicas</title>
+<title>Constancia de estrega de enseres básicos de aseo personal.</title>
 {% endblock %}
 
 {% block content %}
 <table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(0, 0, 0);">
     <tbody>
         <tr>
-            <td style="width: 100%; border: 1px solid rgb(0, 0, 0);"><strong>En cumplimiento a lo establecido en las disposiciones contenidas en los art&iacute;culos, 109 fracci&oacute;n VII de la Ley de Migraci&oacute;n; 226 fracci&oacute;n IX, 232 fracci&oacute;n IV y 237 del Reglamento de la Ley de Migraci&oacute;n; 18 y 24 fracci&oacute;n IX&nbsp;</strong>del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias Provisionales del Instituto Nacional de Migraci&oacute;n, se levanta la presente:<div style="text-align: center;"><strong>Constancia de llamadas telef&oacute;nicas&nbsp;</strong></div>
-            </td>
+            <td style="width: 100%; border: 1px solid rgb(0, 0, 0);"><strong>En cumplimiento a lo establecido en las disposiciones contenidas en los art&iacute;culos, 109 fracci&oacute;n VIII de la Ley de Migraci&oacute;n; 226 fracci&oacute;n XIV del Reglamento de la Ley de Migraci&oacute;n, 22 y 24 fracci&oacute;n XIV&nbsp;</strong>del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias Provisionales del Instituto Nacional de Migraci&oacute;n, se levanta la presente:<div style="text-align: center;"><strong>Constancia de entrega de enseres b&aacute;sicos de aseo personal&nbsp;</strong></div></td>
         </tr>
         <tr>
             <td style="width: 100%; border: 1px solid rgb(0, 0, 0);">
-                <p><strong>Nombre:</strong> &nbsp;{{nombreEx}} {{paterno}} {{Materno}}</p>
-                <p><strong>Nacionalidad:</strong> {{nacionalidad}}</p>
-                <p><strong>Fecha de ingreso:</strong> {{ingreso}}</p>
+                <p><strong>Nombre:</strong>&nbsp;{{nombre}}&nbsp;{{paterno}}&nbsp;{{materno}}</p>
+                <p><strong>Nacionalidad:</strong> &nbsp;{{nacionalidad}}</p>
+                <p><strong>Fecha de ingreso:</strong> &nbsp;{{ingreso}}</p>
             </td>
         </tr>
     </tbody>
@@ -29,15 +28,15 @@
     <tbody>
         <tr>
             <td style="width: 100%; padding: 10px; border: 1px solid rgb(0, 0, 0);" colspan="7">
-                <div style="text-align: center;"><strong>Llamadas</strong></div>
+                <div style="text-align: center;"><strong>Enseres b&aacute;sicos de aseo personal</strong></div>
             </td>
         </tr>
         <tr>
-            <td style="width: 5%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);"><strong>No&deg;</strong></td>
+            <td style="width: 5%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);"><strong>N&deg;</strong></td>
             <td style="width: 40%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);"><strong>Fecha</strong>&nbsp;</td>
             <td style="width: 55%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);"><strong>Firma</strong> </td>
         </tr>
-        {% for i in fechas_llamadas %}
+        {% for i in fechas_enseres %}
             {% if i %}
                 <tr>
                     <td style="width: 5%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">{{ forloop.counter }}</td>

@@ -1,0 +1,134 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[Oficina o estacion]
+{% endblock %}
+
+{% block title %}
+<title>Formato de enseres b&aacute;sicos</title>
+{% endblock %}
+
+{% block content %}
+<p class="centrado">
+    <strong>FORMATO DE ENSERES B&Aacute;SICOS</strong>
+</p>
+
+<p style="text-align: justify;"><strong>Nombre:&nbsp;</strong>{{nombre}}&nbsp;{{paterno}}{% if materno %}&nbsp;{{ materno }}{% endif %}</p>
+<p style="text-align: justify;"><strong>Nacionalidad:</strong>&nbsp;{{nacionalidad}}</p>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(0, 0, 0);">
+    <tbody> 
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);"><br></td>
+            <td style="width: 25.5985%; text-align: center; border: 1px solid rgb(0, 0, 0);">Si&nbsp;</td>
+            <td style="width: 29.6501%; text-align: center; border: 1px solid rgb(0, 0, 0);">No&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Papel higi&eacute;nico&nbsp;</td>
+            <td style="width: 25.5985%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Papel Higiénico" in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+            <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Papel Higiénico" not in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Kit de aseo personal&nbsp;</td>
+            <td style="width: 25.5985%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Kit Personal" in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+            <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Kit Personal" not in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Pa&ntilde;al desechable (en caso de ser necesaria)</td>
+            <td style="width: 25.5985%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Pañal Desechable" in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+            <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Pañal Desechable" not in enseres_asignados %}
+                    X
+                {% endif %} 
+                <br></td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Toalla Sanitaria (en caso de ser necesaria)</td>
+            <td style="width: 25.5985%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Toalla Sanitaria" in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+            <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Toalla Sanitaria" not in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Colchoneta (en buen estado)</td>
+            <td style="width: 25.5985%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Colchoneta" in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+            <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Colchoneta" not in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Cobertor (en buen estado)</td>
+            <td style="width: 25.5985%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Manta Térmica" in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+            <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                {% if "Manta Térmica" not in enseres_asignados %}
+                    X
+                {% endif %}
+                <br></td>
+        </tr>
+        <tr>
+            <td style="width: 44.5902%; border: 1px solid rgb(0, 0, 0);">Otros</td>
+            <td>
+                {% if enseres_extras %}
+                    {{ enseres_extras }}
+                {% else %}
+                    <td style="width: 29.6501%; border: 1px solid rgb(0, 0, 0); text-align: center;">
+                            X
+                    <br></td>
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    Nota: con el presente documento acepto haber recibiso los enseres
+    b&aacute;sicos. 
+</p>
+
+<div class="columnas">
+    <div class="columna">
+        <p class="firma">[Postgrado][Nombre del usuario] [paterno] [materno], [Cargo]
+            <br> autoridad migratoria que recibe
+        </p>
+    </div>
+    <div class="columna">
+        <p class="firma">{{nombre}}&nbsp;{{paterno}}{% if materno %}&nbsp;{{ materno }}{% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
