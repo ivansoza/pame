@@ -37,7 +37,7 @@ class Responsable(models.Model):
     
 
 class Estacion(models.Model):
-    identificador = models.CharField(max_length=10, null=False)
+    identificador = models.CharField(max_length=25, null=False)
     nombre = models.CharField(max_length=50, null=False)
     calle = models.CharField(max_length=50, null=False)
     noext = models.CharField(max_length=5)
