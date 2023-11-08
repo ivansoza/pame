@@ -1,14 +1,19 @@
 from django.db import models
 from vigilancia.models import Extranjero, NoProceso
 from catalogos.models import Estacion
+from django.contrib.auth.models import User
+from django.conf import settings
+
 # Create your models here.
 class PerfilMedico(models.Model):
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nombreMedico = models.CharField(max_length=50)
-    apellidoPaternoMedico = models.CharField(max_length=50)
-    apellidoMaternoMedico = models.CharField(max_length=50)
+    apellidosMedico = models.CharField(max_length=100)
     cedula = models.CharField(max_length=50)
     class Meta:
         verbose_name_plural= "Perfiles Medicos"
+
+
 
 class Consulta(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
@@ -79,18 +84,17 @@ class DetalleTratamiento(models.Model):
     class Meta:
         verbose_name_plural = "Detalle Tratamientos"
 
-OPCION_TIPO_CHOICES= [
-    [0,'INGRESO'],
-    [1,'EGRESO'],
-]
 
+OPCION_TIPO_CHOICES=[
+    ('INGRESO','INGRESO'),
+    ('EGRESO','EGRESO'),
+]
 class CertificadoMedico(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, related_name='certificados_medicos')
     nup = models.ForeignKey(NoProceso, on_delete= models.CASCADE)
     delaEstacion = models.ForeignKey(Estacion, on_delete= models.CASCADE)
     delMedico = models.ForeignKey(PerfilMedico, on_delete=models.CASCADE)
-    fechaCertificado = models.DateField()
-    horaCertificado = models.CharField(max_length=50)
+    fechaHoraCertificado = models.DateTimeField(auto_now_add=True)
     tipoCertificado = models.CharField(verbose_name='Tipo Certificado', max_length=25, choices=OPCION_TIPO_CHOICES, default='INGRESO')
 # Exploracion física
     temperatura = models.DecimalField(max_digits=10, decimal_places=2)

@@ -5,7 +5,7 @@ import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
 from .models import Firma
-from catalogos.models import Relacion 
+from catalogos.models import Relacion , AutoridadesActuantes
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
         archivo = self.cleaned_data.get(field_name)
@@ -41,8 +41,6 @@ class ValidacionArchivosPDF(forms.Form):
         return archivo
 
 class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
-    models=PuestaDisposicionINM
-    fields = ['gradoinm','gradoinm2']
     
     numeroOficio = forms.CharField(
         label= "Número de Oficio:",
@@ -58,23 +56,7 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
         # Establecer la fecha actual como valor por defecto
         self.fields['fechaOficio'].initial = datetime.date.today()
 
-    nombreAutoridadSignaUno = forms.CharField(
-        label= "Nombre de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
-    cargoAutoridadSignaUno = forms.CharField(
-        label= "Cargo de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
-
-    nombreAutoridadSignaDos = forms.CharField(
-        label= "Nombre de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
-    cargoAutoridadSignaDos = forms.CharField(
-        label= "Cargo de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
+    
 
     oficioPuesta = forms.FileField(
         label= "Oficio de Puesta:",
@@ -104,12 +86,19 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
     class Meta:
         model = PuestaDisposicionINM
         fields ='__all__'
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Obtén el usuario actual de los argumentos
+        super(puestDisposicionINMForm, self).__init__(*args, **kwargs)
+
+        if user:
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            self.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+            self.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
 
 
 
 class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
-    models = PuestaDisposicionAC
-    fields = ['grado','grado2']
+   
 
     
     numeroOficio = forms.CharField(
@@ -122,25 +111,11 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
         widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
 
-    nombreAutoridadSignaUno = forms.CharField(
-        label= "Nombre de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
+   
 
-    cargoAutoridadSignaUno = forms.CharField(
-        label= "Cargo de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
 
-    nombreAutoridadSignaDos = forms.CharField(
-        label= "Nombre de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
-
-    cargoAutoridadSignaDos = forms.CharField(
-        label= "Cargo de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
+    
+    
 
     oficioPuesta = forms.FileField(
         label= "Oficio de Puesta:",

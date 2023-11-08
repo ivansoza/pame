@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 class Tipos(models.Model):
     tipo = models.CharField(max_length=50, null=False)
 
@@ -74,3 +75,79 @@ class Relacion(models.Model):
     tipoRelacion = models.CharField(max_length=50)
     def __str__(self) -> str:
         return self.tipoRelacion
+
+GRADOS_ACADEMICOS = [
+    ('Doctorado', 'Doctorado'),
+    ('Maestría', 'Maestría'),
+    ('Licenciatura', 'Licenciatura'),
+    ('Bachillerato', 'Bachillerato'),
+    ('Diplomado', 'Diplomado'),
+    ('Técnico', 'Técnico'),
+    ('Secundaria', 'Secundaria'),
+    ('Primaria', 'Primaria'),
+    ('Sin educación formal', 'Sin educación formal'),
+]
+ESTADO_OPCIONES =[
+    ('Vigente','Vigente'),
+    ('NoVigente','No Vigente'),
+    ('Libre','Libre'),
+    ('Asignado','Asignado'),
+]
+class Autoridades(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Nombre de autoridad')
+    apellidoPaterno = models.CharField(max_length=100, verbose_name='Apellido paterno')
+    apellidoMaterno = models.CharField(max_length=100, verbose_name='Apellido materno')
+    telefono = models.CharField(max_length=12, verbose_name='Numero telefonico')
+    email = models.EmailField(max_length=100, verbose_name='Correo electronico')
+    grado_academico = models.CharField(verbose_name='Grado academico', max_length=50, choices=GRADOS_ACADEMICOS)
+    estado = models.CharField(verbose_name='Estado actual de la autoridad', max_length=25,choices=ESTADO_OPCIONES, default='Vigente')
+    def __str__(self):
+     full_name = self.nombre
+     if self.apellidoPaterno:
+        full_name += f' {self.apellidoPaterno}'
+     if self.apellidoMaterno:
+        full_name += f' {self.apellidoMaterno}'
+     return full_name 
+ESTATUS_AUTORIDAD = [
+    ('Activo','Activo'),
+    ('Inactivo','Inactivo'),
+]
+OPCIONES_CARGO=[
+    ('Director', 'Director'),
+    ('Subdirector', 'Subdirector'),
+    ('Jefe de Seguridad', 'Jefe de Seguridad'),
+    ('Oficial de Inmigración', 'Oficial de Inmigración'),
+    ('Oficial de Custodia', 'Oficial de Custodia'),
+    ('Oficial de Documentación', 'Oficial de Documentación'),
+    ('Oficial de Derechos Humanos', 'Oficial de Derechos Humanos'),
+    ('Oficial Médico', 'Oficial Médico'),
+    ('Oficial de Procesamiento de Solicitudes', 'Oficial de Procesamiento de Solicitudes'),
+    ('Abogado de Inmigración', 'Abogado de Inmigración'),
+    ('Traductor', 'Traductor'),
+    ('Oficial de Seguridad Nacional', 'Oficial de Seguridad Nacional'),
+    ('Oficial de Reubicación', 'Oficial de Reubicación'),
+    ('Consejero de Asilo', 'Consejero de Asilo'),
+    ('Asistente Social', 'Asistente Social'),
+    ('Oficial de Derechos de los Menores', 'Oficial de Derechos de los Menores'),
+    ('Otro', 'Otro'),
+
+]
+class AutoridadesActuantes(models.Model):
+    autoridad = models.ForeignKey(Autoridades, on_delete=models.CASCADE, verbose_name='Autoridad')
+    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación')
+    estatus = models.CharField(choices=ESTATUS_AUTORIDAD,max_length=25, verbose_name='Estatus de la autoridad en la estación', default='Activo')
+    cargo = models.CharField(choices=OPCIONES_CARGO, verbose_name='Cargo de la autoridad', max_length=50)
+    fechaInicio = models.DateField(verbose_name='Fecha de inicio de actividades', auto_now_add=True)
+    fechaFin = models.DateField(verbose_name='Fceha fin de actividades', blank=True, null=True)
+    def __str__(self):
+        return '%s' % self.autoridad
+@receiver(post_delete, sender=AutoridadesActuantes)
+def cambiar_estado_autoridad(sender, instance, **kwargs):
+    autoridad = instance.autoridad
+    autoridad.estado = 'Libre'
+    autoridad.save()
+class FirmaAutoridad(models.Model):
+    autoridad = models.OneToOneField(Autoridades, on_delete=models.CASCADE)
+    firma_imagen = models.ImageField(upload_to='firmas/', blank=True, null=True)
+    fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)

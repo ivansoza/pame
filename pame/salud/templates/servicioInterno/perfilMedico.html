@@ -1,0 +1,58 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}?v1.199e8">
+{% endblock link %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1" href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">
+        Perfil Médico
+    </h1>
+</div>
+<form method="post" enctype="multipart/form-data" id="formulario1">
+    {% csrf_token %}
+    <div class="card p-3" enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>
+                {{nombreMedico}} {{apellidosMedico}}
+            </h1>
+        </div>
+        <h3>Ingrese cédula</h3>
+        <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+            {{ form.usuario|as_crispy_field }}
+            <script>
+                document.getElementById('id_usuario').readOnly = true;
+            </script>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+            {{ form.nombreMedico|as_crispy_field }}
+            <script>
+                document.getElementById('id_nombreMedico').readOnly = true;
+            </script>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+            {{ form.apellidosMedico|as_crispy_field }}
+            <script>
+                document.getElementById('id_apellidosMedico').readOnly = true;
+            </script>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-12">
+            {{ form.cedula|as_crispy_field }}
+        </div>
+        <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+        <br>
+        <a href="{% url "listExtranjeroEstacion" %}" class="btn btn-custom1">Cancelar</a>
+    </div>
+</form>
+</div>
+{% endblock contenido %}

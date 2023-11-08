@@ -1,0 +1,70 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+
+{% load static %}
+{% block link %}
+<link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
+{% endblock link %}
+
+
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white;
+    }
+
+    .custom-close-button {
+        color: white;
+    }
+</style>
+<div class="titulo-general-container mt-5">
+    <h1 class="titulo-general">
+        Agregar Autoridad
+    </h1>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="card p-3" enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>Datos de la autoridad</h1>
+
+        </div>
+        {%csrf_token%}
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-4">
+                {{ form.nombre|as_crispy_field }}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-4">
+                {{ form.apellidoPaterno|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.apellidoMaterno|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                {{ form.telefono|as_crispy_field }}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                {{ form.email|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.grado_academico|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.estado|as_crispy_field }}
+            </div>
+        </div>
+        <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+    <br>
+    <a href="{% url 'listaAutoridad' %}" class="btn btn-custom1">Cancelar</a>
+    </div>
+</form>
+{% endblock contenido%}
