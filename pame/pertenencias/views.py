@@ -2613,9 +2613,9 @@ class CrearEnseres(LoginRequiredMixin,CreateView):
         messages.success(self.request, 'Enseres creado con éxito.')
         estatus = extranjero.estatus
         if estatus == "Trasladado":
-            return reverse('listarExtranjerosEstacion')
+            return reverse('listTrasladados')
         else:
-          return reverse('listTrasladados')
+          return reverse('listarExtranjerosEstacion')
     
 
     def get_context_data(self, **kwargs):
