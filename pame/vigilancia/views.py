@@ -76,7 +76,7 @@ from vigilancia.models import Firma
 from .forms import FirmaForm
 from django.core.files.base import ContentFile
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
-
+from catalogos.models import AutoridadesActuantes
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
 
@@ -248,6 +248,16 @@ class createPuestaINM(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequire
     template_name = 'puestaINM/createPuestaINM.html'  
     success_url = reverse_lazy('homePuestaINM')
     login_url = '/permisoDenegado/'  # Reedirige en caso de no estar logueado 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        user = self.request.user
+
+        if user:
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+
+        return form
     def get_initial(self):
         initial = super().get_initial()
 
@@ -1244,6 +1254,16 @@ class createPuestaAC(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequired
     template_name = 'puestaAC/createPuestaAC.html'  
     success_url = reverse_lazy('homePuestaAC')
     login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        user = self.request.user
+
+        if user:
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+
+        return form
     def get_initial(self):
         initial = super().get_initial()
         Usuario = get_user_model()
@@ -3407,8 +3427,7 @@ def manejar_imagen(request):
 def manejar_imagen4(request):
     if request.method == "POST":
         imagen = request.FILES.get('image')
-
-
+        extranjero_id = request.POST.get('extranjero_id')  # Obtén el puesta_id desde los datos del formulario
         try:
             # Conversion de la imagen subida
             imagen_bytes_io = BytesIO(imagen.read())

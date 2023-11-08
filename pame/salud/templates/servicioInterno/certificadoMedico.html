@@ -15,84 +15,115 @@
 {% endblock dashboard %}
 {% block contenido %}
 
-<div class="titulo-general-container mt-5">
+<div class="titulo-general-container mt-5 d-flex justify-content-between align-items-center ">
     <h1 class="titulo-general">
         Certificado Medico
-        <span class="puesta-color"><strong>{{nombre}}</strong></span>
-        <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
-            <i class="fas fa-user"></i> <!-- Icono de usuario -->
-        </button>
+        <span class="puesta-color"><strong>{{nombre}} {{ape1}} {% if ape2 %} {{ape2}} {% endif %} </strong></span>
     </h1>
-  </div>
+    <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
+        Verificar Extranjero  <i class="fas fa-user"></i> <!-- Icono de usuario -->
+    </button>
+</div>
  <form method="post" enctype="multipart/form-data" id="formulario1">
     {% csrf_token %}
     {{ form.puesta.as_hidden }}
-    <div  class="card p-3" enctype="multipart/form-data">
-        <div class="d-flex align-items-center justify-content-between">
-            <h1>Cetificado Medico</h1>
-            
-        </div>
-
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3">
-                {{ form.extranjero|as_crispy_field }}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3">
-                {{ form.nup|as_crispy_field }}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.delaEstacion|as_crispy_field }}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.delMedico|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{ form.fechaCertificado|as_crispy_field }}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{ form.horaCertificado|as_crispy_field }}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-4">
-                {{ form.tipoCertificado|as_crispy_field }}
-            </div>
-        </div>
-    </div>
+   
     <div  class="card p-3" enctype="multipart/form-data">
         <div class="d-flex align-items-center justify-content-between">
             <h1>Exploración Física</h1>
         </div>
-        
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+                {{ form.extranjero|as_crispy_field }}
+                <script>
+                    document.getElementById('id_extranjero').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+                {{ form.nup|as_crispy_field }}
+                <script>
+                    document.getElementById('id_nup').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3" style='display:none'>
+                {{ form.delaEstacion|as_crispy_field }}
+                <script>
+                    document.getElementById('id_delaEstacion').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3" style='display:none'>
+                {{ form.delMedico|as_crispy_field }}
+                <script>
+                    document.getElementById('id_delMedico').readOnly = true;
+                </script>
+            </div>
+        </div>
+        <div class="row">
+           
+          
+            <div class="col-sm-12 col-md-4 col-lg-4" style='display:none'>
+                {{ form.tipoCertificado|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tipoCertificado').readOnly = true;
+                </script>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.temperatura|as_crispy_field }}
+                <script>
+                    document.getElementById('id_temperatura').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.frecuenciaRespiratoria|as_crispy_field }}
+                <script>
+                    document.getElementById('id_frecuenciaRespiratoria').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.presionArterialSistolica|as_crispy_field }}
+                <script>
+                    document.getElementById('id_presionArterialSistolica').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.presionArterialDiastolica|as_crispy_field }}
+                <script>
+                    document.getElementById('id_presionArterialDiastolica').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.peso|as_crispy_field }}
+                <script>
+                    document.getElementById('id_peso').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estatura|as_crispy_field }}
+                <script>
+                    document.getElementById('id_estatura').readOnly = true;
+                </script>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.oxigenacionSaturacion|as_crispy_field }}
+                <script>
+                    document.getElementById('id_oxigenacionSaturacion').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.oxigenacionFrecuencia|as_crispy_field }}
+                <script>
+                    document.getElementById('id_oxigenacionFrecuencia').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.indiceMasaCorporal|as_crispy_field }}
+                <script>
+                    document.getElementById('id_indiceMasaCorporal').readOnly = true;
+                </script>
             </div>
         </div>
     </div>
@@ -104,41 +135,77 @@
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.hepatitis|as_crispy_field }}
+                <script>
+                    document.getElementById('id_hepatitis').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.tubercolisis|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tubercolisis').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.paludismo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_paludismo').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.dengue|as_crispy_field }}
+                <script>
+                    document.getElementById('id_dengue').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.colera|as_crispy_field }}
+                <script>
+                    document.getElementById('id_colera').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.hipertension|as_crispy_field }}
+                <script>
+                    document.getElementById('id_hipertension').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.cardiopatias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_cardiopatias').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.vih|as_crispy_field }}
+                <script>
+                    document.getElementById('id_vih').disabled = true;
+                </script>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.otrosAntecedentes|as_crispy_field }}
+                <script>
+                    document.getElementById('id_otrosAntecedentes').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.antecedentesQuirurgicos|as_crispy_field }}
+                <script>
+                    document.getElementById('id_antecedentesQuirurgicos').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.padecimientosCronicos|as_crispy_field }}
+                <script>
+                    document.getElementById('id_padecimientosCronicos').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.alergias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_alergias').readOnly = true;
+                </script>
             </div>
         </div>
     </div>
@@ -151,62 +218,119 @@
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.diarrea|as_crispy_field }}
+                <script>
+                    document.getElementById('id_diarrea').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.infeccionesRespiratorias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_infeccionesRespiratorias').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.fiebre|as_crispy_field }}
+                <script>
+                    document.getElementById('id_fiebre').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.hemorragias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_hemorragias').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.nauseasVomito|as_crispy_field }}
+                <script>
+                    document.getElementById('id_nauseasVomito').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.tos|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tos').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.dolores|as_crispy_field }}
+                <script>
+                    document.getElementById('id_dolores').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.lesionesPiel|as_crispy_field }}
+                <script>
+                    document.getElementById('id_lesionesPiel').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.mareosVertigo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_mareosVertigo').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.tabaquismo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tabaquismo').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.bebidasAlcoholicas|as_crispy_field }}
+                <script>
+                    document.getElementById('id_bebidasAlcoholicas').disabled = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-3">
                 {{ form.embarazo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_embarazo').disabled = true;
+                </script>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.tiempoEmbarazo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tiempoEmbarazo').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.tipoDieta|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tipoDieta').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.toxicomanias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_toxicomanias').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.sintomasCovid|as_crispy_field }}
+                <script>
+                    document.getElementById('id_sintomasCovid').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.conclusionDiagnostica|as_crispy_field }}
+                <script>
+                    document.getElementById('id_conclusionDiagnostica').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-6">
                 {{ form.observaciones|as_crispy_field }}
+                <script>
+                    document.getElementById('id_observaciones').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-12">
                 {{ form.tratamiento|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tratamiento').readOnly = true;
+                </script>
             </div>
         </div>
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
@@ -353,11 +477,11 @@
                                     reverseButtons: true,
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        console.log('Se confirmó');
+                                            $('#formulario1 input').removeAttr('readonly'); // Quita el atributo 'readonly' de todos los campos de entrada del formulario
+                                            $('#formulario1 input').prop('disabled', false); // Quita el atributo 'disabled'
+                                            $('#formulario1 textarea').removeAttr('readonly');
 
-                                        document.getElementById('formulario1').removeAttribute('disabled');
-
-                                    }
+                                        }
                                 });
                             
                                 // Agrega el atributo de datos personalizados al botón "Aceptar"
