@@ -1,13 +1,13 @@
 from django.shortcuts import render
-from .forms import ResponsableForm, AutoridadesForms, AutoridadesActuantesForms
+from .forms import ResponsableForm, AutoridadesForms, AutoridadesActuantesForms, TraductoresForms
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.urls import reverse
-from django.views.generic import CreateView, ListView, DeleteView
+from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 # Create your views here.
-from .models import Responsable, Autoridades, AutoridadesActuantes, Estacion
+from .models import Responsable, Autoridades, AutoridadesActuantes, Estacion, Traductores
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db import transaction
@@ -51,7 +51,19 @@ class crearAutoridad(CreateView):
         context['navbar'] = 'catalogos'
         context['seccion'] = 'autoridades'        
         return context
-
+    
+class editarAutoridad(UpdateView):
+    template_name='Autoridades/editarAutoridades.html'
+    model = Autoridades
+    form_class = AutoridadesForms
+    def get_success_url(self):
+        messages.success(self.request, 'Datos de la autoridad editados con éxito.')
+        return reverse('listaAutoridad')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'autoridades'        
+        return context
 class agregarAutoridadActuante(ListView):
     template_name = 'Autoridades/autoridadActuante.html'
     model = Autoridades
@@ -64,7 +76,7 @@ class agregarAutoridadActuante(ListView):
         user = self.request.user
         user_estacion = user.estancia
         # Filtrar los objetos de AutoridadesActuantes por la estación asociada al usuario
-        context['actuantes'] = AutoridadesActuantes.objects.filter(estacion=user_estacion)  
+        context['actuantes'] = AutoridadesActuantes.objects.filter(estacion=user_estacion, estatus='Activo')
         return context
     
 class crearAutoridadActuante(CreateView):
@@ -132,5 +144,75 @@ class quitarAutoridadActuante(DeleteView):
             messages.success(self.request, 'Autoridad Actuante Deshabilitada.')
 
             return redirect(self.success_url)
+        
     
+class listaTraductores(ListView):
+    template_name = 'Traductores/listaTraductores.html'
+    model = Traductores
+    context_object_name ='traductores'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'traductores'        
+        return context
 
+class crearTraductor(CreateView):
+    template_name = 'Traductores/crearTraductor.html'
+    model = Traductores
+    form_class = TraductoresForms
+    def get_success_url(self):
+        messages.success(self.request, 'Traductor agregado correctamente.')
+        return reverse('listaTraductores')
+    def get_initial(self):
+        initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        initial['estacion'] = estacion
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'traductores'        
+        return context
+    
+class editarTraductor(UpdateView):
+    template_name='Traductores/editarTraductor.html'
+    model = Traductores
+    form_class = TraductoresForms
+    def get_success_url(self):
+        messages.success(self.request, 'Datos del traductor editados con éxito.')
+        return reverse('listaTraductores')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'traductores'        
+        return context
+
+class editarEstatusActuante(UpdateView):
+    template_name = 'Autoridades/estatusAutoridadActuante.html'
+    model = AutoridadesActuantes
+    form_class = AutoridadesActuantesForms
+    def get_success_url(self):
+        messages.success(self.request, 'Autoridad Actuante rebocada.')
+        return reverse('agregaraAutoridadActuante')
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['estatus']='Inactivo'
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'actuantes'        
+        return context

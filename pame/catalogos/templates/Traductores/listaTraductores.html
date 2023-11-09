@@ -1,22 +1,19 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-{% load crispy_forms_tags %}
 
 {% load static %}
 {% block link %}
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
 {% endblock link %}
-
-
-
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
     <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
 {% block contenido %}
 <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
-        Lista  de Autoridades
+        Lista de traductores en la estación :
+        <span class="puesta-color" ><strong>{{ estacion }}</strong></span>
     </h1>
   </div>
 <br>
@@ -31,28 +28,30 @@
             <th>Nombre</th>
             <th>Apellido(s)</th>
             <th>Telefono</th>
-            <th>Correo</th>
+            <th>Email</th>
+            <th>Idiomas</th>
             <th style="width: 5%;">Opciones</th>
 
-
-            <!-- <th>Puesta</th> -->
         </tr>
     </thead>
     <tbody>
-        {% for autoridad in autoridades %}
+        {% for extranjero in traductores %}
         <tr>
-            <td>{{ autoridad.nombre }}</td>
+            <td>{{ extranjero.nombre}}</td>
             <td>
-                {% if autoridad.apellidoPaterno %}
-                    {{ autoridad.apellidoPaterno }} 
-                {% endif %}
-                {% if autoridad.apellidoMaterno %}
-                    {{ autoridad.apellidoMaterno }}
-                {% endif %}</td>
-            <td>{{autoridad.telefono}}</td>
-            <td>{{autoridad.email}}</td>
-            <td><a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarAutoridad' autoridad.id %}" data-title="Editar datos de autoridad">
-                <i class="fa-solid fa-user-pen"></i>            </a></td>
+                    {{ extranjero.apellido_paterno }} 
+                    {{ extranjero.apellido_materno }}
+            <td>{{ extranjero.telefono }} </td>
+            <td>{{ extranjero.email }} </td>
+            <td>{{ extranjero.idiomas }} </td>
+            <td>
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'editarTraductor'  extranjero.id %}" data-title="Editar Traductor">
+                    <i class="fa-solid fa-user-pen"></i>                  </a>
+            </td>
+
+
+
+            
         </tr>
         {% endfor %}
 
@@ -61,8 +60,10 @@
                 <th>Nombre</th>
                 <th>Apellido(s)</th>
                 <th>Telefono</th>
-                <th>Correo</th>
+                <th>Email</th>
+                <th>Idiomas</th>
                 <th style="width: 5%;">Opciones</th>
+
 
             </tr>
         </tfoot>
@@ -72,7 +73,6 @@
 </div>
 
 
-<a href="#" class="btn btn-custom">Volver a la Lista de Puestas</a>
 
 
 
@@ -83,11 +83,11 @@
 {% block datatable %}
 
  {
-    text: 'Agregar Autoridad',
+    text: 'Agregar Traductor',
     className: 'btn btn-custom mr-2',
     action: function (e, dt, node, config) {
       // Redirigir a la URL relativa a la ubicación actual
-      window.location.href = '{% url 'crearAutoridad' %}';
+      window.location.href = '{% url "crearTraductores" %}';
    }
   },
   

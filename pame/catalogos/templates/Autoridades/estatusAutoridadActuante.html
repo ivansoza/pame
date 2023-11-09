@@ -1,0 +1,59 @@
+{% load static %}
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white;
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+
+<!-- Bootstrap CSS -->
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Eliminar Autoridad Actuante</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="delete-confirmation text-center">
+            <i class="fas fa-exclamation-circle fa-6x" style="color: #8B2941;"></i>
+            <h2> ¿Estás seguro de eliminar la autoridad actuante?</h2>
+        </div>
+
+        {% load crispy_forms_tags %}
+
+        <form  action="{% url "editarActuante"  pk=object.id%}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+          
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-lg-6"  style='display:none'>
+                        {{ form.autoridad|as_crispy_field}}
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6" style='display:none'>
+                        {{ form.estacion|as_crispy_field }}
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6" style='display:none'>
+                        {{ form.cargo|as_crispy_field }}
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-6" style='display:none'>
+                        {{ form.estatus|as_crispy_field }}
+                    </div>
+                   
+                </div>
+         
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+            </div>
+        </form>
+        
+        
+    </div>
+</div>
