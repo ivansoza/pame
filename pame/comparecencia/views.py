@@ -7,10 +7,11 @@ from django.db.models import OuterRef, Subquery
 from django.shortcuts import get_object_or_404
 
 from .models import Comparecencia
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, View
 from django.urls import reverse_lazy
 from .forms import ComparecenciaForm
 from django.db.models import Q
+from django.http import JsonResponse
 
 def homeComparecencia(request):
     return render(request,"homeComparecencia.html")
@@ -105,3 +106,34 @@ class CrearComparecencia(CreateView):
             context['navbar'] = 'comparecencia'  
             context['seccion'] = 'comparecencia'
             return context
+    
+
+class CrearComparecenciaAjax(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        form = ComparecenciaForm(request.POST)
+        if form.is_valid():
+            comparecencia = form.save(commit=False)
+            no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+            comparecencia.nup = no_proceso
+            comparecencia.save()
+            data = {'success': True, 'message': 'Comparecencia creada con éxito.'}
+            return JsonResponse(data, status=200)
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+
+    def get(self, request, nup_id, *args, **kwargs):
+        form = ComparecenciaForm()
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form.fields['nup'].initial = no_proceso
+        # Ajusta el contexto si es necesario
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': no_proceso.extranjero,
+            'navbar': 'comparecencia',
+            'seccion': 'comparecencia',
+            # otros contextos que necesites
+        }
+        return render(request, 'comparecencia/crearComparecencia.html', context)
+    

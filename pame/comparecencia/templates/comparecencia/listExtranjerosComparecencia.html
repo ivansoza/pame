@@ -50,6 +50,9 @@
                     <a href="{% url 'crear_comparecencia' nup_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Crear Comparecencia">
                         <i class="fas fa-file"></i>
                     </a>
+                    <a href="{% url 'crear_comparecencia_ajax' nup_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Crear Comparecencia por ajax">
+                        <i class="fas fa-file"></i>
+                    </a>
                 </td>                         
             </tr>
             {% endfor %}
