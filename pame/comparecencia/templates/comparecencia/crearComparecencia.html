@@ -20,14 +20,14 @@
 {% block contenido  %}
 
 <style>
-    /* Estilo para pestañas no activas */
     #myTab .nav-link {
+        pointer-events: none; /* Desactiva los eventos del ratón como el clic */
         color: #9E8364; /* Color antes de ser seleccionado */
         font-weight: normal;
     }
-
-    /* Estilo para la pestaña activa */
+    
     #myTab .nav-link.active {
+        pointer-events: auto; /* Activa los eventos del ratón para la pestaña activa */
         color: #000; /* Un color más fuerte cuando esté activo */
         font-weight: bold;
     }
@@ -152,7 +152,6 @@
             <div class="navigation-buttons">
                 <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
                 <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
-                <button type="button" class="btn btn-custom5" id="backButton" onclick="navigateTabs('prev')" style="display:none;">Regresar</button>
 
                 <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
             </div>
@@ -161,42 +160,51 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function navigateTabs(direction) {
-            var $activeTab = $('#myTab .nav-link.active');
+        $(document).ready(function() {
             var $tabs = $('#myTab .nav-link');
-            var activeIndex = $tabs.index($activeTab);
-            var generalTabIndex = $tabs.index($('#general-tab')); // Índice de la pestaña 'General'
-        
-            // Ocultar todos los botones y mostrar las pestañas por defecto
-            $('#submitForm').hide();
-            $('#finalOptions').hide();
-            $('#backButton').hide();
-            $('#myTab, #myTabContent').show();
-        
-            if (direction === 'next' && activeIndex === generalTabIndex) {
-                // Si estamos en la pestaña 'General' y se presiona 'Siguiente', mostrar finalOptions y ocultar pestañas
-                $('#finalOptions').show();
-                $('#backButton').show();
-                $('#myTab, #myTabContent').hide();
-            } 
-            else if (direction === 'prev') {
-                // Siempre regresar a la pestaña 'General' si se presiona 'Regresar'
-                $('#general-tab').tab('show'); // Activar la pestaña 'General'
-                $('#backButton').show(); // Mostrar el botón 'Regresar' si no estamos en la pestaña 'General'
+            
+            function updateNavigationButtons() {
+                var $activeTab = $tabs.filter('.active');
+                var activeIndex = $tabs.index($activeTab);
+                var isFirstTab = activeIndex === 0;
+                var isLastTab = activeIndex === $tabs.length - 1;
+    
+                // Muestra u oculta el botón "Anterior"
+                $('.btn-custom5').toggle(!isFirstTab);
+    
+                // Muestra u oculta el botón "Siguiente" y "Crear Comparecencia"
+                $('.btn-custom6').toggle(!isLastTab);
+                $('#submitForm').toggle(isLastTab);
             }
-            else {
-                // Navegación normal entre pestañas
-                var nextIndex = direction === 'next' ? activeIndex + 1 : activeIndex - 1;
-                if (nextIndex >= 0 && nextIndex < $tabs.length) {
+    
+            // Inicializa los botones al cargar la página
+            updateNavigationButtons();
+    
+            // Evento al hacer clic en "Siguiente"
+            $('.btn-custom6').click(function() {
+                var $activeTab = $tabs.filter('.active');
+                var nextIndex = $tabs.index($activeTab) + 1;
+                if (nextIndex < $tabs.length) {
                     $tabs.eq(nextIndex).tab('show');
                 }
-                // Si no estamos en la primera pestaña, mostrar 'Anterior'
-                if (nextIndex > 0) {
-                    $('#backButton').show();
+            });
+    
+            // Evento al hacer clic en "Anterior"
+            $('.btn-custom5').click(function() {
+                var $activeTab = $tabs.filter('.active');
+                var prevIndex = $tabs.index($activeTab) - 1;
+                if (prevIndex >= 0) {
+                    $tabs.eq(prevIndex).tab('show');
                 }
-            }
-        }
+            });
+    
+            // Actualiza los botones cuando se cambia de pestaña
+            $tabs.on('shown.bs.tab', function(e) {
+                updateNavigationButtons();
+            });
+        });
     </script>
+    
 </div>
 
 {% endblock contenido%}
