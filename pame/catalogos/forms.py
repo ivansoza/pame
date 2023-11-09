@@ -1,5 +1,5 @@
 from django import forms 
-from .models import Responsable, Autoridades, AutoridadesActuantes
+from .models import Responsable, Autoridades, AutoridadesActuantes, Traductores
 from django.core.validators import RegexValidator
 
 
@@ -74,3 +74,8 @@ class AutoridadesActuantesForms(forms.ModelForm):
     class Meta:
         model = AutoridadesActuantes
         fields = '__all__'
+
+class TraductoresForms(forms.ModelForm):
+    class Meta:
+        model = Traductores
+        fields ='__all__'

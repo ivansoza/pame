@@ -254,8 +254,8 @@ class createPuestaINM(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequire
 
         if user:
             # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
-            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
-            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus ='Activo')
+            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus = 'Activo')
 
         return form
     def get_initial(self):
@@ -1260,8 +1260,10 @@ class createPuestaAC(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequired
 
         if user:
             # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
-            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
-            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus ='Activo')
+            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus = 'Activo')
+
 
         return form
     def get_initial(self):
