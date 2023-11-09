@@ -6,7 +6,7 @@ listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, li
  listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf,AcuerdoInicioCreateView, registro_acuerdo_inicio,  \
     listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, nombramientoRepresentante_pdf, \
     listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
-    notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf
+    notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
@@ -31,6 +31,7 @@ urlpatterns = [
     path('constancia-enseres/<str:nup_id>/', constanciaEnseres_pdf, name='enseresPDF'),
     path('formato-enseres/<str:nup_id>/<str:enseres_id>/', formatoEnseres_pdf, name='fenseresPDF'),
     path('accomparecencia', comparecencia_pdf, name='comparecenciaPDF'),
+    path('acpresentacion', presentacion_pdf, name='presentacionPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
