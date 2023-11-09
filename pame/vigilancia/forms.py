@@ -216,6 +216,8 @@ class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
     apellidoMaternoExtranjero = forms.CharField(
         label= "Apellido Materno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     )
 
     domicilio = forms.CharField(
@@ -337,6 +339,8 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
     apellidoMaternoExtranjero = forms.CharField(
         label= "Apellido Materno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     )
 
     domicilio = forms.CharField(
@@ -464,6 +468,8 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
     apellidoMaternoExtranjero = forms.CharField(
         label= "Apellido Materno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
     )
 
     domicilio = forms.CharField(

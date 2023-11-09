@@ -19,135 +19,175 @@
 
 {% block contenido  %}
 
-<div class="titulo-general-container mt-2">
-    <h1 class="titulo-general">
-        Crear Comparecencia
-    </h1>
-</div>
+<style>
+    /* Estilo para pestañas no activas */
+    #myTab .nav-link {
+        color: #9E8364; /* Color antes de ser seleccionado */
+        font-weight: normal;
+    }
 
+    /* Estilo para la pestaña activa */
+    #myTab .nav-link.active {
+        color: #000; /* Un color más fuerte cuando esté activo */
+        font-weight: bold;
+    }
+</style>
 
-<form method="post">
-    <div  class="card p-3" >
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.nup|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.estadoCivil|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.escolaridad|as_crispy_field}}
-            </div>
-            
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.ocupacion|as_crispy_field}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.nacionalidad|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.DomicilioPais|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.lugarOrigen|as_crispy_field}}
-            </div>
-            
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.domicilioEnMexico|as_crispy_field}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.nombrePadre|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.apellidoPaternoPadre|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.apellidoMaternoPadre|as_crispy_field}}
-            </div>
-            
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.nacionalidadPadre|as_crispy_field}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.nombreMadre|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.apellidoPaternoMadre|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.apellidoMaternoMadre|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.nacionalidadMadre|as_crispy_field}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.fechaIngresoMexico|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.lugarIngresoMexico|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.formaIngresoMexico|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.declaracion|as_crispy_field}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.solicitaRefugio|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.victimaDelito|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.autoridadActuante|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.representanteLegal|as_crispy_field}}
-            </div>
-        </div>
-     
-
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.cedulaRepresentanteLegal|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.traductor|as_crispy_field}}
-            </div> 
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.testigo1|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.grado_academico_testigo1|as_crispy_field}}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.testigo2|as_crispy_field}}
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" >
-                {{form.grado_academico_testigo2|as_crispy_field}}
-            </div> 
-        
-        </div>
-        
-
-
-        <button type="submit" class="btn btn-primary">Crear Comparecencia</button>
-
+<div class="container mt-5">
+    <div class="titulo-general-container mt-2">
+        <h1 class="titulo-general">
+            Crear Comparecencia para: 
+            <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
+        </h1>
     </div>
-</form>
+
+    <form method="post" id="comparecenciaForm">
+        {% csrf_token %}
+        <div class="card p-3">
+            <!-- Navegación por pestañas -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="proceso-tab" data-toggle="tab" href="#proceso" role="tab" aria-controls="proceso" aria-selected="true">Proceso</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Información Personal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="familiar-tab" data-toggle="tab" href="#familiar" role="tab" aria-controls="familiar" aria-selected="false">Información Familiar</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles de la Comparecencia</a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">General</a>
+                </li>
+                
+         
+                <!-- Más pestañas si son necesarias -->
+            </ul>
+
+            <!-- Contenido de las pestañas -->
+            <div class="tab-content" id="myTabContent">
+
+                 <!-- Sección General -->
+                 <div class="tab-pane fade show active" id="proceso" role="tabpanel" aria-labelledby="proceso-tab">
+                    <!-- Campos generales -->
+                    <div class="row">
+                        <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
+                        <!-- Más campos generales -->
+                    </div>
+                </div>
+
+                     <!-- Sección Personal -->
+                 <div class="tab-pane fade show " id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                    <!-- Campos generales -->
+                    <div class="row">
+                        <div class="col-md-6">{{ form.estadoCivil|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.escolaridad|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.lugarOrigen|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.domicilioEnMexico|as_crispy_field }}</div>
+                        <!-- Más campos generales -->
+                    </div>
+                </div>
+
+                <!-- Sección Familiar -->
+                <div class="tab-pane fade" id="familiar" role="tabpanel" aria-labelledby="familiar-tab">
+                    <!-- Campos familiares -->
+                    <div class="row">
+                        <div class="col-md-6">{{ form.nombrePadre|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.nacionalidadPadre|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.nombreMadre|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.nacionalidadMadre|as_crispy_field }}</div>
+                        <!-- Más campos familiares -->
+                    </div>
+                </div>
+
+                 <!-- Sección Detalles -->
+                 <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
+                    <!-- Campos de detalles -->
+                    <div class="row">
+                        <div class="col-md-6">{{ form.fechaIngresoMexico|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.lugarIngresoMexico|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.formaIngresoMexico|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.solicitaRefugio|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.declaracion|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.victimaDelito|as_crispy_field }}</div>
+                    </div>
+                </div>
+
+                <!-- Sección General -->
+                <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
+                    <!-- Campos generales -->
+                    <div class="row">
+                        <div class="col-md-6">{{ form.autoridadActuante|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.representanteLegal|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.cedulaRepresentanteLegal|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.traductor|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.testigo1|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.grado_academico_testigo1|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.testigo2|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.grado_academico_testigo2|as_crispy_field }}</div>
+
+                    </div>
+                </div>
+
+               
+
+               
+
+                <!-- Más secciones de contenido según sea necesario -->
+            </div>
+
+            <!-- Botones de navegación -->
+            <div class="navigation-buttons">
+                <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
+                <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
+                <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
+            </div>
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    // JavaScript para la navegación de pestañas
+    function navigateTabs(direction) {
+        var $activeTab = $('#myTab .nav-link.active');
+        var $tabs = $('#myTab .nav-link');
+        var activeIndex = $tabs.index($activeTab);
+        var nextIndex = direction === 'next' ? activeIndex + 1 : activeIndex - 1;
+
+        // Mostrar el botón de enviar si estamos en la última pestaña
+        if (nextIndex >= $tabs.length) {
+            $('#submitForm').show();
+            return;
+        } else {
+            $('#submitForm').hide();
+        }
+
+        // Moverse a la pestaña anterior o siguiente según corresponda
+        if (nextIndex >= 0 && nextIndex < $tabs.length) {
+            $tabs.eq(nextIndex).tab('show');
+        }
+    }
+
+    // Mostrar el botón de enviar cuando estemos en la última pestaña
+    $('#myTab a').on('shown.bs.tab', function (e) {
+        var $activeTab = $('#myTab .nav-link.active');
+        var $tabs = $('#myTab .nav-link');
+        var activeIndex = $tabs.index($activeTab);
+        if (activeIndex === $tabs.length - 1) {
+            $('#submitForm').show();
+        } else {
+            $('#submitForm').hide();
+        }
+    });
+    </script>
+</div>
 
 {% endblock contenido%}
