@@ -161,76 +161,42 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            function navigateTabs(direction) {
-                var $activeTab = $('#myTab .nav-link.active');
-                var $tabs = $('#myTab .nav-link');
-                var activeIndex = $tabs.index($activeTab);
-                var generalTabIndex = $tabs.index($('#general-tab')); // Índice de la pestaña 'General'
-    
-                // Ocultar todos los botones y mostrar las pestañas por defecto
-                $('#submitForm').hide();
-                $('#finalOptions').hide();
-                $('#backButton').hide();
-                $('#myTab, #myTabContent').show();
-    
-                if (direction === 'next' && activeIndex === generalTabIndex) {
-                    // Si estamos en la pestaña 'General' y se presiona 'Siguiente', mostrar finalOptions y ocultar pestañas
-                    $('#finalOptions').show();
+        function navigateTabs(direction) {
+            var $activeTab = $('#myTab .nav-link.active');
+            var $tabs = $('#myTab .nav-link');
+            var activeIndex = $tabs.index($activeTab);
+            var generalTabIndex = $tabs.index($('#general-tab')); // Índice de la pestaña 'General'
+        
+            // Ocultar todos los botones y mostrar las pestañas por defecto
+            $('#submitForm').hide();
+            $('#finalOptions').hide();
+            $('#backButton').hide();
+            $('#myTab, #myTabContent').show();
+        
+            if (direction === 'next' && activeIndex === generalTabIndex) {
+                // Si estamos en la pestaña 'General' y se presiona 'Siguiente', mostrar finalOptions y ocultar pestañas
+                $('#finalOptions').show();
+                $('#backButton').show();
+                $('#myTab, #myTabContent').hide();
+            } 
+            else if (direction === 'prev') {
+                // Siempre regresar a la pestaña 'General' si se presiona 'Regresar'
+                $('#general-tab').tab('show'); // Activar la pestaña 'General'
+                $('#backButton').show(); // Mostrar el botón 'Regresar' si no estamos en la pestaña 'General'
+            }
+            else {
+                // Navegación normal entre pestañas
+                var nextIndex = direction === 'next' ? activeIndex + 1 : activeIndex - 1;
+                if (nextIndex >= 0 && nextIndex < $tabs.length) {
+                    $tabs.eq(nextIndex).tab('show');
+                }
+                // Si no estamos en la primera pestaña, mostrar 'Anterior'
+                if (nextIndex > 0) {
                     $('#backButton').show();
-                    $('#myTab, #myTabContent').hide();
-                } 
-                else if (direction === 'prev' && $('#finalOptions').is(':visible')) {
-                    // Si se presiona 'Regresar' desde finalOptions, mostrar la pestaña 'General'
-                    $('#finalOptions').hide();
-                    $('#myTab, #myTabContent').show();
-                    $('#general-tab').tab('show'); // Activar la pestaña 'General'
-                    $('#backButton').hide(); // Asumiendo que no queremos 'Regresar' desde 'General'
-                } 
-                else {
-                    // Navegación normal entre pestañas
-                    var nextIndex = direction === 'next' ? activeIndex + 1 : activeIndex - 1;
-                    if (nextIndex >= 0 && nextIndex < $tabs.length) {
-                        $tabs.eq(nextIndex).tab('show');
-                    }
-                    // Si no estamos en la primera pestaña, mostrar 'Anterior'
-                    if (nextIndex > 0) {
-                        $('#backButton').show();
-                    }
                 }
             }
-    
-            // Vincular evento click a los botones de navegación
-            $('#backButton').click(function() { navigateTabs('prev'); }); // Modificado para usar el ID del botón 'Regresar'
-            $('.navigation-buttons .btn-custom6').click(function() { navigateTabs('next'); });
-    
-            // Eventos click para los botones de previsualizar y crear acuerdo
-            $('#previewButton').click(function() {
-                // Lógica para previsualizar
-            });
-    
-            $('#createAgreementButton').click(function() {
-                // Lógica para crear el acuerdo
-            });
-    
-            // Inicializar pestañas para que Bootstrap maneje la activación
-            $('#myTab a').on('click', function (e) {
-                e.preventDefault();
-                $(this).tab('show');
-            });
-    
-            // Asegurarse de que el botón 'Regresar' tiene el comportamiento correcto
-            $('#myTab a').on('shown.bs.tab', function (e) {
-                var activeIndex = $tabs.index($(e.target));
-                var generalTabIndex = $tabs.index($('#general-tab'));
-                $('#backButton').toggle(activeIndex > 0 && activeIndex !== generalTabIndex);
-            });
-        });
+        }
     </script>
-    
-    
-    
-      
 </div>
 
 {% endblock contenido%}
