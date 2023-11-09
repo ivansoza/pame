@@ -119,4 +119,6 @@ class CrearComparecencia(CreateView):
             nup_id = self.kwargs.get('nup_id')
             no_proceso = get_object_or_404(NoProceso, nup=nup_id)
             context['extranjero'] = no_proceso.extranjero
+            context['navbar'] = 'comparecencia'  # Cambia esto según la página activa
+            context['seccion'] = 'comparecencia'
             return context
