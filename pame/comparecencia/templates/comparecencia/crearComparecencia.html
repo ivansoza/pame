@@ -65,7 +65,6 @@
                     <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">General</a>
                 </li>
                 
-         
                 <!-- Más pestañas si son necesarias -->
             </ul>
 
@@ -144,10 +143,17 @@
                 <!-- Más secciones de contenido según sea necesario -->
             </div>
 
+            <div id="finalOptions" style="display:none; text-align:center;">
+                <button type="button" class="btn btn-info" id="previewButton">Previsualizar</button>
+                <button type="button" class="btn btn-success" id="createAgreementButton">Crear acuerdo de comparecencia</button>
+            </div>
+
             <!-- Botones de navegación -->
             <div class="navigation-buttons">
                 <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
                 <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
+                <button type="button" class="btn btn-custom5" id="backButton" onclick="navigateTabs('prev')" style="display:none;">Regresar</button>
+
                 <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
             </div>
         </div>
@@ -155,39 +161,76 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // JavaScript para la navegación de pestañas
-    function navigateTabs(direction) {
-        var $activeTab = $('#myTab .nav-link.active');
-        var $tabs = $('#myTab .nav-link');
-        var activeIndex = $tabs.index($activeTab);
-        var nextIndex = direction === 'next' ? activeIndex + 1 : activeIndex - 1;
-
-        // Mostrar el botón de enviar si estamos en la última pestaña
-        if (nextIndex >= $tabs.length) {
-            $('#submitForm').show();
-            return;
-        } else {
-            $('#submitForm').hide();
-        }
-
-        // Moverse a la pestaña anterior o siguiente según corresponda
-        if (nextIndex >= 0 && nextIndex < $tabs.length) {
-            $tabs.eq(nextIndex).tab('show');
-        }
-    }
-
-    // Mostrar el botón de enviar cuando estemos en la última pestaña
-    $('#myTab a').on('shown.bs.tab', function (e) {
-        var $activeTab = $('#myTab .nav-link.active');
-        var $tabs = $('#myTab .nav-link');
-        var activeIndex = $tabs.index($activeTab);
-        if (activeIndex === $tabs.length - 1) {
-            $('#submitForm').show();
-        } else {
-            $('#submitForm').hide();
-        }
-    });
+        $(document).ready(function() {
+            function navigateTabs(direction) {
+                var $activeTab = $('#myTab .nav-link.active');
+                var $tabs = $('#myTab .nav-link');
+                var activeIndex = $tabs.index($activeTab);
+                var generalTabIndex = $tabs.index($('#general-tab')); // Índice de la pestaña 'General'
+    
+                // Ocultar todos los botones y mostrar las pestañas por defecto
+                $('#submitForm').hide();
+                $('#finalOptions').hide();
+                $('#backButton').hide();
+                $('#myTab, #myTabContent').show();
+    
+                if (direction === 'next' && activeIndex === generalTabIndex) {
+                    // Si estamos en la pestaña 'General' y se presiona 'Siguiente', mostrar finalOptions y ocultar pestañas
+                    $('#finalOptions').show();
+                    $('#backButton').show();
+                    $('#myTab, #myTabContent').hide();
+                } 
+                else if (direction === 'prev' && $('#finalOptions').is(':visible')) {
+                    // Si se presiona 'Regresar' desde finalOptions, mostrar la pestaña 'General'
+                    $('#finalOptions').hide();
+                    $('#myTab, #myTabContent').show();
+                    $('#general-tab').tab('show'); // Activar la pestaña 'General'
+                    $('#backButton').hide(); // Asumiendo que no queremos 'Regresar' desde 'General'
+                } 
+                else {
+                    // Navegación normal entre pestañas
+                    var nextIndex = direction === 'next' ? activeIndex + 1 : activeIndex - 1;
+                    if (nextIndex >= 0 && nextIndex < $tabs.length) {
+                        $tabs.eq(nextIndex).tab('show');
+                    }
+                    // Si no estamos en la primera pestaña, mostrar 'Anterior'
+                    if (nextIndex > 0) {
+                        $('#backButton').show();
+                    }
+                }
+            }
+    
+            // Vincular evento click a los botones de navegación
+            $('#backButton').click(function() { navigateTabs('prev'); }); // Modificado para usar el ID del botón 'Regresar'
+            $('.navigation-buttons .btn-custom6').click(function() { navigateTabs('next'); });
+    
+            // Eventos click para los botones de previsualizar y crear acuerdo
+            $('#previewButton').click(function() {
+                // Lógica para previsualizar
+            });
+    
+            $('#createAgreementButton').click(function() {
+                // Lógica para crear el acuerdo
+            });
+    
+            // Inicializar pestañas para que Bootstrap maneje la activación
+            $('#myTab a').on('click', function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+    
+            // Asegurarse de que el botón 'Regresar' tiene el comportamiento correcto
+            $('#myTab a').on('shown.bs.tab', function (e) {
+                var activeIndex = $tabs.index($(e.target));
+                var generalTabIndex = $tabs.index($('#general-tab'));
+                $('#backButton').toggle(activeIndex > 0 && activeIndex !== generalTabIndex);
+            });
+        });
     </script>
+    
+    
+    
+      
 </div>
 
 {% endblock contenido%}
