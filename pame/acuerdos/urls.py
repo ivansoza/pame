@@ -1,13 +1,13 @@
 from django.urls import path
 from . import views
 from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdoInicio_pdf, \
-derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
-listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, \
- listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf,AcuerdoInicioCreateView, registro_acuerdo_inicio,  \
+    derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
+    listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, \
+    listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf,AcuerdoInicioCreateView, registro_acuerdo_inicio,  \
     listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, nombramientoRepresentante_pdf, \
     listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
-    certificadoMedico_pdf
+    certificadoMedico_pdf, noLesiones_pdf
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
@@ -34,6 +34,7 @@ urlpatterns = [
     path('ver-comparecencia/', comparecencia_pdf, name='comparecenciaPDF'),
     path('acpresentacion', presentacion_pdf, name='presentacionPDF'),
     path('certificado-medico', certificadoMedico_pdf, name='certificadoPDF'),
+    path('no-lesiones', noLesiones_pdf, name='nolesionesPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
