@@ -31,7 +31,7 @@ urlpatterns = [
     path('listaLlamadas/<int:extranjero_id>', listaLlamadas_pdf, name='listaLlamadasPDF'),
     path('constancia-enseres/<str:nup_id>/', constanciaEnseres_pdf, name='enseresPDF'),
     path('formato-enseres/<str:nup_id>/<str:enseres_id>/', formatoEnseres_pdf, name='fenseresPDF'),
-    path('accomparecencia', comparecencia_pdf, name='comparecenciaPDF'),
+    path('ver-comparecencia/', comparecencia_pdf, name='comparecenciaPDF'),
     path('acpresentacion', presentacion_pdf, name='presentacionPDF'),
     path('certificado-medico', certificadoMedico_pdf, name='certificadoPDF'),
 

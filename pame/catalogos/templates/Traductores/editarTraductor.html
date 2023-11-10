@@ -1,0 +1,95 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load static %}
+{% load crispy_forms_tags %} 
+
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199eeeee833ss ">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu'%}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+    <style>
+        .idiomas-field label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    
+        .idiomas-field .form-check {
+            display: inline-block;
+            width: 15%; /* Dividir en 4 columnas (100% / 4) */
+
+            margin-right: 10px; /* Ajusta el margen entre las opciones */
+        }
+    </style>
+</style>
+
+<div class="titulo-general-container">
+    <h1 class="titulo-general">Editar Traductor</h1>
+</div>
+<form method="post" enctype="multipart/form-data">
+    <div  class="card p-3" enctype="multipart/form-data">
+     {% csrf_token %}
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.nombre|as_crispy_field}}
+                <!-- Campo no editable desde la plantilla html -->
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.apellido_paterno|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.apellido_materno|as_crispy_field}}
+            </div>
+           
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.telefono |as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.email|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4" style='display:none'>
+                {{form.estacion|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4" style='display:none'>
+                {{form.estacion|as_crispy_field}}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{form.estatus|as_crispy_field}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-12 idiomas-field" >
+                {{form.idiomas |as_crispy_field}}
+            </div>
+        </div>
+
+        <button id="botonGuardar" class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+        <hr>
+        <a href="{% url 'homePuestaAC' %}" class="btn btn-custom1">Cancelar</a>
+    </form>
+
+{% endblock %}
+
+
+

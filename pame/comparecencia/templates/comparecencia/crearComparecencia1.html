@@ -203,6 +203,35 @@
                 updateNavigationButtons();
             });
         });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('comparecenciaForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // Previene el envío normal del formulario
+                var formData = new FormData(this); // Recoge los datos del formulario
+                
+                fetch('', { // Enviar a la misma URL que maneja el GET y POST
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}', // Necesario para la protección contra CSRF
+                    },
+                    credentials: 'same-origin' // Necesario para incluir las cookies de CSRF
+                }).then(response => response.json())
+                  .then(data => {
+                    if(data.success) {
+                        // Aquí manejas una respuesta exitosa, como mostrar un mensaje de éxito
+                        alert(data.message); // O puedes usar Sweet Alert u otro método
+                    } else {
+                        // Aquí manejas los errores, como mostrarlos al usuario
+                        alert("Error: " + JSON.stringify(data.errors));
+                    }
+                }).catch(error => {
+                    // Aquí manejas cualquier error en la solicitud de red
+                    console.error('Error al realizar la solicitud AJAX:', error);
+                });
+            });
+        });
     </script>
     
 </div>
