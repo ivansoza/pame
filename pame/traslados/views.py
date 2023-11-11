@@ -101,7 +101,6 @@ class listarEstaciones(LoginRequiredMixin,ListView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)  # Esto imprimirá todo el contenido POST
      
 
 
