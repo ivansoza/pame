@@ -49,8 +49,13 @@
             <td>{{ representante.estatus }} </td>
 
             <td>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Editar Responsable">
-                    <i class="fa-solid fa-user-pen"></i>                  </a>
+
+
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
+                href="{% url 'representante-legal-update' representante.pk %}"
+                data-title="Eliminar Autoridad" onclick="abrir_modal_eliminar(this.href); return false;">
+                <i class="fa-solid fa-user-pen"></i>   
+                </a>
             </td>
 
 
@@ -77,10 +82,6 @@
 </table>
 </div>
 
-
-
-
-
 <!-- Modal para eliminar el extranjero  -->
 <div class="modal fade" id="eliminarextranjero" role="dialog">
 </div>
@@ -97,3 +98,19 @@
   },
   
 {% endblock datatable %}
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_eliminar(url){
+        $('#eliminarextranjero').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+
+
+</script>
+
+
+{% endblock script%}

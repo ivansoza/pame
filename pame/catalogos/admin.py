@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Tipos, Estatus, Estado, Estacion, Responsable,Salida, Estancia, Relacion, AutoridadesActuantes, Autoridades, RepresentantesLegales
-
+from vigilancia.models import NoProceso
 admin.site.register(Tipos)
 
 admin.site.register(Estatus)
@@ -31,3 +31,4 @@ class RepresentantesLegalesAdmin(admin.ModelAdmin):
             user_estacion = request.user.estacion
             return qs.filter(estacion=user_estacion)
         return qs
+    

@@ -102,3 +102,8 @@ class RepresentanteLegalForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(RepresentanteLegalForm, self).__init__(*args, **kwargs)
         self.fields['email'].validators.append(self.email_validator)
+
+class RepresentanteLegalStatusForm(forms.ModelForm):
+    class Meta:
+        model = RepresentantesLegales
+        fields = ['estatus']

@@ -1,8 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from multiselectfield import MultiSelectField
-
+from multiselectfield import MultiSelectField 
 class Tipos(models.Model):
     tipo = models.CharField(max_length=50, null=False)
 
@@ -209,3 +208,5 @@ class RepresentantesLegales(models.Model):
     defensoria = models.CharField(max_length=50, verbose_name='Defensora')
     def __str__(self):
         return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno or ""}'
+    
+
