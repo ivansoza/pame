@@ -1,7 +1,7 @@
 from django.urls import path,include
 
 from . import views
-from .views import crearAutoridad, listAutoridades,agregarAutoridadActuante,crearAutoridadActuante, quitarAutoridadActuante, listaTraductores, crearTraductor, editarTraductor, editarEstatusActuante, editarAutoridad
+from .views import crearAutoridad, listAutoridades,agregarAutoridadActuante,crearAutoridadActuante, quitarAutoridadActuante, listaTraductores, crearTraductor, editarTraductor, editarEstatusActuante, editarAutoridad, RepresentantesLegalesListView, RepresentanteLegalCreateView
 urlpatterns = [
     path("Responsable/",views.responsableCrear, name="addResponsable"),
     path("crearAutoridad/",crearAutoridad.as_view(), name="crearAutoridad"),
@@ -14,5 +14,7 @@ urlpatterns = [
     path("editarTraductor/<int:pk>/",editarTraductor.as_view(), name="editarTraductor"),
     path("editarActuante/<int:pk>/",editarEstatusActuante.as_view(), name="editarActuante"),
     path("editarAutoridad/<int:pk>/",editarAutoridad.as_view(), name="editarAutoridad"),
+    path('representantes-legales/', RepresentantesLegalesListView.as_view(), name='representantes-legales-list'),
+    path('representantes-legales/nuevo/', RepresentanteLegalCreateView.as_view(), name='representante-legal-create'),
 
 ]

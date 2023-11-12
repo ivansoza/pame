@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import ResponsableForm, AutoridadesForms, AutoridadesActuantesForms, TraductoresForms
+from .forms import ResponsableForm, AutoridadesForms, AutoridadesActuantesForms, TraductoresForms, RepresentanteLegalForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 # Create your views here.
-from .models import Responsable, Autoridades, AutoridadesActuantes, Estacion, Traductores
+from .models import Responsable, Autoridades, AutoridadesActuantes, Estacion, Traductores, RepresentantesLegales
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db import transaction
@@ -215,4 +215,57 @@ class editarEstatusActuante(UpdateView):
 
         context['navbar'] = 'catalogos'
         context['seccion'] = 'actuantes'        
+        return context
+    
+
+class RepresentantesLegalesListView(ListView):
+    model = RepresentantesLegales
+    template_name = 'Representantes/representantes_legales_list.html'  # Nombre del template que debes crear
+    context_object_name = 'representantes_legales'  # Nombre del contexto en el template
+
+    def get_queryset(self):
+        user = self.request.user
+        user_estacion = user.estancia
+        return RepresentantesLegales.objects.filter(estacion=user_estacion, estatus='Activo')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'legales'
+        return context
+    
+class RepresentanteLegalCreateView(CreateView):
+    model = RepresentantesLegales
+    form_class = RepresentanteLegalForm
+    template_name = 'Representantes/representantes_legales_create.html'  # Nombre del template que debes crear
+    success_url = reverse_lazy('representantes-legales-list')  # URL a la que redirigir después de un formulario válido
+
+    def form_valid(self, form):
+        form.instance.estacion = self.request.user.estancia  # Asigna la estación del usuario al representante legal
+        messages.success(self.request, 'Representante legal creado con éxito.')
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'legales'
         return context

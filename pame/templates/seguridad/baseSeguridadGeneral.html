@@ -729,6 +729,39 @@
                 </a>
               </li>
             </ul>
+
+
+
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <li class="nav-item {% if navbar1 == 'representante' %}menu-is-opening menu-open{% endif %}">
+  
+                <a href="#" class="nav-link {% if seccion == 'legal' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Representante Legal</p>
+                  <i class="right fas fa-angle-left"></i>
+                </a>
+  
+                <ul class="nav nav-treeview" style="margin-left: 20px;">
+                  <li class="nav-item">
+                    <a href="{% url 'representantes-legales-list' %}" class="nav-link ">
+                      <i class="{% if seccion1 == 'legales' %}fas {% endif %} far fa-circle nav-icon"></i>
+                      <p>Ver Representantes Legales</p>
+                    </a>
+                  </li>
+                </ul>
+  
+                <ul class="nav nav-treeview"style="margin-left: 20px;">
+                  <li class="nav-item">
+                    <a href="#" class="nav-link ">
+                      <i class="{% if seccion1 == '' %}fas {% endif %} far fa-circle nav-icon"></i>
+                      <p>Asignar Representante Legal</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+            </ul>
           </li>
           
         
