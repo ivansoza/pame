@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import ResponsableForm, AutoridadesForms, AutoridadesActuantesForms, TraductoresForms
+from .forms import ResponsableForm, AutoridadesForms, AutoridadesActuantesForms, TraductoresForms, RepresentanteLegalForm, RepresentanteLegalStatusForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -7,12 +7,15 @@ from django.urls import reverse_lazy
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 # Create your views here.
-from .models import Responsable, Autoridades, AutoridadesActuantes, Estacion, Traductores
+from .models import Responsable, Autoridades, AutoridadesActuantes, Estacion, Traductores, RepresentantesLegales
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.shortcuts import redirect
 
+from vigilancia.models import NoProceso, Extranjero, AsignacionRepresentante
+from django.db.models import OuterRef, Subquery, Exists
+from django.contrib.auth.decorators import login_required 
 def home(request):
     return render(request,"index.html")
 
@@ -215,4 +218,125 @@ class editarEstatusActuante(UpdateView):
 
         context['navbar'] = 'catalogos'
         context['seccion'] = 'actuantes'        
+        return context
+    
+
+class RepresentantesLegalesListView(ListView):
+    model = RepresentantesLegales
+    template_name = 'Representantes/representantes_legales_list.html'  # Nombre del template que debes crear
+    context_object_name = 'representantes_legales'  # Nombre del contexto en el template
+
+    def get_queryset(self):
+        user = self.request.user
+        user_estacion = user.estancia
+        return RepresentantesLegales.objects.filter(estacion=user_estacion)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'legales'
+        return context
+    
+class RepresentanteLegalCreateView(CreateView):
+    model = RepresentantesLegales
+    form_class = RepresentanteLegalForm
+    template_name = 'Representantes/representantes_legales_create.html'  # Nombre del template que debes crear
+    success_url = reverse_lazy('representantes-legales-list')  # URL a la que redirigir después de un formulario válido
+
+    def form_valid(self, form):
+        form.instance.estacion = self.request.user.estancia  # Asigna la estación del usuario al representante legal
+        messages.success(self.request, 'Representante legal creado con éxito.')
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'legales'
+        return context
+    
+class RepresentanteLegalUpdateView(UpdateView):
+    model = RepresentantesLegales
+    form_class = RepresentanteLegalStatusForm
+    template_name = 'Representantes/representantes_legales_update.html'  # Debes crear este template
+    success_url = reverse_lazy('representantes-legales-list')  # Redirige aquí después de actualizar
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Actualizar Estatus de Representante Legal'
+        context['representante_id'] = self.kwargs.get('pk')
+
+        return context
+    
+
+class listExtranjerosRepresentantes(ListView):
+
+    model = NoProceso
+    template_name = 'Representantes/listExtranjerosRepresentante.html'
+    context_object_name = "extranjeros"
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+
+    
+    def get_queryset(self):
+        estacion_usuario = self.request.user.estancia
+        con_representante = self.request.GET.get('con_representante')
+
+        # Base queryset for the NoProceso model
+        queryset = NoProceso.objects.filter(extranjero__deLaEstacion=estacion_usuario).distinct()
+
+        # Filter based on the presence of a legal representative
+        if con_representante == 'no':
+            # Use the existing logic to get extranjeros without a legal representative
+            representantes_asignados = AsignacionRepresentante.objects.filter(
+                no_proceso__extranjero=OuterRef('pk')
+            )
+            extranjeros_qs = Extranjero.objects.filter(deLaEstacion=estacion_usuario).annotate(
+                tiene_asignacion=Exists(representantes_asignados)
+            )
+            extranjeros_sin_asignacion = extranjeros_qs.filter(tiene_asignacion=False)
+            queryset = queryset.filter(extranjero__in=extranjeros_sin_asignacion)
+
+        elif con_representante == 'si':
+            # Adjust the logic here to get extranjeros with a legal representative
+            representantes_asignados = AsignacionRepresentante.objects.filter(
+                no_proceso__extranjero=OuterRef('pk')
+            )
+            extranjeros_qs = Extranjero.objects.filter(deLaEstacion=estacion_usuario).annotate(
+                tiene_asignacion=Exists(representantes_asignados)
+            )
+            extranjeros_con_asignacion = extranjeros_qs.filter(tiene_asignacion=True)
+            queryset = queryset.filter(extranjero__in=extranjeros_con_asignacion)
+        else:
+            representantes_asignados = AsignacionRepresentante.objects.filter(
+                no_proceso__extranjero=OuterRef('pk')
+            )
+            extranjeros_qs = Extranjero.objects.filter(deLaEstacion=estacion_usuario).annotate(
+                tiene_asignacion=Exists(representantes_asignados)
+            )
+            extranjeros_sin_asignacion = extranjeros_qs.filter(tiene_asignacion=False)
+            queryset = queryset.filter(extranjero__in=extranjeros_sin_asignacion)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
         return context

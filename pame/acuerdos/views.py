@@ -41,6 +41,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.core.files.storage import default_storage
 import io
+from catalogos.models import AutoridadesActuantes, Traductores
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -485,31 +486,65 @@ def formatoEnseres_pdf(request, nup_id, enseres_id):
 
 # ----- Genera el documento PDF, de comparecencia  
 def comparecencia_pdf(request):
-    # no_proceso = NoProceso.objects.get(nup=nup_id)
-    # extranjero = no_proceso.extranjero
-    
-    #consultas 
-    
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
+    if request.method == 'POST':
+        nup = request.POST.get('nup', '')
+        autoridad_actuante_id = request.POST.get('autoridadActuante', '')
+        traductor_id = request.POST.get('traductor', '')
 
-    # Obtener la plantilla HTML
-    template = get_template('documentos/comparecencia.html')
-    html_content = template.render(context)
+        autoridad_actuante = None
+        if autoridad_actuante_id:
+            autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=autoridad_actuante_id)
 
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
+        traductor = None
+        if traductor_id:
+            traductor = get_object_or_404(Traductores, pk=traductor_id)
+        no_proceso = get_object_or_404(NoProceso, nup=nup)
+        extranjero = no_proceso.extranjero
+        estado_civil = request.POST.get('estadoCivil', '')
+        escolaridad = request.POST.get('escolaridad', '')
+        ocupacion = request.POST.get('ocupacion', '')
+        nacionalidad = request.POST.get('nacionalidad', '')
+        domicilio_pais = request.POST.get('DomicilioPais', '')
+        lugar_origen = request.POST.get('lugarOrigen', '')
+        domicilio_mexico = request.POST.get('domicilioEnMexico', '')
+        representante_legal= request.POST.get('representanteLegal','')
+        cedula_representante_legal= request.POST.get('cedulaRepresentanteLegal','')
+        narrativa= request.POST.get('declaracion','')
+        autoridad= request.POST.get('autoridadActuante','')
+        testigo1= request.POST.get('testigo1','')
+        testigo2= request.POST.get('testigo2','')
+        context = {
+            'nup': nup,
+            'extranjero': extranjero,  # Agregando el objeto extranjero al contexto
+            'estado_civil': estado_civil,
+            'escolaridad': escolaridad,
+            'ocupacion': ocupacion,
+            'nacionalidad': nacionalidad,
+            'domicilio_pais': domicilio_pais,
+            'lugar_origen': lugar_origen,
+            'domicilio_mexico': domicilio_mexico,
+            'representante_legal':representante_legal,
+            'cedula_representante_legal':cedula_representante_legal,
+            'narrativa':narrativa,
+            'autoridad':autoridad,
+            'testigo1':testigo1,
+            'testigo2':testigo2,
+            'traductor':traductor,
+            'autoridad_actuante': autoridad_actuante,  # Agregando el objeto AutoridadesActuantes al contexto
+            'traductor':traductor,
+        }
 
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
+        template = get_template('documentos/comparecencia.html')
+        html_content = template.render(context)
+        html = HTML(string=html_content)
+        pdf_bytes = html.write_pdf()
 
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="comparecencia.pdf"'
+        return response
+    else:
+       
+        pass
 
 # ----- Genera el documento PDF, de Presentacion   
 def presentacion_pdf(request):

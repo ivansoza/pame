@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM, PuestaDisposicionAC, Biometrico, PuestaDisposicionVP, Proceso, UserFace, NoProceso, descripcion, Firma
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionINM, PuestaDisposicionAC, Biometrico, PuestaDisposicionVP, Proceso, UserFace, NoProceso, descripcion, Firma, AsignacionRepresentante
 
 class ExtranjeroAdmin(admin.ModelAdmin):
     list_display = ["fechaRegistro", "horaRegistro","numeroExtranjero","nombreExtranjero","apellidoPaternoExtranjero"]
@@ -31,3 +31,5 @@ admin.site.register(descripcion)
 admin.site.register(NoProceso)
 
 admin.site.register(Firma)
+admin.site.register(AsignacionRepresentante)
+

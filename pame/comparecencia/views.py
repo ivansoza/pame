@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from .forms import ComparecenciaForm
 from django.db.models import Q
 from django.http import JsonResponse
-
+from catalogos.models import Traductores
 def homeComparecencia(request):
     return render(request,"homeComparecencia.html")
 
@@ -123,17 +123,48 @@ class CrearComparecenciaAjax(View):
             return JsonResponse(data, status=400)
 
     def get(self, request, nup_id, *args, **kwargs):
-        form = ComparecenciaForm()
-        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
-        form.fields['nup'].initial = no_proceso
-        # Ajusta el contexto si es necesario
-        context = {
-            'form': form,
-            'nup_id': nup_id,
-            'extranjero': no_proceso.extranjero,
-            'navbar': 'comparecencia',
-            'seccion': 'comparecencia',
-            # otros contextos que necesites
-        }
-        return render(request, 'comparecencia/crearComparecencia.html', context)
-    
+            no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+            extranjero = no_proceso.extranjero
+
+            # Crear el formulario y establecer valores iniciales
+            form = ComparecenciaForm(initial={
+                'nup': no_proceso,
+                'estadoCivil': extranjero.estado_Civil,
+                'escolaridad': extranjero.grado_academico,
+                'ocupacion': extranjero.ocupacion,
+                'nacionalidad': extranjero.nacionalidad.nombre,
+                'nombrePadre': extranjero.nombreDelPadre,
+                'nombreMadre': extranjero.nombreDelaMadre,
+                'nacionalidadPadre': extranjero.nacionalidad_Padre.nombre if extranjero.nacionalidad_Padre else '',
+                'nacionalidadMadre': extranjero.nacionalidad_Madre.nombre if extranjero.nacionalidad_Madre else ''
+            })
+
+            # Filtrar las autoridades actuantes según la lógica proporcionada
+            autoridades = AutoridadesActuantes.objects.none()
+            if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+            elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+            else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+
+            # Establecer el queryset de autoridades actuantes y traductor
+            form.fields['autoridadActuante'].queryset = autoridades
+            form.fields['traductor'].queryset = Traductores.objects.filter(estacion=extranjero.deLaEstacion)
+
+            # Preparar el contexto para la plantilla
+            context = {
+                'form': form,
+                'nup_id': nup_id,
+                'extranjero': extranjero,
+                'navbar': 'comparecencia',
+                'seccion': 'comparecencia',
+            }
+            return render(request, 'comparecencia/crearComparecencia1.html', context)
+        

@@ -1,0 +1,76 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
+{% endblock link %}
+
+{% block titulo %}Representante Legal - Extranjeros{% endblock titulo %}
+
+{% block contenido  %}
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Lista de Extranjeros para Representante Legal
+    </h1>
+</div>
+<br>
+<div class="d-flex justify-content-center mb-3 mt-3">
+    <div class="btn-group" role="group">
+        <a href="{% url 'representante-legal-extranjeros' %}?con_representante=no" class="btn {% if request.GET.con_representante == 'no' or not request.GET.con_representante %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            Sin Representante
+        </a>
+        <a href="{% url 'representante-legal-extranjeros' %}?con_representante=si" class="btn {% if request.GET.con_representante == 'si' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+            Con Representante
+        </a>
+    </div>
+</div>
+
+
+<div class="table-responsive">
+    <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>No. Único de Proceso</th>
+                <th>Nombre(s)</th>
+                <th>Apellido(s)</th>
+                <th>Nacionalidad</th>
+                <th style="width: 5%;">Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for extranjero in extranjeros %}
+            <tr>
+                <td>{{extranjero.nup}}</td>
+                <td>{{ extranjero.extranjero.nombreExtranjero }}</td>
+                <td>
+                    {% if extranjero.extranjero.apellidoPaternoExtranjero %}
+                        {{ extranjero.extranjero.apellidoPaternoExtranjero }}
+                    {% endif %}
+                    {% if extranjero.extranjero.apellidoPaternoExtranjero and extranjero.extranjero.apellidoMaternoExtranjero %}
+                        {{ extranjero.extranjero.apellidoMaternoExtranjero }}
+                    {% endif %}
+                </td>          
+                <td>{{ extranjero.extranjero.nacionalidad }}</td>
+
+                <td align="center">
+                    <a href="#" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Asignar Representante">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                </td>                         
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+{% endblock contenido  %}
+
+{% block datatable %}
+
+
+  
+{% endblock datatable %}
+

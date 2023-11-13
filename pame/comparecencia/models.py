@@ -1,4 +1,5 @@
 from django.db import models
+from catalogos.models import Traductores
 from vigilancia.models import Extranjero, NoProceso, AutoridadesActuantes
 
 # Create your models here.
@@ -56,7 +57,7 @@ class Comparecencia(models.Model):
     autoridadActuante=models.ForeignKey(AutoridadesActuantes,related_name='Autoridadactuante', on_delete=models.CASCADE, verbose_name='Autoridad', blank=True, null=True)
     representanteLegal=models.CharField(max_length=50,blank=True, null=True)
     cedulaRepresentanteLegal=models.CharField(max_length=50,blank=True, null=True)
-    traductor=models.ForeignKey(AutoridadesActuantes,related_name='Traductor', on_delete=models.CASCADE, verbose_name='Traductor', blank=True, null=True)
+    traductor=models.ForeignKey(Traductores,related_name='Traductor', on_delete=models.CASCADE, verbose_name='Traductor', blank=True, null=True)
     testigo1=models.CharField(max_length=50, blank=True, null=True)
     grado_academico_testigo1=models.CharField(verbose_name='Grado Académico', max_length=50, choices=GRADOS_ACADEMICOS)
     testigo2=models.CharField(max_length=50, blank=True, null=True)
