@@ -15,7 +15,7 @@
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header custom-header-color">
-            <h2 class="modal-title">Asignar Representantes Legales en la Estación </h2>
+            <h2 class="modal-title">Editar Representantes Legales en la Estación </h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -24,7 +24,7 @@
 
         {% load crispy_forms_tags %}
 
-        <form  action="{% url 'asignar-representante' nup %}" method="POST">
+        <form  action="{% url 'editar-representante' asignacion_id%}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
           

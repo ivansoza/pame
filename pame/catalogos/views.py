@@ -297,45 +297,31 @@ class listExtranjerosRepresentantes(ListView):
 
     
     def get_queryset(self):
-        estacion_usuario = self.request.user.estancia
-        con_representante = self.request.GET.get('con_representante')
+            estacion_usuario = self.request.user.estancia
+            con_representante = self.request.GET.get('con_representante')
 
-        # Base queryset for the NoProceso model
-        queryset = NoProceso.objects.filter(extranjero__deLaEstacion=estacion_usuario).distinct()
-
-        # Filter based on the presence of a legal representative
-        if con_representante == 'no':
-            # Use the existing logic to get extranjeros without a legal representative
             representantes_asignados = AsignacionRepresentante.objects.filter(
-                no_proceso__extranjero=OuterRef('pk')
+                no_proceso=OuterRef('pk')
             )
-            extranjeros_qs = Extranjero.objects.filter(deLaEstacion=estacion_usuario).annotate(
-                tiene_asignacion=Exists(representantes_asignados)
-            )
-            extranjeros_sin_asignacion = extranjeros_qs.filter(tiene_asignacion=False)
-            queryset = queryset.filter(extranjero__in=extranjeros_sin_asignacion)
 
-        elif con_representante == 'si':
-            # Adjust the logic here to get extranjeros with a legal representative
-            representantes_asignados = AsignacionRepresentante.objects.filter(
-                no_proceso__extranjero=OuterRef('pk')
+            # Anotar con el ID de la asignación
+            queryset = NoProceso.objects.filter(
+                extranjero__deLaEstacion=estacion_usuario
+            ).annotate(
+                tiene_asignacion=Exists(representantes_asignados),
+                asignacion_id=Subquery(representantes_asignados.values('id')[:1])
             )
-            extranjeros_qs = Extranjero.objects.filter(deLaEstacion=estacion_usuario).annotate(
-                tiene_asignacion=Exists(representantes_asignados)
-            )
-            extranjeros_con_asignacion = extranjeros_qs.filter(tiene_asignacion=True)
-            queryset = queryset.filter(extranjero__in=extranjeros_con_asignacion)
-        else:
-            representantes_asignados = AsignacionRepresentante.objects.filter(
-                no_proceso__extranjero=OuterRef('pk')
-            )
-            extranjeros_qs = Extranjero.objects.filter(deLaEstacion=estacion_usuario).annotate(
-                tiene_asignacion=Exists(representantes_asignados)
-            )
-            extranjeros_sin_asignacion = extranjeros_qs.filter(tiene_asignacion=False)
-            queryset = queryset.filter(extranjero__in=extranjeros_sin_asignacion)
 
-        return queryset
+            if con_representante == 'si':
+                queryset = queryset.filter(tiene_asignacion=True)
+            elif con_representante == 'no':
+                queryset = queryset.filter(tiene_asignacion=False)
+
+            else:
+                queryset = queryset.filter(tiene_asignacion=False)
+
+
+            return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -362,3 +348,36 @@ class AsignacionRepresentanteCreateView(CreateView):
             kwargs = super().get_form_kwargs()
             kwargs['estacion_usuario'] = self.request.user.estancia
             return kwargs
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+            nup = self.kwargs.get('nup')
+            context['nup'] = nup
+            return context
+    
+
+class AsignacionRepresentanteUpdateView(UpdateView):
+    model = AsignacionRepresentante
+    form_class = AsignacionRepresentanteForm
+    template_name = 'Representantes/editar_representante.html'
+    
+    
+    def get_success_url(self):
+        # Añadir parámetro de consulta al URL
+        return reverse_lazy('representante-legal-extranjeros') + '?con_representante=si'
+
+    def get_object(self, queryset=None):
+        # Obtén el ID desde la URL
+        asignacion_id = self.kwargs.get('id')
+        # Busca y devuelve la AsignacionRepresentante asociada con este ID
+        return get_object_or_404(AsignacionRepresentante, id=asignacion_id)
+
+    def form_valid(self, form):
+        # Aquí puedes añadir cualquier lógica adicional que necesites al guardar el formulario
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asignacion_id'] = self.kwargs.get('id')
+
+        # Agregar información adicional al contexto, si es necesario
+        return context
