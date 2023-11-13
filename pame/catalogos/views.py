@@ -360,7 +360,10 @@ class AsignacionRepresentanteUpdateView(UpdateView):
     form_class = AsignacionRepresentanteForm
     template_name = 'Representantes/editar_representante.html'
     
-    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['estacion_usuario'] = self.request.user.estancia
+        return kwargs
     def get_success_url(self):
         # Añadir parámetro de consulta al URL
         return reverse_lazy('representante-legal-extranjeros') + '?con_representante=si'
