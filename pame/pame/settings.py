@@ -118,6 +118,7 @@ TEMPLATES = [
                 'traslados.context_processors.numero_traslados',
                 'traslados.context_processors.total_notificaciones',
                 'traslados.context_processors.user_groups',
+                'salud.context_processors.perfil_medico',
 
             ],
         },
