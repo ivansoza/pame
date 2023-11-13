@@ -17,11 +17,11 @@
 <br>
 <div class="d-flex justify-content-center mb-3 mt-3">
     <div class="btn-group" role="group">
-        <a href="{% url 'representante-legal-extranjeros' %}?con_representante=no" class="btn {% if request.GET.con_representante == 'no' or not request.GET.con_representante %}btn-primary{% else %}btn-outline-primary{% endif %}">
-            Sin Representante
+        <a href="{% url 'representante-legal-extranjeros' %}?con_representante=no" class="btn {% if request.GET.con_representante == 'no' or not request.GET.con_representante %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+            Sin Representante Legal
         </a>
-        <a href="{% url 'representante-legal-extranjeros' %}?con_representante=si" class="btn {% if request.GET.con_representante == 'si' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
-            Con Representante
+        <a href="{% url 'representante-legal-extranjeros' %}?con_representante=si" class="btn {% if request.GET.con_representante == 'si' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
+            Con Representante Legal
         </a>
     </div>
 </div>
@@ -35,6 +35,9 @@
                 <th>Nombre(s)</th>
                 <th>Apellido(s)</th>
                 <th>Nacionalidad</th>
+                {% if request.GET.con_representante == 'si' %}
+                <th>Representante Legal</th>
+                {% endif %}
                 <th style="width: 5%;">Opciones</th>
             </tr>
         </thead>
@@ -52,7 +55,9 @@
                     {% endif %}
                 </td>          
                 <td>{{ extranjero.extranjero.nacionalidad }}</td>
-
+                {% if request.GET.con_representante == 'si' %}
+                <td>Lic. {{ extranjero.nombre_representante }}</td>
+                {% endif %}
                 <td align="center">
                     {% if extranjero.tiene_asignacion %}
                       

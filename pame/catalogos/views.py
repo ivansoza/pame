@@ -15,8 +15,10 @@ from django.shortcuts import redirect
 
 from vigilancia.models import NoProceso, Extranjero, AsignacionRepresentante
 from vigilancia.forms import AsignacionRepresentanteForm
-from django.db.models import OuterRef, Subquery, Exists
+from django.db.models import OuterRef, Subquery, Exists, Value
 from django.contrib.auth.decorators import login_required 
+from django.db.models.functions import Concat
+
 def home(request):
     return render(request,"index.html")
 
@@ -309,7 +311,16 @@ class listExtranjerosRepresentantes(ListView):
                 extranjero__deLaEstacion=estacion_usuario
             ).annotate(
                 tiene_asignacion=Exists(representantes_asignados),
-                asignacion_id=Subquery(representantes_asignados.values('id')[:1])
+                asignacion_id=Subquery(representantes_asignados.values('id')[:1]),
+                nombre_representante=Subquery(
+                representantes_asignados.annotate(
+                    nombre_completo=Concat(
+                        'representante_legal__nombre', Value(' '),
+                        'representante_legal__apellido_paterno', Value(' '),
+                        'representante_legal__apellido_materno'
+                    )
+                ).values('nombre_completo')[:1]
+                )
             )
 
             if con_representante == 'si':
