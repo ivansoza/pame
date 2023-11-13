@@ -14,6 +14,7 @@ from django.db import transaction
 from django.shortcuts import redirect
 
 from vigilancia.models import NoProceso, Extranjero, AsignacionRepresentante
+from vigilancia.forms import AsignacionRepresentanteForm
 from django.db.models import OuterRef, Subquery, Exists
 from django.contrib.auth.decorators import login_required 
 def home(request):
@@ -338,5 +339,26 @@ class listExtranjerosRepresentantes(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'asignar'
         return context
+    
+class AsignacionRepresentanteCreateView(CreateView):
+    model = AsignacionRepresentante
+    form_class = AsignacionRepresentanteForm
+    template_name = 'Representantes/asignar_representante.html'
+    success_url = reverse_lazy('representante-legal-extranjeros')
+
+    def form_valid(self, form):
+            # Aquí capturas el `nup` desde la URL y lo asignas al objeto form.instance
+            nup = self.kwargs.get('nup')
+            form.instance.no_proceso = get_object_or_404(NoProceso, nup=nup)
+            form.instance.estacion = self.request.user.estancia
+            return super().form_valid(form)
+
+    def get_form_kwargs(self):
+            kwargs = super().get_form_kwargs()
+            kwargs['estacion_usuario'] = self.request.user.estancia
+            return kwargs
