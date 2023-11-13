@@ -22,7 +22,7 @@
 </style>
 <div class="titulo-general-container mt-5 d-flex justify-content-between align-items-center ">
     <h1 class="titulo-general">
-        Certificado Medico  
+        Consulta Medica  
         <span class="puesta-color"><strong>{{nombre}} {{ape1}} {% if ape2 %} {{ape2}} {% endif %} </strong></span>
     </h1>
     <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
@@ -98,7 +98,6 @@
   </div>
   <br>
   <button class="btn btn-custom2 btn-navegacion" data-seccion="exploracion-fisica">Exploración Física</button>
-<button class="btn btn-custom2 btn-navegacion" data-seccion="antecedentes">Antecedentes</button>
 <button class="btn btn-custom2 btn-navegacion" data-seccion="padecimientos-actuales">Padecimientos Actuales</button>
 <br>
  <form method="post" enctype="multipart/form-data" id="formulario1">
@@ -138,12 +137,7 @@
         <div class="row">
            
           
-            <div class="col-sm-12 col-md-4 col-lg-4" style='display:none'>
-                {{ form.tipoCertificado|as_crispy_field }}
-                <script>
-                    document.getElementById('id_tipoCertificado').readOnly = true;
-                </script>
-            </div>
+          
         </div>
         <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
@@ -204,88 +198,7 @@
             </div>
         </div>
     </div>
-    <div  class="card p-3 antecedentes" style='display:none' enctype="multipart/form-data">
-        <div class="d-flex align-items-center justify-content-between">
-            <h1>Antecedentes</h1>
-        </div>
-        
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.hepatitis|as_crispy_field }}
-                <script>
-                    document.getElementById('id_hepatitis').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.tubercolisis|as_crispy_field }}
-                <script>
-                    document.getElementById('id_tubercolisis').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.paludismo|as_crispy_field }}
-                <script>
-                    document.getElementById('id_paludismo').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.dengue|as_crispy_field }}
-                <script>
-                    document.getElementById('id_dengue').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.colera|as_crispy_field }}
-                <script>
-                    document.getElementById('id_colera').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.hipertension|as_crispy_field }}
-                <script>
-                    document.getElementById('id_hipertension').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.cardiopatias|as_crispy_field }}
-                <script>
-                    document.getElementById('id_cardiopatias').disabled = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3">
-                {{ form.vih|as_crispy_field }}
-                <script>
-                    document.getElementById('id_vih').disabled = true;
-                </script>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.otrosAntecedentes|as_crispy_field }}
-                <script>
-                    document.getElementById('id_otrosAntecedentes').readOnly = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.antecedentesQuirurgicos|as_crispy_field }}
-                <script>
-                    document.getElementById('id_antecedentesQuirurgicos').readOnly = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.padecimientosCronicos|as_crispy_field }}
-                <script>
-                    document.getElementById('id_padecimientosCronicos').readOnly = true;
-                </script>
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.alergias|as_crispy_field }}
-                <script>
-                    document.getElementById('id_alergias').readOnly = true;
-                </script>
-            </div>
-        </div>
-    </div>
+   
     <div  class="card p-3 padecimientos-actuales" style='display:none' enctype="multipart/form-data">
         <div class="d-flex align-items-center justify-content-between">
             <h1>Padecimientos Actuales</h1>
@@ -412,7 +325,7 @@
         </div>
         <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
         <br>
-        <a href="{% url "listExtranjeroEstacion" %}" class="btn btn-custom1">Cancelar</a> 
+        <a href="#" class="btn btn-custom1">Cancelar</a> 
 
     </div>
  </form>
@@ -424,7 +337,7 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {
-        var secciones = ['exploracion-fisica', 'antecedentes', 'padecimientos-actuales'];
+        var secciones = ['exploracion-fisica', 'padecimientos-actuales'];
         var indiceActual = 0;
 
         function mostrarSeccion(indice) {

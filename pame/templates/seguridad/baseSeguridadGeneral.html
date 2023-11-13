@@ -658,7 +658,7 @@
              {% if tiene_perfil_medico %}
             <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
-                <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                <a href="{% url "datosMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Perfil Medico</p>
                 </a>
@@ -678,7 +678,15 @@
               <li class="nav-item">
                 <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Consultas y certificado medico</p>
+                  <p>Certificados medicos</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "listExtranjeroConsulta" %}" class="nav-link {% if seccion == 'consulta' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Consultas medicas</p>
                 </a>
               </li>
             </ul>
@@ -754,7 +762,7 @@
                 <ul class="nav nav-treeview"style="margin-left: 20px;">
                   <li class="nav-item">
                     <a href="{% url "representante-legal-extranjeros" %}" class="nav-link ">
-                      <i class="{% if seccion1 == '' %}fas {% endif %} far fa-circle nav-icon"></i>
+                      <i class="{% if seccion1 == 'asignar' %}fas {% endif %} far fa-circle nav-icon"></i>
                       <p>Asignar Representante Legal</p>
                     </a>
                   </li>

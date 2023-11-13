@@ -1,11 +1,11 @@
 from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, descripcion
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace,AsignacionRepresentante
 import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
 from .models import Firma
-from catalogos.models import Relacion , AutoridadesActuantes
+from catalogos.models import Relacion , AutoridadesActuantes, RepresentantesLegales
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
         archivo = self.cleaned_data.get(field_name)
@@ -594,3 +594,17 @@ class FirmaForm(forms.ModelForm):
     class Meta:
         model = Firma
         fields = ['firma_imagen']
+
+class AsignacionRepresentanteForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        estacion_usuario = kwargs.pop('estacion_usuario', None)
+        super().__init__(*args, **kwargs)
+        if estacion_usuario:
+            self.fields['representante_legal'].queryset = RepresentantesLegales.objects.filter(
+                estatus='Activo',
+                estacion=estacion_usuario
+            )
+
+    class Meta:
+        model = AsignacionRepresentante
+        fields = ['representante_legal']
