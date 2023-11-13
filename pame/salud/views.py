@@ -2,12 +2,20 @@ from django.shortcuts import render
 from django.views.generic import ListView, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from vigilancia.models import Extranjero
-from .models import CertificadoMedico, PerfilMedico
+from .models import CertificadoMedico, PerfilMedico, Consulta, constanciaNoLesiones, CertificadoMedicoEgreso
 from catalogos.models import Estacion
-from .forms import certificadoMedicoForms, perfilMedicoforms
+from .forms import certificadoMedicoForms, perfilMedicoforms, consultaForms, lesionesForm, certificadoMedicoEgresoForms
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.urls import reverse
+from django.http import JsonResponse
+from io import BytesIO
+from PIL import Image  # Asegúrate de importar Image de PIL o Pillow
+import numpy as np 
+from vigilancia.models import Biometrico
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import face_recognition
+from django.db.models import Max
 
 # Create your views here.
 
@@ -61,6 +69,36 @@ class listaExtranjerosEstacion(LoginRequiredMixin, ListView):
 
 
             extranjero.tiene_certificadoMedico = tiene_certificadoMedico
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_constanciaLesiones = False
+
+            if ultimo_nup:
+                constancia = constanciaNoLesiones.objects.filter(nup=ultimo_nup).first()
+                if constancia:
+                    tiene_constanciaLesiones = True
+                    fecha =constancia.fechaHoraCertificado
+                    estacion = constancia.delaEstacion
+                    context['fecha'] = fecha  # Cambia esto según la página activa
+                    context['estacion'] = estacion  # Cambia esto según la página activa
+
+
+            extranjero.tiene_constanciaLesiones = tiene_constanciaLesiones
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_egreso = False
+
+            if ultimo_nup:
+                egreso = CertificadoMedicoEgreso.objects.filter(nup=ultimo_nup).first()
+                if egreso:
+                    tiene_egreso = True
+                    fecha =egreso.fechaHoraCertificado
+                    estacion = egreso.delaEstacion
+                    context['fecha'] = fecha  # Cambia esto según la página activa
+                    context['estacion'] = estacion  # Cambia esto según la página activa
+
+
+            extranjero.tiene_egreso = tiene_egreso
         context['navbar'] = 'medico'  # Cambia esto según la página activa
         context['seccion'] = 'interno'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre
@@ -73,7 +111,56 @@ class certificadoMedico(LoginRequiredMixin, CreateView):
     form_class = certificadoMedicoForms
     login_url = '/permisoDenegado/'
     def get_success_url(self):
-        messages.success(self.request, 'Datos del extranjero editados con éxito.')
+        extranjero_id = self.kwargs.get('pk')
+
+        messages.success(self.request, 'Certificado medico creado con éxito.')
+        if self.object.tratamiento:
+            # Si el tratamiento es verdadero, redirige a la plantilla correspondiente
+            return reverse('consulta',kwargs={'pk': extranjero_id})  # Reemplaza 'nombre_de_tu_plantilla_verdadera' con el nombre correcto
+        else:
+            # Si el tratamiento es falso, redirige a otra plantilla
+            return reverse('listExtranjeroEstacion')
+    def get_initial(self):
+        initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        initial['delaEstacion'] = estacion
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup      
+        perfil_medico = PerfilMedico.objects.get(usuario=usuario)
+        initial['delMedico'] = perfil_medico  
+        initial['nup'] = ultimo_no_proceso_id
+        initial['extranjero'] = extranjero
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        ape1 = extranjero.apellidoPaternoExtranjero
+        ape2 = extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        context['extranjero'] = extranjero
+        context['ape1'] = ape1
+        context['ape2'] = ape2
+        context['navbar'] = 'medico'
+        context['seccion'] = 'interno'    
+        context['extranjero_id']= extranjero_id 
+        return context
+    
+class certificadoEgreso(LoginRequiredMixin, CreateView):
+    template_name = 'servicioInterno/certificadoEgreso.html'
+    model = CertificadoMedicoEgreso # Utiliza el modelo para crear objetos
+    form_class = certificadoMedicoEgresoForms
+    login_url = '/permisoDenegado/'
+    def get_success_url(self):
+        messages.success(self.request, 'Certificado medico de egreso creado con éxito.')
         return reverse('listExtranjeroEstacion')
     def get_initial(self):
         initial = super().get_initial()
@@ -101,13 +188,13 @@ class certificadoMedico(LoginRequiredMixin, CreateView):
         ape1 = extranjero.apellidoPaternoExtranjero
         ape2 = extranjero.apellidoMaternoExtranjero
         context['nombre'] = nombre
+        context['extranjero'] = extranjero
         context['ape1'] = ape1
         context['ape2'] = ape2
         context['navbar'] = 'medico'
-        context['seccion'] = 'interno'        
+        context['seccion'] = 'interno'    
+        context['extranjero_id']= extranjero_id 
         return context
-    
-
 class listarExtranjerosServicioExterno(LoginRequiredMixin, ListView):
     model = Extranjero
     template_name='servicioExterno/listaExtranjeroEstacion.html'
@@ -176,3 +263,276 @@ class perfilMedicoInterno(LoginRequiredMixin, CreateView):
         context['navbar'] = 'medico'
         context['seccion'] = 'Medicointerno'        
         return context
+class consultaMedica(LoginRequiredMixin, CreateView):
+    template_name = 'servicioInterno/consultaMedica.html'
+    model = Consulta # Utiliza el modelo para crear objetos
+    form_class = consultaForms
+    login_url = '/permisoDenegado/'
+    def get_success_url(self):
+        extranjero_id = self.kwargs.get('pk')
+        messages.success(self.request, 'Consulta medica registrada con éxito.')
+        return reverse('listConsultas',kwargs={'pk': extranjero_id})  # Reemplaza 'nombre_de_tu_plantilla_verdadera' con el nombre correcto
+    def get_initial(self):
+        initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        initial['delaEstacion'] = estacion
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup      
+        perfil_medico = PerfilMedico.objects.get(usuario=usuario)
+        initial['delMedico'] = perfil_medico  
+        initial['nup'] = ultimo_no_proceso_id
+        initial['extranjero'] = extranjero
+        return initial
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        ape1 = extranjero.apellidoPaternoExtranjero
+        ape2 = extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        context['extranjero'] = extranjero
+        context['ape1'] = ape1
+        context['ape2'] = ape2
+        context['navbar'] = 'medico'
+        context['seccion'] = 'consulta'    
+        context['extranjero_id']= extranjero_id 
+        return context
+       
+class datosDelMedico(TemplateView):
+    template_name = 'servicioInterno/datosMedico.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        perfil_medico = PerfilMedico.objects.get(usuario=usuario)
+        nombre = perfil_medico.nombreMedico
+        ape1 = perfil_medico.apellidosMedico
+        cedula = perfil_medico.cedula
+        context['nombre'] = nombre # Cambia esto según la página activa
+        context['ape1'] = ape1  # Cambia esto según la página activa
+        context['cedula'] = cedula  # Cambia esto según la página activa
+
+        context['navbar'] = 'medico'  # Cambia esto según la página activa
+        context['seccion'] = 'Medicointerno'        
+
+        return context
+    
+
+class listaExtranjerosConsulta(LoginRequiredMixin, ListView):
+    model = Extranjero
+    template_name='consulta/listaExtranjeros.html'
+    context_object_name = 'extranjeros'
+    login_url = '/permisoDenegado/'  
+    def get_queryset(self):
+        # Obtener la estación del usuario actualmente autenticado.
+        estacion_usuario = self.request.user.estancia
+
+        estado = self.request.GET.get('estado_filtrado', 'activo')
+        # Filtrar por estación del usuario y ordenar por nombre de extranjero.
+        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('nombreExtranjero')
+
+        if estado == 'activo':
+            queryset = queryset.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            queryset = queryset.filter(estatus='Inactivo')
+        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tiene_perfil_medico = PerfilMedico.objects.filter(usuario=self.request.user).exists()
+        context['tiene_perfil_medico'] = tiene_perfil_medico
+        
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_certificadoMedico = False
+
+            if ultimo_nup:
+                certificado = CertificadoMedico.objects.filter(nup=ultimo_nup).first()
+                if certificado:
+                    tiene_certificadoMedico = True
+                    fecha =certificado.fechaHoraCertificado
+                    estacion = certificado.delaEstacion
+                    context['fecha'] = fecha  # Cambia esto según la página activa
+                    context['estacion'] = estacion  # Cambia esto según la página activa
+
+
+            extranjero.tiene_certificadoMedico = tiene_certificadoMedico
+        context['navbar'] = 'medico'  # Cambia esto según la página activa
+        context['seccion'] = 'consulta'  # Cambia esto según la página activa
+        context['nombre_estacion'] = self.request.user.estancia.nombre
+
+        return context
+    
+class listaConsultasExtranjero(LoginRequiredMixin,ListView):
+    template_name = 'consulta/histroialConsultas.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    model=Consulta
+    context_object_name = 'extranjeros'
+    def get_queryset(self):
+        extranjero_id = self.kwargs['pk']
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+        queryset = Consulta.objects.filter(extranjero=extranjero_id, nup__consecutivo=ultimo_nup)
+        print(queryset)
+        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        ape1 = extranjero.apellidoPaternoExtranjero
+        ape2 = extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        context['extranjero'] = extranjero
+        context['ape1'] = ape1
+        context['ape2'] = ape2
+        context['navbar'] = 'medico'
+        context['seccion'] = 'consulta'    
+        context['extranjero_id']= extranjero_id 
+        return context
+    
+class constanciaLesiones(LoginRequiredMixin, CreateView):
+    template_name='servicioInterno/lesiones.html'
+    model = constanciaNoLesiones
+    form_class = lesionesForm
+    login_url ='/permisoDenegado/'
+    def get_success_url(self):
+
+        messages.success(self.request, 'Constancia de no lesiones creada con éxito.')
+        return reverse('listExtranjeroEstacion')
+    def get_initial(self):
+        initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        initial['delaEstacion'] = estacion
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup      
+        perfil_medico = PerfilMedico.objects.get(usuario=usuario)
+        initial['delMedico'] = perfil_medico  
+        initial['nup'] = ultimo_no_proceso_id
+        initial['extranjero'] = extranjero
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        ape1 = extranjero.apellidoPaternoExtranjero
+        ape2 = extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        context['extranjero'] = extranjero
+        context['ape1'] = ape1
+        context['ape2'] = ape2
+        context['navbar'] = 'medico'
+        context['seccion'] = 'interno'    
+        return context
+
+def manejar_imagen(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+     
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid llamada_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)
+
+        try:
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            face_encoding_almacenado = biometrico.face_encoding
+
+            # Conversion de la imagen subida
+            imagen_bytes_io = BytesIO(imagen.read())
+            imagen_pil = Image.open(imagen_bytes_io)
+
+            if imagen_pil.mode != 'RGB':
+                imagen_pil = imagen_pil.convert('RGB')
+
+            imagen_array = np.array(imagen_pil)
+
+            if not isinstance(imagen_array, np.ndarray):
+                return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+            # Obteniendo los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen_array)
+
+            if not encodings_subido:
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+            uploaded_encoding = encodings_subido[0]
+            tolerance = 0.5  # Puedes ajustar este valor
+
+            distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+            distance_value = float(distance[0])
+            
+            if distance_value < tolerance:
+                similarity_str = f"Similitud: {(1 - distance_value) * 100:.2f}%"
+                return JsonResponse({'match': True, 'similarity': similarity_str, 'distance': distance_value})
+            else:
+                return JsonResponse({'match': False, 'similarity': None, 'distance': distance_value})
+
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def compare_faces(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+
+        # Verifica si el extranjero_id es None o si no es un número válido
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)  # Convertir a entero
+       
+        try:
+            # Obtener el objeto Biometrico asociado con el Extranjero_id
+      # Debería ser un número entero válido
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            # ...
+
+            # Cargar face_encoding almacenado
+            face_encoding_almacenado = biometrico.face_encoding
+
+            # Convertir imagen subida a formato que face_recognition puede entender
+            imagen = face_recognition.load_image_file(InMemoryUploadedFile(imagen))
+
+            # Obtener los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen)
+            
+            if not encodings_subido:  # Verificar que se detectaron rostros en la imagen subida
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+            
+            # Comparar face_encoding_subido con face_encoding_almacenado
+            matches = face_recognition.compare_faces([face_encoding_almacenado], encodings_subido[0])
+            
+            # También puedes calcular la distancia si lo necesitas
+            distance = face_recognition.face_distance([face_encoding_almacenado], encodings_subido[0])
+            similarity = f"Similitud: {100 - distance[0]*100:.2f}%"
+            
+            return JsonResponse({'match': matches[0], 'similarity': similarity})
+        
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
