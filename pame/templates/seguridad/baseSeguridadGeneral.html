@@ -260,9 +260,46 @@
           </li>
 
 
-          <!-- Puesta disposición -->
+          <!-- INICIO DE EXTRANJEROS -->
           {% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
+          <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'extranjeros' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-user-friends"></i>
+              <p>
+                Extranjeros
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
 
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ver Extranjeros</p>
+                </a>
+              </li>
+            </ul>
+
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url 'listarAcompanantesEstacion' %}" class="nav-link {% if seccion == 'acompanante' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Acompañantes</p>
+                </a>
+              </li>
+            </ul>
+
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url 'listTrasladados' %}" class="nav-link {% if seccion == 'trasladados' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ver Trasladados</p>
+                </a>
+              </li>
+            </ul>
+          <!-- FIN  DE EXTRANJEROS -->
+
+          </li>
           <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
             <a href="#" class="nav-link {% if navbar == 'seguridad' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-copy"></i>
@@ -294,6 +331,28 @@
             </ul>
           </li>
               <!-- Cierre de Puesta disposición -->
+
+
+          <!--   defensoria -->
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-city"></i>
+              <p>
+                Defensoria
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Denfensores</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
               <li class="nav-item {% if navbar == 'comparecencia' %}menu-is-opening menu-open{% endif %}">
                 <a href="#" class="nav-link {% if navbar == 'comparecencia' %}active first-li{% endif %}">
                   <i class="nav-icon fas fa-gavel"></i>
@@ -352,69 +411,90 @@
 
           <!-- Fin  Alojamiento -->
 
-          <!--   defensoria -->
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-city"></i>
-              <p>
-                Defensoria
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Denfensores</p>
-                </a>
-              </li>
-            </ul>
-          </li>
 
           
           <!--   Extranjeros -->
 
-          <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'extranjeros' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-user-friends"></i>
-              <p>
-                Extranjeros
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-
-            <ul class="nav nav-treeview"style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url 'listarExtranjerosEstacion' %}" class="nav-link {% if seccion == 'verextranjero' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ver Extranjeros</p>
-                </a>
-              </li>
-            </ul>
-
-            <ul class="nav nav-treeview"style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url 'listarAcompanantesEstacion' %}" class="nav-link {% if seccion == 'acompanante' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Acompañantes</p>
-                </a>
-              </li>
-            </ul>
-
-            <ul class="nav nav-treeview"style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url 'listTrasladados' %}" class="nav-link {% if seccion == 'trasladados' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Ver Trasladados</p>
-                </a>
-              </li>
-            </ul>
-
-          </li>
+          
           {% endif %}
 
-          <!-- Acuerdos  -->
+        <!--   Medico -->
+        {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
+        <li class="nav-item {% if navbar == 'medico' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'medico' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-heartbeat"></i>
+            <p>
+              Servicios Médicos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          {% if user.estancia.servicioMedico %}
+            {% if tiene_perfil_medico %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "datosMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Perfil Medico</p>
+              </a>
+            </li>
+          </ul>
+          {% else %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Perfil Medico</p>
+              </a>
+            </li>
+          </ul>
+          {% endif %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Certificados medicos</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listExtranjeroConsulta" %}" class="nav-link {% if seccion == 'consulta' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Consultas medicas</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <ul class="nav nav-treeview" style="margin-left: 20px;">
+          <li class="nav-item">
+            <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Carga de certificado medico</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+        {% endif %}
+        {% endif %}
+        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-scale-balanced"></i>
+            <p>
+              Pruebas y Alegatos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Ejemplo 1</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+  <!-- Acuerdos  -->
         {% if 'JuridicoGeneral' in user_groups or 'SeguridadGeneral' in user_groups or 'Administradores' in user_groups %}
 
 
@@ -593,40 +673,31 @@
 
         </li>
 
-
-
-        <!-- REPOSITORIO DIGITAL -->
-
-        <li class="nav-item {% if navbar == 'repositorio' %}menu-is-opening menu-open{% endif %}">
-          <a href="#" class="nav-link {% if navbar == 'repositorio' %}active first-li{% endif %}">
-            <i class="nav-icon fas fa-folder-open"></i>
+        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-flag-checkered"></i>
             <p>
-              Repositorio Digital
+              Resoluciones
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="{% url "repositorio" %}" class="nav-link {% if seccion == 'verrepo' %}active {% endif %}">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Extranjeros</p>
+                <p>Ejemplo 1</p>
               </a>
             </li>
           </ul>
         </li>
 
-
-        {% endif %}
-        <!-- Termina Acuerdos -->
-          <!-- Fin  Alojamiento -->
-          <!--   Extranjeros -->
-          {% comment %} {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
+        {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
 
           <li class="nav-item ">
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-utensils"></i>
               <p>
-                Servicios Alimenticios
+                Comedor
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -640,70 +711,10 @@
             </ul>
           </li>
 
-          {% endif %} {% endcomment %}
+          {% endif %} 
+       
+        
 
-
-          <!-- Fin  Cocina -->
-          <!--   Medico -->
-          {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
-          <li class="nav-item {% if navbar == 'medico' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'medico' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-heartbeat"></i>
-              <p>
-                Servicios Médicos
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            {% if user.estancia.servicioMedico %}
-             {% if tiene_perfil_medico %}
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url "datosMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Perfil Medico</p>
-                </a>
-              </li>
-            </ul>
-            {% else %}
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Perfil Medico</p>
-                </a>
-              </li>
-            </ul>
-            {% endif %}
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Certificados medicos</p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url "listExtranjeroConsulta" %}" class="nav-link {% if seccion == 'consulta' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Consultas medicas</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          {% else %}
-          <ul class="nav nav-treeview" style="margin-left: 20px;">
-            <li class="nav-item">
-              <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Carga de certificado medico</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-          {% endif %}
-          {% endif %}
-          <!-- Fin  Extranjeros -->
           <li class="nav-item {% if navbar == 'catalogos' %}menu-is-opening menu-open{% endif %}">
             <a href="#" class="nav-link {% if navbar == 'catalogos' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-book"></i>
@@ -771,6 +782,39 @@
               
             </ul>
           </li>
+          
+
+        <!-- REPOSITORIO DIGITAL -->
+
+        <li class="nav-item {% if navbar == 'repositorio' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'repositorio' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-folder-open"></i>
+            <p>
+              Repositorio Digital
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "repositorio" %}" class="nav-link {% if seccion == 'verrepo' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Extranjeros</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+        {% endif %}
+        <!-- Termina Acuerdos -->
+          <!-- Fin  Alojamiento -->
+          <!--   Extranjeros -->
+          {% comment %} {% endcomment %}
+
+
+          <!-- Fin  Cocina -->
+     
+          <!-- Fin  Extranjeros -->
           
         
           </li>
