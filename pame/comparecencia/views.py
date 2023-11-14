@@ -144,7 +144,6 @@ class CrearComparecenciaAjax(View):
 
             # Crear el formulario y establecer valores iniciales
             form = ComparecenciaForm(initial={
-                'nup': no_proceso,
                 'estadoCivil': extranjero.estado_Civil,
                 'escolaridad': extranjero.grado_academico,
                 'ocupacion': extranjero.ocupacion,
