@@ -17,23 +17,36 @@
 </div>
 <div>
     <p>
-        [NOMBRE DEL MEDICO]
-        <br>[CEDULA PROFESIONAL]
+        <strong>MEDICO:&nbsp;</strong>{{medico.nombreMedico}}&nbsp;{{medico.apellidosMedico}}
+        <br><strong>CEDULA:&nbsp;</strong>{{medico.cedula}}
     </p>
 </div>
 <table style="width: 100%; border-collapse: collapse;">
     <tbody>
         <tr>
-            <td style="width: 50%;"><strong>FECHA:</strong></td>
-            <td style="width: 50%;"><strong>FECHA DE NACIMIENTO:&nbsp;</strong>[DD]/[MES]/[A&Ntilde;O]<br><strong>EDAD:&nbsp;</strong>[NUM] A&Ntilde;OS</td>
+            <td style="width: 50%;"><strong>FECHA:</strong>
+                {{ receta.fechaHoraConsulta }}
+            </td>
+            <td style="width: 50%;"><strong>FECHA DE NACIMIENTO:&nbsp;</strong>
+                    {{ extranjero.fechaNacimiento.day }}/{{ extranjero.fechaNacimiento.month }}/{{ extranjero.fechaNacimiento.year }}
+                <br><strong>EDAD:&nbsp;</strong>
+                    {{extranjero.edad}} A&ntilde;os</td>
         </tr>
         <tr>
-            <td style="width: 50%;"><strong>NO. EXTRANJERO:</strong></td>
-            <td style="width: 50%;"><strong>G&Eacute;NERO:</strong></td>
+            <td style="width: 50%;"><strong>NO. EXTRANJERO:</strong>
+                {{extranjero.numeroExtranjero}}
+            </td>
+            <td style="width: 50%;"><strong>G&Eacute;NERO:</strong>
+                {{ extranjero.get_genero_display|title }}
+            </td>
         </tr>
         <tr>
-            <td style="width: 50%;"><strong>NOMBRE:&nbsp;</strong>Adair Gustavo Montiel Hernandez</td>
-            <td style="width: 50%;"><strong>NACIONALIDAD:</strong></td>
+            <td style="width: 50%;"><strong>NOMBRE:&nbsp;</strong>
+                {{extranjero.nombreExtranjero}}&nbsp;{{extranjero.apellidoPaternoExtranjero}}&nbsp;{{extranjero.apellidoMaternoExtranjero}}
+            </td>
+            <td style="width: 50%;"><strong>NACIONALIDAD:</strong>
+                {{ extranjero.nacionalidad.nombre }}
+            </td>
         </tr>
     </tbody>
 </table>
@@ -41,25 +54,32 @@
 <table style="width: 100%;">
     <tbody>
         <tr>
-            <td style="width: 50.0000%;"><strong>Temperatura:&nbsp;</strong></td>
+            <td style="width: 50.0000%;"><strong>Temperatura:&nbsp;</strong>
+                {{ receta.temperatura }}
+            </td>
             <td style="width: 50.0000%;"><strong>Tratamiento</strong>:&nbsp;</td>
         </tr>
         <tr>
             <td style="width: 49.9195%; vertical-align: top;">
                 <strong>
-                    Frecuencia respiratoria:&nbsp;<br>
-                    Presi&oacute;n arterial:&nbsp;<br>
-                    Peso:&nbsp;<br>
-                    Estatura:<br>
-                    Oxigenaci&oacute;n:&nbsp;<br>
-                    IMC:
+                    Frecuencia respiratoria:&nbsp; 
+                    <span style="font-weight: normal;">{{ receta.frecuenciaRespiratoria }}</span> <br> 
+                    Presi&oacute;n arterial:&nbsp;
+                    <span style="font-weight: normal;">{{ receta.presionArterialSistolica }}</span> <br>
+                    Peso:&nbsp;
+                    <span style="font-weight: normal;">{{ receta.peso }}</span><br>
+                    Estatura: 
+                    <span style="font-weight: normal;">{{ receta.estatura }}</span><br>
+                    Oxigenaci&oacute;n:&nbsp;
+                    <span style="font-weight: normal;">{{ receta.oxigenacionSaturacion }}</span><br>
+                    IMC: 
+                    <span style="font-weight: normal;">{{ receta.indiceMasaCorporal }}</span>
                 </strong>
             </td>
             <td style="width: 49.9195%; vertical-align: top;" rowspan="6"">
-                &radic; Paracetamol 500mg cada 5 horas por 30 dias<br>
-                &radic; Aspirina 100mg cada 8 horas por 5 dias<br>
-                &radic; Jarabe 20mg cada 2 horas por 3 dias<br>
-                &radic; Pastillas<br>
+                {% for item in tratamiento %}
+                    &radic; {{ item }}<br>
+                {% endfor %}
             </td>
         </tr>
     </tbody>
@@ -71,5 +91,6 @@
         </tr>
     </tbody>
 </table>
-<p style="border-top: 1px solid #000; width: 50%; margin: 80px auto 0; padding-top: 10px; text-align: center;"><strong>FIRMA</strong></p>
+<p style="border-top: 1px solid #000; width: 50%; margin: 80px auto 0; padding-top: 10px; text-align: center;">
+    <strong>FIRMA M&Eacute;DICO</strong></p>
 {% endblock %}

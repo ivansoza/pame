@@ -42,6 +42,7 @@ import base64
 from django.core.files.storage import default_storage
 import io
 from catalogos.models import AutoridadesActuantes, Traductores
+from salud.models import Consulta
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -616,6 +617,48 @@ def noLesiones_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/noLesiones.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de receta medica 
+def recetaMedica_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+
+    # Consultar la información de la consulta
+    consulta = Consulta.objects.get(extranjero=extranjero, nup=no_proceso, id=ex_id)
+    
+    #consultas 
+    medico = consulta.delMedico
+    ex = consulta.extranjero
+    receta = consulta
+    tratamiento = consulta.tratamiento
+
+    # Dividir el tratamiento por comas y pasar la lista a la plantilla
+    tratamiento_lista = tratamiento.split(',')
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'medico': medico,
+        'extranjero': ex,
+        'receta': receta, 
+        'tratamiento': tratamiento_lista
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/recetaMedica.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
