@@ -203,7 +203,7 @@ class RepresentantesLegales(models.Model):
     telefono = models.CharField(max_length=12, verbose_name='Número telefónico')
     email = models.EmailField(max_length=100, verbose_name='Correo electrónico')
     estatus = models.CharField(choices=ESTATUS_REPRESENTANTES, verbose_name='Estatus del representante', max_length=25, default='Activo')
-    cedula = models.CharField(max_length=50, verbose_name='Número de licencia')
+    cedula = models.CharField(max_length=50, verbose_name='Número de Cédula')
     estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación migratoria')
     defensoria = models.CharField(max_length=50, verbose_name='Defensora')
     def __str__(self):
