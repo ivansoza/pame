@@ -141,18 +141,24 @@ class CrearComparecenciaAjax(View):
     def get(self, request, nup_id, *args, **kwargs):
             no_proceso = get_object_or_404(NoProceso, nup=nup_id)
             extranjero = no_proceso.extranjero
+            asignacion_rep_legal = AsignacionRepresentante.objects.filter(no_proceso=no_proceso).first()
 
             # Crear el formulario y establecer valores iniciales
-            form = ComparecenciaForm(initial={
-                'estadoCivil': extranjero.estado_Civil,
-                'escolaridad': extranjero.grado_academico,
-                'ocupacion': extranjero.ocupacion,
-                'nacionalidad': extranjero.nacionalidad.nombre,
-                'nombrePadre': extranjero.nombreDelPadre,
-                'nombreMadre': extranjero.nombreDelaMadre,
-                'nacionalidadPadre': extranjero.nacionalidad_Padre.nombre if extranjero.nacionalidad_Padre else '',
-                'nacionalidadMadre': extranjero.nacionalidad_Madre.nombre if extranjero.nacionalidad_Madre else ''
-            })
+  
+            initial_data = {
+            'estadoCivil': extranjero.estado_Civil,
+            'escolaridad': extranjero.grado_academico,
+            'ocupacion': extranjero.ocupacion,
+            'nacionalidad': extranjero.nacionalidad.nombre,
+            'nombrePadre': extranjero.nombreDelPadre,
+            'nombreMadre': extranjero.nombreDelaMadre,
+            'nacionalidadPadre': extranjero.nacionalidad_Padre.nombre if extranjero.nacionalidad_Padre else '',
+            'nacionalidadMadre': extranjero.nacionalidad_Madre.nombre if extranjero.nacionalidad_Madre else ''
+            }
+            if asignacion_rep_legal:
+                initial_data['representanteLegal'] = asignacion_rep_legal.representante_legal
+
+            form = ComparecenciaForm(initial=initial_data)
 
             # Filtrar las autoridades actuantes según la lógica proporcionada
             autoridades = AutoridadesActuantes.objects.none()

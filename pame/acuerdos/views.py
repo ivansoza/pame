@@ -41,7 +41,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.core.files.storage import default_storage
 import io
-from catalogos.models import AutoridadesActuantes, Traductores
+from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -506,7 +506,12 @@ def comparecencia_pdf(request):
         domicilio_pais = request.POST.get('DomicilioPais', '')
         lugar_origen = request.POST.get('lugarOrigen', '')
         domicilio_mexico = request.POST.get('domicilioEnMexico', '')
-        representante_legal= request.POST.get('representanteLegal','')
+        representante_legal_id = request.POST.get('representanteLegal', '')
+
+        representante_legal = None
+        if representante_legal_id:
+            representante_legal = get_object_or_404(RepresentantesLegales, pk=representante_legal_id)
+            
         cedula_representante_legal= request.POST.get('cedulaRepresentanteLegal','')
         narrativa= request.POST.get('declaracion','')
         autoridad= request.POST.get('autoridadActuante','')
@@ -531,6 +536,8 @@ def comparecencia_pdf(request):
             'traductor':traductor,
             'autoridad_actuante': autoridad_actuante,  # Agregando el objeto AutoridadesActuantes al contexto
             'traductor':traductor,
+            'representante_legal': representante_legal,
+
         }
 
         template = get_template('documentos/comparecencia.html')
