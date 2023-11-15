@@ -3,7 +3,6 @@ from vigilancia.models import Extranjero, NoProceso
 from catalogos.models import Estacion
 from django.contrib.auth.models import User
 from django.conf import settings
-from multiupload.fields import MultiFileField
 
 # Create your models here.
 class PerfilMedico(models.Model):
