@@ -71,8 +71,7 @@ urlpatterns = [
 
     path('registro_acuerdo_inicio/<str:proceso_id>/', views.registro_acuerdo_inicio, name='registro_acuerdo_inicio'),
     path('generar_qr/<str:testigo>/<int:acuerdo_id>/', views.generar_qr_acuerdos, name='generar_qr_acuerdos'),
-    # path('firma_testigo_uno/<int:acuerdo_id>/', FirmaTestigoUnoCreateView.as_view(), name='firma_testigo_uno_create'),
-    # path('firma_testigo_dos/<int:acuerdo_id>/', FirmaTestigoDosCreateView.as_view(), name='firma_testigo_dos_create'),
+
     path('check_firma_testigo_uno/<int:acuerdo_id>/', check_firma_testigo_uno, name='check_firma_testigo_uno'),
     path('check_firma_testigo_dos/<int:acuerdo_id>/', check_firma_testigo_dos, name='check_firma_testigo_dos'),
 

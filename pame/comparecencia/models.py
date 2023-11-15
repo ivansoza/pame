@@ -60,6 +60,14 @@ class Comparecencia(models.Model):
     grado_academico_testigo2=models.CharField(verbose_name='Grado Académico del Testigo 2', max_length=50, choices=GRADOS_ACADEMICOS)
 
 
+class FirmaCompareciencia(models.Model):
+    compareciencia = models.ForeignKey(Comparecencia, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaRepresentanteLegal = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTraductor= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaExtranjero= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo1= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo2= models.ImageField(upload_to='files/', null=True, blank=True) 
 
 class Refugio(models.Model):
     notificacionComar= models.TextField()

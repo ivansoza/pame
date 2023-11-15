@@ -36,6 +36,26 @@
         color: #495057;
         cursor: not-allowed;
       }
+
+
+      .input-required {
+        border: 2px solid #d9534f; /* Rojo con un borde más grueso para mayor visibilidad */
+        border-radius: 4px; /* Opcional, para bordes redondeados */
+      }
+      
+      /* Opcional: Agrega un asterisco rojo a las etiquetas de los campos requeridos */
+      label.required::after {
+        content: " *";
+        color: red;
+      }
+      .input-required {
+        border: 2px solid #d9534f; /* Ajusta el color y el grosor del borde según necesites */
+      }
+      
+      .input-required + label::after {
+        content: " *";
+        color: red;
+      }
       
 </style>
 
@@ -46,130 +66,166 @@
             <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
         </h1>
     </div>
+    <div id="comparecenciaFormContainer">
+                <form method="post" id="comparecenciaForm">
+                    {% csrf_token %}
+                    <div class="card p-3">
+                        <!-- Navegación por pestañas -->
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        
+                            <li class="nav-item">
+                                <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Información Personal</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="familiar-tab" data-toggle="tab" href="#familiar" role="tab" aria-controls="familiar" aria-selected="false">Información Familiar</a>
+                            </li>
 
-    <form method="post" id="comparecenciaForm">
-        {% csrf_token %}
-        <div class="card p-3">
-            <!-- Navegación por pestañas -->
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              
-                <li class="nav-item">
-                    <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Información Personal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="familiar-tab" data-toggle="tab" href="#familiar" role="tab" aria-controls="familiar" aria-selected="false">Información Familiar</a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles de la Comparecencia</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">General</a>
+                            </li>
+                          <!-- Más pestañas si son necesarias -->
+                        </ul>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles de la Comparecencia</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">General</a>
-                </li>
+                        <!-- Contenido de las pestañas -->
+                        <div class="tab-content" id="myTabContent">
+                              <!-- Sección Personal -->
+                            <div class="tab-pane fade show active " id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                                <!-- Campos generales -->
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.estadoCivil|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.escolaridad|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
 
+                                    <div class="col-md-3">{{ form.lugarOrigen|as_crispy_field }}</div>
+                                    <div class="col-md-3">{{ form.domicilioEnMexico|as_crispy_field }}</div>
 
-                
-                <!-- Más pestañas si son necesarias -->
-            </ul>
-
-            <!-- Contenido de las pestañas -->
-            <div class="tab-content" id="myTabContent">
-
-
-                     <!-- Sección Personal -->
-                 <div class="tab-pane fade show active " id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                    <!-- Campos generales -->
-                    <div class="row">
-                        <div class="col-md-6">{{ form.estadoCivil|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.escolaridad|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
-
-                        <div class="col-md-3">{{ form.lugarOrigen|as_crispy_field }}</div>
-                        <div class="col-md-3">{{ form.domicilioEnMexico|as_crispy_field }}</div>
-
-                        <!-- Más campos generales -->
-                    </div>
-                </div>
-
-                <!-- Sección Familiar -->
-                <div class="tab-pane fade" id="familiar" role="tabpanel" aria-labelledby="familiar-tab">
-                    <!-- Campos familiares -->
-                    <div class="row">
-                        <div class="col-md-6">{{ form.nombrePadre|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nacionalidadPadre|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nombreMadre|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nacionalidadMadre|as_crispy_field }}</div>
-                        <!-- Más campos familiares -->
-                    </div>
-                </div>
-
-                 <!-- Sección Detalles -->
-                 <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
-                    <!-- Campos de detalles -->
-                    <div class="row">
-                        <div class="col-md-6">{{ form.fechaIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.lugarIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.formaIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-3">{{ form.solicitaRefugio|as_crispy_field }}</div>
-                        <div class="col-md-3">{{ form.victimaDelito|as_crispy_field }}</div>
-
-                        <div class="col-md-12">{{ form.declaracion|as_crispy_field }}</div>
-                    </div>
-                </div>
-
-                <!-- Sección General -->
-             <!-- Sección General -->
-                <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
-                    <!-- Campos generales -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.autoridadActuante|as_crispy_field }}
-                            {{ form.representanteLegal|as_crispy_field }}
-                            <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
-                            <label for="necesitaTraductor">¿Necesita Traductor?</label>
-                            <!-- Campo de traductor, inicialmente oculto -->
-                            <div id="campoTraductor" style="display:none;">
-                                {{ form.traductor|as_crispy_field }}
+                                    <!-- Más campos generales -->
+                                </div>
                             </div>
+
+                            <!-- Sección Familiar -->
+                            <div class="tab-pane fade" id="familiar" role="tabpanel" aria-labelledby="familiar-tab">
+                                <!-- Campos familiares -->
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.nombrePadre|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nacionalidadPadre|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nombreMadre|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nacionalidadMadre|as_crispy_field }}</div>
+                                    <!-- Más campos familiares -->
+                                </div>
+                            </div>
+
+                            <!-- Sección Detalles -->
+                            <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
+                                <!-- Campos de detalles -->
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.fechaIngresoMexico|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.lugarIngresoMexico|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.formaIngresoMexico|as_crispy_field }}</div>
+                                    <div class="col-md-3">{{ form.solicitaRefugio|as_crispy_field }}</div>
+                                    <div class="col-md-3">{{ form.victimaDelito|as_crispy_field }}</div>
+
+                                    <div class="col-md-12">{{ form.declaracion|as_crispy_field }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Sección General -->
+                        <!-- Sección General -->
+                            <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
+                                <!-- Campos generales -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.autoridadActuante|as_crispy_field }}
+                                        {{ form.representanteLegal|as_crispy_field }}
+                                        <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
+                                        <label for="necesitaTraductor">¿Necesita Traductor?</label>
+                                        <!-- Campo de traductor, inicialmente oculto -->
+                                        <div id="campoTraductor" style="display:none;">
+                                            {{ form.traductor|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.testigo1|as_crispy_field }}
+                                        {{ form.grado_academico_testigo1|as_crispy_field }}
+                                        {{ form.testigo2|as_crispy_field }}
+                                        {{ form.grado_academico_testigo2|as_crispy_field }}
+                                        <input type="hidden" name="nup" value="{{ nup_id }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Más secciones de contenido según sea necesario -->
                         </div>
-                        <div class="col-md-6">
-                            {{ form.testigo1|as_crispy_field }}
-                            {{ form.grado_academico_testigo1|as_crispy_field }}
-                            {{ form.testigo2|as_crispy_field }}
-                            {{ form.grado_academico_testigo2|as_crispy_field }}
-                            <input type="hidden" name="nup" value="{{ nup_id }}">
 
-
+                        <div id="finalOptions" style="display:none; text-align:center;">
+                            <button type="button" class="btn btn-info" id="previewButton">Previsualizar</button>
+                            <button type="button" class="btn btn-success" id="createAgreementButton">Crear acuerdo de comparecencia</button>
+                        </div>
+                        <!-- Botones de navegación -->
+                        <div class="navigation-buttons">
+                            <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
+                            <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
+                            <button type="button" class="btn btn-info" id="previewPdfButton">Previsualizar PDF</button>
+                            <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
                         </div>
                     </div>
-                </div>
+                </form>
+    </div>
 
-                
-               
-
-               
-
-                <!-- Más secciones de contenido según sea necesario -->
-            </div>
-
-            <div id="finalOptions" style="display:none; text-align:center;">
-                <button type="button" class="btn btn-info" id="previewButton">Previsualizar</button>
-                <button type="button" class="btn btn-success" id="createAgreementButton">Crear acuerdo de comparecencia</button>
-            </div>
-
-            <!-- Botones de navegación -->
-            <div class="navigation-buttons">
-                <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
-                <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
-                <button type="button" class="btn btn-info" id="previewPdfButton">Previsualizar PDF</button>
-
-                <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
-
-            </div>
+    <div id="qrCode" style="display:none;">
+        <!-- Firma de la Autoridad Actuante -->
+        <div class="firma-section" id="autoridadActuanteSection">
+          <h4>Firma de la Autoridad Actuante</h4>
+          <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+          <div id="mensajeFirmaAutoridadActuante"></div>
+          <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
         </div>
-    </form>
+        
+        <!-- Firma del Representante Legal -->
+        <div class="firma-section" id="representanteLegalSection" style="display:none;">
+          <h4>Firma del Representante Legal</h4>
+          <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
+          <div id="mensajeFirmaRepresentanteLegal"></div>
+          <button id="nextToTraductor">Siguiente: Traductor</button>
+        </div>
+        
+        <!-- Firma del Traductor -->
+        <div class="firma-section" id="traductorSection" style="display:none;">
+          <h4>Firma del Traductor</h4>
+          <img id="qrImageTraductor" src="" alt="Código QR Traductor">
+          <div id="mensajeFirmaTraductor"></div>
+          <button id="nextToExtranjero">Siguiente: Extranjero</button>
+        </div>
+        
+        <!-- Firma del Extranjero -->
+        <div class="firma-section" id="extranjeroSection" style="display:none;">
+          <h4>Firma del Extranjero</h4>
+          <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
+          <div id="mensajeFirmaExtranjero"></div>
+          <button id="nextToTestigo1">Siguiente: Testigo 1</button>
+        </div>
+        
+        <!-- Firma del Testigo 1 -->
+        <div class="firma-section" id="testigo1Section" style="display:none;">
+          <h4>Firma del Testigo 1</h4>
+          <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
+          <div id="mensajeFirmaTestigo1"></div>
+          <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+        </div>
+        
+        <!-- Firma del Testigo 2 -->
+        <div class="firma-section" id="testigo2Section" style="display:none;">
+          <h4>Firma del Testigo 2</h4>
+          <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
+          <div id="mensajeFirmaTestigo2"></div>
+          <button id="finalizarFirmas">Finalizar Firmas</button>
+        </div>
+      </div>
+      
 
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
@@ -200,15 +256,44 @@
             // Inicializa los botones al cargar la página
             updateNavigationButtons();
     
-            // Evento al hacer clic en "Siguiente"
-            $('.btn-custom6').click(function() {
-                var $activeTab = $tabs.filter('.active');
-                var nextIndex = $tabs.index($activeTab) + 1;
-                if (nextIndex < $tabs.length) {
-                    $tabs.eq(nextIndex).tab('show');
+            $("#comparecenciaForm :input[required]").on('input change', function() {
+                if ($(this).val()) {
+                  $(this).removeClass('input-required');
                 }
+              });
+        $('.btn-custom6').click(function() {
+            var allFieldsCompleted = true;
+            var $activeTab = $('#myTabContent .tab-pane.active');
+            var incompleteFields = [];
+        
+            // Verifica si todos los campos requeridos en la pestaña actual están completos
+            $activeTab.find(":input[required]").each(function() {
+              if (!$(this).val()) {
+                allFieldsCompleted = false;
+                incompleteFields.push($(this).prev("label").text()); // O puedes usar $(this).prev("label").text() para obtener el texto del label asociado
+                $(this).addClass('input-required'); // Añade la clase para el borde rojo
+              } else {
+                $(this).removeClass('input-required'); // Remueve la clase si el campo está completo
+              }
             });
-    
+        
+            // Si no todos los campos están completos, muestra una alerta
+            if (!allFieldsCompleted) {
+              Swal.fire({
+                title: 'Campos requeridos incompletos',
+                html: 'Complete todos los campos requeridos antes de continuar. Los siguientes campos están incompletos: <strong>' + incompleteFields.join(", ") + '</strong>',
+                icon: 'warning',
+                confirmButtonText: 'Entendido'
+              });
+            } else {
+              // Si todos los campos están completos, permite cambiar a la siguiente pestaña
+              var $activeTab = $tabs.filter('.active');
+              var nextIndex = $tabs.index($activeTab) + 1;
+              if (nextIndex < $tabs.length) {
+                $tabs.eq(nextIndex).tab('show');
+              }
+            }
+          });
             // Evento al hacer clic en "Anterior"
             $('.btn-custom5').click(function() {
                 var $activeTab = $tabs.filter('.active');
@@ -240,21 +325,9 @@
                 }).then(response => response.json())
                   .then(data => {
                     if(data.success) {
-                        // Aquí manejas una respuesta exitosa, como mostrar un mensaje de éxito
-                        Swal.fire({
-                            title: '¡Éxito!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'Aceptar'
-                        });
-                        } else {
-                        // Aquí manejas los errores, como mostrarlos al usuario
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Se han encontrado errores en el formulario.',
-                            icon: 'error',
-                            confirmButtonText: 'Aceptar'
-                        });
+                 
+                     
+
                     }
                 }).catch(error => {
                     // Aquí manejas cualquier error en la solicitud de red

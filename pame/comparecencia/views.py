@@ -132,7 +132,9 @@ class CrearComparecenciaAjax(View):
             no_proceso = get_object_or_404(NoProceso, nup=nup_id)
             comparecencia.nup = no_proceso
             comparecencia.save()
-            data = {'success': True, 'message': 'Comparecencia creada con éxito.'}
+
+            # CONSEGUIMOS EL ID DE LA COMPARECENCIA
+            data = {'success': True, 'message': 'Comparecencia creada con éxito.', 'comparecencia_id': comparecencia.id}
             return JsonResponse(data, status=200)
         else:
             data = {'success': False, 'errors': form.errors}
@@ -142,7 +144,7 @@ class CrearComparecenciaAjax(View):
             no_proceso = get_object_or_404(NoProceso, nup=nup_id)
             extranjero = no_proceso.extranjero
             asignacion_rep_legal = AsignacionRepresentante.objects.filter(no_proceso=no_proceso).first()
-
+   
             # Crear el formulario y establecer valores iniciales
   
             initial_data = {
