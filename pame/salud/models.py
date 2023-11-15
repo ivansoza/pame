@@ -3,6 +3,7 @@ from vigilancia.models import Extranjero, NoProceso
 from catalogos.models import Estacion
 from django.contrib.auth.models import User
 from django.conf import settings
+from multiupload.fields import MultiFileField
 
 # Create your models here.
 class PerfilMedico(models.Model):
@@ -19,7 +20,10 @@ TIPO_DIETAS=[
     ('VEGETARIANA','VEGETARIANA'),
     ('CLÍNICA','CLÍNICA'),
 ]
-
+REFERENCIA_BOOL = [
+    (True, 'Sí'),
+    (False, 'No'),
+]
 class Consulta(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     nup = models.ForeignKey(NoProceso, on_delete= models.CASCADE)
@@ -56,6 +60,11 @@ class Consulta(models.Model):
     conclusionDiagnostica= models.TextField()
     observaciones =models.TextField()
     tratamiento = models.TextField()
+    referencia = models.BooleanField(
+        verbose_name='¿El extranjero requiere referencia Medica?',
+        choices=REFERENCIA_BOOL,
+        default=False,  # o True según tu preferencia predeterminada
+    )
     class Meta:
         verbose_name_plural = "Consulta"
 
@@ -239,3 +248,28 @@ class constanciaNoLesiones(models.Model):
     class Meta:
         verbose_name_plural = "Constancias de no lesiones"
 
+class ReferenciaMedica(models.Model):
+    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete= models.CASCADE)
+    delaEstacion = models.ForeignKey(Estacion, on_delete= models.CASCADE)
+    delMedico = models.ForeignKey(PerfilMedico, on_delete=models.CASCADE)
+    consulta = models.ForeignKey(Consulta, on_delete=models.CASCADE)
+    fechaHoraReferencia = models.DateTimeField(auto_now_add=True)
+    especialista = models.CharField(max_length=100,verbose_name='Especialidad medica')
+    justificacion = models.TextField(max_length=100,verbose_name='Justificación de la referencia medica')
+    class Meta:
+        verbose_name_plural = "Referencias Medicas"
+
+class DocumentosReferencia(models.Model):
+    descripcion = models.TextField( verbose_name='Descripciones de documentos')
+    documento = models.FileField(upload_to='files/', verbose_name='Documentos', null=True, blank=True)
+    fechaHora = models.DateTimeField(auto_now_add=True)
+    deReferencia = models.ForeignKey(ReferenciaMedica, on_delete=models.CASCADE)
+    class Meta:
+        verbose_name_plural = "Documentos"
+
+class FirmaMedico(models.Model):
+    medico = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    firma_imagen = models.ImageField(upload_to='firmas/', blank=True, null=True)
+    fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
+    fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)

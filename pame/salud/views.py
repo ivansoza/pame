@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.views.generic import ListView, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from vigilancia.models import Extranjero
-from .models import CertificadoMedico, PerfilMedico, Consulta, constanciaNoLesiones, CertificadoMedicoEgreso
+from .models import DocumentosReferencia,CertificadoMedico, PerfilMedico, Consulta, constanciaNoLesiones, CertificadoMedicoEgreso, ReferenciaMedica, FirmaMedico
 from catalogos.models import Estacion
-from .forms import certificadoMedicoForms, perfilMedicoforms, consultaForms, lesionesForm, certificadoMedicoEgresoForms
+from .forms import certificadoMedicoForms, perfilMedicoforms, consultaForms, lesionesForm, certificadoMedicoEgresoForms, referenciaMedicaforms, DocumentosReferenciaForm, FirmaMedicoForm
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.urls import reverse
@@ -16,7 +16,16 @@ from vigilancia.models import Biometrico
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import face_recognition
 from django.db.models import Max
-
+from django.db.models import Exists, OuterRef
+from django.shortcuts import get_object_or_404
+from django.conf import settings
+import os
+from django.shortcuts import redirect
+from django.core.files.base import ContentFile
+import base64
+from django.urls import reverse_lazy
+from django.contrib.auth.models import User
+from usuarios.models import Usuario
 # Create your views here.
 
 def homeMedico(request):
@@ -104,6 +113,7 @@ class listaExtranjerosEstacion(LoginRequiredMixin, ListView):
         context['nombre_estacion'] = self.request.user.estancia.nombre
 
         return context
+    
     
 class certificadoMedico(LoginRequiredMixin, CreateView):
     template_name = 'servicioInterno/certificadoMedico.html'
@@ -259,9 +269,8 @@ class perfilMedicoInterno(LoginRequiredMixin, CreateView):
             usuario_data = self.request.user  # El usuario logeado
             context['nombreMedico'] = usuario_data.first_name
             context['apellidosMedico'] = usuario_data.last_name
-        
         context['navbar'] = 'medico'
-        context['seccion'] = 'Medicointerno'        
+        context['seccion'] = 'Medicointerno'      
         return context
 class consultaMedica(LoginRequiredMixin, CreateView):
     template_name = 'servicioInterno/consultaMedica.html'
@@ -271,7 +280,12 @@ class consultaMedica(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         extranjero_id = self.kwargs.get('pk')
         messages.success(self.request, 'Consulta medica registrada con éxito.')
-        return reverse('listConsultas',kwargs={'pk': extranjero_id})  # Reemplaza 'nombre_de_tu_plantilla_verdadera' con el nombre correcto
+        if self.object.referencia:
+            # Si el tratamiento es verdadero, redirige a la plantilla correspondiente
+            return reverse('referenciaMedica',kwargs={'pk': extranjero_id})  # Reemplaza 'nombre_de_tu_plantilla_verdadera' con el nombre correcto
+        else:
+            # Si el tratamiento es falso, redirige a otra plantilla
+           return reverse('listConsultas',kwargs={'pk': extranjero_id})  # Reemplaza 'nombre_de_tu_plantilla_verdadera' con el nombre correcto
     def get_initial(self):
         initial = super().get_initial()
         Usuario = get_user_model()
@@ -378,9 +392,12 @@ class listaConsultasExtranjero(LoginRequiredMixin,ListView):
     def get_queryset(self):
         extranjero_id = self.kwargs['pk']
         extranjero = Extranjero.objects.get(pk=extranjero_id)
+
+        # Obtener el último nup del extranjero
         ultimo_nup = extranjero.noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+
+        # Filtrar las consultas por el extranjero y el nup más reciente
         queryset = Consulta.objects.filter(extranjero=extranjero_id, nup__consecutivo=ultimo_nup)
-        print(queryset)
         return queryset
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -389,6 +406,8 @@ class listaConsultasExtranjero(LoginRequiredMixin,ListView):
         nombre = extranjero.nombreExtranjero
         ape1 = extranjero.apellidoPaternoExtranjero
         ape2 = extranjero.apellidoMaternoExtranjero
+        ultimo_nup = Extranjero.objects.get(pk=extranjero_id).noproceso_set.aggregate(Max('consecutivo'))['consecutivo__max']
+
         context['nombre'] = nombre
         context['extranjero'] = extranjero
         context['ape1'] = ape1
@@ -396,6 +415,10 @@ class listaConsultasExtranjero(LoginRequiredMixin,ListView):
         context['navbar'] = 'medico'
         context['seccion'] = 'consulta'    
         context['extranjero_id']= extranjero_id 
+        context['extranjeros'] = Consulta.objects.filter(extranjero=extranjero_id, nup__consecutivo=ultimo_nup).annotate(
+            tiene_referencia_medica=Exists(ReferenciaMedica.objects.filter(consulta=OuterRef('pk'))),
+            # Añadir otras anotaciones si es necesario
+        )
         return context
     
 class constanciaLesiones(LoginRequiredMixin, CreateView):
@@ -439,6 +462,201 @@ class constanciaLesiones(LoginRequiredMixin, CreateView):
         context['navbar'] = 'medico'
         context['seccion'] = 'interno'    
         return context
+class referencia(LoginRequiredMixin, CreateView):
+    template_name='servicioInterno/referenciaMedica.html'
+    model = ReferenciaMedica
+    form_class = referenciaMedicaforms
+    login_url ='/permisoDenegado/'
+    def get_success_url(self):
+        extranjero_id = self.kwargs.get('pk')
+        messages.success(self.request, 'Referencia medica registrada con éxito.')
+        return reverse('listConsultas',kwargs={'pk': extranjero_id}) 
+    def get_initial(self):
+        initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        initial['delaEstacion'] = estacion
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultima_consulta = Consulta.objects.filter(extranjero=extranjero_id).latest('fechaHoraConsulta')
+
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup      
+        perfil_medico = PerfilMedico.objects.get(usuario=usuario)
+        initial['delMedico'] = perfil_medico  
+        initial['nup'] = ultimo_no_proceso_id
+        initial['extranjero'] = extranjero
+        initial['consulta'] = ultima_consulta.id
+
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        ape1 = extranjero.apellidoPaternoExtranjero
+        ape2 = extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        context['extranjero'] = extranjero
+        context['ape1'] = ape1
+        context['ape2'] = ape2
+        context['navbar'] = 'medico'
+        context['seccion'] = 'interno'    
+        return context
+class documentosReferencia(LoginRequiredMixin, CreateView):
+    template_name='servicioInterno/cargaDocumentos.html'
+    model = DocumentosReferencia
+    form_class = DocumentosReferenciaForm
+    login_url ='/permisoDenegado/'
+    def get_success_url(self):
+        referencia_id = self.kwargs.get('referencia_id')
+        referencia = get_object_or_404(ReferenciaMedica, id=referencia_id)
+        extranjero_id = referencia.extranjero.pk
+
+        messages.success(self.request, 'Documentos subidos con éxito.')
+        return reverse('listConsultas',kwargs={'pk': extranjero_id}) 
+    def form_valid(self, form):
+        # Obtiene la referencia
+        referencia_id = self.kwargs.get('referencia_id')
+        referencia = get_object_or_404(ReferenciaMedica, id=referencia_id)
+
+        # Guarda cada archivo en una instancia diferente de documentosReferencia
+        for file in self.request.FILES.getlist('documento'):
+            documento_referencia = form.save(commit=False)
+            documento_referencia.documento = file
+            documento_referencia.deReferencia = referencia
+            documento_referencia.save()
+
+        return super().form_valid(form)
+    def get_initial(self):
+        initial = super().get_initial()
+
+        # Obtén el ID de la referencia y establece el valor inicial del campo deReferencia
+        referencia_id = self.kwargs.get('referencia_id')
+        initial['deReferencia'] = referencia_id
+
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Obtén el ID de la referencia
+        referencia_id = self.kwargs.get('referencia_id')
+        referencia = get_object_or_404(ReferenciaMedica, id=referencia_id)
+        nombre = referencia.extranjero.nombreExtranjero
+        context['navbar'] = 'medico'
+        context['seccion'] = 'consulta'    
+        context['referencia_id'] = referencia_id  # Agrega el ID de la referencia al contexto
+        context['referencia']= referencia
+
+        return context
+
+class listaDocumentos(LoginRequiredMixin, ListView):
+    template_name = 'servicioInterno/listaDocumentos.html'
+    model = DocumentosReferencia
+    context_object_name = 'documentos'
+    login_url = '/permisoDenegado/'
+
+    def get_queryset(self):
+        consulta_id = self.kwargs['consulta_id']
+
+        # Obtener la referencia médica asociada a la consulta
+        referencia_medica = get_object_or_404(ReferenciaMedica, consulta_id=consulta_id)
+        # Filtra los documentos que están relacionados con la misma referencia médica
+        doc = DocumentosReferencia.objects.filter(deReferencia=referencia_medica)
+        queryset = doc
+        return queryset
+
+    def get_context_data(self, **kwargs):
+     context = super().get_context_data(**kwargs)
+     consulta_id = self.kwargs['consulta_id']
+     context['consulta_id'] = consulta_id
+
+     referencia_medica = get_object_or_404(ReferenciaMedica, consulta_id=consulta_id)
+     context['referencia_medica'] = referencia_medica
+    
+    # Filtra los documentos que están relacionados con la misma referencia médica
+     documentos = DocumentosReferencia.objects.filter(deReferencia=referencia_medica)
+     dd = documentos.last
+  
+
+    # Obtener la referencia médica asociada a la consulta
+     if referencia_medica:
+        context['extranjero'] = referencia_medica.extranjero
+        context['consulta'] = referencia_medica.consulta
+     context['navbar'] = 'medico'
+     context['seccion'] = 'consulta'
+     return context
+class QrsMedico(LoginRequiredMixin, TemplateView):
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    template_name = 'qrMedico.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        usuario = self.request.user
+        
+        qr_link = f"http://192.168.1.129:8082/salud/crear_firma_Medico/{usuario.id}"
+
+        context['initial_qr_link'] = qr_link
+        context['nombre'] = usuario.first_name
+        context['apellidoP'] = usuario.last_name
+
+        return context
+def verificar_firma(request, pk):
+    try:
+        firma = FirmaMedico.objects.get(medico=pk)
+        if firma.firma_imagen:
+            # Construye la URL completa para la imagen
+            url_imagen = os.path.join(settings.MEDIA_URL, str(firma.firma_imagen))
+            return JsonResponse({"firmado": True, "url_imagen_firma": url_imagen})
+        else:
+            return JsonResponse({"firmado": False})
+    except FirmaMedico.DoesNotExist:
+        return JsonResponse({"firmado": False})
+class FirmaCreateMedicoView(CreateView):
+    model = FirmaMedico
+    form_class = FirmaMedicoForm
+    template_name = 'firmaMedico.html'
+    
+    def form_valid(self, form):
+        extranjero_id = self.kwargs.get('pk')
+
+        extranjero = Usuario.objects.get(pk=extranjero_id)
+        
+        # Verifica si el extranjero ya tiene una firma
+        if hasattr(extranjero, 'firma'):
+            # Aquí decides qué hacer si ya existe una firma
+            # Por ejemplo, puedes redirigir al usuario a otra página o mostrar un mensaje de error
+          return redirect(reverse('firma_existente'))
+        else:
+            firma = form.save(commit=False)
+            firma.medico = extranjero
+
+            # Toma la cadena dataURL desde el formulario
+            firma_data_url = form.cleaned_data.get('firma_imagen')
+            format, imgstr = firma_data_url.split(';base64,')
+            ext = format.split('/')[-1]
+
+            # Crea un archivo de imagen desde la cadena dataURL
+            firma_image = ContentFile(base64.b64decode(imgstr), name=f"firma_{firma.id}.{ext}")
+
+            firma.firma_imagen.save(firma_image.name, firma_image)
+            firma.save()
+
+            return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirige a donde desees después de guardar la firma
+        return reverse_lazy('firma_exitosa')
+   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = self.kwargs.get('pk')
+        return context
+    
 
 def manejar_imagen(request):
     if request.method == "POST":
