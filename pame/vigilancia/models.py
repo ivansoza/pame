@@ -311,8 +311,8 @@ class NoProceso(models.Model):
     comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)
 
-    def _str_(self):
-       return self.nup
+    def __str__(self):
+        return self.nup
 
     @property
     def only_year(self):

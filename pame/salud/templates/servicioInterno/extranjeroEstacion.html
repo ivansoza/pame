@@ -139,23 +139,32 @@
     }
 
     function showBioAlert() {
-        Swal.fire({
-            title: 'Detalles del certificado',
-            html: `
-                <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
-                <br>
+    Swal.fire({
+        title: 'Detalles del certificado',
+        html: `
+            <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+            <br>
+            <strong>Estación:</strong> {{ estacion }}
+        `,
+        icon: 'success',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#2A4B41',
+        showCloseButton: true,
+        showDenyButton: true,
+        denyButtonText: 'Documento',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Acción cuando se hace clic en 'Entendido'
+        } else if (result.isDenied) {
+            // Acción cuando se hace clic en 'Documento'
+            window.open('{% url 'certificadoPDF' %}', '_blank');  // Reemplaza 'URL_DEL_DOCUMENTO' con la URL correcta
+        }
+    });
+}
 
 
-                <strong>Estación:</strong> {{ estacion }}
-            `,
-            icon: 'success',
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#2A4B41'
 
-        });
-    }
-
-    function showBioAlert2() {
+    function showBioAlert2() { 
         Swal.fire({
             title: 'Se necesita que el usuario tenga registro de perfil medico',
             

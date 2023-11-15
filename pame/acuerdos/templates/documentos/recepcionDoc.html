@@ -1,0 +1,69 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[Oficina]
+<br>[Estacion Migratoria]
+<br>
+<br>[Lugar y fecha completa] 
+<br>[Numero de expediente]
+{% endblock %}
+
+{% block title %}
+<title>
+    Constancia de no firma
+</title>
+{% endblock %}
+
+{% block content %}
+<p class="centrado">
+    <strong>ACUERDO DE RECEPCI&Oacute;N DE DOCUMENTOS</strong>
+</p>
+<p>
+    En la [LUGAR DE EMISIÓN], siendo las [HH:MM] horas del día [DD de MM de AAAA], 
+    el Licenciado [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a la 
+    [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente ante la presencia de dos testigos que al final firman de conformidad.
+</p>
+<p class="centrado">
+    <strong>HACE CONSTAR</strong>
+</p>
+<p>
+    Que el día de la fecha, se recibió en esta autoridad de manera física el [BREVE DESCRIPCIÓN DE LA DOCUMENTAL RECIBIDA], 
+    la cual deberá ser agregada al expediente del extranjero [NOMBRE Y APELLIDO] de 
+    nacionalidad [NACIONALIDAD], para su valoración y análisis correspondiente.
+</p>
+<p class="centrado">
+    <strong>CONSTE</strong>
+</p>
+<p>
+    Con fundamento en lo dispuesto en los artículos 1, 11, 14 y 16 de la Constitución Política de los Estados Unidos Mexicanos; 27 de la Ley Orgánica de la Administración Pública Federal; Artículos 1 y  2 de la Ley de Migración; 1, 2 y 4  del Reglamento de la misma Ley; 1, 3, 12, 13, 14, 15, 16 17, 18, 28, 30, 31 y relativos de la Ley Federal de Procedimiento Administrativo; los relativos al Reglamento Interior de la Secretaría de Gobernación; esta autoridad:
+</p>
+<p class="centrado">
+    <strong>ACUERDA</strong>
+</p>
+<p>
+    <strong>&Uacute;NICO.-&nbsp;</strong>Ténganse por recibido la documental en comento, y agréguese a las presentes actuaciones para los efectos legales a que haya lugar. 
+</p>
+<p class="centrado">
+    <strong>C&Uacute;MPLASE</strong>
+</p>
+<p>
+    Así lo acordó y firmo el Lic. [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] 
+    adscrito a la [LUGAR DE ADSCRIPCIÓN DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente asistido de los testigos que al final firman de conformidad.
+</p>
+<div style="text-align: center;">
+    <p><strong>[Cargo AC]</strong></p>
+    <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    <strong>Lic. [Nombre y Apellido]</strong>
+</div>
+<p class="centrado">
+    <strong>TESTIGOS DE ASISTENCIA</strong>
+</p>
+<div class="columnas">
+    <div class="columna">
+        <p class="firma"><strong>Lic. [Nombre y Apellido]</strong></p>
+    </div>
+    <div class="columna">
+        <p class="firma"><strong>Lic. [Nombre y Apellido]</strong></p>
+    </div>
+</div>
+{% endblock %}

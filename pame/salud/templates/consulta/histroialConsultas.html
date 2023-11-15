@@ -111,8 +111,9 @@
             <td>{{ extranjero.delaEstacion }}</td>
             
             <td>
-                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listConsultas" extranjero.id%} " data-title="Consultas Medicas ">
-                    <i class="fa-solid fa-file-medical"></i>            </td>
+              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'recetaPDF' extranjero.nup extranjero.id %}" target="_blank" data-title="Receta m&eacute;dica">
+                <i class="fa-solid fa-file-medical"></i>
+            </td>
                        
         </tr>
         {% endfor %}
