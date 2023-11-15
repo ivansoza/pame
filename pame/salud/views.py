@@ -252,7 +252,7 @@ class perfilMedicoInterno(LoginRequiredMixin, CreateView):
     model = PerfilMedico # Utiliza el modelo para crear objetos
     form_class = perfilMedicoforms
     def get_success_url(self):
-        messages.success(self.request, 'Datos del extranjero editados con éxito.')
+        messages.success(self.request, 'Perfil medico creado con éxito.')
         return reverse('listExtranjeroEstacion')
     def get_initial(self):
         initial = super().get_initial()
