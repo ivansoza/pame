@@ -1,5 +1,5 @@
 from django.db import models
-from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion, AutoridadesActuantes
+from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion, AutoridadesActuantes,RepresentantesLegales
 from PIL import Image, ExifTags
 
 
@@ -311,8 +311,8 @@ class NoProceso(models.Model):
     comparecencia = models.BooleanField(verbose_name='¿Tuvo comparecencia?')
     nup = models.CharField(max_length=50, primary_key=True)
 
-    def _str_(self):
-       return self.nup
+    def __str__(self):
+        return self.nup
 
     @property
     def only_year(self):
@@ -372,3 +372,16 @@ class UserFace(models.Model):
 
     def _str_(self):
         return self.nombreExtranjero
+    
+class AsignacionRepresentante(models.Model):
+    no_proceso = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name='NUP')
+    representante_legal = models.ForeignKey(RepresentantesLegales, on_delete=models.CASCADE, verbose_name='Representante Legal')
+    fecha_asignacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Asignación')
+    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación Migratoria')
+
+    def __str__(self):
+        return f'Asignación {self.no_proceso.nup} - {self.representante_legal}'
+
+    class Meta:
+        verbose_name = 'Asignación de Representante Legal'
+        verbose_name_plural = 'Asignaciones de Representantes Legales'

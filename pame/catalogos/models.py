@@ -1,8 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-from multiselectfield import MultiSelectField
-
+from multiselectfield import MultiSelectField 
 class Tipos(models.Model):
     tipo = models.CharField(max_length=50, null=False)
 
@@ -39,7 +38,7 @@ class Responsable(models.Model):
     
 
 class Estacion(models.Model):
-    identificador = models.CharField(max_length=20, null=False)
+    identificador = models.CharField(max_length=25, null=False)
     nombre = models.CharField(max_length=50, null=False)
     calle = models.CharField(max_length=50, null=False)
     noext = models.CharField(max_length=5)
@@ -189,3 +188,25 @@ class Traductores(models.Model):
 
     def __str__(self):
         return f'{self.nombre} {self.apellido_paterno}'
+    
+
+ESTATUS_REPRESENTANTES = [
+    ('Activo', 'Activo'),
+    ('Inactivo', 'Inactivo'),
+    # Agrega más opciones de estatus si son necesarias
+]
+
+class RepresentantesLegales(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Nombre')
+    apellido_paterno = models.CharField(max_length=100, verbose_name='Apellido paterno')
+    apellido_materno = models.CharField(max_length=100, verbose_name='Apellido materno', blank=True, null=True)
+    telefono = models.CharField(max_length=12, verbose_name='Número telefónico')
+    email = models.EmailField(max_length=100, verbose_name='Correo electrónico')
+    estatus = models.CharField(choices=ESTATUS_REPRESENTANTES, verbose_name='Estatus del representante', max_length=25, default='Activo')
+    cedula = models.CharField(max_length=50, verbose_name='Número de Cédula')
+    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación migratoria')
+    defensoria = models.CharField(max_length=50, verbose_name='Defensora')
+    def __str__(self):
+        return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno or ""}'
+    
+

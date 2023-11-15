@@ -4310,3 +4310,4 @@ class DeleteAcompananteGeneral(LoginRequiredMixin,DeleteView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         context['seccion'] = 'acompanante'  # Cambia esto según la página activa
         return context
+    
