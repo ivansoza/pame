@@ -31,6 +31,12 @@
         color: #000; /* Un color más fuerte cuando esté activo */
         font-weight: bold;
     }
+    input[readonly] {
+        background-color: #e9ecef;
+        color: #495057;
+        cursor: not-allowed;
+      }
+      
 </style>
 
 <div class="container mt-3">
@@ -79,8 +85,10 @@
                         <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
                         <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
                         <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.lugarOrigen|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.domicilioEnMexico|as_crispy_field }}</div>
+
+                        <div class="col-md-3">{{ form.lugarOrigen|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.domicilioEnMexico|as_crispy_field }}</div>
+
                         <!-- Más campos generales -->
                     </div>
                 </div>
@@ -104,9 +112,10 @@
                         <div class="col-md-6">{{ form.fechaIngresoMexico|as_crispy_field }}</div>
                         <div class="col-md-6">{{ form.lugarIngresoMexico|as_crispy_field }}</div>
                         <div class="col-md-6">{{ form.formaIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.solicitaRefugio|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.declaracion|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.victimaDelito|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.solicitaRefugio|as_crispy_field }}</div>
+                        <div class="col-md-3">{{ form.victimaDelito|as_crispy_field }}</div>
+
+                        <div class="col-md-12">{{ form.declaracion|as_crispy_field }}</div>
                     </div>
                 </div>
 
@@ -298,9 +307,57 @@
             actualizarCampoTraductor(); // Llamarlo inicialmente para establecer el estado correcto
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
-      
+      $(document).ready(function() {
+        $('#fechaIngresoMexico').on('input', function() {
+          // Eliminar cualquier carácter que no sea número y añadir slashes automáticamente
+          var value = $(this).val();
+          var newValue = value.replace(/[^0-9]/g, '')
+                              .replace(/(\d{2})(\d{2})?(\d{4})?/, function(match, p1, p2, p3) {
+                                var dateStr = p1;
+                                if(p2) {
+                                  dateStr += '/' + p2;
+                                }
+                                if(p3) {
+                                  dateStr += '/' + p3;
+                                }
+                                return dateStr;
+                              })
+                              .substring(0, 10); // Limita la longitud a 10 caracteres: DD/MM/YYYY
+    
+          // Si el valor nuevo es diferente al valor actual, actualiza el campo de fecha
+          if (newValue !== value) {
+            $(this).val(newValue);
+          }
+        });
+    
+        $('#fechaIngresoMexico').on('change', function() {
+          // Verificar si la fecha está completa
+          var value = $(this).val();
+          if (value.length === 10) {
+            var parts = value.split('/');
+            var day = parseInt(parts[0], 10);
+            var month = parseInt(parts[1], 10);
+            var year = parseInt(parts[2], 10);
+            var currentYear = new Date().getFullYear();
+    
+            if (day <= 0 || day > 31 || month <= 0 || month > 12 || year > currentYear) {
+              Swal.fire({
+                title: 'Fecha inválida',
+                text: 'Por favor ingrese una fecha válida. Día debe ser menor o igual a 31, Mes menor o igual a 12 y Año no puede ser en el futuro.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+    
+              // Limpiar el campo de entrada
+              $(this).val('');
+            }
+          }
+        });
+      });
     </script>
+    
     
 </div>
 

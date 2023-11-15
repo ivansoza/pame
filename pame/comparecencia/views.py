@@ -153,7 +153,11 @@ class CrearComparecenciaAjax(View):
             'nombrePadre': extranjero.nombreDelPadre,
             'nombreMadre': extranjero.nombreDelaMadre,
             'nacionalidadPadre': extranjero.nacionalidad_Padre.nombre if extranjero.nacionalidad_Padre else '',
-            'nacionalidadMadre': extranjero.nacionalidad_Madre.nombre if extranjero.nacionalidad_Madre else ''
+            'nacionalidadMadre': extranjero.nacionalidad_Madre.nombre if extranjero.nacionalidad_Madre else '',
+            'DomicilioPais': extranjero.domicilio,
+            'lugarOrigen': extranjero.origen,
+
+
             }
             if asignacion_rep_legal:
                 initial_data['representanteLegal'] = asignacion_rep_legal.representante_legal
