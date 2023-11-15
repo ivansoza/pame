@@ -49,12 +49,46 @@
             
             <td>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "certificadoMedicoExtranjero" extranjero.id%} " data-title="Certificado Medico">
+                {% if extranjero.tiene_certificadoMedico %}
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="Certificado Medico Registrado">
                     <i class="fas fa-file-medical"></i>
                 </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Consulta Medica">
-                    <i class="fas fa-stethoscope"></i>
+                 {% if extranjero.tiene_constanciaLesiones %}
+                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert3(); return false;" data-title="Cosntancia de no lesiones Registrada">
+                    <i class="fas fa-file-medical"></i>
                 </a>
+                 {% else %}
+                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'constanciaLesiones' extranjero.id %}" data-title="No lesiones" onclick="abrir_modal_eliminar(this.href); return false;">
+                    <i class="fas fa-file-medical-alt"></i>
+                 </a>
+                 {% endif %}
+                {% else %}
+                 {% if tiene_perfil_medico %}
+                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "certificadoMedicoExtranjero" extranjero.id%} " data-title="Certificado Medico">
+                    <i class="fas fa-file-medical"></i>
+                </a>
+                  {% else %}
+                  <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert2(); return false;" data-title="Certificado Medico Registrado">
+                    <i class="fas fa-file-medical"></i>
+                </a>
+                 {% endif %}
+                   
+                {% endif %}
+                {% if extranjero.tiene_certificadoMedico %}
+                {% if extranjero.tiene_egreso %}
+                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert5(); return false;" data-title="Certificado Medico Egreso">
+                    <i class="fas fa-file-medical"></i>
+                 </a>
+                {% else %}
+                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "certificadoMedicoEgreso" extranjero.id%}" data-title="Consulta Medica">
+                    <i class="fas fa-file-medical-alt"></i>
+                 </a>
+                {% endif %}
+                {% else %}
+                 <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showBioAlert4(); return false;" data-title="Certificado Medico Egreso">
+                    <i class="fas fa-file-medical"></i>
+                 </a>
+                {% endif %}
             </td>
                        
         </tr>
@@ -105,11 +139,81 @@
     }
 
     function showBioAlert() {
+    Swal.fire({
+        title: 'Detalles del certificado',
+        html: `
+            <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+            <br>
+            <strong>Estación:</strong> {{ estacion }}
+        `,
+        icon: 'success',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#2A4B41',
+        showCloseButton: true,
+        showDenyButton: true,
+        denyButtonText: 'Documento',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Acción cuando se hace clic en 'Entendido'
+        } else if (result.isDenied) {
+            // Acción cuando se hace clic en 'Documento'
+            window.open('{% url 'certificadoPDF' %}', '_blank');  // Reemplaza 'URL_DEL_DOCUMENTO' con la URL correcta
+        }
+    });
+}
+
+
+
+    function showBioAlert2() { 
         Swal.fire({
+            title: 'Se necesita que el usuario tenga registro de perfil medico',
+            
             icon: 'warning',
-            title: '¡Falta Fotografía y/o Firma!',
-            text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
+            confirmButtonText: 'Entendido',
             confirmButtonColor: '#2A4B41'
+
+        });
+    }
+    function showBioAlert3() {
+        Swal.fire({
+            title: 'Detalles de la constancia de no lesiones',
+            html: `
+                <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+                <br>
+
+
+                <strong>Estación:</strong> {{ estacion }}
+            `,
+            icon: 'success',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#2A4B41'
+
+        });
+    }
+    function showBioAlert4() {
+        Swal.fire({
+            title: 'Es necesario que el extranjero cuente antes un certificado medico de ingreso ',
+            
+            icon: 'warning',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#2A4B41'
+
+        });
+    }
+    function showBioAlert5() {
+        Swal.fire({
+            title: 'Detalles del certificado medico de egreso',
+            html: `
+                <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+                <br>
+
+
+                <strong>Estación:</strong> {{ estacion }}
+            `,
+            icon: 'success',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#2A4B41'
+
         });
     }
 </script>

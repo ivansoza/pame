@@ -1,0 +1,116 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load static %}
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
+{% endblock link %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'homePuestaINM' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+{% block contenido %}
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Lista de Representantes Legales en la Estación :
+        <span class="puesta-color" ><strong>{{ estacion }}</strong></span>
+    </h1>
+  </div>
+<br>
+<div class="table-responsive">
+    
+
+<table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
+    
+    <thead>
+
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido(s)</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th>Defensoría</th>
+            <th>Estatus</th>
+
+            <th style="width: 1%;">Opciones</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for representante in representantes_legales %}
+        <tr>
+            <td>{{ representante.nombre}}</td>
+            <td>
+                    {{ representante.apellido_paterno }} 
+                    {{ representante.apellido_materno }}
+            <td>{{ representante.telefono }} </td>
+            <td>{{ representante.email }} </td>
+            <td>{{ representante.defensoria }} </td>
+            <td>{{ representante.estatus }} </td>
+
+            <td>
+
+
+                <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
+                href="{% url 'representante-legal-update' representante.pk %}"
+                data-title="Eliminar Autoridad" onclick="abrir_modal_eliminar(this.href); return false;">
+                <i class="fa-solid fa-user-pen"></i>   
+                </a>
+            </td>
+
+
+
+            
+        </tr>
+        {% endfor %}
+
+        <tfoot>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido(s)</th>
+                <th>Telefono</th>
+                <th>Email</th>
+                <th>Defensoría</th>
+                <th>Estatus</th>
+                <th style="width: 1%;">Opciones</th>
+
+
+            </tr>
+        </tfoot>
+
+    </tbody>
+</table>
+</div>
+
+<!-- Modal para eliminar el extranjero  -->
+<div class="modal fade" id="eliminarextranjero" role="dialog">
+</div>
+{% endblock contenido%}
+{% block datatable %}
+
+ {
+    text: 'Agregar Representante Legal',
+    className: 'btn btn-custom mr-2',
+    action: function (e, dt, node, config) {
+      // Redirigir a la URL relativa a la ubicación actual
+      window.location.href = '{% url "representante-legal-create" %}';
+   }
+  },
+  
+{% endblock datatable %}
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function abrir_modal_eliminar(url){
+        $('#eliminarextranjero').load(url, function(){
+            $(this).modal('show');
+        })
+    }
+
+
+</script>
+
+
+{% endblock script%}

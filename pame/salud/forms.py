@@ -1,18 +1,38 @@
 from django import forms
-from .models import Patologicos, ExploracionFisica, PadecimientoActual, ExpedienteMedico
+from .models import CertificadoMedico, PerfilMedico, CertificadoMedicoEgreso, Consulta, constanciaNoLesiones, OPCIONES_BOOL, LESIONES_BOOL
 
-class patlogicosForms(forms.ModelForm):
+class certificadoMedicoForms(forms.ModelForm):
+    tratamiento = forms.ChoiceField(
+        label='¿El extranjero requiere tratamiento?',
+        choices=OPCIONES_BOOL,
+        widget=forms.RadioSelect,  # Puedes usar CheckboxInput si prefieres una casilla de verificación
+    )
+
     class Meta:
-        model = Patologicos
+        model = CertificadoMedico
+        fields = '__all__'
+    
+class perfilMedicoforms(forms.ModelForm):
+    class Meta:
+        model = PerfilMedico
         fields = '__all__'
 
-
-class exploracionFisicaForms(forms.ModelForm):
+class certificadoMedicoEgresoForms(forms.ModelForm):
     class Meta:
-        model = ExploracionFisica
+        model = CertificadoMedicoEgreso
         fields = '__all__'
 
-class padecimientoActualForms(forms.ModelForm):
+class consultaForms(forms.ModelForm):
     class Meta:
-        model = PadecimientoActual
+        model = Consulta
+        fields = '__all__'
+
+class lesionesForm(forms.ModelForm):
+    presentaLesion = forms.ChoiceField(
+        label='¿El extranjero presenta lesiones?',
+        choices=LESIONES_BOOL,
+        widget=forms.RadioSelect,
+    )
+    class Meta:
+        model = constanciaNoLesiones
         fields = '__all__'

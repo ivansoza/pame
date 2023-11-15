@@ -1133,11 +1133,13 @@ class ListaEnseresViewINM(LoginRequiredMixin,ListView):
         extranjero_id= self.kwargs['extranjero_id']
         extranjero = Extranjero.objects.get(id=extranjero_id)
         puesta_id = self.kwargs.get('puesta_id')
+        nup = extranjero.noproceso_set.latest('consecutivo').nup
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['extranjero'] = extranjero  # Agregar el extranjero al contexto
         context['extranjero_id'] = extranjero_id  # Agregar el extranjero al contexto
         context['puesta_id'] = puesta_id  # Agregar el extranjero al contexto
         context['today_registered'] = self.today_registered  # Agrega al contexto si se registró hoy
+        context['nup'] = nup
 
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
@@ -2524,8 +2526,7 @@ def compare_faces(request):
             return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
 
         extranjero_id = int(extranjero_id_str)  # Convertir a entero
-        print(type(extranjero_id))  # <class 'int'>
-        print(extranjero_id)  
+       
         try:
             # Obtener el objeto Biometrico asociado con el Extranjero_id
       # Debería ser un número entero válido
@@ -2614,9 +2615,9 @@ class CrearEnseres(LoginRequiredMixin,CreateView):
         messages.success(self.request, 'Enseres creado con éxito.')
         estatus = extranjero.estatus
         if estatus == "Trasladado":
-            return reverse('listarExtranjerosEstacion')
+            return reverse('listTrasladados')
         else:
-          return reverse('listTrasladados')
+          return reverse('listarExtranjerosEstacion')
     
 
     def get_context_data(self, **kwargs):

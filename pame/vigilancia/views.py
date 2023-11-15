@@ -76,7 +76,7 @@ from vigilancia.models import Firma
 from .forms import FirmaForm
 from django.core.files.base import ContentFile
 from django.contrib.auth.decorators import login_required  # Importa el decorador login_required
-
+from catalogos.models import AutoridadesActuantes
 class CreatePermissionRequiredMixin(UserPassesTestMixin):
     login_url = '/permisoDenegado/'
 
@@ -248,6 +248,16 @@ class createPuestaINM(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequire
     template_name = 'puestaINM/createPuestaINM.html'  
     success_url = reverse_lazy('homePuestaINM')
     login_url = '/permisoDenegado/'  # Reedirige en caso de no estar logueado 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        user = self.request.user
+
+        if user:
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus ='Activo')
+            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus = 'Activo')
+
+        return form
     def get_initial(self):
         initial = super().get_initial()
 
@@ -1244,6 +1254,18 @@ class createPuestaAC(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequired
     template_name = 'puestaAC/createPuestaAC.html'  
     success_url = reverse_lazy('homePuestaAC')
     login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        user = self.request.user
+
+        if user:
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            form.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus ='Activo')
+            form.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia, estatus = 'Activo')
+
+
+        return form
     def get_initial(self):
         initial = super().get_initial()
         Usuario = get_user_model()
@@ -3403,7 +3425,55 @@ def manejar_imagen(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
-    
+@csrf_exempt
+def manejar_imagen4(request):
+    if request.method == "POST":
+        imagen = request.FILES.get('image')
+        extranjero_id_str = request.POST.get('extranjero_id')
+        if extranjero_id_str is None or not extranjero_id_str.isdigit():
+            return JsonResponse({'error': 'Invalid extranjero_id'}, status=400)
+
+        extranjero_id = int(extranjero_id_str)
+
+        try:
+            # Conversion de la imagen subida
+            biometrico = Biometrico.objects.get(Extranjero=extranjero_id)
+            face_encoding_almacenado = biometrico.face_encoding
+            imagen_bytes_io = BytesIO(imagen.read())
+            imagen_pil = Image.open(imagen_bytes_io)
+
+            if imagen_pil.mode != 'RGB':
+                imagen_pil = imagen_pil.convert('RGB')
+
+            imagen_array = np.array(imagen_pil)
+
+            if not isinstance(imagen_array, np.ndarray):
+                return JsonResponse({'error': 'Failed to load image'}, status=400)
+
+            # Obteniendo los encodings de la imagen subida
+            encodings_subido = face_recognition.face_encodings(imagen_array)
+
+            if not encodings_subido:
+                return JsonResponse({'error': 'No face detected in uploaded image'}, status=400)
+
+            uploaded_encoding = encodings_subido[0]
+            tolerance = 0.5  # Puedes ajustar este valor
+
+            distance = face_recognition.face_distance([face_encoding_almacenado], uploaded_encoding)
+            distance_value = float(distance[0])
+            
+            if distance_value < tolerance:
+                similarity_str = f"Similitud: {(1 - distance_value) * 100:.2f}%"
+                return JsonResponse({'match': True, 'similarity': similarity_str, 'distance': distance_value})
+            else:
+                return JsonResponse({'match': False, 'similarity': None, 'distance': distance_value})
+
+        except Biometrico.DoesNotExist:
+            return JsonResponse({'error': 'Biometrico does not exist for given extranjero_id'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 @csrf_exempt
 def manejar_imagen2(request):
     if request.method == "POST":
@@ -4240,3 +4310,4 @@ class DeleteAcompananteGeneral(LoginRequiredMixin,DeleteView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         context['seccion'] = 'acompanante'  # Cambia esto según la página activa
         return context
+    

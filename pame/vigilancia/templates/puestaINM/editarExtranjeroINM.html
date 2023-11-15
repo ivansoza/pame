@@ -14,10 +14,10 @@
 {% block contenido %}
 
 <!-- TITULO DE LA PLANTILLA -->
-<div class="titulo-general-container mt-2">
+<div class="titulo-general-container mt-5">
     <h1 class="titulo-general">
         Editar datos del extranjero:        
-        <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }} {{ extranjero.apellidoMaternoExtranjero }}</strong></span>
+        <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
     </h1>
   </div>
 <br>
@@ -30,27 +30,19 @@
     <h1>Datos del extranjero</h1>
         {% csrf_token %}
         <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-4">
-                {{form.numeroExtranjero|as_crispy_field}}
-                <script>
-                    document.getElementById('id_numeroExtranjero').readOnly = true;
-                </script>
-            </div>
-            <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
-                {{form.deLaEstacion|as_crispy_field}}
-            </div>
+    
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.nombreExtranjero|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoPaternoExtranjero|as_crispy_field}}
             </div>
-        </div>
-    
-        <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.apellidoMaternoExtranjero|as_crispy_field}}
             </div>
+        </div>
+    
+        <div class="row">
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{form.domicilio|as_crispy_field}}
             </div>
@@ -58,13 +50,19 @@
                 {{form.fechaNacimiento|as_crispy_field}}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.edad|as_crispy_field}}
+                {{ form.edad|as_crispy_field }}
+                <script>
+                    document.getElementById('id_edad').readOnly = true;
+                </script>
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.genero|as_crispy_field}}
+                {{ form.genero|as_crispy_field }}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
-                {{form.nacionalidad|as_crispy_field}}
+                {{ form.nacionalidad|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.origen|as_crispy_field }}
             </div>
             <div class="col-sm-12 col-md-4 col-lg-4">
                 {{ form.estado_Civil|as_crispy_field }}
@@ -77,15 +75,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{ form.lugar_Origen|as_crispy_field }}
-            </div> 
-            <div class="col-sm-12 col-md-4 col-lg-6">
-                {{form.tipoEstancia|as_crispy_field}}
-            </div>
-        </div>
-        <div class="row">  
-            <div class="col-sm-12 col-md-4 col-lg-6">
+            <div class="col-sm-12 col-md-6 col-lg-6">
                 <div class="file-input-container">
                     <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
                      class="button-link"
@@ -96,16 +86,14 @@
                     {{form.documentoIdentidad|as_crispy_field}}
                 </div>
             </div>
-            <div class="col-sm-12 col-md-4 col-lg-6" >
-                {{form.estatus|as_crispy_field}}
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                {{form.tipoEstancia|as_crispy_field}}
             </div>
+        
         </div>
-    
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
-                {{form.deLaPuestaIMN|as_crispy_field}}
-            </div>
-        </div>
+
+       
+
     </div>
     <div method="post" class="card p-3" enctype="multipart/form-data" >
         <h1>Datos de los padres del extranjero</h1>
@@ -125,6 +113,12 @@
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-6">
                     {{ form.nacionalidad_Madre|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6" style='display:none'>
+                    {{form.deLaPuestaIMN|as_crispy_field}}
                 </div>
             </div>
             <button class="btn btn-primary float-end btn-custom" type="submit">Guardar</button>

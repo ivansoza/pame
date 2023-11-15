@@ -171,7 +171,7 @@
 
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">{{total_notificaciones}} Notifications</span>
+          <span class="dropdown-item dropdown-header">{{total_notificaciones}} Notificaciones</span>
           {% comment %} <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item">
             <i class="fas fa-envelope mr-2"></i> 4 new messages
@@ -190,7 +190,7 @@
             {% endif %}
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+          <a href="#" class="dropdown-item dropdown-footer">Ver todas las notificaciones</a>
         </div>
       </li>
       <li class="nav-item">
@@ -260,94 +260,8 @@
           </li>
 
 
-          <!-- Puesta disposición -->
+          <!-- INICIO DE EXTRANJEROS -->
           {% if 'SeguridadGeneral' in user_groups or 'SeguridadResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'seguridad' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Puesta a Disposición
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right"></span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview" style="margin-left: 20px;"> <!-- Añade un margen izquierdo -->
-              <li class="nav-item">
-                <a href="{% url 'homePuestaINM' %} " class="nav-link {% if seccion == 'seguridadINM' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Por personal del INM</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'homePuestaAC' %} " class="nav-link {% if seccion == 'seguridadAC' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Por autoridad competente</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'homePuestasVP' %} " class="nav-link {% if seccion == 'seguridadVP' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Voluntario</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-              <!-- Cierre de Puesta disposición -->
-                    <!--  Traslado -->
-
-          <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'traslado' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-exchange-alt"></i>
-              <p>
-                Traslado
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url 'listTraslado' %}" class="nav-link {% if seccion == 'traslado' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Generar traslado</p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Arribar extranjeros</p>
-                </a>
-              </li>
-            
-            </ul>
-          </li>
-                    <!--  Fin Traslado -->
-
-          <!-- Fin  Alojamiento -->
-
-          <!--   defensoria -->
-          <li class="nav-item {% if navbar == 'notificaciones'%}menu-is-opening menu-open{% endif %} ">
-            <a href="#" class="nav-link {% if navbar == 'defensoria'%}active  first-li{% endif %}">
-              <i class="nav-icon fas fa-city"></i>
-              <p>
-                Notificaciones
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url 'defensoria' %}" class="nav-link {% if seccion == 'interno' %}active {% endif %} ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Defensoria</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          
-          <!--   Extranjeros -->
-
           <li class="nav-item {% if navbar == 'extranjeros' %}menu-is-opening menu-open{% endif %}">
             <a href="#" class="nav-link {% if navbar == 'extranjeros' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-user-friends"></i>
@@ -383,11 +297,244 @@
                 </a>
               </li>
             </ul>
+          <!-- FIN  DE EXTRANJEROS -->
 
           </li>
+          <li class="nav-item {% if navbar == 'seguridad' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'seguridad' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Puesta a Disposición
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" style="margin-left: 20px;"> <!-- Añade un margen izquierdo -->
+              <li class="nav-item">
+                <a href="{% url 'homePuestaINM' %} " class="nav-link {% if seccion == 'seguridadINM' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Por personal del INM</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'homePuestaAC' %} " class="nav-link {% if seccion == 'seguridadAC' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Por autoridad competente</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'homePuestasVP' %} " class="nav-link {% if seccion == 'seguridadVP' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Voluntario</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+              <!-- Cierre de Puesta disposición -->
+
+
+          <!--   defensoria -->
+
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-city"></i>
+              <p>
+                Defensoria
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Denfensores</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+              <li class="nav-item {% if navbar == 'comparecencia' %}menu-is-opening menu-open{% endif %}">
+                <a href="#" class="nav-link {% if navbar == 'comparecencia' %}active first-li{% endif %}">
+                  <i class="nav-icon fas fa-gavel"></i>
+                  <p>
+                    Comparecencia
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+    
+                <ul class="nav nav-treeview" style="margin-left: 20px;">
+                  <li class="nav-item">
+                    <a href="{% url 'lisExtranjerosComparecencia' %}" class="nav-link {% if seccion == 'comparecencia' %}active {% endif %}">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Generar Comparecencia</p>
+                    </a>
+                  </li>
+    
+             
+                
+                </ul>
+              </li>
+                        
+          
+                    <!--  Traslado -->
+
+          <li class="nav-item {% if navbar == 'traslado' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'traslado' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-exchange-alt"></i>
+              <p>
+                Traslado
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+
+            <ul class="nav nav-treeview" style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url 'listTraslado' %}" class="nav-link {% if seccion == 'traslado' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Generar traslado</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'traslados_recibidos' %}" class="nav-link {% if seccion == 'arribo' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Arribar extranjeros</p>
+                </a>
+              </li>
+            
+            </ul>
+          </li>
+                    <!--  Fin Traslado -->
+
+          <!-- Fin  Alojamiento -->
+
+
+          
+          <!--   Extranjeros -->
+
+          
           {% endif %}
 
-          <!-- Acuerdos  -->
+        <!--   Medico -->
+        {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
+        <li class="nav-item {% if navbar == 'medico' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'medico' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-heartbeat"></i>
+            <p>
+              Servicios Médicos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          {% if user.estancia.servicioMedico %}
+            {% if tiene_perfil_medico %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "datosMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Perfil Medico</p>
+              </a>
+            </li>
+          </ul>
+          {% else %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Perfil Medico</p>
+              </a>
+            </li>
+          </ul>
+          {% endif %}
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Certificados medicos</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listExtranjeroConsulta" %}" class="nav-link {% if seccion == 'consulta' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Consultas medicas</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <ul class="nav nav-treeview" style="margin-left: 20px;">
+          <li class="nav-item">
+            <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Carga de certificado medico</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+        {% endif %}
+        {% endif %}
+        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-scale-balanced"></i>
+            <p>
+              Pruebas y Alegatos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Lista de Extranjeros</p>
+              </a>
+            </li>
+          </ul>
+       
+        </li>
+
+        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+            <i class="nav-icon fas  fa-bell"></i>
+            <p>
+              Notificaciones
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Fiscalía</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>COMAR</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Consulado</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Defensoría</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+  <!-- Acuerdos  -->
         {% if 'JuridicoGeneral' in user_groups or 'SeguridadGeneral' in user_groups or 'Administradores' in user_groups %}
 
 
@@ -451,122 +598,257 @@
 
               <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
-                  <a href="{% url "listExtranjerosAcumulacion" %}" class="nav-link ">
+                  <a href="#" class="nav-link ">
                     <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
-                    <p>Acumulación</p>
+                    <p>Traslado</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Radicación</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Separación por Alojados</p>
                   </a>
                 </li>
               </ul>
 
               <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
-                  <a href="{% url "listExtranjerosConclusion" %}" class="nav-link ">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Acumulación de Expedientes</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Suspension Provisional</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Continuación</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Egreso</p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'acumulacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Administrativo</p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
                     <i class="{% if seccion1 == 'conclusion' %}fas {% endif %} far fa-circle nav-icon"></i>
                     <p>Conclusión</p>
                   </a>
                 </li>
               </ul>
-
               <ul class="nav nav-treeview"style="margin-left: 20px;">
                 <li class="nav-item">
-                  <a href="{% url "listExtranjerosTraslado" %}" class="nav-link ">
-                    <i class="{% if seccion1 == 'traslado' %}fas {% endif %} far fa-circle nav-icon"></i>
-                    <p>Traslado</p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosSeparacion" %}" class="nav-link ">
+                  <a href="#" class="nav-link ">
                     <i class="{% if seccion1 == 'separacion' %}fas {% endif %} far fa-circle nav-icon"></i>
-                    <p>Separación Alojados</p>
+                    <p>Procedimiento Administrativo Migratorio</p>
+                  </a>
+                </li>
+              </ul>
+             
+
+              <ul class="nav nav-treeview"style="margin-left: 20px;">
+                <li class="nav-item">
+                  <a href="#" class="nav-link ">
+                    <i class="{% if seccion1 == 'separacion' %}fas {% endif %} far fa-circle nav-icon"></i>
+                    <p>Ampliación de Alojamiento</p>
                   </a>
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosRadicacion" %}" class="nav-link ">
-                    <i class="{% if seccion1 == 'radicacion' %}fas {% endif %} far fa-circle nav-icon"></i>
-                    <p>Radicación</p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosRecepcion" %}" class="nav-link ">
-                    <i class="{% if seccion1 == 'recepcion' %}fas {% endif %} far fa-circle nav-icon"></i>
-                    <p>Recepción de Documentos</p>
-                  </a>
-                </li>
-              </ul>
+              
 
             </li>
             
           </ul>
 
 
-          <ul class="nav nav-treeview"style="margin-left: 20px;">
+        </li>
+
+        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+            <i class="nav-icon fas fa-flag-checkered"></i>
+            <p>
+              Resoluciones
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link ">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Resoluciones</p>
-                <i class="right fas fa-angle-left"></i>
+                <p>Deportación</p>
               </a>
-
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosComar" %}" class="nav-link ">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resolución (COMAR)</p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosRetorno" %}" class="nav-link ">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resolución de Retorno Asistido</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosLibre" %}" class="nav-link ">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resolución de Libre Transito</p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosArticulo" %}" class="nav-link ">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resolución del Artículo #133</p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview"style="margin-left: 20px;">
-                <li class="nav-item">
-                  <a href="{% url "listExtranjerosDeportacion" %}" class="nav-link ">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resolución por Deportación</p>
-                  </a>
-                </li>
-              </ul>
             </li>
-
           </ul>
-
-
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Libre Transito</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Articulo 133</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>COMAR</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Retorno Asistido</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Provisional</p>
+              </a>
+            </li>
+          </ul>
 
         </li>
 
+        {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
 
+          <li class="nav-item ">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Comedor
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Platillos</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          {% endif %} 
+       
+        
+
+          <li class="nav-item {% if navbar == 'catalogos' %}menu-is-opening menu-open{% endif %}">
+            <a href="#" class="nav-link {% if navbar == 'catalogos' %}active first-li{% endif %}">
+              <i class="nav-icon fas fa-book"></i>
+              <p>
+                Catalogos
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "listaAutoridad" %}" class="nav-link {% if seccion == 'autoridades' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Autoridades</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "agregaraAutoridadActuante" %}" class="nav-link {% if seccion == 'actuantes' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Autoridades Actuantes</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <a href="{% url "listaTraductores" %}" class="nav-link {% if seccion == 'traductores' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Traductores</p>
+                </a>
+              </li>
+            </ul>
+
+
+
+            <ul class="nav nav-treeview"style="margin-left: 20px;">
+              <li class="nav-item">
+                <li class="nav-item {% if navbar1 == 'representante' %}menu-is-opening menu-open{% endif %}">
+  
+                <a href="#" class="nav-link {% if seccion == 'legal' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Representante Legal</p>
+                  <i class="right fas fa-angle-left"></i>
+                </a>
+  
+                <ul class="nav nav-treeview" style="margin-left: 20px;">
+                  <li class="nav-item">
+                    <a href="{% url 'representantes-legales-list' %}" class="nav-link ">
+                      <i class="{% if seccion1 == 'legales' %}fas {% endif %} far fa-circle nav-icon"></i>
+                      <p>Ver Representantes Legales</p>
+                    </a>
+                  </li>
+                </ul>
+  
+                <ul class="nav nav-treeview"style="margin-left: 20px;">
+                  <li class="nav-item">
+                    <a href="{% url "representante-legal-extranjeros" %}" class="nav-link ">
+                      <i class="{% if seccion1 == 'asignar' %}fas {% endif %} far fa-circle nav-icon"></i>
+                      <p>Asignar Representante Legal</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              
+            </ul>
+          </li>
+          
 
         <!-- REPOSITORIO DIGITAL -->
 
@@ -593,64 +875,13 @@
         <!-- Termina Acuerdos -->
           <!-- Fin  Alojamiento -->
           <!--   Extranjeros -->
-          {% comment %} {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
-              <i class="nav-icon fas fa-utensils"></i>
-              <p>
-                Servicios Alimenticios
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="#" class="nav-link ">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Platillos</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          {% endif %} {% endcomment %}
+          {% comment %} {% endcomment %}
 
 
           <!-- Fin  Cocina -->
-          <!--   Medico -->
-          {% if 'MedicoGeneral' in user_groups or 'MedicoResponsable' in user_groups or 'Administradores' in user_groups %}
-          <li class="nav-item {% if navbar == 'medico' %}menu-is-opening menu-open{% endif %}">
-            <a href="#" class="nav-link {% if navbar == 'medico' %}active first-li{% endif %}">
-              <i class="nav-icon fas fa-heartbeat"></i>
-              <p>
-                Servicios Médicos
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            {% if user.estancia.servicioMedico %}
-            <ul class="nav nav-treeview" style="margin-left: 20px;">
-              <li class="nav-item">
-                <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Consultas y certificado medico</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          {% else %}
-          <ul class="nav nav-treeview" style="margin-left: 20px;">
-            <li class="nav-item">
-              <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Carga de certificado medico</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-          {% endif %}
-          {% endif %}
+     
           <!-- Fin  Extranjeros -->
-
+          
         
           </li>
         </ul>
@@ -675,8 +906,7 @@
           </div><!-- /.col -->
           <div class="col-sm-4 editcolor">
             <ol class="breadcrumb float-sm-right ">
-              <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-              <li class="breadcrumb-item active">{% block seccion %}{% endblock seccion %}</li>
+        
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -799,31 +1029,31 @@
         {% endblock datatable %}        
         
         {% block datatable2 %}
-          {extend: 'copy',
-          text: '<i class="fas fa-clone"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Copy',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {extend: 'excel',
-          text: '<i class="fas fa-file-excel"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Excel',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {extend: 'print',
-          text: '<i class="fas fa-print"></i>',
-          class: 'btn btn-secondary',
-          titleAttr: 'Excel',
-          exportOptions:{
-              columns:[0,1,2]
-          }
-          },
-          {% endblock datatable2 %}
+        {extend: 'copy',
+        text: '<i class="fas fa-clone"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Copiar a Documento',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {extend: 'excel',
+        text: '<i class="fas fa-file-excel"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Exportar a Excel',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {extend: 'print',
+        text: '<i class="fas fa-print"></i>',
+        class: 'btn btn-secondary',
+        titleAttr: 'Imprimir',
+        exportOptions:{
+            columns:[0,1,2]
+        }
+        },
+        {% endblock datatable2 %}
       ],
       "language": {
                   "sProcessing": "Procesando...",

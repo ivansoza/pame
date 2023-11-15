@@ -1,0 +1,57 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[Oficina]
+<br>[Estacion migratoria]
+<br>
+<br>[Lugar y Fecha completa]
+{% endblock %}
+
+{% block title %}
+<title>
+    Constancia de no firma
+</title>
+{% endblock %}
+
+{% block content %}
+<p class="centrado">
+    <strong>CONSTANCIA</strong>
+</p>
+<p>
+    EN LA [LUGAR DE EMISIÓN], SIENDO LAS [HH:MM] HORAS DEL DÍA [DD DE MM DE AAAA], 
+    EL LICENCIADO [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] 
+    ADSCRITO A LA [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE] DEL INSTITUTO NACIONAL DE MIGRACIÓN, QUIEN ACTÚA EN FORMA LEGAL CON LOS TESTIGOS QUE AL FINAL FIRMAN PARA CONSTANCIA, CON FUNDAMENTO EN LOS ARTÍCULOS 3 DE LA LEY FEDERAL DE PROCEDIMIENTO ADMINISTRATIVO; 317 DEL CODIGO FEDERAL DE PROCEDIMIENTOS CIVILES Y 233 DEL REGLAMENTO DE LA LEY DE MIGRACION. 
+</p>
+<p class="centrado">
+    <strong>H&nbsp;A&nbsp;C&nbsp;E&nbsp;&nbsp;C&nbsp;O&nbsp;N&nbsp;S&nbsp;T&nbsp;A&nbsp;R</strong>
+</p>
+<p>
+    QUE EL DIA DE LA FECHA, EL SUSCRITO SE  IDENTIFICÓ ANTE EL EXTRANJERO [NOMBRE Y APELLIDO] 
+    DE NACIONALIDAD [NACIONALIDAD], A EFECTO DE NOTIFICARLE [BREVE DESCRIPCIÓN DEL CONTENIDO A NOTIFICAR], 
+    SIN EMBARGO DICHO EXTRANJERO SE NEGÓ A FIRMAR LA TOTALIDAD DEL MISMO, POR ASÍ CONVENIR A SUS INTERESES; POR LO QUE SE PROCEDE A ASENTAR LOS HECHOS OCURRIDOS PARA LOS EFECTOS LEGALES A QUE HAYA LUGAR Y NO TENIENDO NADA MÁS QUE ASENTAR, SE DA POR CONCLUÍDA LA PRESENTE DILIGENCIA EL DÍA DE SU INICIO, FIRMANDO AL CALCE LOS QUE EN ELLA INTERVIENEN PARA SU DEBIDA CONSTANCIA.
+</p>
+<p class="centrado">
+    <strong>CONSTE</strong>
+</p>
+<div style="text-align: center;">
+    <p><strong>[Cargo AC]</strong></p>
+    <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    <strong>Lic. [Nombre y Apellido]</strong>
+</div>
+<p class="centrado">
+    <strong>TESTIGOS DE ASISTENCIA</strong>
+</p>
+<div class="columnas">
+    <div class="columna">
+        <p class="firma"><strong>Lic. [Nombre y Apellido]</strong></p>
+    </div>
+    <div class="columna">
+        <p class="firma"><strong>Lic. [Nombre y Apellido]</strong></p>
+    </div>
+</div>
+<div style="text-align: center;">
+    <p><strong>REPRESENTANTE LEGAL</strong></p>
+    <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    <strong>Lic. [Nombre y Apellido]</strong>
+</div>
+{% endblock %}

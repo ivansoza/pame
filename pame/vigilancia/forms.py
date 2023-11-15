@@ -1,11 +1,11 @@
 from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, descripcion
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace,AsignacionRepresentante
 import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
 from .models import Firma
-from catalogos.models import Relacion 
+from catalogos.models import Relacion , AutoridadesActuantes, RepresentantesLegales
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
         archivo = self.cleaned_data.get(field_name)
@@ -41,8 +41,6 @@ class ValidacionArchivosPDF(forms.Form):
         return archivo
 
 class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
-    models=PuestaDisposicionINM
-    fields = ['gradoinm','gradoinm2']
     
     numeroOficio = forms.CharField(
         label= "Número de Oficio:",
@@ -58,23 +56,7 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
         # Establecer la fecha actual como valor por defecto
         self.fields['fechaOficio'].initial = datetime.date.today()
 
-    nombreAutoridadSignaUno = forms.CharField(
-        label= "Nombre de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
-    cargoAutoridadSignaUno = forms.CharField(
-        label= "Cargo de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
-
-    nombreAutoridadSignaDos = forms.CharField(
-        label= "Nombre de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
-    cargoAutoridadSignaDos = forms.CharField(
-        label= "Cargo de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
+    
 
     oficioPuesta = forms.FileField(
         label= "Oficio de Puesta:",
@@ -97,19 +79,26 @@ class puestDisposicionINMForm(forms.ModelForm, ValidacionArchivos):
         return self.clean_archivo('oficioComision')
     
     puntoRevision = forms.CharField(
-        label= "Punto de Revision:",
+        label= "Punto de Revisión:",
         widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
     
     class Meta:
         model = PuestaDisposicionINM
         fields ='__all__'
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Obtén el usuario actual de los argumentos
+        super(puestDisposicionINMForm, self).__init__(*args, **kwargs)
+
+        if user:
+            # Filtra las opciones del campo nombreAutoridadSignaUno y nombreAutoridadSignaDos
+            self.fields['nombreAutoridadSignaUno'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
+            self.fields['nombreAutoridadSignaDos'].queryset = AutoridadesActuantes.objects.filter(estacion=user.estancia)
 
 
 
 class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
-    models = PuestaDisposicionAC
-    fields = ['grado','grado2']
+   
 
     
     numeroOficio = forms.CharField(
@@ -122,25 +111,11 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
         widget= forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
 
-    nombreAutoridadSignaUno = forms.CharField(
-        label= "Nombre de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
+   
 
-    cargoAutoridadSignaUno = forms.CharField(
-        label= "Cargo de Autoridad Asignada 1:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
 
-    nombreAutoridadSignaDos = forms.CharField(
-        label= "Nombre de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Guillermo Perez Perez'})
-    )
-
-    cargoAutoridadSignaDos = forms.CharField(
-        label= "Cargo de Autoridad Asignada 2:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Administrador'})
-    )
+    
+    
 
     oficioPuesta = forms.FileField(
         label= "Oficio de Puesta:",
@@ -162,7 +137,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
         return self.clean_archivo('oficioComision')
 
     puntoRevision = forms.CharField(
-        label= "Punto de Revision:",
+        label= "Punto de Revisión:",
 
         widget=forms.TextInput(attrs={'placeholder':'Ej: Central de autobuses'})
     )
@@ -174,7 +149,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
 
     numeroCarpeta = forms.CharField(
         label= "Número de Carpeta:",
-        widget=forms.TextInput(attrs={'placeholder':'Ej: Carpeta 1'})
+        widget=forms.TextInput(attrs={'placeholder':'Ej: 1934392'})
     )
     
     entidadFederativa = forms.CharField(
@@ -187,7 +162,7 @@ class puestaDisposicionACForm(forms.ModelForm, ValidacionArchivos):
     )
 
     certificadoMedico = forms.FileField(
-        label= "Certificado Medico:",
+        label= "Certificado Médico:",
         required=False,
 
         widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
@@ -238,10 +213,44 @@ class extranjeroFormsInm(forms.ModelForm, ValidacionArchivos):
 
     )
 
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    )
+
+    domicilio = forms.CharField(
+        label= "Domicilio y/o Residencia:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Av. Moctezuma"}),
+    )
+    origen = forms.CharField(
+        label= "Origen:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Medellin"}),
+    )
+    ocupacion = forms.CharField(
+        label= "Ocupación:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Docente"}),
+    )
+    nombreDelPadre = forms.CharField(
+        label="Nombre completo del padre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    )
+
+    nombreDelaMadre = forms.CharField(
+        label="Nombre completo de la madre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    
+    )
+
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -271,7 +280,7 @@ class editExtranjeroINMForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaIMN','estatus','deLaPuestaAC','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad','deLaPuestaIMN','deLaPuestaAC','deLaPuestaVP'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -327,6 +336,40 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
     )
 
     
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    )
+
+    domicilio = forms.CharField(
+        label= "Domicilio y/o Residencia:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Av. Moctezuma"}),
+    )
+    origen = forms.CharField(
+        label= "Origen:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Medellin"}),
+    )
+    ocupacion = forms.CharField(
+        label= "Ocupación:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Docente"}),
+    )
+    nombreDelPadre = forms.CharField(
+        label="Nombre completo del padre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    )
+
+    nombreDelaMadre = forms.CharField(
+        label="Nombre completo de la madre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    
+    )
+
    
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
@@ -338,7 +381,7 @@ class extranjeroFormsAC(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','domicilio','fechaNacimiento','edad','nacionalidad','genero','estado_Civil','grado_academico','ocupacion','documentoIdentidad','tipoEstancia','deLaPuestaAC','nombreDelPadre','nacionalidad_Padre','nombreDelaMadre','nacionalidad_Madre','origen']
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -368,7 +411,7 @@ class editExtranjeroACForms(forms.ModelForm):
         return data
     class Meta:
       model = Extranjero
-      fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaAC','estatus','deLaPuestaIMN','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad']
+      fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad','deLaPuestaIMN','deLaPuestaAC','deLaPuestaVP']
       widgets = {
             # Otros campos y widgets
             'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
@@ -422,6 +465,40 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
         label= "Apellido Paterno:",
         widget=forms.DateInput(attrs={'placeholder':"Ej:Lopez"}),
     )
+    apellidoMaternoExtranjero = forms.CharField(
+        label= "Apellido Materno:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej:Perez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    )
+
+    domicilio = forms.CharField(
+        label= "Domicilio y/o Residencia:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Av. Moctezuma"}),
+    )
+    origen = forms.CharField(
+        label= "Origen:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Medellin"}),
+    )
+    ocupacion = forms.CharField(
+        label= "Ocupación:",
+        widget=forms.DateInput(attrs={'placeholder':"Ej: Docente"}),
+    )
+    nombreDelPadre = forms.CharField(
+        label="Nombre completo del padre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Juan Pérez"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    )
+
+    nombreDelaMadre = forms.CharField(
+        label="Nombre completo de la madre:",
+        widget=forms.TextInput(attrs={'placeholder': "Ej: Ana García"}),
+        required=False  # Esto hace que el campo no sea obligatorio
+
+    
+    )
+
     
     documentoIdentidad = forms.FileField(
         label= "Documento de Identidad:",
@@ -433,7 +510,7 @@ class extranjeroFormsVP(forms.ModelForm, ValidacionArchivos):
    
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','origen','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad','origen'] 
         widgets = {
             # Otros campos y widgets
             'estatus': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -462,13 +539,11 @@ class editExtranjeroVPForm(forms.ModelForm):
         return data
     class Meta:
         model = Extranjero
-        fields = ['numeroExtranjero','deLaEstacion','nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','nacionalidad','genero','fechaNacimiento','documentoIdentidad','viajaSolo','tipoEstancia','deLaPuestaVP','estatus','deLaPuestaIMN','deLaPuestaAC','estado_Civil','grado_academico','ocupacion','nombreDelPadre','nombreDelaMadre','lugar_Origen','domicilio','nacionalidad_Padre','nacionalidad_Madre','domicilio','edad'] 
+        fields = ['nombreExtranjero','apellidoPaternoExtranjero','apellidoMaternoExtranjero','domicilio','fechaNacimiento','edad','nacionalidad','genero','estado_Civil','grado_academico','ocupacion','documentoIdentidad','tipoEstancia','nombreDelPadre','nacionalidad_Padre','nombreDelaMadre','nacionalidad_Madre','deLaPuestaIMN','deLaPuestaAC','deLaPuestaVP'] 
         widgets = {
             # Otros campos y widgets
             #'nacionalidad': forms.Select(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
-            'deLaPuestaVP': forms.Select(attrs={'class': 'form-control'}),
-            'viajaSolo': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
         }
 
 
@@ -519,3 +594,17 @@ class FirmaForm(forms.ModelForm):
     class Meta:
         model = Firma
         fields = ['firma_imagen']
+
+class AsignacionRepresentanteForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        estacion_usuario = kwargs.pop('estacion_usuario', None)
+        super().__init__(*args, **kwargs)
+        if estacion_usuario:
+            self.fields['representante_legal'].queryset = RepresentantesLegales.objects.filter(
+                estatus='Activo',
+                estacion=estacion_usuario
+            )
+
+    class Meta:
+        model = AsignacionRepresentante
+        fields = ['representante_legal']

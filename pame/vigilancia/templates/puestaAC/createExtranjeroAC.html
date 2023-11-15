@@ -81,6 +81,9 @@
             {{ form.nacionalidad|as_crispy_field }}
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
+            {{ form.origen|as_crispy_field }}
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
             {{ form.genero|as_crispy_field }}
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
@@ -92,9 +95,7 @@
         <div class="col-sm-12 col-md-4 col-lg-4">
             {{ form.ocupacion|as_crispy_field }}
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-            {{ form.lugar_Origen|as_crispy_field }}
-        </div>
+       
     <div class="row">
         <div class="col-sm-12 col-md-4 col-lg-6">
             <div class="file-input-container">
@@ -148,6 +149,8 @@
             {{ form.nacionalidad_Madre|as_crispy_field }}
         </div>
     </div>
+
+    
 
     <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
     <br>

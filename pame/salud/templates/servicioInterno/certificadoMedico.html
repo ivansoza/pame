@@ -14,47 +14,628 @@
 </a>
 {% endblock dashboard %}
 {% block contenido %}
- <h1 style="text-align: center;">Certificado Medico {{nombre}}</h1>
- <form method="post" enctype="multipart/form-data">
-    <div  class="card p-3" enctype="multipart/form-data">
-
-    <div class="d-flex align-items-center justify-content-between">
-        <h1>Datos del extranjero</h1>
-        <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
-            <i class="fas fa-user"></i> <!-- Icono de usuario -->
-        </button>
+<style>
+    .card1 {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajusta los valores según tus preferencias */
+}
+</style>
+<div class="titulo-general-container mt-5 d-flex justify-content-between align-items-center ">
+    <h1 class="titulo-general">
+        Certificado Medico  
+        <span class="puesta-color"><strong>{{nombre}} {{ape1}} {% if ape2 %} {{ape2}} {% endif %} </strong></span>
+    </h1>
+    <button id="tomarFotoBtn" class="btn btn-custom2" title="Verificar Extranjero">
+        Verificar Extranjero  <i class="fas fa-user"></i> <!-- Icono de usuario -->
+    </button>
+</div>
+<div class="row">
+    <div class="col-md-12">
+      <div class="card1">
+        <div class="card-body">
+          
+            <div class="row">
+                <!-- Card con datos del extranjero -->
+                <div class="col-md-10">
+            
+                  <div class="card2">
+                     <div class="header">
+                        <h2>Datos del Extranjero </h2>
+                     </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col">
+                            <span class="etiqueta">Nombre(s):</span>
+                            <span class="valor">{{ extranjero.nombreExtranjero }}</span>
+                            <br>
+                            <span class="etiqueta">Número de Extranjero:</span>
+                            <span class="valor">{{ extranjero.numeroExtranjero }}</span>
+                            <br>
+                            <span class="etiqueta">Estación:</span>
+                            <span class="valor">{{ extranjero.deLaEstacion }}</span>
+                        </div>
+            
+                        <div class="col">
+                            <span class="etiqueta">Apellido(s):</span>
+                            <span class="valor">
+                              {% if extranjero.apellidoPaternoExtranjero %}
+                                {{ extranjero.apellidoPaternoExtranjero }}
+                            {% endif %}
+                            {% if extranjero.apellidoMaternoExtranjero %}
+                                {{ extranjero.apellidoMaternoExtranjero }}
+                            {% endif %}
+                            </span>                
+                            <br>
+                            <span class="etiqueta">Nacionalidad:</span>
+                            <span class="valor">{{ extranjero.nacionalidad }}</span>
+                            <br>
+                            <span class="etiqueta">Fecha de Nacimiento:</span>
+                            <span class="valor">{{ extranjero.fechaNacimiento }}</span>
+                        </div>
+                        <!-- Otros campos de datos -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Card con la foto del extranjero -->
+                <div class="col-md-2 d-none d-md-block">
+                  <div class="card2">
+                    {% if extranjero.biometrico.fotografiaExtranjero %}
+                    <img src="{{ extranjero.biometrico.fotografiaExtranjero.url }}" class="card-img-top" alt="..." >
+                    {% else %}
+                    <img src="{% static 'img/profile/Hola.jpeg' %}" class="card-img-top" alt="" style="max-width: 200px; height: auto;">
+                    {% endif %}
+                    <div class="card-body text-center" style='background:#9E8364'> 
+                      <p class="card-text" style='color:white'>Foto del Extranjero</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <br>
+  <button class="btn btn-custom2 btn-navegacion" data-seccion="exploracion-fisica">Exploración Física</button>
+<button class="btn btn-custom2 btn-navegacion" data-seccion="antecedentes">Antecedentes</button>
+<button class="btn btn-custom2 btn-navegacion" data-seccion="padecimientos-actuales">Padecimientos Actuales</button>
+<br>
+ <form method="post" enctype="multipart/form-data" id="formulario1">
     {% csrf_token %}
     {{ form.puesta.as_hidden }}
-    <div class="row">
-        <div class="col-sm-6 col-md-6 col-lg-3" style='display:none' >
-            {{ form.extranjero|as_crispy_field }}
-            <script>
-                document.getElementById('id_extranjero').readOnly = true;
-            </script>
+   
+    <div  class="card p-3 exploracion-fisica" enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>Exploración Física</h1>
         </div>
-        <div class="col-sm-6 col-md-6 col-lg-2" style='display:none'>
-            {{ form.nup|as_crispy_field }}
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+                {{ form.extranjero|as_crispy_field }}
+                <script>
+                    document.getElementById('id_extranjero').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3" style='display:none'>
+                {{ form.nup|as_crispy_field }}
+                <script>
+                    document.getElementById('id_nup').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3" style='display:none'>
+                {{ form.delaEstacion|as_crispy_field }}
+                <script>
+                    document.getElementById('id_delaEstacion').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3" style='display:none'>
+                {{ form.delMedico|as_crispy_field }}
+                <script>
+                    document.getElementById('id_delMedico').readOnly = true;
+                </script>
+            </div>
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-3">
-            {{ form.hepatitis|as_crispy_field }}
+        <div class="row">
+           
+          
+            <div class="col-sm-12 col-md-4 col-lg-4" style='display:none'>
+                {{ form.tipoCertificado|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tipoCertificado').readOnly = true;
+                </script>
+            </div>
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-3">
-            {{ form.tuberculosis|as_crispy_field }}
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.temperatura|as_crispy_field }}
+                <script>
+                    document.getElementById('id_temperatura').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.frecuenciaRespiratoria|as_crispy_field }}
+                <script>
+                    document.getElementById('id_frecuenciaRespiratoria').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.presionArterialSistolica|as_crispy_field }}
+                <script>
+                    document.getElementById('id_presionArterialSistolica').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.presionArterialDiastolica|as_crispy_field }}
+                <script>
+                    document.getElementById('id_presionArterialDiastolica').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.peso|as_crispy_field }}
+                <script>
+                    document.getElementById('id_peso').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.estatura|as_crispy_field }}
+                <script>
+                    document.getElementById('id_estatura').readOnly = true;
+                </script>
+            </div>
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-3">
-            {{ form.paludismo|as_crispy_field }}
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-3">
-            {{ form.dengue|as_crispy_field }}
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-3">
-            {{ form.colera|as_crispy_field }}
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-3">
-            {{ form.diabetes|as_crispy_field }}
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.oxigenacionSaturacion|as_crispy_field }}
+                <script>
+                    document.getElementById('id_oxigenacionSaturacion').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.oxigenacionFrecuencia|as_crispy_field }}
+                <script>
+                    document.getElementById('id_oxigenacionFrecuencia').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                {{ form.indiceMasaCorporal|as_crispy_field }}
+                <script>
+                    document.getElementById('id_indiceMasaCorporal').readOnly = true;
+                </script>
+            </div>
         </div>
     </div>
-    <button type="submit">Enviar</button>
-  </form>
+    <div  class="card p-3 antecedentes" style='display:none' enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>Antecedentes</h1>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.hepatitis|as_crispy_field }}
+                <script>
+                    document.getElementById('id_hepatitis').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.tubercolisis|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tubercolisis').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.paludismo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_paludismo').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.dengue|as_crispy_field }}
+                <script>
+                    document.getElementById('id_dengue').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.colera|as_crispy_field }}
+                <script>
+                    document.getElementById('id_colera').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.hipertension|as_crispy_field }}
+                <script>
+                    document.getElementById('id_hipertension').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.cardiopatias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_cardiopatias').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.vih|as_crispy_field }}
+                <script>
+                    document.getElementById('id_vih').disabled = true;
+                </script>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.otrosAntecedentes|as_crispy_field }}
+                <script>
+                    document.getElementById('id_otrosAntecedentes').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.antecedentesQuirurgicos|as_crispy_field }}
+                <script>
+                    document.getElementById('id_antecedentesQuirurgicos').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.padecimientosCronicos|as_crispy_field }}
+                <script>
+                    document.getElementById('id_padecimientosCronicos').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.alergias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_alergias').readOnly = true;
+                </script>
+            </div>
+        </div>
+    </div>
+    <div  class="card p-3 padecimientos-actuales" style='display:none' enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>Padecimientos Actuales</h1>
+            
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.diarrea|as_crispy_field }}
+                <script>
+                    document.getElementById('id_diarrea').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.infeccionesRespiratorias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_infeccionesRespiratorias').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.fiebre|as_crispy_field }}
+                <script>
+                    document.getElementById('id_fiebre').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.hemorragias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_hemorragias').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.nauseasVomito|as_crispy_field }}
+                <script>
+                    document.getElementById('id_nauseasVomito').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.tos|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tos').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.dolores|as_crispy_field }}
+                <script>
+                    document.getElementById('id_dolores').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.lesionesPiel|as_crispy_field }}
+                <script>
+                    document.getElementById('id_lesionesPiel').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.mareosVertigo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_mareosVertigo').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.tabaquismo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tabaquismo').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.bebidasAlcoholicas|as_crispy_field }}
+                <script>
+                    document.getElementById('id_bebidasAlcoholicas').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                {{ form.embarazo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_embarazo').disabled = true;
+                </script>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.tiempoEmbarazo|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tiempoEmbarazo').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.tipoDieta|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tipoDieta').disabled = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.toxicomanias|as_crispy_field }}
+                <script>
+                    document.getElementById('id_toxicomanias').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.sintomasCovid|as_crispy_field }}
+                <script>
+                    document.getElementById('id_sintomasCovid').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.conclusionDiagnostica|as_crispy_field }}
+                <script>
+                    document.getElementById('id_conclusionDiagnostica').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.observaciones|as_crispy_field }}
+                <script>
+                    document.getElementById('id_observaciones').readOnly = true;
+                </script>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-12">
+                {{ form.tratamiento|as_crispy_field }}
+                <script>
+                    document.getElementById('id_tratamiento').readOnly = true;
+                </script>
+            </div>
+        </div>
+        <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+        <br>
+        <a href="{% url "listExtranjeroEstacion" %}" class="btn btn-custom1">Cancelar</a> 
+
+    </div>
+ </form>
+<br>
+    {% include "includes/camera/crearExtranjero.html" %}
+
 {% endblock contenido %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var secciones = ['exploracion-fisica', 'antecedentes', 'padecimientos-actuales'];
+        var indiceActual = 0;
+
+        function mostrarSeccion(indice) {
+            $('.card').hide();
+            $('.' + secciones[indice]).show();
+        }
+
+        // Mostrar la primera sección al cargar la página
+        mostrarSeccion(indiceActual);
+
+        $('.btn-navegacion').click(function () {
+            // Ir a la siguiente sección
+            indiceActual++;
+            if (indiceActual < secciones.length) {
+                mostrarSeccion(indiceActual);
+            } else {
+                // Si ya no hay más secciones, podrías enviar el formulario aquí
+                $('#formulario1').submit();
+            }
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+<script>
+    let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
+    let isVerified = verifiedObj.time && 
+                     verifiedObj.extranjeroId === '{{ extranjero_id }}' && 
+                     verifiedObj.puestaId1 === '{{ fernandoteacalco_id }}' && 
+
+                     (new Date().getTime() - verifiedObj.time) < 300000;
+
+    if (isVerified) {
+        // También debemos establecer un nuevo temporizador para manejar el caso en que la página no se recargue
+        setTimeout(() => {
+            isVerified = false;
+            localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
+        }, 300000 - (new Date().getTime() - verifiedObj.time));
+    }
+    function resetModal() {
+        let video = document.getElementById('webcam');
+        let canvas = document.getElementById('capturedImage');
+
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+        }
+
+        video.removeAttribute('src');
+        video.load();
+
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+
+        document.getElementById('capturarFoto').style.display = 'inline-block';
+        document.getElementById('confirmarFoto').style.display = 'none';
+        document.getElementById('nuevaFoto').style.display = 'none';
+    }
+
+    document.getElementById('tomarFotoBtn').addEventListener('click', function() {
+        if (isVerified) {
+            let url = this.getAttribute('data-href'); // Cambia 'btn' por 'this' y usa 'data-href'
+            abrir_modal(url);
+        } else {
+            let modal = new bootstrap.Modal(document.getElementById('webcamModal'), {
+                keyboard: false
+            });
+
+            let video = document.getElementById('webcam');
+            let canvas = document.getElementById('capturedImage');
+
+            resetModal();
+
+            modal.show();
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function(error) {
+                    console.error("Error accediendo a la webcam: ", error);
+                });
+
+            document.getElementById('capturarFoto').onclick = function(event) {
+                event.preventDefault();
+
+                canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                video.style.display = 'none';
+                canvas.style.display = 'block';
+                document.getElementById("capturedImage").style.opacity = "1";
+
+                document.getElementById('capturarFoto').style.display = 'none';
+                document.getElementById('confirmarFoto').style.display = 'inline-block';
+                document.getElementById('nuevaFoto').style.display = 'inline-block';
+            };
+
+            document.getElementById('nuevaFoto').onclick = function(event) {
+                event.preventDefault();
+                canvas.style.display = 'none';
+                video.style.display = 'block';
+
+                document.getElementById("capturedImage").style.opacity = "0";
+
+                document.getElementById('capturarFoto').style.display = 'inline-block';
+                document.getElementById('confirmarFoto').style.display = 'none';
+                document.getElementById('nuevaFoto').style.display = 'none';
+
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                    video.srcObject = stream;
+                });
+            };
+
+            document.getElementById('confirmarFoto').onclick = function(event) {
+                event.preventDefault();
+                canvas.toBlob(function(blob) {
+                    let file = new File([blob], "foto_webcam.png", { type: "image/png" });
+
+                    let formData = new FormData();
+                    var extranjeroId = '{{ extranjero_id }}';
+                    var puestaId = '{{ puesta_id }}';  // Accediendo al ID del Extranjero en JavaScript
+
+                    formData.append('image', file);
+                    formData.append('extranjero_id', extranjeroId);
+
+
+                    $.ajax({
+                        url: '/seguridad/manejar_imagen4/',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: { 'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val() },
+                        success: function(data) {
+                            if (data.match) {
+                                isVerified = true;
+                                localStorage.setItem('verifiedTime', JSON.stringify({
+                                    time: new Date().getTime(),
+                                    puestaId: '{{ puesta_id }}',
+
+                                    extranjeroId: '{{ extranjero_id }}',
+
+                                }));
+
+                                setTimeout(() => {
+                                    isVerified = false;
+                                    localStorage.removeItem('verifiedTime');
+                                }, 300000);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Coincidencia Exitosa!',
+                                    confirmButtonText: 'Aceptar',
+                                   
+                                    confirmButtonColor: '#20302B',
+                                    
+                                    reverseButtons: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // El usuario hizo clic en "Aceptar", redirige a la URL deseada
+                                            $('#formulario1 input').removeAttr('readonly'); // Quita el atributo 'readonly' de todos los campos de entrada del formulario
+                                            $('#formulario1 input').prop('disabled', false); // Quita el atributo 'disabled'
+                                            $('#formulario1 textarea').removeAttr('readonly');
+                                            $('#id_tipoDieta').removeAttr('disabled').removeAttr('readonly');
+
+                                    }
+                                });
+                            
+                                // Agrega el atributo de datos personalizados al botón "Aceptar"
+                                $('#acceptButton').data('href', data.redirect_url);
+
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¡No hay coincidencia!',
+                                    text: data.similarity
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error al enviar la imagen:', error.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: '¡Algo salió mal!',
+                                footer: '<a href>¿La persona en la foto no coincide con los datos?</a>'
+                            });
+                        }
+                    });
+
+                    modal.hide();
+                    if (video.srcObject) {
+                        video.srcObject.getTracks().forEach(track => track.stop());
+                    }
+                }, 'image/png');
+            };
+        }
+    });
+    $('#webcamModal').on('hidden.bs.modal', function() {
+        let video = document.getElementById('webcam');
+        let canvas = document.getElementById('capturedImage');
+        if (video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+        }
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+        document.getElementById('capturarFoto').style.display = 'inline-block';
+        document.getElementById('confirmarFoto').style.display = 'none';
+        document.getElementById('nuevaFoto').style.display = 'none';
+    });
+</script>
+{% include "includes/js/fecha.html" %}
+{% include "includes/js/cam/camera.html" %}
+{% endblock script %}

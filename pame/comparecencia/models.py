@@ -1,4 +1,7 @@
 from django.db import models
+from catalogos.models import Traductores
+from vigilancia.models import Extranjero, NoProceso, AutoridadesActuantes
+from catalogos.models import RepresentantesLegales
 
 # Create your models here.
 OPCION_ESTADOCIVIL_CHOICES=[
@@ -17,23 +20,69 @@ OPCIONES_ESCOLARIDAD_CHOICES=[
     [4, 'Universidad'],
 ]
 
+GRADOS_ACADEMICOS = [
+    ('Doctorado', 'Doctorado'),
+    ('Maestría', 'Maestría'),
+    ('Licenciatura', 'Licenciatura'),
+    ('Bachillerato', 'Bachillerato'),
+    ('Diplomado', 'Diplomado'),
+    ('Técnico', 'Técnico'),
+    ('Secundaria', 'Secundaria'),
+    ('Primaria', 'Primaria'),
+    ('Sin educación formal', 'Sin educación formal'),
+]
 class Comparecencia(models.Model):
-    fechaComparecencia = models.DateField(verbose_name='Fecha Comparecencia')
-    horaComparecencia = models.DateTimeField(verbose_name='Hora Comparecencia')
-    estadoCivil = models.IntegerField(choices=OPCION_ESTADOCIVIL_CHOICES, verbose_name='Estado Civil')
-    escolaridad = models.IntegerField(choices=OPCIONES_ESCOLARIDAD_CHOICES, verbose_name='Escolaridad')
-    ocupacion = models.CharField(max_length=50, verbose_name='Ocupación')
-    lugarOrigen =models.CharField(max_length=50, verbose_name='Lugar de Origen')
-    calleDomicilioPais = models.CharField(max_length=50, verbose_name='Calle')
-    numeroDomicilioPais = models.IntegerField(verbose_name='Numero')
-    localidadPais = models.CharField(max_length=50, verbose_name='Localidad')
-    domicilioEnMexico = models.BooleanField(verbose_name='Domicilio en México')
-    nombrePadre = models.CharField(max_length=50, verbose_name='Nombre del Padre')
-    apellidoPaternoPadre = models.CharField(max_length=50, verbose_name='Apellido Paterno del Padre')
-    apellidoMaternoPadre = models.CharField(max_length=50, verbose_name='Apellido Materno del Padre')
-    nombreMadre = models.CharField(max_length=50, verbose_name='Nombre de la Madre')
-    apellidoPaternoMadre = models.CharField(max_length=50, verbose_name='Apellido Paterno de la Madre')
-    apellidoMaternoMadre = models.CharField(max_length=50, verbose_name='Apellido Materno de la Madre')
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, related_name="comparecencias")
+    fechahoraComparecencia = models.DateTimeField(auto_now_add=True)
+    estadoCivil = models.CharField(max_length=50, blank=True, null=True, verbose_name="Estado Civil")
+    escolaridad = models.CharField(max_length=50, blank=True, null=True, verbose_name="Escolaridad")
+    ocupacion = models.CharField(max_length=50, blank=True, null=True, verbose_name="Ocupación")
+    nacionalidad = models.CharField(max_length=50, blank=True, null=True, verbose_name="Nacionalidad")
+    DomicilioPais = models.CharField(max_length=50, blank=True, null=True, verbose_name="Domicilio en el País")
+    lugarOrigen = models.CharField(max_length=50, blank=True, null=True, verbose_name="Lugar de Origen")
+    domicilioEnMexico = models.BooleanField(verbose_name="¿Domicilio en Mexico?", blank=True, null=True)
+    nombrePadre = models.CharField(max_length=80, blank=True, null=True, verbose_name="Nombre(s) del Padre")
+    nacionalidadPadre = models.CharField(max_length=50, blank=True, null=True, verbose_name="Nacionalidad del Padre")
+    nombreMadre = models.CharField(max_length=80, blank=True, null=True, verbose_name="Nombre(s) de la Madre")
+    nacionalidadMadre = models.CharField(max_length=50, blank=True, null=True, verbose_name="Nacionalidad de la Madre")
+    fechaIngresoMexico= models.DateField(verbose_name="Fecha de Ingreso a Mexico")
+    lugarIngresoMexico= models.CharField(max_length=50, verbose_name="Lugar de Ingreso a Mexico")
+    formaIngresoMexico= models.CharField(max_length=50, verbose_name="Forma de Ingreso a Mexico")
+    declaracion = models.TextField(verbose_name="Declaración")
+    solicitaRefugio= models.BooleanField(verbose_name="¿Solicita Refugio?",  blank=True, null=True)
+    victimaDelito= models.BooleanField(verbose_name="Es Victima de delito?", blank=True, null=True)
+    autoridadActuante=models.ForeignKey(AutoridadesActuantes,related_name='Autoridadactuante', on_delete=models.CASCADE, verbose_name='Autoridad', blank=True, null=True)
+    representanteLegal = models.ForeignKey(RepresentantesLegales, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Representante Legal')
+    traductor=models.ForeignKey(Traductores,related_name='Traductor', on_delete=models.CASCADE, verbose_name='Traductor', blank=True, null=True)
+    testigo1=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 1")
+    grado_academico_testigo1=models.CharField(verbose_name='Grado Académico del Testigo 1', max_length=50, choices=GRADOS_ACADEMICOS)
+    testigo2=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 2")
+    grado_academico_testigo2=models.CharField(verbose_name='Grado Académico del Testigo 2', max_length=50, choices=GRADOS_ACADEMICOS)
+
+
+
+class Refugio(models.Model):
+    notificacionComar= models.TextField()
+    fechaNotificacion= models.DateField()
+    delExtranjero= models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    contstanciaAdmisnion = models.CharField(max_length=100)
+    acuerdoSuspension = models.CharField(max_length=100)
+        
+class VictimaDelito(models.Model):
+    notificacionAutoridad = models.TextField()
+    fechaNotificacion= models.DateField()
+    delExtranjero= models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    documentoMigratorio = models.CharField(max_length=100)
+    asunto = models.TextField()
+    documentoFGR = models.CharField(max_length=100)
+
+class Consular(models.Model):
+    lugar= models.CharField(max_length=50)
+    fechaNotificacionConsular= models.DateField()
+    horaNotificacionConsular = models.DateTimeField()
+    consulado= models.CharField(max_length=50)
+    tipoResolucion = models.CharField(max_length=50)
+    delExtranjero= models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    numeroOficio = models.CharField(max_length=50)
+    asunto = models.TextField() 
     
-    def __str__(self) -> str:
-        return '__all__'
