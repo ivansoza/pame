@@ -176,17 +176,56 @@
                 </form>
     </div>
 
-    <div id="qrContainer" style="display:none;">
-        <div id="qrTestigoUno">
-            <img id="qrImageTestigoUno" src="" alt="Código QR Testigo Uno">
-            <div id="mensajeFirmaTestigoUno"></div>
+    <div id="qrCode" style="display:none;">
+        <!-- Firma de la Autoridad Actuante -->
+        <div class="firma-section" id="autoridadActuanteSection">
+          <h4>Firma de la Autoridad Actuante</h4>
+          <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+          <div id="mensajeFirmaAutoridadActuante"></div>
+          <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
         </div>
-        <div id="qrTestigoDos" style="display:none;">
-            <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
-            <div id="mensajeFirmaTestigoDos"></div>
+        
+        <!-- Firma del Representante Legal -->
+        <div class="firma-section" id="representanteLegalSection" style="display:none;">
+          <h4>Firma del Representante Legal</h4>
+          <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
+          <div id="mensajeFirmaRepresentanteLegal"></div>
+          <button id="nextToTraductor">Siguiente: Traductor</button>
         </div>
-        <!-- Contenedores adicionales para otros participantes -->
-    </div>
+        
+        <!-- Firma del Traductor -->
+        <div class="firma-section" id="traductorSection" style="display:none;">
+          <h4>Firma del Traductor</h4>
+          <img id="qrImageTraductor" src="" alt="Código QR Traductor">
+          <div id="mensajeFirmaTraductor"></div>
+          <button id="nextToExtranjero">Siguiente: Extranjero</button>
+        </div>
+        
+        <!-- Firma del Extranjero -->
+        <div class="firma-section" id="extranjeroSection" style="display:none;">
+          <h4>Firma del Extranjero</h4>
+          <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
+          <div id="mensajeFirmaExtranjero"></div>
+          <button id="nextToTestigo1">Siguiente: Testigo 1</button>
+        </div>
+        
+        <!-- Firma del Testigo 1 -->
+        <div class="firma-section" id="testigo1Section" style="display:none;">
+          <h4>Firma del Testigo 1</h4>
+          <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
+          <div id="mensajeFirmaTestigo1"></div>
+          <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+        </div>
+        
+        <!-- Firma del Testigo 2 -->
+        <div class="firma-section" id="testigo2Section" style="display:none;">
+          <h4>Firma del Testigo 2</h4>
+          <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
+          <div id="mensajeFirmaTestigo2"></div>
+          <button id="finalizarFirmas">Finalizar Firmas</button>
+        </div>
+      </div>
+      
 
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
@@ -287,8 +326,7 @@
                   .then(data => {
                     if(data.success) {
                  
-                        $('#comparecenciaFormContainer').hide();
-                        $('#qrContainer').show();
+                     
 
                     }
                 }).catch(error => {
