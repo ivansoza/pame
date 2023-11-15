@@ -48,6 +48,14 @@
         content: " *";
         color: red;
       }
+      .input-required {
+        border: 2px solid #d9534f; /* Ajusta el color y el grosor del borde según necesites */
+      }
+      
+      .input-required + label::after {
+        content: " *";
+        color: red;
+      }
       
 </style>
 
@@ -212,38 +220,44 @@
             // Inicializa los botones al cargar la página
             updateNavigationButtons();
     
-            // Evento al hacer clic en "Siguiente"
-        // Evento al hacer clic en "Siguiente"
-            $('.btn-custom6').click(function() {
-                var allFieldsCompleted = true;
-                var $activeTab = $('#myTabContent .tab-pane.active');
-                var incompleteFields = [];
-
-                // Verifica si todos los campos requeridos en la pestaña actual están completos
-                $activeTab.find(":input[required]").each(function() {
-                    if (!$(this).val()) {
-                        allFieldsCompleted = false;
-                        incompleteFields.push($(this).attr("name")); // O puedes usar $(this).prev("label").text() para obtener el texto del label asociado
-                    }
-                });
-
-                // Si no todos los campos están completos, muestra una alerta
-                if (!allFieldsCompleted) {
-                    Swal.fire({
-                        title: 'Campos requeridos incompletos',
-                        html: 'Complete todos los campos requeridos antes de continuar. Los siguientes campos están incompletos: <strong>' + incompleteFields.join(", ") + '</strong>',
-                        icon: 'warning',
-                        confirmButtonText: 'Entendido'
-                    });
-                } else {
-                    // Si todos los campos están completos, permite cambiar a la siguiente pestaña
-                    var $activeTab = $tabs.filter('.active');
-                    var nextIndex = $tabs.index($activeTab) + 1;
-                    if (nextIndex < $tabs.length) {
-                        $tabs.eq(nextIndex).tab('show');
-                    }
+            $("#comparecenciaForm :input[required]").on('input change', function() {
+                if ($(this).val()) {
+                  $(this).removeClass('input-required');
                 }
+              });
+        $('.btn-custom6').click(function() {
+            var allFieldsCompleted = true;
+            var $activeTab = $('#myTabContent .tab-pane.active');
+            var incompleteFields = [];
+        
+            // Verifica si todos los campos requeridos en la pestaña actual están completos
+            $activeTab.find(":input[required]").each(function() {
+              if (!$(this).val()) {
+                allFieldsCompleted = false;
+                incompleteFields.push($(this).prev("label").text()); // O puedes usar $(this).prev("label").text() para obtener el texto del label asociado
+                $(this).addClass('input-required'); // Añade la clase para el borde rojo
+              } else {
+                $(this).removeClass('input-required'); // Remueve la clase si el campo está completo
+              }
             });
+        
+            // Si no todos los campos están completos, muestra una alerta
+            if (!allFieldsCompleted) {
+              Swal.fire({
+                title: 'Campos requeridos incompletos',
+                html: 'Complete todos los campos requeridos antes de continuar. Los siguientes campos están incompletos: <strong>' + incompleteFields.join(", ") + '</strong>',
+                icon: 'warning',
+                confirmButtonText: 'Entendido'
+              });
+            } else {
+              // Si todos los campos están completos, permite cambiar a la siguiente pestaña
+              var $activeTab = $tabs.filter('.active');
+              var nextIndex = $tabs.index($activeTab) + 1;
+              if (nextIndex < $tabs.length) {
+                $tabs.eq(nextIndex).tab('show');
+              }
+            }
+          });
             // Evento al hacer clic en "Anterior"
             $('.btn-custom5').click(function() {
                 var $activeTab = $tabs.filter('.active');
