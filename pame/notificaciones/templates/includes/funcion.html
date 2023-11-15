@@ -1,0 +1,244 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 my-4 mx-auto">
+            <div class="form-group">
+                <label for="cboPais" class="text-center">Selecciona un entidad</label>
+                <select id="cboPais" class="form-control">
+                    <!-- Opciones del select -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="cboCiudad" class="text-center">nombre de la entidad</label>
+                <select id="cboCiudad" class="form-control">
+                    <!-- Opciones del select -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="txtTitular" class="text-center">Nombre del titular</label>
+                <h4 id="txtTitular" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtapellidoPaternoTitular" class="text-center">Apellido paterno del titular</label>
+                <h4 id="txtapellidoPaternoTitular" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtApellidomaternoTitular" class="text-center">Apellido materno del titular</label>
+                <h4 id="txtApellidomaternoTitular" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for "txtCargotitular" class="text-center">Cargo del titular</label>
+                <h4 id="txtCargotitular" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtEmail1" class="text-center">Correo 1</label>
+                <h4 id="txtEmail1" class="form-control text-center"></h4>
+            </div>
+
+            <div class "form-group">
+                <label for="txtEmail2" class="text-center">Correo 2</label>
+                <h4 id="txtEmail2" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtTelefono" class="text-center">Teléfono</label>
+                <h4 id="txtTelefono" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtCalle" class="text-center">Calle</label>
+                <h4 id="txtCalle" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtColonia" class="text-center">Colonia</label>
+                <h4 id="txtColonia" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtMunicipio" class="text-center">Municipio</label>
+                <h4 id="txtMunicipio" class="form-control text-center"></h4>
+            </div>
+
+            <div class="form-group">
+                <label for="txtCp" class="text-center">Código Postal</label>
+                <h4 id="txtCp" class="form-control text-center"></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+        <script>
+            let ciudades = [];
+
+const listarCiudades = async (idPais) => {
+    try {
+        const response = await fetch(`./ciudades/${idPais}`);
+        const data = await response.json();
+
+        if (data.message === "Success") {
+            ciudades = data.ciudades;
+            let opciones = ``;
+            ciudades.forEach((ciudad) => {
+                opciones += `<option value='${ciudad.id}'>${ciudad.nombre}</option>`;
+            });
+            cboCiudad.innerHTML = opciones;
+            mostrarTitular(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarApellidoMtitular(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarApellidoPtitular(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarCalle(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarCargo(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarColonia(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarCorreo1(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarCorreo2(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarTelefono(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarMunicipio(ciudades[0].id);
+            cboCiudad.innerHTML = opciones;
+            mostrarCp(ciudades[0].id);
+
+        } else {
+            alert("Países no encontrados...");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const listarPaises = async () => {
+    try {
+        const response = await fetch("./paises");
+        const data = await response.json();
+
+        if (data.message === "Success") {
+            let opciones = ``;
+            data.paises.forEach((pais) => {
+                opciones += `<option value='${pais.id}'>${pais.nombre}</option>`;
+            });
+            cboPais.innerHTML = opciones;
+            listarCiudades(data.paises[0].id);
+        } else {
+            alert("Países no encontrados...");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const mostrarTitular = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let titular = ciudadEncontrada.nombreTitular;
+    txtTitular.innerText = ` ${titular}`;
+};
+const mostrarApellidoPtitular = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let apellidopaterno = ciudadEncontrada.apellidoPaternoTitular;
+    txtapellidoPaternoTitular.innerText = ` ${apellidopaterno}`;
+};
+const mostrarApellidoMtitular = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let apellidomaterno = ciudadEncontrada.apellidoMaternoTitular;
+    txtApellidomaternoTitular.innerText = `${apellidomaterno}`;
+};
+const mostrarCargo = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let cargoTitular = ciudadEncontrada.cargoTitular;
+    txtCargotitular.innerText = `${cargoTitular}`;
+};
+const mostrarCorreo1 = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let email1 = ciudadEncontrada.email1;
+    txtEmail1.innerText = ` ${email1}`;
+};
+const mostrarCorreo2 = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let email2 = ciudadEncontrada.email2;
+    txtEmail2.innerText = ` ${email2}`;
+};
+const mostrarTelefono = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let telefono = ciudadEncontrada.telefono;
+    txtTelefono.innerText = ` ${telefono}`;
+};
+const mostrarCalle= (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let calle = ciudadEncontrada.calle;
+    txtCalle.innerText = `${calle}`;
+};
+const mostrarColonia = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let colonia = ciudadEncontrada.colonia;
+    txtColonia.innerText = `${colonia}`;
+};
+const mostrarMunicipio = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let municipio = ciudadEncontrada.municipio;
+    txtMunicipio.innerText = `${municipio}`;
+};
+const mostrarCp = (idCiudad) => {
+    let ciudadEncontrada = ciudades.filter((ciudad) => ciudad.id == idCiudad)[0];
+    let cp = ciudadEncontrada.cp;
+    txtCp.innerText = ` ${cp}`;
+};
+
+
+const cargaInicial = async () => {
+    await listarPaises();
+
+    cboPais.addEventListener("change", (event) => {
+        listarCiudades(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarTitular(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarApellidoPtitular(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarApellidoMtitular(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarCargo(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarCorreo1(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarCorreo2(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarTelefono(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarCalle(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarColonia(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarMunicipio(event.target.value);
+    });
+    cboCiudad.addEventListener("change", (event) => {
+        mostrarCp(event.target.value);
+    });
+};
+
+window.addEventListener("load", async () => {
+    await cargaInicial();
+});
+
+        </script>

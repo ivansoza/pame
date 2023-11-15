@@ -1,0 +1,82 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}?v1.2ggg">
+{% endblock link %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1" href="{% url 'defensores' %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+
+
+<form method="post" enctype="multipart/form-data">
+  <div  class="card p-3" enctype="multipart/form-data">
+
+  <div class="d-flex align-items-center justify-content-between">
+      <h1>Datos del las entidades</h1>
+  </div>
+  {% csrf_token %}
+  {{ form.as_hidden }}
+  <div class="row">
+      
+      <div class="col-sm-12 col-md-4 col-lg-4">
+          {{ form.entidad|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.nombreTitular|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.apellidoPaternoTitular|as_crispy_field }}
+      </div>
+    </div>
+
+  <div class="row">
+      <div class="col-sm-12 col-md-4 col-lg-4">
+          {{ form.apellidoMaternoTitular|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.cargoTitular|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.email1|as_crispy_field }}
+      </div>
+  </div>
+
+
+    <div class="row">
+      <div class="col-sm-12 col-md-4 col-lg-4">
+          {{ form.email2|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.telefono|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.calle|as_crispy_field }}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-4 col-lg-4">
+          {{ form.colonia|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.municipio|as_crispy_field }}
+      </div>
+      <div class="col-sm-12 col-md-4 col-lg-4">
+        {{ form.cp|as_crispy_field }}
+      </div>
+    </div>
+
+    <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+    <br>
+    <a href="{% url 'defensoria' %}" class="btn btn-custom1">Cancelar</a>
+  </div>
+</form>
+
+{% endblock contenido %}

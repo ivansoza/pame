@@ -324,26 +324,22 @@
           </li>
                     <!--  Fin Traslado -->
 
-
-
-
           <!-- Fin  Alojamiento -->
 
           <!--   defensoria -->
-
-          <li class="nav-item ">
-            <a href="#" class="nav-link ">
+          <li class="nav-item {% if navbar == 'notificaciones'%}menu-is-opening menu-open{% endif %} ">
+            <a href="#" class="nav-link {% if navbar == 'defensoria'%}active  first-li{% endif %}">
               <i class="nav-icon fas fa-city"></i>
               <p>
-                Defensoria
+                Notificaciones
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview" style="margin-left: 20px;">
               <li class="nav-item">
-                <a href="#" class="nav-link ">
+                <a href="{% url 'defensoria' %}" class="nav-link {% if seccion == 'interno' %}active {% endif %} ">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Denfensores</p>
+                  <p>Defensoria</p>
                 </a>
               </li>
             </ul>
