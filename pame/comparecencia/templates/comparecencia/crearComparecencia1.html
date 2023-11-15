@@ -36,6 +36,18 @@
         color: #495057;
         cursor: not-allowed;
       }
+
+
+      .input-required {
+        border: 2px solid #d9534f; /* Rojo con un borde más grueso para mayor visibilidad */
+        border-radius: 4px; /* Opcional, para bordes redondeados */
+      }
+      
+      /* Opcional: Agrega un asterisco rojo a las etiquetas de los campos requeridos */
+      label.required::after {
+        content: " *";
+        color: red;
+      }
       
 </style>
 
@@ -201,14 +213,37 @@
             updateNavigationButtons();
     
             // Evento al hacer clic en "Siguiente"
+        // Evento al hacer clic en "Siguiente"
             $('.btn-custom6').click(function() {
-                var $activeTab = $tabs.filter('.active');
-                var nextIndex = $tabs.index($activeTab) + 1;
-                if (nextIndex < $tabs.length) {
-                    $tabs.eq(nextIndex).tab('show');
+                var allFieldsCompleted = true;
+                var $activeTab = $('#myTabContent .tab-pane.active');
+                var incompleteFields = [];
+
+                // Verifica si todos los campos requeridos en la pestaña actual están completos
+                $activeTab.find(":input[required]").each(function() {
+                    if (!$(this).val()) {
+                        allFieldsCompleted = false;
+                        incompleteFields.push($(this).attr("name")); // O puedes usar $(this).prev("label").text() para obtener el texto del label asociado
+                    }
+                });
+
+                // Si no todos los campos están completos, muestra una alerta
+                if (!allFieldsCompleted) {
+                    Swal.fire({
+                        title: 'Campos requeridos incompletos',
+                        html: 'Complete todos los campos requeridos antes de continuar. Los siguientes campos están incompletos: <strong>' + incompleteFields.join(", ") + '</strong>',
+                        icon: 'warning',
+                        confirmButtonText: 'Entendido'
+                    });
+                } else {
+                    // Si todos los campos están completos, permite cambiar a la siguiente pestaña
+                    var $activeTab = $tabs.filter('.active');
+                    var nextIndex = $tabs.index($activeTab) + 1;
+                    if (nextIndex < $tabs.length) {
+                        $tabs.eq(nextIndex).tab('show');
+                    }
                 }
             });
-    
             // Evento al hacer clic en "Anterior"
             $('.btn-custom5').click(function() {
                 var $activeTab = $tabs.filter('.active');
