@@ -9,6 +9,47 @@ class ComparecenciaForm(forms.ModelForm):
         input_formats=['%d/%m/%Y'],
         required=True,  # Si es opcional
     )
+
+    DOMICILIO_OPCIONES = (
+        (None, "Selecciona una opción"),
+        (True, "Sí"),
+        (False, "No"),
+    )
+
+    domicilioEnMexico = forms.TypedChoiceField(
+        label="¿Tiene domicilio en México?",
+        coerce=lambda x: x == 'True',
+        choices=DOMICILIO_OPCIONES,
+        widget=forms.Select,
+        empty_value=None
+    )
+
+    REFUGIO_OPCIONES = (
+        (None, "Selecciona una opción"),
+        (True, "Sí"),
+        (False, "No"),
+    )
+
+    solicitaRefugio = forms.TypedChoiceField(
+        label="¿Solicita refugio?",
+        coerce=lambda x: x == 'True',
+        choices=REFUGIO_OPCIONES,
+        widget=forms.Select,
+        empty_value=None
+    )
+    DELITO_OPCIONES = (
+        (None, "Selecciona una opción"),
+        (True, "Sí"),
+        (False, "No"),
+    )
+
+    victimaDelito = forms.TypedChoiceField(
+        label="¿Es víctima de delito?",
+        coerce=lambda x: x == 'True',
+        choices=DELITO_OPCIONES,
+        widget=forms.Select,
+        empty_value=None
+    )
     class Meta:
         model = Comparecencia
         fields = ['estadoCivil', 'escolaridad', 'ocupacion', 'nacionalidad', 'DomicilioPais', 'lugarOrigen', 
