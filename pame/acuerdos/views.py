@@ -56,7 +56,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/continuacionProcedimiento.html')
+    html_template = get_template('documentos/egresoInstalacion.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
@@ -862,6 +862,34 @@ def continuacionProcedimiento_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/continuacionProcedimiento.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Acuerdo de egreso de instalacion migratoria
+def egresoInstalacion_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/egresoInstalacion.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
