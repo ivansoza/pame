@@ -1,0 +1,86 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}?v1.2ggg">
+{% endblock link %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1" href="{% url 'defensoria' %}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+<div class="card">
+    <div class="card-body">
+        <p style="font-size: 300%;">Datos del extranjero</p>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4" style="font-size: 150%;">
+                <p>Nombre del extranjero: {{ nombre }}</p>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4"style="font-size: 150%;">
+                <p>Apellidos: {{ apellido }}</p>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4"style="font-size: 150%;">
+                <p>Nacionalidad: {{ nacionalidad }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general" style="font-size: 250%;">
+        Selecciona una defensoría a notificar:
+    </h1>
+<div>
+    <div class="table-responsive">
+        <table id="tabla" class="table table-striped table-bordered display responsive nowrap">
+            <thead>
+                <tr>
+                    <th>Entidad</th>
+                    <th>Titular</th>
+                    <th>Cargo</th>
+                    <th>Correos</th>
+                    <th>Teléfono</th>
+                    <th>CP</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for defensoria in defensorias %}
+                    <tr>
+                        <td class="text-center">{{ defensoria.entidad }}</td>
+                        <td class="text-center">{{ defensoria.nombreTitular }} {{ defensoria.apellidoPaternoTitular }} {{ defensoria.apellidoMaternoTitular }}</td>
+                        <td class="text-center">{{ defensoria.cargoTitular }}</td>
+                        <td class="text-center">{{ defensoria.email1 }}|{{ defensoria.email2 }}</td>
+                        <td class="text-center">{{ defensoria.telefono }}</td>
+                        <td class="text-center">{{ defensoria.cp }}</td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-icon1 tooltip-link btn-opcion"
+                                href="{% url "menu" %}"
+                                data-title="Notificar">
+                                <i class="fas fa-bell"></i>
+                            </a>
+                            <!-- Agrega más botones según tus necesidades -->
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th class="text-center">Entidad</th>
+                    <th class="text-center">Titular</th>
+                    <th class="text-center">Cargo</th>
+                    <th class="text-center">Correos </th>
+                    <th class="text-center">Teléfono</th>
+                    <th class="text-center">CP</th>
+                    <th class="text-center">Opciones</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+{% endblock contenido %}

@@ -7,7 +7,7 @@
 {% endblock link %}
 
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1" href="{% url 'defensores' %}">
+<a class="btn btn-sm btn-icon1" href="{% url 'listdefensores' %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 {% endblock dashboard %}
@@ -19,7 +19,7 @@
   <div  class="card p-3" enctype="multipart/form-data">
 
   <div class="d-flex align-items-center justify-content-between">
-      <h1>Datos del las entidades</h1>
+      <h1>Datos de las entidades defensoras</h1>
   </div>
   {% csrf_token %}
   {{ form.as_hidden }}
@@ -75,7 +75,7 @@
 
     <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
     <br>
-    <a href="{% url 'defensoria' %}" class="btn btn-custom1">Cancelar</a>
+    <a href="{% url 'listdefensores' %}" class="btn btn-custom1">Cancelar</a>
   </div>
 </form>
 
