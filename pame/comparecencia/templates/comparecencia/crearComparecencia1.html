@@ -56,6 +56,16 @@
         content: " *";
         color: red;
       }
+
+
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
+    }
       
 </style>
 
@@ -178,15 +188,17 @@
 
     <div id="qrCode" style="display:none;" class="card p-3">
         <!-- Firma de la Autoridad Actuante -->
-        <div class="firma-section" id="autoridadActuanteSection">
-          <h4>Firma de la Autoridad Actuante</h4>
-          <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
-          <div id="mensajeFirmaAutoridadActuante"></div>
-          <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
-        </div>
+   
+
+        <div class="firma-section center-content" id="autoridadActuanteSection">
+            <h4>Firma de la Autoridad Actuante</h4>
+            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+            <div id="mensajeFirmaAutoridadActuante"></div>
+            <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+          </div>
         
         <!-- Firma del Representante Legal -->
-        <div class="firma-section" id="representanteLegalSection" style="display:none;">
+        <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
           <h4>Firma del Representante Legal</h4>
           <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
           <div id="mensajeFirmaRepresentanteLegal"></div>
@@ -194,7 +206,7 @@
         </div>
         
         <!-- Firma del Traductor -->
-        <div class="firma-section" id="traductorSection" style="display:none;">
+        <div class="firma-section center-content" id="traductorSection" style="display:none;">
           <h4>Firma del Traductor</h4>
           <img id="qrImageTraductor" src="" alt="Código QR Traductor">
           <div id="mensajeFirmaTraductor"></div>
@@ -202,7 +214,7 @@
         </div>
         
         <!-- Firma del Extranjero -->
-        <div class="firma-section" id="extranjeroSection" style="display:none;">
+        <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
           <h4>Firma del Extranjero</h4>
           <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
           <div id="mensajeFirmaExtranjero"></div>
@@ -210,7 +222,7 @@
         </div>
         
         <!-- Firma del Testigo 1 -->
-        <div class="firma-section" id="testigo1Section" style="display:none;">
+        <div class="firma-section center-content" id="testigo1Section" style="display:none;">
           <h4>Firma del Testigo 1</h4>
           <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
           <div id="mensajeFirmaTestigo1"></div>
@@ -218,7 +230,7 @@
         </div>
         
         <!-- Firma del Testigo 2 -->
-        <div class="firma-section" id="testigo2Section" style="display:none;">
+        <div class="firma-section center-content" id="testigo2Section" style="display:none;">
           <h4>Firma del Testigo 2</h4>
           <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
           <div id="mensajeFirmaTestigo2"></div>
@@ -226,6 +238,20 @@
         </div>
       </div>
       
+
+      <div id="generatePDFSection" style="display:none;">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <!-- Ícono de FontAwesome para representar un PDF -->
+                <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+                <br>
+                <br>
+                <br>
+
+                <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+            </div>
+        </div>
+    </div>
 
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
@@ -526,10 +552,9 @@
         .then(data => {
             if (data.status === 'success') {
                 clearInterval(intervaloTestigo2); // Detener el intervalo
-
                 document.getElementById('testigo2Section').style.display = 'none';
-                // Aquí puedes manejar la finalización del proceso de firmas
-                // Por ejemplo, mostrar una sección para generar el PDF final o algún mensaje de confirmación
+                // Mostrar la sección para generar el PDF
+                document.getElementById('generatePDFSection').style.display = 'block';
             }
         });
     }    
