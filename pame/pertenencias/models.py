@@ -52,19 +52,65 @@ class Pertenencia_aparatos(models.Model):# pentenencias electronicas -----------
     class Meta:
         verbose_name_plural = "pertenenecia_aparatos"
         
+        
+MONEDAS_CHOICES = (
+    ('USD', 'Dólar estadounidense'),
+    ('EUR', 'Euro'),
+    ('GBP', 'Libra esterlina británica'),
+    ('JPY', 'Yen japonés'),
+    ('CAD', 'Dólar canadiense'),
+    ('AUD', 'Dólar australiano'),
+    ('CHF', 'Franco suizo'),
+    ('NZD', 'Dólar neozelandés'),
+    ('SEK', 'Corona sueca'),
+    ('NOK', 'Corona noruega'),
+    ('SGD', 'Dólar singapurense'),
+    ('CNY', 'Yuan chino'),
+    ('INR', 'Rupia india'),
+    ('MXN', 'Peso mexicano'),
+    ('HKD', 'Dólar hongkonés'),
+    ('RUB', 'Rublo ruso'),
+    ('TRY', 'Lira turca'),
+    ('BRL', 'Real brasileño'),
+    ('ZAR', 'Rand sudafricano'),
+    ('ARS', 'Peso argentino'),
+)
+
 
 class valoresefectivo(models.Model): #modales para el efectivo ------------>>>
     importe = models.FloatField(max_length=100, verbose_name='Importe')
-    moneda = models.CharField(max_length=100, verbose_name='Moneda')
+    moneda = models.CharField(max_length=100, verbose_name='Moneda', choices=MONEDAS_CHOICES)
     delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
     def __str__(self) -> str:
         return '__all__'
     
     class Meta:
         verbose_name_plural = "valoresefectivo"
-        
+
+
+METALES_CHOICES = (
+    ('Oro', 'Oro'),
+    ('Plata', 'Plata'),
+    ('Platino', 'Platino'),
+    ('Paladio', 'Paladio'),
+    ('Titanio', 'Titanio'),
+    ('Acero inoxidable', 'Acero inoxidable'),
+    ('Latón', 'Latón'),
+    ('Bronce', 'Bronce'),
+    ('Cobre', 'Cobre'),
+    ('Aluminio', 'Aluminio'),
+    ('Aleación de níquel', 'Aleación de níquel'),
+    ('Plata de ley', 'Plata de ley'),
+    ('Aleación de oro', 'Aleación de oro'),
+    ('Oro blanco', 'Oro blanco'),
+    ('Oro rosa', 'Oro rosa'),
+    ('Oro amarillo', 'Oro amarillo'),
+    ('Oro verde', 'Oro verde'),
+    ('Oro negro', 'Oro negro'),
+)
+
 class valoresjoyas(models.Model): # valores de joyas y otros -------->>>>>>>
-    metal = models.CharField(max_length=100, verbose_name='Metal')
+    metal = models.CharField(max_length=100, verbose_name='Metal', choices=METALES_CHOICES)
     descripcion = models.CharField(max_length=300, verbose_name='Descripcion')
     delInventario = models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero del Inventario')
     def __str__(self) -> str:

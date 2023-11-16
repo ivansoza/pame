@@ -68,7 +68,6 @@ class EstatusTrasladoFormOrigenDestino(forms.ModelForm):
 class EstatusTrasladoFormExtranjero(forms.ModelForm):
     class Meta:
         model = ExtranjeroTraslado
-        fields = ['statusTraslado']
-
+        fields = ['statusTraslado','motivo_rechazo']
 
     
