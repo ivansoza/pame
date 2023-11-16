@@ -1,17 +1,64 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-
+{% load crispy_forms_tags %}
 {% load static %}
+
 {% block link %}
-    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.199e8 ">
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+        <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
+    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
 {% endblock link %}
 
-
-
+{% block titulo %}PAME | Carga de documentos{% endblock titulo %}
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
-    <i class="fas fa-arrow-left"></i>
+<!-- FLECHA DE BACK  -->
+
+<a class="btn btn-sm btn-icon1 " href="{% url 'listExtranjeroConsulta'%}">
+  <i class="fas fa-arrow-left"></i>
 </a>
+
 {% endblock dashboard %}
 {% block contenido %}
- <h1 style="text-align: center;">Certificado Medico {{nombre}}</h1>
+<br>
+<div class="titulo-general-container">
+    <h1 class="titulo-general">
+        Subir documentos sobre historial medico de:
+        <span class="puesta-color"><strong>{{nombre}} {{ape1}} {% if ape2 %} {{ape2}} {% endif %} </strong></span>
+
+    </h1>
+</div>
+<form method="post" enctype="multipart/form-data" id="formulario1">
+    {% csrf_token %}
+
+    <div  class="card p-3 exploracion-fisica" enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>Documentos</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-12"  style='display:none'>
+                {{ form.extranjero|as_crispy_field }}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-12" style='display:none'>
+                {{ form.nup|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-3"  style='display:none'>
+                {{ form.deLaEstacion|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-12" >
+                {{ form.justificacion|as_crispy_field }}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-12">
+                {{ form.descripcion|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-12" >
+                {{ form.documento|as_crispy_field }}
+            </div>
+        </div>
+        <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+            <br>
+            <a href="#" class="btn btn-custom1">Cancelar</a> 
+    </div>
+
+    </form>
 {% endblock contenido %}

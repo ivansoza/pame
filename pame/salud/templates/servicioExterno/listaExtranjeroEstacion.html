@@ -49,9 +49,11 @@
             
             <td>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "certificadoMedicoExterno" extranjero.id%} " data-title="Certificado Medico">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "certificadoMedicoExterno" extranjero.id%} " data-title="Carga de archivos">
                     <i class="fas fa-file-medical"></i>
                 </a>
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosExternos" extranjero.id%} " data-title="Historial Medico">
+                    <i class="fa-solid fa-folder-plus"></i>                </a>
                
             </td>
                        

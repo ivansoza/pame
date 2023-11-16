@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.views.generic import ListView, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from vigilancia.models import Extranjero
-from .models import DocumentosReferencia,CertificadoMedico, PerfilMedico, Consulta, constanciaNoLesiones, CertificadoMedicoEgreso, ReferenciaMedica, FirmaMedico
+from .models import DocumentosReferencia,CertificadoMedico, PerfilMedico, Consulta, constanciaNoLesiones, CertificadoMedicoEgreso, ReferenciaMedica, FirmaMedico, DocumentosExternos
 from catalogos.models import Estacion
-from .forms import certificadoMedicoForms, perfilMedicoforms, consultaForms, lesionesForm, certificadoMedicoEgresoForms, referenciaMedicaforms, DocumentosReferenciaForm, FirmaMedicoForm
+from .forms import certificadoMedicoForms, perfilMedicoforms, consultaForms, lesionesForm, certificadoMedicoEgresoForms, referenciaMedicaforms, DocumentosReferenciaForm, FirmaMedicoForm, DocumentosExternosForm
 from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.urls import reverse
@@ -27,7 +27,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from usuarios.models import Usuario
 # Create your views here.
-
+ 
 def homeMedico(request):
     return render(request, "home.html")
 
@@ -231,20 +231,6 @@ class listarExtranjerosServicioExterno(LoginRequiredMixin, ListView):
 
         return context
     
-class CargaCertificadoMedico(LoginRequiredMixin, TemplateView):
-    template_name = 'servicioExterno/cargaDeCertificados.html'
-    login_url = '/permisoDenegado/'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
-        extranjero = Extranjero.objects.get(id=extranjero_id)
-        nombre = extranjero.nombreExtranjero
-        context['nombre'] = nombre
-        context['navbar'] = 'medico'  # Cambia esto según la página activa
-        context['seccion'] = 'externo'  # Cambia esto según la página activa
-
-        return context
     
 class perfilMedicoInterno(LoginRequiredMixin, CreateView):
     template_name = 'servicioInterno/perfilMedico.html'
@@ -657,6 +643,77 @@ class FirmaCreateMedicoView(CreateView):
         context['pk'] = self.kwargs.get('pk')
         return context
     
+class documentosExternos(LoginRequiredMixin, CreateView):
+    template_name='servicioExterno/cargaDeCertificados.html'
+    model = DocumentosExternos
+    form_class = DocumentosExternosForm
+    login_url ='/permisoDenegado/'
+    def get_success_url(self):
+        messages.success(self.request, 'Documentos subidos con éxito.')
+        return reverse('listExtranjeroExterno') 
+    def get_initial(self):
+        initial = super().get_initial()
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        initial['deLaEstacion'] = estacion
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(pk=extranjero_id)
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup       
+        initial['nup'] = ultimo_no_proceso_id
+        initial['extranjero'] = extranjero
+        return initial
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        ape1 = extranjero.apellidoPaternoExtranjero
+        ape2 = extranjero.apellidoMaternoExtranjero
+        context['nombre'] = nombre
+        context['ape1'] = ape1
+        context['ape2'] = ape2
+        context['navbar'] = 'medico'
+        context['seccion'] = 'externo'    
+
+        return context
+    
+class listaDExternos(LoginRequiredMixin, ListView):
+    template_name = 'servicioExterno/listaDocumentosExternos.html'
+    model = DocumentosExternos
+    context_object_name = 'documentos'
+    login_url = '/permisoDenegado/'
+
+    def get_queryset(self):
+        extranjero_id = self.kwargs['pk']
+        # Filtrar los documentos externos por el ID del extranjero
+        queryset = DocumentosExternos.objects.filter(extranjero_id=extranjero_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+     context = super().get_context_data(**kwargs)
+     extranjero_id = self.kwargs['pk']
+    
+    # Filtra los documentos que están relacionados con la misma referencia médica
+     documentos = DocumentosExternos.objects.filter(extranjero=extranjero_id)
+     dd = documentos.last
+     extranjero = Extranjero.objects.get(id=extranjero_id)
+     nombre = extranjero.nombreExtranjero
+     ape1 = extranjero.apellidoPaternoExtranjero
+     ape2 = extranjero.apellidoMaternoExtranjero
+     context['extranjero']=extranjero
+     context['nombre'] = nombre
+     context['ape1'] = ape1
+     context['ape2'] = ape2
+    # Obtener la referencia médica asociada a la consulta
+
+     context['navbar'] = 'medico'
+     context['seccion'] = 'externo'
+     return context
 
 def manejar_imagen(request):
     if request.method == "POST":

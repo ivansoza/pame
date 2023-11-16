@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
+X_FRAME_OPTIONS = 'ALLOWALL'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Application definition
 

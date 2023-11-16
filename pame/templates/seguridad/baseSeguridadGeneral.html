@@ -13,6 +13,7 @@
 
     
     </title>
+    <script src="{% static 'js/jsvi/viewer.js' %}"></script>
 
 
   <!-- Google Font: Source Sans Pro -->
@@ -434,7 +435,7 @@
             <li class="nav-item">
               <a href="{% url "datosMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Perfil Medico</p>
+                <p>Perfil Médico</p>
               </a>
             </li>
           </ul>
@@ -443,7 +444,7 @@
             <li class="nav-item">
               <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Perfil Medico</p>
+                <p>Perfil médico</p>
               </a>
             </li>
           </ul>
@@ -452,7 +453,7 @@
             <li class="nav-item">
               <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Certificados medicos</p>
+                <p>Certificados médicos</p>
               </a>
             </li>
           </ul>
@@ -460,7 +461,7 @@
             <li class="nav-item">
               <a href="{% url "listExtranjeroConsulta" %}" class="nav-link {% if seccion == 'consulta' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Consultas medicas</p>
+                <p>Consultas médicas</p>
               </a>
             </li>
           </ul>
@@ -470,7 +471,7 @@
           <li class="nav-item">
             <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
               <i class="far fa-circle nav-icon"></i>
-              <p>Carga de certificado medico</p>
+              <p>Carga de documentos médicos</p>
             </a>
           </li>
         </ul>

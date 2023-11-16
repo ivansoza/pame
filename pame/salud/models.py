@@ -272,3 +272,12 @@ class FirmaMedico(models.Model):
     firma_imagen = models.ImageField(upload_to='firmas/', blank=True, null=True)
     fechaHoraFirmaCreate = models.DateTimeField(auto_now_add=True)
     fechaHoraFirmaUpdate = models.DateTimeField(auto_now_add=True)
+
+class DocumentosExternos(models.Model):
+    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
+    deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
+    justificacion = models.CharField(max_length=100, verbose_name='Justificación')
+    descripcion = models.TextField( verbose_name='Descripción del archivo')
+    documento = models.FileField(upload_to='files/', verbose_name='Documentos', null=True, blank=True)
+    fechaHora = models.DateTimeField(auto_now_add=True)
