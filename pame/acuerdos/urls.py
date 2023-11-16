@@ -8,7 +8,7 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
     certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
-    continuacionProcedimiento_pdf, egresoInstalacion_pdf
+    continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
@@ -45,6 +45,7 @@ urlpatterns = [
     path('suspension-provisional', suspensionProvisional_pdf, name='suspensionPDF'),
     path('continuacion-procedimiento', continuacionProcedimiento_pdf, name='continuacionPDF'),
     path('egreso-instalacion', egresoInstalacion_pdf, name='egresoPDF'),
+    path('acadministrativo', administrativo_pdf, name='administrativoPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
