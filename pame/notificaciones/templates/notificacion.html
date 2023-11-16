@@ -34,9 +34,9 @@
     <h1 class="titulo-general" style="font-size: 250%;">
         Selecciona una defensoría a notificar:
     </h1>
-<div>
+</div>
     <div class="table-responsive">
-        <table id="tabla" class="table table-striped table-bordered display responsive nowrap">
+        <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
             <thead>
                 <tr>
                     <th>Entidad</th>
@@ -62,9 +62,7 @@
                                 href="{% url "menu" %}"
                                 data-title="Notificar">
                                 <i class="fas fa-bell"></i>
-                            </a>
-                            <!-- Agrega más botones según tus necesidades -->
-                        </td>
+                                   </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -84,3 +82,4 @@
 </div>
 
 {% endblock contenido %}
+               
