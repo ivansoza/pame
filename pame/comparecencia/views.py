@@ -1,18 +1,32 @@
 from typing import Any
 from django.db.models.query import QuerySet
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, AsignacionRepresentante
 # Create your views here.
 from django.db.models import OuterRef, Subquery,Exists
 from django.shortcuts import get_object_or_404
 
 from .models import Comparecencia
-from django.views.generic import ListView, CreateView, View
+from django.views.generic import ListView, CreateView, View, TemplateView
 from django.urls import reverse_lazy
 from .forms import ComparecenciaForm
 from django.db.models import Q
 from django.http import JsonResponse
 from catalogos.models import Traductores
+import qrcode
+from django.conf import settings
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotFound
+
+from .forms import (FirmaAutoridadActuanteForm, FirmaRepresentanteLegalForm, 
+                    FirmaTraductorForm, FirmaExtranjeroForm, 
+                    FirmaTestigo1Form, FirmaTestigo2Form)
+from .models import FirmaComparecencia
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import base64
+from django.views.decorators.csrf import csrf_exempt
+
 def homeComparecencia(request):
     return render(request,"homeComparecencia.html")
 
@@ -132,8 +146,6 @@ class CrearComparecenciaAjax(View):
             no_proceso = get_object_or_404(NoProceso, nup=nup_id)
             comparecencia.nup = no_proceso
             comparecencia.save()
-
-            # CONSEGUIMOS EL ID DE LA COMPARECENCIA
             data = {'success': True, 'message': 'Comparecencia creada con éxito.', 'comparecencia_id': comparecencia.id}
             return JsonResponse(data, status=200)
         else:
@@ -195,3 +207,283 @@ class CrearComparecenciaAjax(View):
             }
             return render(request, 'comparecencia/crearComparecencia1.html', context)
         
+def generar_qr_firmas(request, comparecencia_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}comparecencia/firma_autoridad_actuante/{comparecencia_id}/"
+    elif tipo_firma == "representanteLegal":
+        url = f"{base_url}comparecencia/firma_representante_legal/{comparecencia_id}/"
+    elif tipo_firma == "traductor":
+        url = f"{base_url}comparecencia/firma_traductor/{comparecencia_id}/"
+    elif tipo_firma == "extranjero":
+        url = f"{base_url}comparecencia/firma_extranjero/{comparecencia_id}/"
+    elif tipo_firma == "testigo1":
+        url = f"{base_url}comparecencia/firma_testigo1/{comparecencia_id}/"
+    elif tipo_firma == "testigo2":
+        url = f"{base_url}comparecencia/firma_testigo2/{comparecencia_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)  # Usar comparecencia aquí
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{comparecencia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'comparecencia_id': comparecencia_id})
+
+
+def firma_representante_legal(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)  # Usar comparecencia aquí
+    if firma.firmaRepresentanteLegal:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaRepresentanteLegalForm(request.POST, request.FILES)
+        if form.is_valid():
+        
+            data_url = form.cleaned_data['firmaRepresentanteLegal']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaRepresentanteLegal_{comparecencia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaRepresentanteLegal.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaRepresentanteLegalForm()
+
+    return render(request, 'firma/firma_representante_legal.html', {'form': form, 'comparecencia_id': comparecencia_id})
+
+
+def firma_traductor(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)  # Usar comparecencia aquí
+    if firma.firmaTraductor:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaTraductorForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaTraductor']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTraductor_{comparecencia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTraductor.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTraductorForm()
+
+    return render(request, 'firma/firma_traductor.html', {'form': form, 'comparecencia_id': comparecencia_id})
+
+def firma_extranjero(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)  # Usar comparecencia aquí
+    if firma.firmaExtranjero:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaExtranjeroForm(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaExtranjero']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaExtranjero_{comparecencia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaExtranjero.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaExtranjeroForm()
+
+    return render(request, 'firma/firma_extranjero.html', {'form': form, 'comparecencia_id': comparecencia_id})
+
+
+def firma_testigo1(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)  # Usar comparecencia aquí
+    if firma.firmaTestigo1:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaTestigo1Form(request.POST, request.FILES)
+        if form.is_valid():
+
+            data_url = form.cleaned_data['firmaTestigo1']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigo1_{comparecencia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigo1.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigo1Form()
+
+    return render(request, 'firma/firma_testigo1.html', {'form': form, 'comparecencia_id': comparecencia_id})
+
+
+def firma_testigo2(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)  # Usar comparecencia aquí
+    if firma.firmaTestigo2:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaTestigo2Form(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaTestigo2']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaTestigo2_{comparecencia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaTestigo2.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigo2Form()
+
+    return render(request, 'firma/firma_testigo2.html', {'form': form, 'comparecencia_id': comparecencia_id})
+
+
+class firmExistente(TemplateView):
+    template_name='firma/firma_exixtente.html'
+
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante(request, comparecencia_id):
+    try:
+        firma = FirmaComparecencia.objects.get(comparecencia_id=comparecencia_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaComparecencia.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_representante_legal(request, comparecencia_id):
+    try:
+        firma = FirmaComparecencia.objects.get(comparecencia_id=comparecencia_id)
+        if firma.firmaRepresentanteLegal:
+            image_url = request.build_absolute_uri(firma.firmaRepresentanteLegal.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Representante Legal encontrada',
+                'image_url': image_url
+            })
+    except FirmaComparecencia.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Representante Legal aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_traductor(request, comparecencia_id):
+    try:
+        firma = FirmaComparecencia.objects.get(comparecencia_id=comparecencia_id)
+        if firma.firmaTraductor:
+            image_url = request.build_absolute_uri(firma.firmaTraductor.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Traductor encontrada',
+                'image_url': image_url
+            })
+    except FirmaComparecencia.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Traductor aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_extranjero(request, comparecencia_id):
+    try:
+        firma = FirmaComparecencia.objects.get(comparecencia_id=comparecencia_id)
+        if firma.firmaExtranjero:
+            image_url = request.build_absolute_uri(firma.firmaExtranjero.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Extranjero encontrada',
+                'image_url': image_url
+            })
+    except FirmaComparecencia.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Extranjero aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_testigo1(request, comparecencia_id):
+    try:
+        firma = FirmaComparecencia.objects.get(comparecencia_id=comparecencia_id)
+        if firma.firmaTestigo1:
+            image_url = request.build_absolute_uri(firma.firmaTestigo1.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo 1 encontrada',
+                'image_url': image_url
+            })
+    except FirmaComparecencia.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo 1 aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_testigo2(request, comparecencia_id):
+    try:
+        firma = FirmaComparecencia.objects.get(comparecencia_id=comparecencia_id)
+        if firma.firmaTestigo2:
+            image_url = request.build_absolute_uri(firma.firmaTestigo2.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo 2 encontrada',
+                'image_url': image_url
+            })
+    except FirmaComparecencia.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo 2 aún no registrada'}, status=404)

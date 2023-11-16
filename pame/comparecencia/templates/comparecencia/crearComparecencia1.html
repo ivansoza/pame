@@ -328,11 +328,17 @@
                         document.getElementById('comparecenciaForm').style.display = 'none';
                         document.getElementById('qrCode').style.display = 'block';
                         document.getElementById('autoridadActuanteSection').style.display = 'block';
-                        var comparecenciaId = data.comparecenciaId; // Asegúrate de que el backend envíe el ID de la comparecencia creada
-                        document.getElementById('qrImageAutoridadActuante').src = '/ruta_para_generar_qr/autoridadActuante/' + comparecenciaId;
-            
+                        var comparecenciaId = data.comparecencia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                        document.getElementById('qrImageAutoridadActuante').src = '/comparecencia/generar_qr/autoridadActuante/' + comparecenciaId;
+                        document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
+
+                        document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                        document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                        document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                        document.getElementById('qrImageTestigo2').src = '/comparecencia/generar_qr/testigo2/' + comparecenciaId;
+
                         // Comenzar a verificar si la firma ha sido capturada en un intervalo regular
-                        setInterval(function() { verificarFirmaAutoridadActuante(comparecenciaId); }, 3000);
+                        intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(comparecenciaId); }, 1000);
 
                     }
                 }).catch(error => {
@@ -346,27 +352,7 @@
                  });
             });
         });
-
-        function verificarFirmaAutoridadActuante(comparecenciaId) {
-            fetch('/ruta_para_verificar_firma/autoridadActuante/' + comparecenciaId)
-            .then(response => response.json())
-            .then(data => {
-                if(data.firmaCapturada) {
-                    // Proceder con el siguiente paso, por ejemplo, mostrar el QR del Representante Legal
-                    document.getElementById('autoridadActuanteSection').style.display = 'none';
-                    document.getElementById('representanteLegalSection').style.display = 'block';
         
-                    // Actualizar el src para el siguiente QR
-                    document.getElementById('qrImageRepresentanteLegal').src = '/ruta_para_generar_qr/representanteLegal/' + comparecenciaId;
-        
-                    // Y así sucesivamente para los demás participantes...
-                }
-            }).catch(error => {
-                // Manejar posibles errores aquí
-            });
-        }
-        
-
         document.getElementById('previewPdfButton').addEventListener('click', function() {
             var formData = new FormData(document.getElementById('comparecenciaForm'));
             
@@ -455,9 +441,99 @@
           }
         });
       });
+
+
+    function verificarFirmaAutoridadActuante(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/autoridadActuante/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+                document.getElementById('autoridadActuanteSection').style.display = 'none';
+                document.getElementById('representanteLegalSection').style.display = 'block';
+                document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
+                intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaRepresentanteLegal(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/representanteLegal/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloRepresentanteLegal); // Detener el intervalo
+
+                document.getElementById('representanteLegalSection').style.display = 'none';
+                document.getElementById('traductorSection').style.display = 'block';
+                document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                intervaloTraductor = setInterval(function() { verificarFirmaTraductor(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+
+    function verificarFirmaTraductor(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/traductor/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTraductor); // Detener el intervalo
+
+                document.getElementById('traductorSection').style.display = 'none';
+                document.getElementById('extranjeroSection').style.display = 'block';
+                document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaExtranjero(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/extranjero/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloExtranjero); // Detener el intervalo
+
+                document.getElementById('extranjeroSection').style.display = 'none';
+                document.getElementById('testigo1Section').style.display = 'block';
+                document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaTestigo1(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/testigo1/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+
+                clearInterval(intervaloTestigo1); // Detener el intervalo
+
+                document.getElementById('testigo1Section').style.display = 'none';
+                document.getElementById('testigo2Section').style.display = 'block';
+                document.getElementById('qrImageTestigo2').src = '/comparecencia/generar_qr/testigo2/' + comparecenciaId;
+                intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaTestigo2(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/testigo2/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTestigo2); // Detener el intervalo
+
+                document.getElementById('testigo2Section').style.display = 'none';
+                // Aquí puedes manejar la finalización del proceso de firmas
+                // Por ejemplo, mostrar una sección para generar el PDF final o algún mensaje de confirmación
+            }
+        });
+    }    
     </script>
-    
-    
 </div>
 
 {% endblock contenido%}
