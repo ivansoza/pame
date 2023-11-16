@@ -176,7 +176,7 @@
                 </form>
     </div>
 
-    <div id="qrCode" style="display:none;">
+    <div id="qrCode" style="display:none;" class="card p-3">
         <!-- Firma de la Autoridad Actuante -->
         <div class="firma-section" id="autoridadActuanteSection">
           <h4>Firma de la Autoridad Actuante</h4>
@@ -325,8 +325,14 @@
                 }).then(response => response.json())
                   .then(data => {
                     if(data.success) {
-                 
-                     
+                        document.getElementById('comparecenciaForm').style.display = 'none';
+                        document.getElementById('qrCode').style.display = 'block';
+                        document.getElementById('autoridadActuanteSection').style.display = 'block';
+                        var comparecenciaId = data.comparecenciaId; // Asegúrate de que el backend envíe el ID de la comparecencia creada
+                        document.getElementById('qrImageAutoridadActuante').src = '/ruta_para_generar_qr/autoridadActuante/' + comparecenciaId;
+            
+                        // Comenzar a verificar si la firma ha sido capturada en un intervalo regular
+                        setInterval(function() { verificarFirmaAutoridadActuante(comparecenciaId); }, 3000);
 
                     }
                 }).catch(error => {
@@ -340,6 +346,26 @@
                  });
             });
         });
+
+        function verificarFirmaAutoridadActuante(comparecenciaId) {
+            fetch('/ruta_para_verificar_firma/autoridadActuante/' + comparecenciaId)
+            .then(response => response.json())
+            .then(data => {
+                if(data.firmaCapturada) {
+                    // Proceder con el siguiente paso, por ejemplo, mostrar el QR del Representante Legal
+                    document.getElementById('autoridadActuanteSection').style.display = 'none';
+                    document.getElementById('representanteLegalSection').style.display = 'block';
+        
+                    // Actualizar el src para el siguiente QR
+                    document.getElementById('qrImageRepresentanteLegal').src = '/ruta_para_generar_qr/representanteLegal/' + comparecenciaId;
+        
+                    // Y así sucesivamente para los demás participantes...
+                }
+            }).catch(error => {
+                // Manejar posibles errores aquí
+            });
+        }
+        
 
         document.getElementById('previewPdfButton').addEventListener('click', function() {
             var formData = new FormData(document.getElementById('comparecenciaForm'));
