@@ -63,9 +63,16 @@
                     
 
                     {% if extranjero.tiene_asignacion %}
-                    <a href="{% url 'crear_comparecencia_ajax' nup_id=extranjero.nup %}" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Crear Comparecencia">
-                        <i class="fas fa-file"></i>
-                    </a>
+                        {% if extranjero.comparecencia == False%}
+                        <a href="{% url 'crear_comparecencia_ajax' nup_id=extranjero.nup %}" class="btn btn-sm btn-icon1 tooltip-link btn-generado" data-title="Crear Comparecencia">
+                            <i class="fas fa-file"></i>
+                        </a>
+                        {% else  %}
+                        <a href="#" class="btn btn-sm btn-icon3 tooltip-link btn-generado" data-title="Ver Comparecencia">
+                            <i class="fas fa-file"></i>
+                        </a>
+                        {% endif %}
+                    
                 {% else %}
                     <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
                     href="{% url 'asignar-representante-comparecencia' extranjero.nup %}"
