@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from vigilancia.models import Extranjero
+from vigilancia.models import Extranjero, NoProceso
 from .models import DocumentosReferencia,CertificadoMedico, PerfilMedico, Consulta, constanciaNoLesiones, CertificadoMedicoEgreso, ReferenciaMedica, FirmaMedico, DocumentosExternos
 from catalogos.models import Estacion
 from .forms import certificadoMedicoForms, perfilMedicoforms, consultaForms, lesionesForm, certificadoMedicoEgresoForms, referenciaMedicaforms, DocumentosReferenciaForm, FirmaMedicoForm, DocumentosExternosForm
@@ -686,12 +686,19 @@ class listaDExternos(LoginRequiredMixin, ListView):
     template_name = 'servicioExterno/listaDocumentosExternos.html'
     model = DocumentosExternos
     context_object_name = 'documentos'
-    login_url = '/permisoDenegado/'
-
+    login_url = '/permisoDenegado/'   
     def get_queryset(self):
         extranjero_id = self.kwargs['pk']
-        # Filtrar los documentos externos por el ID del extranjero
-        queryset = DocumentosExternos.objects.filter(extranjero_id=extranjero_id)
+
+        # Obtener el último NUP asociado al extranjero
+        ultimo_nup = NoProceso.objects.filter(extranjero_id=extranjero_id).aggregate(Max('consecutivo'))['consecutivo__max']
+
+        # Filtrar los documentos externos por el ID del extranjero y el último NUP
+        queryset = DocumentosExternos.objects.filter(
+            extranjero_id=extranjero_id,
+            nup__consecutivo=ultimo_nup
+        )
+
         return queryset
 
     def get_context_data(self, **kwargs):

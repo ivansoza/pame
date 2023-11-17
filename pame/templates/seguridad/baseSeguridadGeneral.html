@@ -478,8 +478,8 @@
       </li>
         {% endif %}
         {% endif %}
-        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
-          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+        <li class="nav-item {% if navbar == 'alegatos' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'alegatos' %}active first-li{% endif %}">
             <i class="nav-icon fas fa-scale-balanced"></i>
             <p>
               Pruebas y Alegatos
@@ -488,7 +488,7 @@
           </a>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+              <a href="{% url "listaExtranjerosAlegatos" %}" class="nav-link {% if seccion == 'extranjerosa' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Lista de Extranjeros</p>
               </a>

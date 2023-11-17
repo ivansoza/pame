@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'traslados',
     'biometricos',
     'alojamiento',
+    'alegatos',
     'preventconcurrentlogins',
     'django_session_timeout',
     
