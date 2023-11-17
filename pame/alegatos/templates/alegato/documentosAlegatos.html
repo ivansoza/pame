@@ -11,7 +11,7 @@
 
 {% endblock link %}
 
-{% block titulo %}PAME | Referencia Médica{% endblock titulo %}
+{% block titulo %}PAME | Documentos Alegatos y Pruebas{% endblock titulo %}
 {% block dashboard %}
 <!-- FLECHA DE BACK  -->
 
@@ -24,7 +24,7 @@
 <br>
 <div class="titulo-general-container">
     <h1 class="titulo-general">
-        Documentos de referencia médica
+        Documentos alegatos y pruebas del extranjero       
         <span class="puesta-color"><strong>{{nombre}} {{ape1}} {% if ape2 %} {{ape2}} {% endif %} </strong></span>
     </h1>
 </div>
@@ -75,25 +75,7 @@
                         <!-- Otros campos de datos -->
                       </div>
                     </div>
-                    <div class="header">
-                        <h2>Datos Consulta </h2>
-                     </div>
-                     <div class="card-body">
-                        <div class="row">
-                          <div class="col">
-                              <span class="etiqueta">Consulta:</span>
-                              <span class="valor">{{ consulta.fechaHoraConsulta }}</span>
-                              <br>
-                              <span class="etiqueta">Especialidad Médica:</span>
-                              <span class="valor">{{ referencia_medica.especialista }}</span>
-                          </div>
-                          <div class="col">
-                            <span class="etiqueta">Justificación:</span>
-                            <span class="valor">{{ referencia_medica.justificacion }}</span>
-                            <br>
-                        </div>
-                        </div>
-                    </div>
+
                   </div>
                 </div>
                 <!-- Card con la foto del extranjero -->

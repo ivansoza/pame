@@ -13,6 +13,7 @@
 
     
     </title>
+    <script src="{% static 'js/jsvi/viewer.js' %}"></script>
 
 
   <!-- Google Font: Source Sans Pro -->
@@ -433,7 +434,7 @@
             <li class="nav-item">
               <a href="{% url "datosMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Perfil Medico</p>
+                <p>Perfil Médico</p>
               </a>
             </li>
           </ul>
@@ -442,7 +443,7 @@
             <li class="nav-item">
               <a href="{% url "perfilMedico" %}" class="nav-link {% if seccion == 'Medicointerno' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Perfil Medico</p>
+                <p>Perfil médico</p>
               </a>
             </li>
           </ul>
@@ -451,7 +452,7 @@
             <li class="nav-item">
               <a href="{% url "listExtranjeroEstacion" %}" class="nav-link {% if seccion == 'interno' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Certificados medicos</p>
+                <p>Certificados médicos</p>
               </a>
             </li>
           </ul>
@@ -459,7 +460,7 @@
             <li class="nav-item">
               <a href="{% url "listExtranjeroConsulta" %}" class="nav-link {% if seccion == 'consulta' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Consultas medicas</p>
+                <p>Consultas médicas</p>
               </a>
             </li>
           </ul>
@@ -469,15 +470,15 @@
           <li class="nav-item">
             <a href="{% url "listExtranjeroExterno" %}" class="nav-link {% if seccion == 'externo' %}active {% endif %}">
               <i class="far fa-circle nav-icon"></i>
-              <p>Carga de certificado medico</p>
+              <p>Carga de documentos médicos</p>
             </a>
           </li>
         </ul>
       </li>
         {% endif %}
         {% endif %}
-        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
-          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+        <li class="nav-item {% if navbar == 'alegatos' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'alegatos' %}active first-li{% endif %}">
             <i class="nav-icon fas fa-scale-balanced"></i>
             <p>
               Pruebas y Alegatos
@@ -486,7 +487,7 @@
           </a>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+              <a href="{% url "listaExtranjerosAlegatos" %}" class="nav-link {% if seccion == 'extranjerosa' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Lista de Extranjeros</p>
               </a>

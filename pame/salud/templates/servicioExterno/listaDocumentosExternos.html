@@ -6,8 +6,6 @@
     <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
         <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
     <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
-    <link rel="stylesheet" href="https://mozilla.github.io/pdf.js/web/viewer.css" />
-    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 
 {% endblock link %}
 
@@ -15,7 +13,7 @@
 {% block dashboard %}
 <!-- FLECHA DE BACK  -->
 
-<a class="btn btn-sm btn-icon1 " href="{% url 'listConsultas' extranjero.id%}">
+<a class="btn btn-sm btn-icon1 " href="{% url "listExtranjeroExterno" %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
@@ -75,25 +73,6 @@
                         <!-- Otros campos de datos -->
                       </div>
                     </div>
-                    <div class="header">
-                        <h2>Datos Consulta </h2>
-                     </div>
-                     <div class="card-body">
-                        <div class="row">
-                          <div class="col">
-                              <span class="etiqueta">Consulta:</span>
-                              <span class="valor">{{ consulta.fechaHoraConsulta }}</span>
-                              <br>
-                              <span class="etiqueta">Especialidad Médica:</span>
-                              <span class="valor">{{ referencia_medica.especialista }}</span>
-                          </div>
-                          <div class="col">
-                            <span class="etiqueta">Justificación:</span>
-                            <span class="valor">{{ referencia_medica.justificacion }}</span>
-                            <br>
-                        </div>
-                        </div>
-                    </div>
                   </div>
                 </div>
                 <!-- Card con la foto del extranjero -->
@@ -122,6 +101,9 @@
         <thead>
     
             <tr>
+                <th>Fecha y Hora</th>
+                <th>Justificación</th>
+
                 <th>Descripción</th>
                 <th>Documento</th>
             </tr>
@@ -129,11 +111,15 @@
         <tbody>
             {% for extranjero in documentos %}
             <tr>
+                <td>{{ extranjero.fechaHora }}</td>
+
+                <td>{{ extranjero.justificacion }}</td>
+
                 <td>{{ extranjero.descripcion }}</td>
                 <td>
                     <a href="{{ extranjero.documento.url }}" target="_blank" class="btn btn-custom2 btn-primary">Ver documento</a>
                     <a href="#" class="ver-documento btn btn-custom1 btn-secondary" data-url="{{ extranjero.documento.url }}">Ver en visualizador</a>
-                    
+
                 </td>
 
                            
@@ -142,6 +128,10 @@
     
             <tfoot>
                 <tr>
+                    <th>Fecha y Hora</th>
+
+                    <th>Justificación</th>
+
                     <th>Descripción</th>
                     <th>Documento</th>
                 </tr>
@@ -153,6 +143,7 @@
 <div id="pdfPreviewContainer" style="display:none;">
     <iframe id="pdfPreview" style="width:100%; height:700px;"></iframe>
 </div>
+
 {% endblock contenido %}
 {% block script %}
 <script>

@@ -1,6 +1,6 @@
 from django import forms
 from .models import CertificadoMedico, PerfilMedico, CertificadoMedicoEgreso, Consulta, constanciaNoLesiones, ReferenciaMedica, OPCIONES_BOOL, LESIONES_BOOL, REFERENCIA_BOOL
-from .models import DocumentosReferencia, FirmaMedico
+from .models import DocumentosReferencia, FirmaMedico, DocumentosExternos
 from .widgets import ClearableMultipleFilesInput
 from .fields import MultipleFilesField
 class certificadoMedicoForms(forms.ModelForm):
@@ -61,7 +61,7 @@ class MultipleFilesField(forms.FileField):
 class DocumentosReferenciaForm(forms.ModelForm):
     documento = MultipleFilesField(
     widget=ClearableMultipleFilesInput(
-        attrs={'multiple': True}), help_text='Puede subir más de un archivo')
+        attrs={'multiple': True}), )
     class Meta:
         model = DocumentosReferencia
         fields = ['descripcion','documento','deReferencia']
@@ -72,3 +72,8 @@ class FirmaMedicoForm(forms.ModelForm):
     class Meta:
         model = FirmaMedico
         fields = ['firma_imagen']
+
+class DocumentosExternosForm(forms.ModelForm):
+    class Meta:
+        model = DocumentosExternos
+        fields = ['extranjero','nup','deLaEstacion','justificacion','descripcion','documento']

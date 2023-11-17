@@ -51,7 +51,7 @@ class crearAutoridad(CreateView):
     model = Autoridades
     form_class = AutoridadesForms
     def get_success_url(self):
-        messages.success(self.request, 'Extranjero Creado.')
+        messages.success(self.request, 'Autoridad creada con éxito.')
         return reverse('listaAutoridad')
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
