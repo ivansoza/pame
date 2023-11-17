@@ -1,4 +1,5 @@
 from django.db import models
+from vigilancia.models import Extranjero,NoProceso  # Asegúrate de importar el modelo Extranjero correctamente
 
 
 
@@ -15,6 +16,8 @@ class Defensorias(models.Model):
     colonia = models.CharField(max_length=50,verbose_name="Colonia")
     municipio = models.CharField(max_length=50,verbose_name="Municipio")
     cp = models.CharField(max_length=10,verbose_name="CP")
+    
+
     def __str__(self):
         return (self.entidad)
     
@@ -26,3 +29,11 @@ class notificacionesAceptadas(models.Model):
     def __str__(self):
         return str(self.archivo)
 
+class Relacion(models.Model):
+    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
+    defensoria = models.ForeignKey(Defensorias, on_delete=models.CASCADE)
+    fechaHora = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+         return f"{self.extranjero}"

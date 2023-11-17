@@ -154,7 +154,8 @@ class Extranjero(models.Model):
     nacionalidad_Madre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad de la madre',blank=True,null=True,related_name='extranjeros_nacionalidad_madre')
     edad = models.IntegerField(verbose_name='Edad')    
     domicilio = models.CharField(verbose_name="Domicilio y/o Residencia ", max_length=150, blank=True, null=True, default="")
-    
+    def _str_(self):
+         return (self.nombreExtranjero)
     def save(self, *args, **kwargs):
     # Si el númeroExtranjero no está establecido, asigna un valor único basado en el ID del registro.
      if not self.numeroExtranjero:
@@ -166,8 +167,7 @@ class Extranjero(models.Model):
    
     class Meta:
         verbose_name_plural = "Extranjeros" 
-    def _str_(self):
-         return self.nombreExtranjero
+    
     
     def delete(self, *args, **kwargs):
         # Incrementar la capacidad de la estación al eliminar
