@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from multiselectfield import MultiSelectField 
+
 class Tipos(models.Model):
     tipo = models.CharField(max_length=50, null=False)
 
@@ -9,7 +10,7 @@ class Tipos(models.Model):
         return self.tipo
     
     class Meta:
-        verbose_name_plural = "Tipos"
+        verbose_name_plural = "Tipo de Estancia"
     
 class Estatus(models.Model):
     tipoEstatus = models.CharField(max_length=20, null=False)
@@ -60,17 +61,41 @@ class Estacion(models.Model):
     class Meta:
         verbose_name_plural = "Estaciones"
 
+class Oficina(models.Model):
+    identificador = models.CharField(max_length=25, null=False)
+    nombre = models.CharField(max_length=50, null=False, default='Oficina de Representación')
+    calle = models.CharField(max_length=50, null=False)
+    noext = models.CharField(max_length=5)
+    noint = models.CharField(max_length=5, blank=True)
+    colonia = models.CharField(max_length=50, null=False)
+    cp = models.IntegerField(null=False)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
+    municipio =models.CharField(max_length=50)
+    email = models.EmailField(max_length=254, null=False)
+    responsable = models.ForeignKey(Responsable, on_delete=models.CASCADE)
+    tipo = models.ForeignKey(Tipos, on_delete=models.CASCADE)
+    estatus = models.ForeignKey(Estatus, on_delete=models.CASCADE)
+    estaciones = models.ManyToManyField(Estacion)
+
+    def __str__(self) -> str:
+        return self.nombre
+    
+    class Meta: 
+        verbose_name_plural = 'Oficina de representacion'
+
 class Salida(models.Model):
     tipoSalida = models.CharField(max_length=50)
     def __str__(self) -> str:
         return self.tipoSalida
 
 class Estancia(models.Model):
-    tipoEstancia = models.CharField(max_length=50)
+    tipoEstancia = models.CharField(max_length=50, verbose_name='Modalidad de ingreso')
+
     def __str__(self) -> str:
         return self.tipoEstancia
     
-
+    class Meta:
+        verbose_name_plural = "Modalidad de ingreso"
 
 class Relacion(models.Model):
     tipoRelacion = models.CharField(max_length=50)

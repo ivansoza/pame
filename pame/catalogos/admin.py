@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Tipos, Estatus, Estado, Estacion, Responsable,Salida, Estancia, Relacion, AutoridadesActuantes, Autoridades, RepresentantesLegales
+from .models import Tipos, Estatus, Estado, Estacion, Responsable,Salida, Estancia, Relacion, AutoridadesActuantes, Autoridades, RepresentantesLegales, \
+    Oficina
+
 from vigilancia.models import NoProceso
 admin.site.register(Tipos)
 
@@ -7,7 +9,9 @@ admin.site.register(Estatus)
 
 admin.site.register(Estado)
 
-admin.site.register(Estacion)
+@admin.register(Estacion)
+class EstacionAdmin(admin.ModelAdmin):
+    list_display = ('identificador', 'nombre')
 
 admin.site.register(Responsable)
 admin.site.register(Salida)
@@ -31,4 +35,12 @@ class RepresentantesLegalesAdmin(admin.ModelAdmin):
             user_estacion = request.user.estacion
             return qs.filter(estacion=user_estacion)
         return qs
+
+@admin.register(Oficina)
+class OficinasAdmin(admin.ModelAdmin):
+    list_display = ('identificador', 'nombre', 'mostrar_estaciones')
+
+    def mostrar_estaciones(self, obj):
+        return ', '.join([estacion.nombre for estacion in obj.estaciones.all()])
     
+    mostrar_estaciones.short_description = 'Estaciones'
