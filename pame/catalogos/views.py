@@ -18,6 +18,7 @@ from vigilancia.forms import AsignacionRepresentanteForm
 from django.db.models import OuterRef, Subquery, Exists, Value
 from django.contrib.auth.decorators import login_required 
 from django.db.models.functions import Concat
+from django.utils.text import format_lazy
 
 def home(request):
     return render(request,"index.html")
@@ -254,6 +255,33 @@ class RepresentanteLegalCreateView(CreateView):
     form_class = RepresentanteLegalForm
     template_name = 'Representantes/representantes_legales_create.html'  # Nombre del template que debes crear
     success_url = reverse_lazy('representantes-legales-list')  # URL a la que redirigir después de un formulario válido
+
+    def form_valid(self, form):
+        form.instance.estacion = self.request.user.estancia  # Asigna la estación del usuario al representante legal
+        messages.success(self.request, 'Representante legal creado con éxito.')
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'legales'
+        return context
+    
+class RepresentanteLegalCreateViewComparecencia(CreateView):
+    model = RepresentantesLegales
+    form_class = RepresentanteLegalForm
+    template_name = 'Representantes/representantes_legales_create_comparecencia.html'  # Nombre del template que debes crear
+    success_url = format_lazy("{}?con_representante=no", reverse_lazy('lisExtranjerosComparecencia'))
 
     def form_valid(self, form):
         form.instance.estacion = self.request.user.estancia  # Asigna la estación del usuario al representante legal

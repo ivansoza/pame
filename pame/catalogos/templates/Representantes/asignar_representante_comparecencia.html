@@ -27,6 +27,12 @@
         <form  action="{% url 'asignar-representante-comparecencia' nup %}" method="POST">
             {% csrf_token %}
             <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 text-right mb-3">
+                        <a href="{% url 'representante-legal-create-comparecencia' %}" class="btn btn-custom3">Registrar nuevo Representante Legal</a>
+                    </div>
+                </div>
+    
           
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12">
