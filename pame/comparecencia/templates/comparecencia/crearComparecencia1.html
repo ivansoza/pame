@@ -56,6 +56,16 @@
         content: " *";
         color: red;
       }
+
+
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
+    }
       
 </style>
 
@@ -101,8 +111,13 @@
                                     <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
                                     <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
 
-                                    <div class="col-md-3">{{ form.lugarOrigen|as_crispy_field }}</div>
-                                    <div class="col-md-3">{{ form.domicilioEnMexico|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.lugarOrigen|as_crispy_field }}</div>
+                                    <div class="col-md-12">
+                                        {{ form.domicilioEnMexico|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-12" id="domicilioPaisMexicoDiv">
+                                        {{ form.domicilioPaisMexico|as_crispy_field }}
+                                    </div>
 
                                     <!-- Más campos generales -->
                                 </div>
@@ -178,15 +193,17 @@
 
     <div id="qrCode" style="display:none;" class="card p-3">
         <!-- Firma de la Autoridad Actuante -->
-        <div class="firma-section" id="autoridadActuanteSection">
-          <h4>Firma de la Autoridad Actuante</h4>
-          <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
-          <div id="mensajeFirmaAutoridadActuante"></div>
-          <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
-        </div>
+   
+
+        <div class="firma-section center-content" id="autoridadActuanteSection">
+            <h4>Firma de la Autoridad Actuante</h4>
+            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+            <div id="mensajeFirmaAutoridadActuante"></div>
+            <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+          </div>
         
         <!-- Firma del Representante Legal -->
-        <div class="firma-section" id="representanteLegalSection" style="display:none;">
+        <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
           <h4>Firma del Representante Legal</h4>
           <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
           <div id="mensajeFirmaRepresentanteLegal"></div>
@@ -194,7 +211,7 @@
         </div>
         
         <!-- Firma del Traductor -->
-        <div class="firma-section" id="traductorSection" style="display:none;">
+        <div class="firma-section center-content" id="traductorSection" style="display:none;">
           <h4>Firma del Traductor</h4>
           <img id="qrImageTraductor" src="" alt="Código QR Traductor">
           <div id="mensajeFirmaTraductor"></div>
@@ -202,7 +219,7 @@
         </div>
         
         <!-- Firma del Extranjero -->
-        <div class="firma-section" id="extranjeroSection" style="display:none;">
+        <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
           <h4>Firma del Extranjero</h4>
           <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
           <div id="mensajeFirmaExtranjero"></div>
@@ -210,7 +227,7 @@
         </div>
         
         <!-- Firma del Testigo 1 -->
-        <div class="firma-section" id="testigo1Section" style="display:none;">
+        <div class="firma-section center-content" id="testigo1Section" style="display:none;">
           <h4>Firma del Testigo 1</h4>
           <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
           <div id="mensajeFirmaTestigo1"></div>
@@ -218,7 +235,7 @@
         </div>
         
         <!-- Firma del Testigo 2 -->
-        <div class="firma-section" id="testigo2Section" style="display:none;">
+        <div class="firma-section center-content" id="testigo2Section" style="display:none;">
           <h4>Firma del Testigo 2</h4>
           <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
           <div id="mensajeFirmaTestigo2"></div>
@@ -227,11 +244,48 @@
       </div>
       
 
+      <div id="generatePDFSection" style="display:none;">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <!-- Ícono de FontAwesome para representar un PDF -->
+                <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+                <br>
+                <br>
+                <br>
+
+                <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+            </div>
+        </div>
+    </div>
+
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectDomicilioEnMexico = document.getElementById('id_domicilioEnMexico');
+            var inputDomicilioPaisMexico = document.getElementById('id_domicilioPaisMexico');
+            var divDomicilioPaisMexico = document.getElementById('domicilioPaisMexicoDiv');
+        
+            function toggleDomicilioPaisMexicoDisplay() {
+                if(selectDomicilioEnMexico.value === 'True') {
+                    divDomicilioPaisMexico.style.display = 'block';
+                    inputDomicilioPaisMexico.required = true; // Hacer el campo requerido
+                } else {
+                    divDomicilioPaisMexico.style.display = 'none';
+                    inputDomicilioPaisMexico.required = false; // Quitar el atributo requerido
+                }
+            }
+        
+            // Asegúrate de vincular la función con el evento 'change'
+            selectDomicilioEnMexico.addEventListener('change', toggleDomicilioPaisMexicoDisplay);
+        
+            // Ejecuta la función al cargar la página para establecer el estado correcto
+            toggleDomicilioPaisMexicoDisplay();
+        });
+        
+    </script>
     <script>
         $(document).ready(function() {
             var $tabs = $('#myTab .nav-link');
@@ -328,11 +382,17 @@
                         document.getElementById('comparecenciaForm').style.display = 'none';
                         document.getElementById('qrCode').style.display = 'block';
                         document.getElementById('autoridadActuanteSection').style.display = 'block';
-                        var comparecenciaId = data.comparecenciaId; // Asegúrate de que el backend envíe el ID de la comparecencia creada
-                        document.getElementById('qrImageAutoridadActuante').src = '/ruta_para_generar_qr/autoridadActuante/' + comparecenciaId;
-            
+                        var comparecenciaId = data.comparecencia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                        document.getElementById('qrImageAutoridadActuante').src = '/comparecencia/generar_qr/autoridadActuante/' + comparecenciaId;
+                        document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
+
+                        document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                        document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                        document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                        document.getElementById('qrImageTestigo2').src = '/comparecencia/generar_qr/testigo2/' + comparecenciaId;
+
                         // Comenzar a verificar si la firma ha sido capturada en un intervalo regular
-                        setInterval(function() { verificarFirmaAutoridadActuante(comparecenciaId); }, 3000);
+                        intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(comparecenciaId); }, 1000);
 
                     }
                 }).catch(error => {
@@ -346,27 +406,7 @@
                  });
             });
         });
-
-        function verificarFirmaAutoridadActuante(comparecenciaId) {
-            fetch('/ruta_para_verificar_firma/autoridadActuante/' + comparecenciaId)
-            .then(response => response.json())
-            .then(data => {
-                if(data.firmaCapturada) {
-                    // Proceder con el siguiente paso, por ejemplo, mostrar el QR del Representante Legal
-                    document.getElementById('autoridadActuanteSection').style.display = 'none';
-                    document.getElementById('representanteLegalSection').style.display = 'block';
         
-                    // Actualizar el src para el siguiente QR
-                    document.getElementById('qrImageRepresentanteLegal').src = '/ruta_para_generar_qr/representanteLegal/' + comparecenciaId;
-        
-                    // Y así sucesivamente para los demás participantes...
-                }
-            }).catch(error => {
-                // Manejar posibles errores aquí
-            });
-        }
-        
-
         document.getElementById('previewPdfButton').addEventListener('click', function() {
             var formData = new FormData(document.getElementById('comparecenciaForm'));
             
@@ -455,9 +495,99 @@
           }
         });
       });
+
+
+    function verificarFirmaAutoridadActuante(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/autoridadActuante/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+                document.getElementById('autoridadActuanteSection').style.display = 'none';
+                document.getElementById('representanteLegalSection').style.display = 'block';
+                document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
+                intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaRepresentanteLegal(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/representanteLegal/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloRepresentanteLegal); // Detener el intervalo
+
+                document.getElementById('representanteLegalSection').style.display = 'none';
+                document.getElementById('traductorSection').style.display = 'block';
+                document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                intervaloTraductor = setInterval(function() { verificarFirmaTraductor(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+
+    function verificarFirmaTraductor(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/traductor/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTraductor); // Detener el intervalo
+
+                document.getElementById('traductorSection').style.display = 'none';
+                document.getElementById('extranjeroSection').style.display = 'block';
+                document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaExtranjero(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/extranjero/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloExtranjero); // Detener el intervalo
+
+                document.getElementById('extranjeroSection').style.display = 'none';
+                document.getElementById('testigo1Section').style.display = 'block';
+                document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaTestigo1(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/testigo1/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+
+                clearInterval(intervaloTestigo1); // Detener el intervalo
+
+                document.getElementById('testigo1Section').style.display = 'none';
+                document.getElementById('testigo2Section').style.display = 'block';
+                document.getElementById('qrImageTestigo2').src = '/comparecencia/generar_qr/testigo2/' + comparecenciaId;
+                intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaTestigo2(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/testigo2/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTestigo2); // Detener el intervalo
+                document.getElementById('testigo2Section').style.display = 'none';
+                // Mostrar la sección para generar el PDF
+                document.getElementById('generatePDFSection').style.display = 'block';
+            }
+        });
+    }    
+    
     </script>
-    
-    
 </div>
 
 {% endblock contenido%}

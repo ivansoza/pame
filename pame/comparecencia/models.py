@@ -38,9 +38,10 @@ class Comparecencia(models.Model):
     escolaridad = models.CharField(max_length=50, blank=True, null=True, verbose_name="Escolaridad")
     ocupacion = models.CharField(max_length=50, blank=True, null=True, verbose_name="Ocupación")
     nacionalidad = models.CharField(max_length=50, blank=True, null=True, verbose_name="Nacionalidad")
-    DomicilioPais = models.CharField(max_length=50, blank=True, null=True, verbose_name="Domicilio en el País")
+    DomicilioPais = models.CharField(max_length=50, blank=True, null=True, verbose_name="Domicilio y/o Residencia de su País")
     lugarOrigen = models.CharField(max_length=50, blank=True, null=True, verbose_name="Lugar de Origen")
     domicilioEnMexico = models.BooleanField(verbose_name="¿Domicilio en Mexico?", blank=True, null=True)
+    domicilioPaisMexico = models.CharField(max_length=100, blank=True, null=True, verbose_name="Domicilio y/o Residencia en Mexico")
     nombrePadre = models.CharField(max_length=80, blank=True, null=True, verbose_name="Nombre(s) del Padre")
     nacionalidadPadre = models.CharField(max_length=50, blank=True, null=True, verbose_name="Nacionalidad del Padre")
     nombreMadre = models.CharField(max_length=80, blank=True, null=True, verbose_name="Nombre(s) de la Madre")
@@ -60,8 +61,8 @@ class Comparecencia(models.Model):
     grado_academico_testigo2=models.CharField(verbose_name='Grado Académico del Testigo 2', max_length=50, choices=GRADOS_ACADEMICOS)
 
 
-class FirmaCompareciencia(models.Model):
-    compareciencia = models.ForeignKey(Comparecencia, on_delete=models.CASCADE)
+class FirmaComparecencia(models.Model):
+    comparecencia = models.ForeignKey(Comparecencia, on_delete=models.CASCADE)
     firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 
     firmaRepresentanteLegal = models.ImageField(upload_to='files/', null=True, blank=True) 
     firmaTraductor= models.ImageField(upload_to='files/', null=True, blank=True) 

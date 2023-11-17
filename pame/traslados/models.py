@@ -59,6 +59,10 @@ class ExtranjeroTraslado(models.Model):
     statusTraslado = models.IntegerField(choices=OPCION_STATUS_TRASLADO_CHOICES, default=0, verbose_name='Status del Exranjero')
     delTraslado = models.ForeignKey(Traslado, on_delete=models.CASCADE, null=True, blank=True)
     delExtranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, null=True, blank=True)
+    motivo_rechazo = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return f'{self.delExtranjero.nombreExtranjero} - Status: {self.get_statusTraslado_display()}'
 
 
 class Alojamiento(models.Model):
