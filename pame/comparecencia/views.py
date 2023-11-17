@@ -387,6 +387,9 @@ def firma_testigo2(request, comparecencia_id):
             file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
 
             firma.firmaTestigo2.save(file_name, file, save=True)
+            no_proceso = comparecencia.nup
+            no_proceso.comparecencia = True
+            no_proceso.save()
             return redirect(reverse_lazy('firma_exitosa'))
     else:
         form = FirmaTestigo2Form()
