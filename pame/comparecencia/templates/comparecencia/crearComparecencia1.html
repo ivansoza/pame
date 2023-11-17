@@ -208,6 +208,8 @@
           <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
           <div id="mensajeFirmaRepresentanteLegal"></div>
           <button id="nextToTraductor">Siguiente: Traductor</button>
+          <button id="nextToExtranjero" style="display: none;">Siguiente: Extranjero</button>
+
         </div>
         
         <!-- Firma del Traductor -->
@@ -263,6 +265,30 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
+            var botonSiguienteTraductor = document.getElementById('nextToTraductor');
+            var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
+            
+            // Función para actualizar la visibilidad de los botones
+            function actualizarBotonesSiguiente() {
+                if (necesitaTraductorCheckbox.checked) {
+                    botonSiguienteTraductor.style.display = 'block';
+                    botonSiguienteExtranjero.style.display = 'none';
+                } else {
+                    botonSiguienteTraductor.style.display = 'none';
+                    botonSiguienteExtranjero.style.display = 'block';
+                }
+            }
+            
+            // Evento para manejar el cambio del checkbox
+            necesitaTraductorCheckbox.addEventListener('change', function() {
+                actualizarBotonesSiguiente();
+            });
+            
+            // Llamada inicial para configurar la visibilidad correcta al cargar la página
+            actualizarBotonesSiguiente();
+        });
         document.addEventListener('DOMContentLoaded', function() {
             var selectDomicilioEnMexico = document.getElementById('id_domicilioEnMexico');
             var inputDomicilioPaisMexico = document.getElementById('id_domicilioPaisMexico');
@@ -518,12 +544,22 @@
         .then(data => {
             if (data.status === 'success') {
                 clearInterval(intervaloRepresentanteLegal); // Detener el intervalo
-
+    
                 document.getElementById('representanteLegalSection').style.display = 'none';
-                document.getElementById('traductorSection').style.display = 'block';
-                document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
-                intervaloTraductor = setInterval(function() { verificarFirmaTraductor(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
-
+                
+                // Verificar si se necesita un traductor
+                var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
+                if (necesitaTraductorCheckbox && necesitaTraductorCheckbox.checked) {
+                    // Si se necesita traductor, mostrar la sección de firma del traductor
+                    document.getElementById('traductorSection').style.display = 'block';
+                    document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                    intervaloTraductor = setInterval(function() { verificarFirmaTraductor(comparecenciaId); }, 1000);
+                } else {
+                    // Si no se necesita traductor, pasar a la siguiente sección
+                    document.getElementById('extranjeroSection').style.display = 'block';
+                    document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                    intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(comparecenciaId); }, 1000);
+                }
             }
         });
     }
