@@ -38,39 +38,45 @@ class listExtranjerosComparecencia(ListView):
     context_object_name = "extranjeros"
 
     def get_queryset(self):
-        estacion_usuario = self.request.user.estancia
-        estado = self.request.GET.get('estado_filtrado', 'activo')
-        
-        representantes_asignados = AsignacionRepresentante.objects.filter(
-            no_proceso=OuterRef('pk')
-        )
-        
-        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-        if estado == 'activo':
-            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-        elif estado == 'inactivo':
-            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+            estacion_usuario = self.request.user.estancia
+            estado = self.request.GET.get('estado_filtrado', 'activo')
+            
+            representantes_asignados = AsignacionRepresentante.objects.filter(
+                no_proceso=OuterRef('pk')
+            )
+            
+            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+            if estado == 'activo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+            elif estado == 'inactivo':
+                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-        ultimo_no_proceso = NoProceso.objects.filter(
-            extranjero_id=OuterRef('pk')
-        ).order_by('-consecutivo')
-        
-        extranjeros_filtrados = extranjeros_filtrados.annotate(
-            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-        )
+            ultimo_no_proceso = NoProceso.objects.filter(
+                extranjero_id=OuterRef('pk')
+            ).order_by('-consecutivo')
+            
+            extranjeros_filtrados = extranjeros_filtrados.annotate(
+                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+            )
 
-        queryset = NoProceso.objects.filter(
-            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id],
-            extranjero__deLaEstacion=estacion_usuario
+            queryset = NoProceso.objects.filter(
+                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id],
+                extranjero__deLaEstacion=estacion_usuario
+            ).annotate(
+                tiene_asignacion=Exists(representantes_asignados)
+            )
 
-        ).annotate(
-            tiene_asignacion=Exists(representantes_asignados)
-        )
+            tiene_representante = self.request.GET.get('con_representante', None)
+            
+            if tiene_representante == 'no':
+                queryset = queryset.filter(tiene_asignacion=False)
+            elif tiene_representante == 'si':
+                queryset = queryset.filter(tiene_asignacion=True)
+            else:
+                queryset = queryset.filter(tiene_asignacion=True)
 
-        # Filtrar solo aquellos NoProceso que tienen un representante asignado
-        queryset = queryset.filter(tiene_asignacion=True)
+            return queryset
 
-        return queryset
     def get_context_data(self, **kwargs): 
             context = super().get_context_data(**kwargs)
             context['navbar'] = 'comparecencia'  # Cambia esto según la página activa

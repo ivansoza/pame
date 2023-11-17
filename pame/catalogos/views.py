@@ -384,6 +384,30 @@ class AsignacionRepresentanteCreateView(CreateView):
             return context
     
 
+class AsignacionRepresentanteComparecenciaCreateView(CreateView):
+    model = AsignacionRepresentante
+    form_class = AsignacionRepresentanteForm
+    template_name = 'Representantes/asignar_representante_comparecencia.html'
+    success_url = reverse_lazy('lisExtranjerosComparecencia')
+
+    def form_valid(self, form):
+            # Aquí capturas el `nup` desde la URL y lo asignas al objeto form.instance
+            nup = self.kwargs.get('nup')
+            form.instance.no_proceso = get_object_or_404(NoProceso, nup=nup)
+            form.instance.estacion = self.request.user.estancia
+            return super().form_valid(form)
+
+    def get_form_kwargs(self):
+            kwargs = super().get_form_kwargs()
+            kwargs['estacion_usuario'] = self.request.user.estancia
+            return kwargs
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+            nup = self.kwargs.get('nup')
+            context['nup'] = nup
+            return context
+    
+
 class AsignacionRepresentanteUpdateView(UpdateView):
     model = AsignacionRepresentante
     form_class = AsignacionRepresentanteForm
