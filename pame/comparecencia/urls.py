@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import homeComparecencia, listExtranjerosComparecencia, CrearComparecencia, CrearComparecenciaAjax, generar_qr_firmas, firma_autoridad_actuante, firma_representante_legal,firma_traductor, firma_extranjero, firma_testigo1, firma_testigo2, firmExistente, verificar_firma_autoridad_actuante,verificar_firma_extranjero,verificar_firma_representante_legal,verificar_firma_testigo1,verificar_firma_testigo2,verificar_firma_traductor
+from .views import homeComparecencia, listExtranjerosComparecencia, CrearComparecencia, CrearComparecenciaAjax, generar_qr_firmas, firma_autoridad_actuante, firma_representante_legal,firma_traductor, firma_extranjero, firma_testigo1, firma_testigo2, firmExistente, verificar_firma_autoridad_actuante,verificar_firma_extranjero,verificar_firma_representante_legal,verificar_firma_testigo1,verificar_firma_testigo2,verificar_firma_traductor, estado_firmas
 
 urlpatterns = [
     path('', homeComparecencia, name="homeComparecencia"),
@@ -22,6 +22,7 @@ urlpatterns = [
     path('verificar_firma/extranjero/<int:comparecencia_id>/', verificar_firma_extranjero, name='verificar_firma_extranjero'),
     path('verificar_firma/testigo1/<int:comparecencia_id>/', verificar_firma_testigo1, name='verificar_firma_testigo1'),
     path('verificar_firma/testigo2/<int:comparecencia_id>/', verificar_firma_testigo2, name='verificar_firma_testigo2'),
+    path('estado_firmas/<int:comparecencia_id>/', estado_firmas, name='estado_firmas'),
 
 
 ]

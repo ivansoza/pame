@@ -263,8 +263,57 @@
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
     </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
+        function verificarEstadoFirmas(comparecenciaId) {
+            fetch('/comparecencia/estado_firmas/' + comparecenciaId)
+            .then(response => response.json())
+            .then(data => {
+                actualizarInterfazFirmas(data);
+            })
+            .catch(error => {
+                console.error('Error al verificar el estado de las firmas:', error);
+            });
+        }
+        function actualizarInterfazFirmas(estadoFirmas) {
+            // Ocultar todas las secciones de firma al inicio
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('representanteLegalSection').style.display = 'none';
+            document.getElementById('traductorSection').style.display = 'none';
+            document.getElementById('extranjeroSection').style.display = 'none';
+            document.getElementById('testigo1Section').style.display = 'none';
+            document.getElementById('testigo2Section').style.display = 'none';
+        
+            // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
+            if (!estadoFirmas.firmaAutoridadActuante) {
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaRepresentanteLegal) {
+                document.getElementById('representanteLegalSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaTraductor) {
+                document.getElementById('traductorSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaExtranjero) {
+                document.getElementById('extranjeroSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaTestigo1) {
+                document.getElementById('testigo1Section').style.display = 'block';
+            } else if (!estadoFirmas.firmaTestigo2) {
+                document.getElementById('testigo2Section').style.display = 'block';
+            } else {
+                // Si todas las firmas están completas, puedes mostrar la sección final o realizar alguna otra acción
+                console.log('Todas las firmas han sido completadas');
+                // Aquí puedes colocar alguna lógica adicional para cuando todas las firmas estén completas
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var comparecenciaId = sessionStorage.getItem('comparecenciaId'); // O localStorage.getItem('comparecenciaId');
+            if (comparecenciaId) {
+                verificarEstadoFirmas(comparecenciaId);
+            }
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
             var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
             var botonSiguienteTraductor = document.getElementById('nextToTraductor');
