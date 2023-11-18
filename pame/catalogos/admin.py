@@ -9,9 +9,16 @@ admin.site.register(Estatus)
 
 admin.site.register(Estado)
 
-@admin.register(Estacion)
 class EstacionAdmin(admin.ModelAdmin):
-    list_display = ('identificador', 'nombre')
+    list_display = ('identificador', 'nombre', 'oficina_display')
+
+    def oficina_display(self, obj):
+        # Devuelve el nombre de la oficina a la que pertenece la estación
+        return f"{obj.oficina.nombre} {obj.estado.estado}" if obj.oficina else ''
+
+    oficina_display.short_description = 'Oficina y Estado'  # Define el encabezado en la interfaz de administración
+
+admin.site.register(Estacion, EstacionAdmin)
 
 admin.site.register(Responsable)
 admin.site.register(Salida)
@@ -38,9 +45,4 @@ class RepresentantesLegalesAdmin(admin.ModelAdmin):
 
 @admin.register(Oficina)
 class OficinasAdmin(admin.ModelAdmin):
-    list_display = ('identificador', 'nombre', 'mostrar_estaciones')
-
-    def mostrar_estaciones(self, obj):
-        return ', '.join([estacion.nombre for estacion in obj.estaciones.all()])
-    
-    mostrar_estaciones.short_description = 'Estaciones'
+    list_display = ('identificador', 'nombre', 'estado')

@@ -76,7 +76,6 @@ class cargar_tipos:
 
     def cargar_tipos(self):
         tipos = [
-            {'tipo': 'Oficina de representacion'},
             {'tipo': 'Estancia provisional'},
             {'tipo':'Estación migratoria'},
             {'tipo':'Extención de estancia'},
