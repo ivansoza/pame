@@ -15,7 +15,7 @@
 {% block dashboard %}
 <!-- FLECHA DE BACK  -->
 
-<a class="btn btn-sm btn-icon1 " href="{% url 'listConsultas' extranjero.id%}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listaExtranjerosAlegatos' %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
@@ -104,6 +104,7 @@
         <thead>
     
             <tr>
+                <th>Fecha</th>
                 <th>Descripción</th>
                 <th>Documento</th>
             </tr>
@@ -111,6 +112,8 @@
         <tbody>
             {% for extranjero in documentos %}
             <tr>
+                <td>{{ extranjero.fechaHora }}</td>
+
                 <td>{{ extranjero.descripcion }}</td>
                 <td>
                     <a href="{{ extranjero.documento.url }}" target="_blank" class="btn btn-custom2 btn-primary">Ver documento</a>
@@ -124,6 +127,7 @@
     
             <tfoot>
                 <tr>
+                    <th>Fecha</th>
                     <th>Descripción</th>
                     <th>Documento</th>
                 </tr>

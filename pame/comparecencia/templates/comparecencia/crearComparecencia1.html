@@ -268,6 +268,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
+     
+
         function verificarEstadoFirmas(comparecenciaId) {
             fetch('/comparecencia/estado_firmas/' + comparecenciaId)
             .then(response => response.json())
@@ -668,6 +670,8 @@
                 document.getElementById('testigo2Section').style.display = 'none';
                 // Mostrar la sección para generar el PDF
                 document.getElementById('generatePDFSection').style.display = 'block';
+                var generatePDFBtn = document.getElementById('generatePDFBtn');
+                generatePDFBtn.href = '/acuerdos/mostrar-comparecencia/' + comparecenciaId;
             }
         });
     }    

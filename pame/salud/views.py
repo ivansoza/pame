@@ -26,6 +26,8 @@ import base64
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from usuarios.models import Usuario
+from generales.mixins import HandleFileMixin
+
 # Create your views here.
  
 def homeMedico(request):
@@ -493,7 +495,7 @@ class referencia(LoginRequiredMixin, CreateView):
         context['navbar'] = 'medico'
         context['seccion'] = 'interno'    
         return context
-class documentosReferencia(LoginRequiredMixin, CreateView):
+class documentosReferencia(LoginRequiredMixin, CreateView, HandleFileMixin):
     template_name='servicioInterno/cargaDocumentos.html'
     model = DocumentosReferencia
     form_class = DocumentosReferenciaForm
@@ -517,7 +519,9 @@ class documentosReferencia(LoginRequiredMixin, CreateView):
             documento_referencia.deReferencia = referencia
             documento_referencia.save()
 
-        return super().form_valid(form)
+        instance = form.save()  
+        self.handle_file(instance,'documento')
+        return super(documentosReferencia, self).form_valid(form)
     def get_initial(self):
         initial = super().get_initial()
 
@@ -643,7 +647,7 @@ class FirmaCreateMedicoView(CreateView):
         context['pk'] = self.kwargs.get('pk')
         return context
     
-class documentosExternos(LoginRequiredMixin, CreateView):
+class documentosExternos(LoginRequiredMixin, CreateView, HandleFileMixin):
     template_name='servicioExterno/cargaDeCertificados.html'
     model = DocumentosExternos
     form_class = DocumentosExternosForm
@@ -681,6 +685,10 @@ class documentosExternos(LoginRequiredMixin, CreateView):
         context['seccion'] = 'externo'    
 
         return context
+    def form_valid(self, form):
+        instance = form.save()  
+        self.handle_file(instance,'documento')
+        return super(documentosExternos, self).form_valid(form)
     
 class listaDExternos(LoginRequiredMixin, ListView):
     template_name = 'servicioExterno/listaDocumentosExternos.html'

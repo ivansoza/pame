@@ -26,7 +26,7 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.views.decorators.csrf import csrf_exempt
-
+from acuerdos.views import guardar_comparecencia
 def homeComparecencia(request):
     return render(request,"homeComparecencia.html")
 
@@ -173,7 +173,7 @@ class CrearComparecenciaAjax(View):
 
         # Si ya se realizó una comparecencia, redirigir a una página de mensaje
         if no_proceso.comparecencia:
-            return render(request, 'pagina_mensaje_comparecencia_completa.html', {'nup_id': nup_id})
+            return render(request, 'comparecencia/comparecencia_registrada.html', {'nup_id': nup_id})
 
         extranjero = no_proceso.extranjero
         asignacion_rep_legal = AsignacionRepresentante.objects.filter(no_proceso=no_proceso).first()
@@ -385,42 +385,45 @@ def firma_testigo1(request, comparecencia_id):
 
     return render(request, 'firma/firma_testigo1.html', {'form': form, 'comparecencia_id': comparecencia_id})
 
-
 def firma_testigo2(request, comparecencia_id):
     comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
     firma, created = FirmaComparecencia.objects.get_or_create(comparecencia=comparecencia)
+
     if firma.firmaTestigo2:
-        return redirect('firma_existente_acuerdos')
+        return redirect('firma_existente_acuerdos')  # Asumiendo que tienes una URL para este caso
 
     if request.method == 'POST':
         form = FirmaTestigo2Form(request.POST, request.FILES)
         if form.is_valid():
-            # Código para procesar y guardar la firma...
+            # Código para procesar y guardar la firma
             data_url = form.cleaned_data['firmaTestigo2']
             format, imgstr = data_url.split(';base64,') 
-            ext = format.split('/')[-1]  # Ejemplo: "png"
+            ext = format.split('/')[-1]
             data = ContentFile(base64.b64decode(imgstr))
-            
+
             file_name = f"firmaTestigo2_{comparecencia_id}.{ext}"
             file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
 
             firma.firmaTestigo2.save(file_name, file, save=True)
+
             # Actualizar el estado de la comparecencia en NoProceso
             no_proceso = comparecencia.nup
             no_proceso.comparecencia = True
             no_proceso.save()
+
+            # Llamar a la función para procesar la comparecencia
+            guardar_comparecencia(request, comparecencia_id)
 
             # Limpiar la sesión para eliminar el ID de la comparecencia
             if 'comparecencia_id' in request.session:
                 del request.session['comparecencia_id']
 
             # Redireccionar a la página de firma exitosa
-            return redirect(reverse_lazy('firma_exitosa'))
+            return redirect(reverse_lazy('firma_exitosa'))  # Asegúrate de que esta URL esté definida
     else:
         form = FirmaTestigo2Form()
 
     return render(request, 'firma/firma_testigo2.html', {'form': form, 'comparecencia_id': comparecencia_id})
-
 
 class firmExistente(TemplateView):
     template_name='firma/firma_exixtente.html'
