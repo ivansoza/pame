@@ -173,7 +173,7 @@ class CrearComparecenciaAjax(View):
 
         # Si ya se realizó una comparecencia, redirigir a una página de mensaje
         if no_proceso.comparecencia:
-            return render(request, 'pagina_mensaje_comparecencia_completa.html', {'nup_id': nup_id})
+            return render(request, 'comparecencia/comparecencia_registrada.html', {'nup_id': nup_id})
 
         extranjero = no_proceso.extranjero
         asignacion_rep_legal = AsignacionRepresentante.objects.filter(no_proceso=no_proceso).first()
