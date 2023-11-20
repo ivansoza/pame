@@ -8,7 +8,8 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
     certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
-    continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, guardar_comparecencia, mostrar_comparecencia_pdf
+    continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, \
+    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
@@ -49,6 +50,9 @@ urlpatterns = [
     path('conclusion-procedimiento', conclusionProcedimiento_pdf, name='conclusionPDF'),
     path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
+    path('notificacion-consulado', notificacionConsulado_pdf, name='consuladoPDF'),
+    path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
+    path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
