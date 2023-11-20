@@ -1,6 +1,7 @@
 from typing import Any
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from comparecencia.models import Comparecencia
 from vigilancia.models import Extranjero
 from django.http import HttpResponse, HttpResponseNotFound
 from weasyprint import HTML
@@ -43,6 +44,7 @@ from django.core.files.storage import default_storage
 import io
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores
 from salud.models import Consulta
+
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -1193,7 +1195,45 @@ def constancia_llamada(request, extranjero_id=None):
             response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
             return response
 
-# Lista de acuerdo inicio 
+
+def guardar_comparecencia(request, comparecencia_id):
+    try:
+        comparecencia = Comparecencia.objects.get(id=comparecencia_id)
+    except Comparecencia.DoesNotExist:
+        return HttpResponseNotFound("No se encontró Comparecencia con el ID proporcionado.")
+
+    context = {
+        'nup': comparecencia.nup.nup,
+    }
+
+    template = get_template('documentos/comparecencia_guardar.html')
+    html_content = template.render(context)
+    html = HTML(string=html_content)
+    pdf_bytes = html.write_pdf()
+
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Acuerdos Inicio")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Comparecencia", delaClasificacion=clasificacion)
+    usuario_actual = request.user
+    estacion = usuario_actual.estancia
+    nombre_completo = usuario_actual.get_full_name()
+
+    nombre_pdf = f"Comparecencia_{comparecencia_id}.pdf"
+    repo = Repositorio(
+        nup=comparecencia.nup,
+        delTipo=tipo_doc,
+        delaEstacion=estacion,
+        delResponsable=nombre_completo,
+    )
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
+
+    # Si se ha proporcionado un request, devolver una respuesta HTTP
+    if request:
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
+        return response
+    
+
 class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
     model = NoProceso
