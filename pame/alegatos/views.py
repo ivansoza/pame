@@ -32,6 +32,21 @@ class listaExtranjertoAlegatos(LoginRequiredMixin, ListView):
         return queryset
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        for extranjero in context['extranjeros']:
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+            tiene_alegato = False
+
+            if ultimo_nup:
+                prueba = Alegatos.objects.filter(nup=ultimo_nup).first()
+                if prueba:
+                    tiene_alegato = True
+                    fecha =prueba.fechaHora
+                    estacion = prueba.lugarEmision
+                    context['fecha'] = fecha  # Cambia esto según la página activa
+                    context['estacion'] = estacion  # Cambia esto según la página activa
+
+
+            extranjero.tiene_alegato = tiene_alegato
         context['navbar'] = 'alegatos'  # Cambia esto según la página activa
         context['seccion'] = 'extranjerosa'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre

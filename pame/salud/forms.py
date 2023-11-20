@@ -3,6 +3,24 @@ from .models import CertificadoMedico, PerfilMedico, CertificadoMedicoEgreso, Co
 from .models import DocumentosReferencia, FirmaMedico, DocumentosExternos
 from .widgets import ClearableMultipleFilesInput
 from .fields import MultipleFilesField
+
+class ValidacionArchivos(forms.Form):
+    def clean_archivo(self, field_name):
+        archivo = self.cleaned_data.get(field_name)
+        if archivo:
+            # Validar por tipo de archivo
+            nombre_archivo = archivo.name
+            extension = nombre_archivo.split('.')[-1].lower()
+            if extension not in ['jpg', 'jpeg', 'png', 'pdf']:
+                raise forms.ValidationError(f'El documento debe ser JPG, PNG o PDF.')
+            
+            # Validar por tamaño de archivo, menor a 1 MB
+            max_tamano = 1024 * 1024 # 1 MB en bytes
+            if archivo.size > max_tamano:
+                raise forms.ValidationError(f'El documento debe ser menor de 1 MB.')
+            
+        return archivo
+    
 class certificadoMedicoForms(forms.ModelForm):
     tratamiento = forms.ChoiceField(
         label='¿El extranjero requiere tratamiento?',
@@ -58,7 +76,9 @@ class MultipleFilesField(forms.FileField):
         return value
 
 
-class DocumentosReferenciaForm(forms.ModelForm):
+class DocumentosReferenciaForm(forms.ModelForm, ValidacionArchivos):
+    def clean_oficioPuesta(self):
+        return self.clean_archivo('documento')
     documento = MultipleFilesField(
     widget=ClearableMultipleFilesInput(
         attrs={'multiple': True}), )
@@ -73,7 +93,9 @@ class FirmaMedicoForm(forms.ModelForm):
         model = FirmaMedico
         fields = ['firma_imagen']
 
-class DocumentosExternosForm(forms.ModelForm):
+class DocumentosExternosForm(forms.ModelForm, ValidacionArchivos):
+    def clean_oficioPuesta(self):
+        return self.clean_archivo('documento')
     class Meta:
         model = DocumentosExternos
         fields = ['extranjero','nup','deLaEstacion','justificacion','descripcion','documento']
