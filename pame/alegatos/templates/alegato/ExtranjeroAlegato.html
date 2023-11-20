@@ -52,18 +52,23 @@
           <td>{{ extranjero.nacionalidad }}</td>
           
           <td>
-              <!-- INICIO DE ICONO DE LLAMADA  -->
-              <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="{% url 'crearAlegato' extranjero.id %}"
-                    data-title="Crear alegato" onclick="abrir_modal_eliminar(this.href); return false;">
-                    <i class="fas fa-gavel"></i>              
-                </a>
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegato" extranjero.id%}" data-title="Subir documentos">
-                    <i class="fa-solid fa-file-medical"></i>                
-                </a>
-              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegatos" extranjero.id %}" data-title="Documentos">
-                  <i class="fa-solid fa-folder-plus"></i>                
+             {% if extranjero.tiene_alegato %}
+              <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert5(); return false;" data-title="Certificado Medico Egreso">
+                <i class="fas fa-gavel"></i>              
+              </a>            
+              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegato" extranjero.id%}" data-title="Subir documentos">
+                <i class="fa-solid fa-file-medical"></i>                
+            </a>
+          <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegatos" extranjero.id %}" data-title="Documentos">
+              <i class="fa-solid fa-folder-plus"></i>                
+          </a>
+             {% else %}
+              <a class="btn btn-sm btn-icon1 tooltip-link"
+                href="{% url 'crearAlegato' extranjero.id %}"
+                data-title="Crear alegato" onclick="abrir_modal_eliminar(this.href); return false;">
+                <i class="fas fa-gavel"></i>              
               </a>
+             {% endif %}
              
           </td>
                      
@@ -102,6 +107,22 @@
             title: '¡Falta Fotografía y/o Firma!',
             text: 'Necesitas capturar datos biométricos del extranjero antes de realizar la acción.',
             confirmButtonColor: '#2A4B41'
+        });
+    }
+    function showBioAlert5() {
+        Swal.fire({
+            title: 'Detalles',
+            html: `
+                <strong>Fecha y Hora:</strong> {{fecha}} {{ extranjero.fecha_aceptacion|time:"g:i A" }}
+                <br>
+
+
+                <strong>Estación:</strong> {{ estacion }}
+            `,
+            icon: 'success',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#2A4B41'
+
         });
     }
 </script>
