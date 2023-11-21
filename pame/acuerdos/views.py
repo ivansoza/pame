@@ -1325,23 +1325,39 @@ def guardar_comparecencia(request, comparecencia_id):
         comparecencia = Comparecencia.objects.get(id=comparecencia_id)
         firma = FirmaComparecencia.objects.filter(comparecencia=comparecencia).first()
 
-        context = {'comparecencia': comparecencia, 'firma': firma}
+        # Preparar el contexto para el template
+        firma_urls = {
+                'firma_autoridad_actuante_url': request.build_absolute_uri(firma.firmaAutoridadActuante.url) if firma and firma.firmaAutoridadActuante else None,
+                'firma_representante_legal_url': request.build_absolute_uri(firma.firmaRepresentanteLegal.url) if firma and firma.firmaRepresentanteLegal else None,
+                'firma_traductor_url': request.build_absolute_uri(firma.firmaTraductor.url) if firma and firma.firmaTraductor else None,
+                'firma_extranjero_url': request.build_absolute_uri(firma.firmaExtranjero.url) if firma and firma.firmaExtranjero else None,
+                'firma_testigo1_url': request.build_absolute_uri(firma.firmaTestigo1.url) if firma and firma.firmaTestigo1 else None,
+                'firma_testigo2_url': request.build_absolute_uri(firma.firmaTestigo2.url) if firma and firma.firmaTestigo2 else None,        
+        }
+        context = {
+            'comparecencia': comparecencia,
+            'firma': firma,
+            **firma_urls,
+        }
 
+        # Renderizar el PDF
         template = get_template('documentos/comparecencia_guardar.html')
         html_content = template.render(context)
         html = HTML(string=html_content)
         pdf_bytes = html.write_pdf()
 
+        # Guardar el PDF en el modelo Repositorio
         clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Acuerdos Inicio")
         tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Comparecencia", delaClasificacion=clasificacion)
-
         usuario_actual = request.user
         estacion = usuario_actual.estancia
         nombre_completo = usuario_actual.get_full_name()
-
         nombre_pdf = f"Comparecencia_{comparecencia_id}.pdf"
+        no_proceso = comparecencia.nup
+        no_proceso.comparecencia = True
+        no_proceso.save()
         repo = Repositorio(
-            nup=comparecencia.nup,
+            nup=no_proceso,
             delTipo=tipo_doc,
             delaEstacion=estacion,
             delResponsable=nombre_completo,
@@ -1349,24 +1365,19 @@ def guardar_comparecencia(request, comparecencia_id):
         repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
         repo.save()
 
-        # URL donde el PDF estará disponible (ajustar según tu configuración)
-        pdf_url = "/ruta/al/pdf/" + nombre_pdf
-
+        if 'comparecencia_id' in request.session:
+            del request.session['comparecencia_id']
         # Devolver respuesta JSON de éxito
         return JsonResponse({
             'status': 'success',
-            'message': 'Comparecencia guardada con éxito.',
-            'pdf_url': pdf_url
+            'message': 'Comparecencia guardada con éxito y disponible para visualización.'
         })
 
     except Comparecencia.DoesNotExist:
-        # Devolver respuesta JSON si la comparecencia no existe
         return JsonResponse({'status': 'error', 'message': 'Comparecencia no encontrada.'}, status=404)
 
     except Exception as e:
-        # Devolver respuesta JSON genérica para otros errores
         return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)
-
 class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
     model = NoProceso
