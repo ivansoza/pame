@@ -9,7 +9,8 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
     certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
     continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, \
-    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, resolucionDeportacion_pdf, guardar_comparecencia, mostrar_comparecencia_pdf
+    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, resolucionDeportacion_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, resolucionLibre_pdf, \
+    acResolucionLibre_pdf, resolucionRegularizacion_pdf
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
@@ -54,6 +55,9 @@ urlpatterns = [
     path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
     path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
     path('resolucion-deportacion', resolucionDeportacion_pdf, name='deportacionPDF'),
+    path('resolucion-libretransito', resolucionLibre_pdf, name='librePDF'),
+    path('acuerdo-libretransito', acResolucionLibre_pdf, name='aclibrePDF'),
+    path('resolucion-regularizacion', resolucionRegularizacion_pdf, name='regularizacionPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
