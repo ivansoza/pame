@@ -246,7 +246,7 @@
       </div>
       
 
-      <div id="generatePDFSection" style="display:none;">
+      <div id="generatePDFSection" style="display:none;" class="card p-3">
         <div class="row">
             <div class="col-md-12 text-center">
                 <!-- Ícono de FontAwesome para representar un PDF -->
@@ -255,11 +255,22 @@
                 <br>
                 <br>
 
-                <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+                <a href="{% url "lisExtranjerosComparecencia" %}"  id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
             </div>
         </div>
     </div>
-
+    <div id="postSaveOptions" style="display:none;" class="card p-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
+                <br><br><br>
+                <a href="{% url "lisExtranjerosComparecencia" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
+                <a href="/ruta/a/verComparecencia" class="btn btn-secondary">Ver Comparecencia</a>
+            </div>
+        </div>
+    </div>
+    
+    
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
     </div>
@@ -668,13 +679,77 @@
             if (data.status === 'success') {
                 clearInterval(intervaloTestigo2); // Detener el intervalo
                 document.getElementById('testigo2Section').style.display = 'none';
+                document.getElementById('qrCode').style.display = 'none';
+    
                 // Mostrar la sección para generar el PDF
                 document.getElementById('generatePDFSection').style.display = 'block';
                 var generatePDFBtn = document.getElementById('generatePDFBtn');
-                generatePDFBtn.href = '/acuerdos/mostrar-comparecencia/' + comparecenciaId;
+                generatePDFBtn.setAttribute('data-comparecencia-id', comparecenciaId);
             }
+        })
+        .catch(error => {
+            // Manejar errores en la solicitud fetch
+            alert('Error al realizar la solicitud: ' + error.message);
         });
-    }    
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var generatePDFBtn = document.getElementById('generatePDFBtn');
+        generatePDFBtn.onclick = () => {
+            var comparecenciaId = generatePDFBtn.getAttribute('data-comparecencia-id');
+            if (comparecenciaId) {
+                guardarComparecencia(comparecenciaId);
+            }
+        };
+    });
+    
+    function guardarComparecencia(comparecenciaId) {
+        var generatePDFBtn = document.getElementById('generatePDFBtn');
+        generatePDFBtn.disabled = true; 
+        fetch('/acuerdos/comparecencia/guardar/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Configurar y mostrar Toast de SweetAlert
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+    
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Comparecencia guardada con éxito. PDF disponible para descargar.'
+                });
+    
+                // Después del Toast, mostrar la nueva sección con botones
+                setTimeout(() => {
+                    document.getElementById('generatePDFSection').style.display = 'none';
+                    document.getElementById('postSaveOptions').style.display = 'block';
+                }, 1000); // Coincide con el tiempo del Toast
+            } else {
+                // Mostrar SweetAlert de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Error al guardar la comparecencia: ' + data.message,
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        })
+        .catch(error => {
+            // Manejar errores en la solicitud fetch con SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error al realizar la solicitud: ' + error.message,
+                confirmButtonText: 'Cerrar'
+            });
+        });
+    }
+    
+    
     
     </script>
 </div>

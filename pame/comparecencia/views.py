@@ -406,14 +406,7 @@ def firma_testigo2(request, comparecencia_id):
 
             firma.firmaTestigo2.save(file_name, file, save=True)
 
-            # Actualizar el estado de la comparecencia en NoProceso
-            no_proceso = comparecencia.nup
-            no_proceso.comparecencia = True
-            no_proceso.save()
-
-            # Llamar a la función para procesar la comparecencia
-            guardar_comparecencia(request, comparecencia_id)
-
+       
             # Limpiar la sesión para eliminar el ID de la comparecencia
             if 'comparecencia_id' in request.session:
                 del request.session['comparecencia_id']

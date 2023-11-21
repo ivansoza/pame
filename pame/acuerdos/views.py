@@ -1213,46 +1213,7 @@ def constancia_llamada(request, extranjero_id=None):
             return response
 
 
-def guardar_comparecencia(request, comparecencia_id):
-    try:
-        comparecencia = Comparecencia.objects.get(id=comparecencia_id)
-    except Comparecencia.DoesNotExist:
-        return HttpResponseNotFound("No se encontró Comparecencia con el ID proporcionado.")
 
-    # Obtener la instancia de FirmaComparecencia asociada
-    firma = FirmaComparecencia.objects.filter(comparecencia=comparecencia).first()
-
-    context = {
-        'comparecencia': comparecencia,
-        'firma': firma,
-    }
-
-    template = get_template('documentos/comparecencia_guardar.html')
-    html_content = template.render(context)
-    html = HTML(string=html_content)
-    pdf_bytes = html.write_pdf()
-
-    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Acuerdos Inicio")
-    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Comparecencia", delaClasificacion=clasificacion)
-    usuario_actual = request.user
-    estacion = usuario_actual.estancia
-    nombre_completo = usuario_actual.get_full_name()
-
-    nombre_pdf = f"Comparecencia_{comparecencia_id}.pdf"
-    repo = Repositorio(
-        nup=comparecencia.nup,
-        delTipo=tipo_doc,
-        delaEstacion=estacion,
-        delResponsable=nombre_completo,
-    )
-    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
-    repo.save()
-
-    # Si se ha proporcionado un request, devolver una respuesta HTTP
-    if request:
-        response = HttpResponse(pdf_bytes, content_type='application/pdf')
-        response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
-        return response
     
 def mostrar_comparecencia_pdf(request, comparecencia_id):
     try:
@@ -1358,46 +1319,54 @@ def comparecencia_pdf(request):
         pass
 
 
+
 def guardar_comparecencia(request, comparecencia_id):
     try:
         comparecencia = Comparecencia.objects.get(id=comparecencia_id)
+        firma = FirmaComparecencia.objects.filter(comparecencia=comparecencia).first()
+
+        context = {'comparecencia': comparecencia, 'firma': firma}
+
+        template = get_template('documentos/comparecencia_guardar.html')
+        html_content = template.render(context)
+        html = HTML(string=html_content)
+        pdf_bytes = html.write_pdf()
+
+        clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Acuerdos Inicio")
+        tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Comparecencia", delaClasificacion=clasificacion)
+
+        usuario_actual = request.user
+        estacion = usuario_actual.estancia
+        nombre_completo = usuario_actual.get_full_name()
+
+        nombre_pdf = f"Comparecencia_{comparecencia_id}.pdf"
+        repo = Repositorio(
+            nup=comparecencia.nup,
+            delTipo=tipo_doc,
+            delaEstacion=estacion,
+            delResponsable=nombre_completo,
+        )
+        repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+        repo.save()
+
+        # URL donde el PDF estará disponible (ajustar según tu configuración)
+        pdf_url = "/ruta/al/pdf/" + nombre_pdf
+
+        # Devolver respuesta JSON de éxito
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Comparecencia guardada con éxito.',
+            'pdf_url': pdf_url
+        })
+
     except Comparecencia.DoesNotExist:
-        return HttpResponseNotFound("No se encontró Comparecencia con el ID proporcionado.")
+        # Devolver respuesta JSON si la comparecencia no existe
+        return JsonResponse({'status': 'error', 'message': 'Comparecencia no encontrada.'}, status=404)
 
-    # Obtener la instancia de FirmaComparecencia asociada
-    firma = FirmaComparecencia.objects.filter(comparecencia=comparecencia).first()
+    except Exception as e:
+        # Devolver respuesta JSON genérica para otros errores
+        return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)
 
-    context = {
-        'comparecencia': comparecencia,
-        'firma': firma,
-    }
-
-    template = get_template('documentos/comparecencia_guardar.html')
-    html_content = template.render(context)
-    html = HTML(string=html_content)
-    pdf_bytes = html.write_pdf()
-
-    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Acuerdos Inicio")
-    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Comparecencia", delaClasificacion=clasificacion)
-    usuario_actual = request.user
-    estacion = usuario_actual.estancia
-    nombre_completo = usuario_actual.get_full_name()
-
-    nombre_pdf = f"Comparecencia_{comparecencia_id}.pdf"
-    repo = Repositorio(
-        nup=comparecencia.nup,
-        delTipo=tipo_doc,
-        delaEstacion=estacion,
-        delResponsable=nombre_completo,
-    )
-    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
-    repo.save()
-
-    # Si se ha proporcionado un request, devolver una respuesta HTTP
-    if request:
-        response = HttpResponse(pdf_bytes, content_type='application/pdf')
-        response['Content-Disposition'] = f'inline; filename="{nombre_pdf}"'
-        return response
 class lisExtranjerosInicio(LoginRequiredMixin,ListView):
 
     model = NoProceso
