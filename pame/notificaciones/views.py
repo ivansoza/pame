@@ -1,5 +1,6 @@
+from datetime import timezone
 from typing import Any
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from vigilancia.models import Extranjero
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,7 +9,7 @@ from .models import Defensorias,Relacion
 from .forms import NotificacionesAceptadasForm,modalnotificicacionForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
-from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
@@ -73,6 +74,39 @@ class defensoria(LoginRequiredMixin, ListView):
         context['nombre_estacion'] = self.request.user.estancia.nombre
         return context
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
+        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+        context['nombre_estacion'] = self.request.user.estancia.nombre
+
+        ahora = timezone.now() # Hora Actual
+
+        for extranjero in context['extranjeros']:
+            # Obtener el último NoProceso asociado a este extranjero
+            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
+
+            if ultimo_nup:
+                # Obtener la hora de registro del último NoProceso
+                hora_registro_nup = ultimo_nup.horaRegistroNup
+
+                tiempo_transcurrido = ahora - hora_registro_nup
+                horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
+                horas_transcurridas = int(horas_transcurridas)
+                minutos_transcurridos = int(minutos_transcurridos * 60)
+
+                # Limitar a un máximo de 36 horas
+                if horas_transcurridas > 36:
+                    horas_transcurridas = 36
+                    minutos_transcurridos = 0
+
+                extranjero.horas_transcurridas = horas_transcurridas
+                extranjero.minutos_transcurridos = minutos_transcurridos
+            else:
+                extranjero.horas_transcurridas = 0
+                extranjero.minutos_transcurridos = 0
+        return context
+     
 
 
 # views.py
@@ -109,10 +143,11 @@ from .models import notificacionesAceptadas, Defensorias
 from .forms import NotificacionesAceptadasForm
 from django.contrib import messages
 
-class SubirArchivo(CreateView):
+class SubirArchivo(LoginRequiredMixin,CreateView):
     template_name = 'modal.html'
     form_class = NotificacionesAceptadasForm
     model = notificacionesAceptadas
+    login_url = '/permisoDenegado/'
     def get_success_url(self):
         messages.success(self.request, 'Archivo subido exitosamente')
 

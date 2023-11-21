@@ -66,6 +66,8 @@
         align-items: center; /* Centra los elementos flexibles horizontalmente */
         justify-content: center; /* Centra los elementos flexibles verticalmente */
     }
+
+    
       
 </style>
 
@@ -271,8 +273,9 @@
     </div>
     
     
-    <div id="pdfPreviewContainer" style="display:none;">
-        <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
+    <div id="pdfPreviewContainer" style="display:none; position: relative;">
+        <button id="closePdfPreviewButton" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: #873542; color: white;">Cerrar</button>
+        <iframe id="pdfPreview" style="width:100%; height:600px; margin-top: 60px;"></iframe>
     </div>
 
 
@@ -454,6 +457,8 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('comparecenciaForm').addEventListener('submit', function(e) {
+                document.getElementById('pdfPreviewContainer').style.display = 'none';
+
                 e.preventDefault(); // Previene el envío normal del formulario
                 var formData = new FormData(this); // Recoge los datos del formulario
                 
@@ -494,30 +499,39 @@
                  });
             });
         });
-        
-        document.getElementById('previewPdfButton').addEventListener('click', function() {
-            var formData = new FormData(document.getElementById('comparecenciaForm'));
-            
-            // Enviar solicitud para generar vista previa del PDF
-            fetch('/acuerdos/ver-comparecencia/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                credentials: 'same-origin'
-            }).then(response => response.blob())
-              .then(blob => {
-                  // Mostrar el PDF en el iframe
-                  var pdfUrl = URL.createObjectURL(blob);
-                  document.getElementById('pdfPreview').src = pdfUrl;
-                  document.getElementById('pdfPreviewContainer').style.display = 'block';
-              })
-              .catch(error => {
-                  // Manejo de errores
-                  console.error('Error al generar la vista previa del PDF:', error);
-              });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener para abrir la vista previa del PDF
+            document.getElementById('previewPdfButton').addEventListener('click', function() {
+                var formData = new FormData(document.getElementById('comparecenciaForm'));
+                
+                // Enviar solicitud para generar vista previa del PDF
+                fetch('/acuerdos/ver-comparecencia/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    credentials: 'same-origin'
+                }).then(response => response.blob())
+                  .then(blob => {
+                      // Mostrar el PDF en el iframe
+                      var pdfUrl = URL.createObjectURL(blob);
+                      document.getElementById('pdfPreview').src = pdfUrl;
+                      document.getElementById('pdfPreviewContainer').style.display = 'block';
+                  })
+                  .catch(error => {
+                      // Manejo de errores
+                      console.error('Error al generar la vista previa del PDF:', error);
+                  });
+            });
+    
+            // Event listener para el botón de cerrar
+            document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
+                document.getElementById('pdfPreviewContainer').style.display = 'none';
+                document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
+            });
         });
+       
         document.addEventListener('DOMContentLoaded', function() {
             var checkbox = document.getElementById('necesitaTraductor');
             var campoTraductor = document.getElementById('campoTraductor');
