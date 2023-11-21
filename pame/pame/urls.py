@@ -42,5 +42,7 @@ urlpatterns = [
     path("traslados/", include("traslados.urls")),
     path("biometricos/", include("biometricos.urls")),
     path("notificaciones/", include("notificaciones.urls")),
+    path("alegatos/", include("alegatos.urls")),
+
 
 ]

@@ -56,6 +56,16 @@
         content: " *";
         color: red;
       }
+
+
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
+    }
       
 </style>
 
@@ -66,136 +76,304 @@
             <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
         </h1>
     </div>
+    <div id="comparecenciaFormContainer">
+                <form method="post" id="comparecenciaForm">
+                    {% csrf_token %}
+                    <div class="card p-3">
+                        <!-- Navegación por pestañas -->
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        
+                            <li class="nav-item">
+                                <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Información Personal</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="familiar-tab" data-toggle="tab" href="#familiar" role="tab" aria-controls="familiar" aria-selected="false">Información Familiar</a>
+                            </li>
 
-    <form method="post" id="comparecenciaForm">
-        {% csrf_token %}
-        <div class="card p-3">
-            <!-- Navegación por pestañas -->
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              
-                <li class="nav-item">
-                    <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal" role="tab" aria-controls="personal" aria-selected="false">Información Personal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="familiar-tab" data-toggle="tab" href="#familiar" role="tab" aria-controls="familiar" aria-selected="false">Información Familiar</a>
-                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles de la Comparecencia</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">General</a>
+                            </li>
+                          <!-- Más pestañas si son necesarias -->
+                        </ul>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="detalles-tab" data-toggle="tab" href="#detalles" role="tab" aria-controls="detalles" aria-selected="false">Detalles de la Comparecencia</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="false">General</a>
-                </li>
+                        <!-- Contenido de las pestañas -->
+                        <div class="tab-content" id="myTabContent">
+                              <!-- Sección Personal -->
+                            <div class="tab-pane fade show active " id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                                <!-- Campos generales -->
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.estadoCivil|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.escolaridad|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
 
+                                    <div class="col-md-6">{{ form.lugarOrigen|as_crispy_field }}</div>
+                                    <div class="col-md-12">
+                                        {{ form.domicilioEnMexico|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-12" id="domicilioPaisMexicoDiv">
+                                        {{ form.domicilioPaisMexico|as_crispy_field }}
+                                    </div>
 
-                
-                <!-- Más pestañas si son necesarias -->
-            </ul>
-
-            <!-- Contenido de las pestañas -->
-            <div class="tab-content" id="myTabContent">
-
-
-                     <!-- Sección Personal -->
-                 <div class="tab-pane fade show active " id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                    <!-- Campos generales -->
-                    <div class="row">
-                        <div class="col-md-6">{{ form.estadoCivil|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.escolaridad|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nacionalidad|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.DomicilioPais|as_crispy_field }}</div>
-
-                        <div class="col-md-3">{{ form.lugarOrigen|as_crispy_field }}</div>
-                        <div class="col-md-3">{{ form.domicilioEnMexico|as_crispy_field }}</div>
-
-                        <!-- Más campos generales -->
-                    </div>
-                </div>
-
-                <!-- Sección Familiar -->
-                <div class="tab-pane fade" id="familiar" role="tabpanel" aria-labelledby="familiar-tab">
-                    <!-- Campos familiares -->
-                    <div class="row">
-                        <div class="col-md-6">{{ form.nombrePadre|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nacionalidadPadre|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nombreMadre|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.nacionalidadMadre|as_crispy_field }}</div>
-                        <!-- Más campos familiares -->
-                    </div>
-                </div>
-
-                 <!-- Sección Detalles -->
-                 <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
-                    <!-- Campos de detalles -->
-                    <div class="row">
-                        <div class="col-md-6">{{ form.fechaIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.lugarIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-6">{{ form.formaIngresoMexico|as_crispy_field }}</div>
-                        <div class="col-md-3">{{ form.solicitaRefugio|as_crispy_field }}</div>
-                        <div class="col-md-3">{{ form.victimaDelito|as_crispy_field }}</div>
-
-                        <div class="col-md-12">{{ form.declaracion|as_crispy_field }}</div>
-                    </div>
-                </div>
-
-                <!-- Sección General -->
-             <!-- Sección General -->
-                <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
-                    <!-- Campos generales -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.autoridadActuante|as_crispy_field }}
-                            {{ form.representanteLegal|as_crispy_field }}
-                            <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
-                            <label for="necesitaTraductor">¿Necesita Traductor?</label>
-                            <!-- Campo de traductor, inicialmente oculto -->
-                            <div id="campoTraductor" style="display:none;">
-                                {{ form.traductor|as_crispy_field }}
+                                    <!-- Más campos generales -->
+                                </div>
                             </div>
+
+                            <!-- Sección Familiar -->
+                            <div class="tab-pane fade" id="familiar" role="tabpanel" aria-labelledby="familiar-tab">
+                                <!-- Campos familiares -->
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.nombrePadre|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nacionalidadPadre|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nombreMadre|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.nacionalidadMadre|as_crispy_field }}</div>
+                                    <!-- Más campos familiares -->
+                                </div>
+                            </div>
+
+                            <!-- Sección Detalles -->
+                            <div class="tab-pane fade" id="detalles" role="tabpanel" aria-labelledby="detalles-tab">
+                                <!-- Campos de detalles -->
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.fechaIngresoMexico|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.lugarIngresoMexico|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.formaIngresoMexico|as_crispy_field }}</div>
+                                    <div class="col-md-3">{{ form.solicitaRefugio|as_crispy_field }}</div>
+                                    <div class="col-md-3">{{ form.victimaDelito|as_crispy_field }}</div>
+
+                                    <div class="col-md-12">{{ form.declaracion|as_crispy_field }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Sección General -->
+                        <!-- Sección General -->
+                            <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
+                                <!-- Campos generales -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.autoridadActuante|as_crispy_field }}
+                                        {{ form.representanteLegal|as_crispy_field }}
+                                        <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
+                                        <label for="necesitaTraductor">¿Necesita Traductor?</label>
+                                        <!-- Campo de traductor, inicialmente oculto -->
+                                        <div id="campoTraductor" style="display:none;">
+                                            {{ form.traductor|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.testigo1|as_crispy_field }}
+                                        {{ form.grado_academico_testigo1|as_crispy_field }}
+                                        {{ form.testigo2|as_crispy_field }}
+                                        {{ form.grado_academico_testigo2|as_crispy_field }}
+                                        <input type="hidden" name="nup" value="{{ nup_id }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Más secciones de contenido según sea necesario -->
                         </div>
-                        <div class="col-md-6">
-                            {{ form.testigo1|as_crispy_field }}
-                            {{ form.grado_academico_testigo1|as_crispy_field }}
-                            {{ form.testigo2|as_crispy_field }}
-                            {{ form.grado_academico_testigo2|as_crispy_field }}
-                            <input type="hidden" name="nup" value="{{ nup_id }}">
 
-
+                        <div id="finalOptions" style="display:none; text-align:center;">
+                            <button type="button" class="btn btn-info" id="previewButton">Previsualizar</button>
+                            <button type="button" class="btn btn-success" id="createAgreementButton">Crear acuerdo de comparecencia</button>
+                        </div>
+                        <!-- Botones de navegación -->
+                        <div class="navigation-buttons">
+                            <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
+                            <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
+                            <button type="button" class="btn btn-info" id="previewPdfButton">Previsualizar PDF</button>
+                            <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
                         </div>
                     </div>
-                </div>
+                </form>
+    </div>
 
-                
-               
+    <div id="qrCode" style="display:none;" class="card p-3">
+        <!-- Firma de la Autoridad Actuante -->
+   
 
-               
+        <div class="firma-section center-content" id="autoridadActuanteSection">
+            <h4>Firma de la Autoridad Actuante</h4>
+            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+            <div id="mensajeFirmaAutoridadActuante"></div>
+            <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+          </div>
+        
+        <!-- Firma del Representante Legal -->
+        <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
+          <h4>Firma del Representante Legal</h4>
+          <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
+          <div id="mensajeFirmaRepresentanteLegal"></div>
+          <button id="nextToTraductor">Siguiente: Traductor</button>
+          <button id="nextToExtranjero" style="display: none;">Siguiente: Extranjero</button>
 
-                <!-- Más secciones de contenido según sea necesario -->
-            </div>
+        </div>
+        
+        <!-- Firma del Traductor -->
+        <div class="firma-section center-content" id="traductorSection" style="display:none;">
+          <h4>Firma del Traductor</h4>
+          <img id="qrImageTraductor" src="" alt="Código QR Traductor">
+          <div id="mensajeFirmaTraductor"></div>
+          <button id="nextToExtranjero">Siguiente: Extranjero</button>
+        </div>
+        
+        <!-- Firma del Extranjero -->
+        <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
+          <h4>Firma del Extranjero</h4>
+          <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
+          <div id="mensajeFirmaExtranjero"></div>
+          <button id="nextToTestigo1">Siguiente: Testigo 1</button>
+        </div>
+        
+        <!-- Firma del Testigo 1 -->
+        <div class="firma-section center-content" id="testigo1Section" style="display:none;">
+          <h4>Firma del Testigo 1</h4>
+          <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
+          <div id="mensajeFirmaTestigo1"></div>
+          <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+        </div>
+        
+        <!-- Firma del Testigo 2 -->
+        <div class="firma-section center-content" id="testigo2Section" style="display:none;">
+          <h4>Firma del Testigo 2</h4>
+          <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
+          <div id="mensajeFirmaTestigo2"></div>
+          <button id="finalizarFirmas">Finalizar Firmas</button>
+        </div>
+      </div>
+      
 
-            <div id="finalOptions" style="display:none; text-align:center;">
-                <button type="button" class="btn btn-info" id="previewButton">Previsualizar</button>
-                <button type="button" class="btn btn-success" id="createAgreementButton">Crear acuerdo de comparecencia</button>
-            </div>
+      <div id="generatePDFSection" style="display:none;" class="card p-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <!-- Ícono de FontAwesome para representar un PDF -->
+                <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+                <br>
+                <br>
+                <br>
 
-            <!-- Botones de navegación -->
-            <div class="navigation-buttons">
-                <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
-                <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
-                <button type="button" class="btn btn-info" id="previewPdfButton">Previsualizar PDF</button>
-
-                <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
-
+                <a href="#"  id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
             </div>
         </div>
-    </form>
-
+    </div>
+    <div id="postSaveOptions" style="display:none;" class="card p-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
+                <br><br><br>
+                <a href="{% url "lisExtranjerosComparecencia" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
+                <a href="/ruta/a/verComparecencia" class="btn btn-secondary">Ver Comparecencia</a>
+            </div>
+        </div>
+    </div>
+    
+    
     <div id="pdfPreviewContainer" style="display:none;">
         <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+     
+
+        function verificarEstadoFirmas(comparecenciaId) {
+            fetch('/comparecencia/estado_firmas/' + comparecenciaId)
+            .then(response => response.json())
+            .then(data => {
+                actualizarInterfazFirmas(data);
+            })
+            .catch(error => {
+                console.error('Error al verificar el estado de las firmas:', error);
+            });
+        }
+        function actualizarInterfazFirmas(estadoFirmas) {
+            // Ocultar todas las secciones de firma al inicio
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('representanteLegalSection').style.display = 'none';
+            document.getElementById('traductorSection').style.display = 'none';
+            document.getElementById('extranjeroSection').style.display = 'none';
+            document.getElementById('testigo1Section').style.display = 'none';
+            document.getElementById('testigo2Section').style.display = 'none';
+        
+            // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
+            if (!estadoFirmas.firmaAutoridadActuante) {
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaRepresentanteLegal) {
+                document.getElementById('representanteLegalSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaTraductor) {
+                document.getElementById('traductorSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaExtranjero) {
+                document.getElementById('extranjeroSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaTestigo1) {
+                document.getElementById('testigo1Section').style.display = 'block';
+            } else if (!estadoFirmas.firmaTestigo2) {
+                document.getElementById('testigo2Section').style.display = 'block';
+            } else {
+                // Si todas las firmas están completas, puedes mostrar la sección final o realizar alguna otra acción
+                console.log('Todas las firmas han sido completadas');
+                // Aquí puedes colocar alguna lógica adicional para cuando todas las firmas estén completas
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var comparecenciaId = sessionStorage.getItem('comparecenciaId'); // O localStorage.getItem('comparecenciaId');
+            if (comparecenciaId) {
+                verificarEstadoFirmas(comparecenciaId);
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
+            var botonSiguienteTraductor = document.getElementById('nextToTraductor');
+            var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
+            
+            // Función para actualizar la visibilidad de los botones
+            function actualizarBotonesSiguiente() {
+                if (necesitaTraductorCheckbox.checked) {
+                    botonSiguienteTraductor.style.display = 'block';
+                    botonSiguienteExtranjero.style.display = 'none';
+                } else {
+                    botonSiguienteTraductor.style.display = 'none';
+                    botonSiguienteExtranjero.style.display = 'block';
+                }
+            }
+            
+            // Evento para manejar el cambio del checkbox
+            necesitaTraductorCheckbox.addEventListener('change', function() {
+                actualizarBotonesSiguiente();
+            });
+            
+            // Llamada inicial para configurar la visibilidad correcta al cargar la página
+            actualizarBotonesSiguiente();
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectDomicilioEnMexico = document.getElementById('id_domicilioEnMexico');
+            var inputDomicilioPaisMexico = document.getElementById('id_domicilioPaisMexico');
+            var divDomicilioPaisMexico = document.getElementById('domicilioPaisMexicoDiv');
+        
+            function toggleDomicilioPaisMexicoDisplay() {
+                if(selectDomicilioEnMexico.value === 'True') {
+                    divDomicilioPaisMexico.style.display = 'block';
+                    inputDomicilioPaisMexico.required = true; // Hacer el campo requerido
+                } else {
+                    divDomicilioPaisMexico.style.display = 'none';
+                    inputDomicilioPaisMexico.required = false; // Quitar el atributo requerido
+                }
+            }
+        
+            // Asegúrate de vincular la función con el evento 'change'
+            selectDomicilioEnMexico.addEventListener('change', toggleDomicilioPaisMexicoDisplay);
+        
+            // Ejecuta la función al cargar la página para establecer el estado correcto
+            toggleDomicilioPaisMexicoDisplay();
+        });
+        
+    </script>
     <script>
         $(document).ready(function() {
             var $tabs = $('#myTab .nav-link');
@@ -289,21 +467,21 @@
                 }).then(response => response.json())
                   .then(data => {
                     if(data.success) {
-                        // Aquí manejas una respuesta exitosa, como mostrar un mensaje de éxito
-                        Swal.fire({
-                            title: '¡Éxito!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'Aceptar'
-                        });
-                        } else {
-                        // Aquí manejas los errores, como mostrarlos al usuario
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Se han encontrado errores en el formulario.',
-                            icon: 'error',
-                            confirmButtonText: 'Aceptar'
-                        });
+                        document.getElementById('comparecenciaForm').style.display = 'none';
+                        document.getElementById('qrCode').style.display = 'block';
+                        document.getElementById('autoridadActuanteSection').style.display = 'block';
+                        var comparecenciaId = data.comparecencia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                        document.getElementById('qrImageAutoridadActuante').src = '/comparecencia/generar_qr/autoridadActuante/' + comparecenciaId;
+                        document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
+
+                        document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                        document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                        document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                        document.getElementById('qrImageTestigo2').src = '/comparecencia/generar_qr/testigo2/' + comparecenciaId;
+
+                        // Comenzar a verificar si la firma ha sido capturada en un intervalo regular
+                        intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(comparecenciaId); }, 1000);
+
                     }
                 }).catch(error => {
                     // Aquí manejas cualquier error en la solicitud de red
@@ -316,7 +494,7 @@
                  });
             });
         });
-
+        
         document.getElementById('previewPdfButton').addEventListener('click', function() {
             var formData = new FormData(document.getElementById('comparecenciaForm'));
             
@@ -405,9 +583,175 @@
           }
         });
       });
+
+
+    function verificarFirmaAutoridadActuante(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/autoridadActuante/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+                document.getElementById('autoridadActuanteSection').style.display = 'none';
+                document.getElementById('representanteLegalSection').style.display = 'block';
+                document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
+                intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaRepresentanteLegal(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/representanteLegal/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloRepresentanteLegal); // Detener el intervalo
+    
+                document.getElementById('representanteLegalSection').style.display = 'none';
+                
+                // Verificar si se necesita un traductor
+                var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
+                if (necesitaTraductorCheckbox && necesitaTraductorCheckbox.checked) {
+                    // Si se necesita traductor, mostrar la sección de firma del traductor
+                    document.getElementById('traductorSection').style.display = 'block';
+                    document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
+                    intervaloTraductor = setInterval(function() { verificarFirmaTraductor(comparecenciaId); }, 1000);
+                } else {
+                    // Si no se necesita traductor, pasar a la siguiente sección
+                    document.getElementById('extranjeroSection').style.display = 'block';
+                    document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                    intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(comparecenciaId); }, 1000);
+                }
+            }
+        });
+    }
+
+    function verificarFirmaTraductor(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/traductor/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTraductor); // Detener el intervalo
+
+                document.getElementById('traductorSection').style.display = 'none';
+                document.getElementById('extranjeroSection').style.display = 'block';
+                document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
+                intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaExtranjero(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/extranjero/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloExtranjero); // Detener el intervalo
+
+                document.getElementById('extranjeroSection').style.display = 'none';
+                document.getElementById('testigo1Section').style.display = 'block';
+                document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaTestigo1(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/testigo1/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+
+                clearInterval(intervaloTestigo1); // Detener el intervalo
+
+                document.getElementById('testigo1Section').style.display = 'none';
+                document.getElementById('testigo2Section').style.display = 'block';
+                document.getElementById('qrImageTestigo2').src = '/comparecencia/generar_qr/testigo2/' + comparecenciaId;
+                intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(comparecenciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }
+    function verificarFirmaTestigo2(comparecenciaId) {
+        fetch('/comparecencia/verificar_firma/testigo2/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTestigo2); // Detener el intervalo
+                document.getElementById('testigo2Section').style.display = 'none';
+                document.getElementById('qrCode').style.display = 'none';
+    
+                // Mostrar la sección para generar el PDF
+                document.getElementById('generatePDFSection').style.display = 'block';
+                var generatePDFBtn = document.getElementById('generatePDFBtn');
+                generatePDFBtn.setAttribute('data-comparecencia-id', comparecenciaId);
+            }
+        })
+        .catch(error => {
+            // Manejar errores en la solicitud fetch
+            alert('Error al realizar la solicitud: ' + error.message);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var generatePDFBtn = document.getElementById('generatePDFBtn');
+        generatePDFBtn.onclick = () => {
+            var comparecenciaId = generatePDFBtn.getAttribute('data-comparecencia-id');
+            if (comparecenciaId) {
+                guardarComparecencia(comparecenciaId);
+            }
+        };
+    });
+    
+    function guardarComparecencia(comparecenciaId) {
+        var generatePDFBtn = document.getElementById('generatePDFBtn');
+        generatePDFBtn.disabled = true; 
+        fetch('/acuerdos/comparecencia/guardar/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Configurar y mostrar Toast de SweetAlert
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+    
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Comparecencia guardada con éxito. PDF disponible para descargar.'
+                });
+    
+                // Después del Toast, mostrar la nueva sección con botones
+                setTimeout(() => {
+                    document.getElementById('generatePDFSection').style.display = 'none';
+                    document.getElementById('postSaveOptions').style.display = 'block';
+                }, 1000); // Coincide con el tiempo del Toast
+            } else {
+                // Mostrar SweetAlert de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Error al guardar la comparecencia: ' + data.message,
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        })
+        .catch(error => {
+            // Manejar errores en la solicitud fetch con SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error al realizar la solicitud: ' + error.message,
+                confirmButtonText: 'Cerrar'
+            });
+        });
+    }
+    
+    
+    
     </script>
-    
-    
 </div>
 
 {% endblock contenido%}

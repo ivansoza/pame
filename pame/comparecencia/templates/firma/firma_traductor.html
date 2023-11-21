@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <style>
+        #contenedor-principal {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        #lienzo-container {
+            max-width: 60%; /* Cambiado a 70% para ocupar el 70% del ancho */
+            border: 2px solid #000;
+            background-color: white;
+            flex-grow: 1; /* Permite que este div ocupe el espacio restante horizontalmente */
+            padding: 10px; /* Agrega un poco de espacio alrededor del lienzo */
+        }
+        
+        #botones-container {
+            width: 30%;
+            margin: 0 10px;
+        }
+        .bty{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+        .image{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .boton {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #873542;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .boton:hover {
+            background-color: #20302B;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Captura de firma</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="firmaTraductor" id="inputFirmaImagen">
+
+        <!-- Modal -->
+
+        <div id="contenedor-principal">
+            <div id="lienzo-container">
+                {% comment %} {{nombre}} {% endcomment %}
+                <canvas id="pizarra" style="width: 100%; height: 200px;"></canvas>
+            </div>
+            <div id="botones-container">
+                <button class="boton" id="limpiar">Limpiar</button>
+                <button class="boton" id="guardar">Guardar</button>
+                <img class="image" src="{% static 'img/gh.jpg' %}" style="width: 160px; margin-top: 10px; margin-left: 30px;" class="logo-img">
+            </div>
+        </div>
+
+    </form>
+
+
+
+    <script>
+        // JavaScript para abrir y cerrar el modal
+        document.getElementById('open-modal').addEventListener('click', function () {
+            document.getElementById('signatureModal').style.display = 'flex';
+        });
+
+        document.getElementById('close-modal').addEventListener('click', function () {
+            document.getElementById('signatureModal').style.display = 'none';
+        });
+
+        // Centrar verticalmente el modal
+        window.addEventListener('resize', function () {
+            var modal = document.querySelector('.modal-content');
+            modal.style.top = (window.innerHeight - modal.clientHeight) / 2 + 'px';
+        });
+    </script>
+    <script>
+        // JavaScript existente para la firma
+        //======================================================================
+        // VARIABLES
+        //======================================================================
+        let miCanvas = document.querySelector('#pizarra');
+        let lineas = [];
+        let correccionX = 0;
+        let correccionY = 0;
+        let pintarLinea = false;
+        // Marca el nuevo punto
+        let nuevaPosicionX = 0;
+        let nuevaPosicionY = 0;
+
+        miCanvas.width = miCanvas.offsetWidth; // Ajusta el ancho del canvas al contenedor
+        miCanvas.height = miCanvas.offsetHeight; // Ajusta la altura del canvas al contenedor
+
+        //======================================================================
+        // FUNCIONES
+        //======================================================================
+
+        /**
+         * Función para obtener las coordenadas del evento
+         */
+        function obtenerCoordenadas(event) {
+            if (event.changedTouches) {
+                return {
+                    x: event.changedTouches[0].clientX - miCanvas.getBoundingClientRect().left,
+                    y: event.changedTouches[0].clientY - miCanvas.getBoundingClientRect().top
+                };
+            } else {
+                return {
+                    x: event.clientX - miCanvas.getBoundingClientRect().left,
+                    y: event.clientY - miCanvas.getBoundingClientRect().top
+                };
+            }
+        }
+
+        /**
+         * Funcion que empieza a dibujar la linea
+         */
+        function empezarDibujo(event) {
+            pintarLinea = true;
+            lineas.push([]);
+            const coordenadas = obtenerCoordenadas(event);
+            nuevaPosicionX = coordenadas.x;
+            nuevaPosicionY = coordenadas.y;
+        };
+
+        /**
+         * Funcion que guarda la posicion de la nueva línea
+         */
+        function guardarLinea() {
+            lineas[lineas.length - 1].push({
+                x: nuevaPosicionX,
+                y: nuevaPosicionY
+            });
+        }
+
+        /**
+         * Funcion dibuja la linea
+         */
+        function dibujarLinea(event) {
+            event.preventDefault();
+            if (pintarLinea) {
+                const ctx = miCanvas.getContext('2d');
+                const coordenadas = obtenerCoordenadas(event);
+                const posX = coordenadas.x;
+                const posY = coordenadas.y;
+
+                ctx.lineJoin = ctx.lineCap = 'round';
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'black';
+                ctx.beginPath();
+                ctx.moveTo(nuevaPosicionX, nuevaPosicionY);
+                ctx.lineTo(posX, posY);
+                ctx.stroke();
+
+                nuevaPosicionX = posX;
+                nuevaPosicionY = posY;
+
+                guardarLinea();
+            }
+        }
+
+        /**
+         * Funcion que deja de dibujar la linea
+         */
+        function pararDibujar() {
+            pintarLinea = false;
+            guardarLinea();
+        }
+
+        /**
+         * Función para limpiar el canvas
+         */
+        function limpiar() {
+            const ctx = miCanvas.getContext('2d');
+            ctx.clearRect(0, 0, miCanvas.width, miCanvas.height);
+            lineas = [];
+        }
+
+        /**
+         * Función para guardar el contenido del canvas como imagen y descargarla
+         */
+        function guardar() {
+            const imgDataUrl = miCanvas.toDataURL("image/png");
+            document.getElementById('inputFirmaImagen').value = imgDataUrl;
+            document.forms[0].submit();
+        }
+
+        //======================================================================
+        // EVENTOS
+        //======================================================================
+
+        miCanvas.addEventListener('mousedown', empezarDibujo, false);
+        miCanvas.addEventListener('mousemove', dibujarLinea, false);
+        miCanvas.addEventListener('mouseup', pararDibujar, false);
+
+        miCanvas.addEventListener('touchstart', empezarDibujo, false);
+        miCanvas.addEventListener('touchmove', dibujarLinea, false);
+
+        document.getElementById('limpiar').addEventListener('click', limpiar, false);
+        document.getElementById('guardar').addEventListener('click', guardar, false);
+    </script>
+</body>
+
+</html>

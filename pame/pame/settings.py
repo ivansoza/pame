@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
+X_FRAME_OPTIONS = 'ALLOWALL'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Application definition
 
@@ -65,6 +67,7 @@ INSTALLED_APPS = [
     'traslados',
     'biometricos',
     'alojamiento',
+    'alegatos',
     'preventconcurrentlogins',
     'django_session_timeout',
     'notificaciones',
@@ -120,6 +123,9 @@ TEMPLATES = [
                 'traslados.context_processors.total_notificaciones',
                 'traslados.context_processors.user_groups',
                 'salud.context_processors.perfil_medico',
+                'acuerdos.context_processors.base_url',
+
+                
 
             ],
         },
@@ -131,8 +137,7 @@ WSGI_APPLICATION = 'pame.wsgi.application'
 
 "URL DE LA PAGINA PARA RENDERIZAR LOS QR "
 # BASE_URL = "https://sfti.tech/"
-BASE_URL = "http://127.0.0.1:8082/"
-
+BASE_URL = "http://127.0.0.1:8000/"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

@@ -18,6 +18,7 @@ from vigilancia.forms import AsignacionRepresentanteForm
 from django.db.models import OuterRef, Subquery, Exists, Value
 from django.contrib.auth.decorators import login_required 
 from django.db.models.functions import Concat
+from django.utils.text import format_lazy
 
 def home(request):
     return render(request,"index.html")
@@ -50,7 +51,7 @@ class crearAutoridad(CreateView):
     model = Autoridades
     form_class = AutoridadesForms
     def get_success_url(self):
-        messages.success(self.request, 'Extranjero Creado.')
+        messages.success(self.request, 'Autoridad creada con éxito.')
         return reverse('listaAutoridad')
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -276,6 +277,33 @@ class RepresentanteLegalCreateView(CreateView):
         context['seccion1'] = 'legales'
         return context
     
+class RepresentanteLegalCreateViewComparecencia(CreateView):
+    model = RepresentantesLegales
+    form_class = RepresentanteLegalForm
+    template_name = 'Representantes/representantes_legales_create_comparecencia.html'  # Nombre del template que debes crear
+    success_url = format_lazy("{}?con_representante=no", reverse_lazy('lisExtranjerosComparecencia'))
+
+    def form_valid(self, form):
+        form.instance.estacion = self.request.user.estancia  # Asigna la estación del usuario al representante legal
+        messages.success(self.request, 'Representante legal creado con éxito.')
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        Usuario = get_user_model()
+        usuario = self.request.user
+        usuario_data = Usuario.objects.get(username=usuario.username)
+        estacion_id = usuario_data.estancia_id
+        estacion = Estacion.objects.get(pk=estacion_id)
+        usuario_data = self.request.user 
+        context['estacion'] = estacion
+        context['navbar'] = 'catalogos'
+        context['navbar1'] = 'representante'
+        context['seccion'] = 'legal'
+        context['seccion1'] = 'legales'
+        return context
+    
 class RepresentanteLegalUpdateView(UpdateView):
     model = RepresentantesLegales
     form_class = RepresentanteLegalStatusForm
@@ -365,6 +393,30 @@ class AsignacionRepresentanteCreateView(CreateView):
     form_class = AsignacionRepresentanteForm
     template_name = 'Representantes/asignar_representante.html'
     success_url = reverse_lazy('representante-legal-extranjeros')
+
+    def form_valid(self, form):
+            # Aquí capturas el `nup` desde la URL y lo asignas al objeto form.instance
+            nup = self.kwargs.get('nup')
+            form.instance.no_proceso = get_object_or_404(NoProceso, nup=nup)
+            form.instance.estacion = self.request.user.estancia
+            return super().form_valid(form)
+
+    def get_form_kwargs(self):
+            kwargs = super().get_form_kwargs()
+            kwargs['estacion_usuario'] = self.request.user.estancia
+            return kwargs
+    def get_context_data(self, **kwargs):
+            context = super().get_context_data(**kwargs)
+            nup = self.kwargs.get('nup')
+            context['nup'] = nup
+            return context
+    
+
+class AsignacionRepresentanteComparecenciaCreateView(CreateView):
+    model = AsignacionRepresentante
+    form_class = AsignacionRepresentanteForm
+    template_name = 'Representantes/asignar_representante_comparecencia.html'
+    success_url = reverse_lazy('lisExtranjerosComparecencia')
 
     def form_valid(self, form):
             # Aquí capturas el `nup` desde la URL y lo asignas al objeto form.instance

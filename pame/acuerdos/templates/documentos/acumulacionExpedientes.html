@@ -1,0 +1,69 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[Oficiona de representacion]
+<br>[Estacion Migratoria]
+<br>
+<br>[Lugar y fecha completa]
+<br>[Numero de expedientes]
+{% endblock %}
+
+{% block title %}
+<title>
+    Acuerdo de Acumulaci&oacute;n de expedientes
+</title>
+{% endblock %}
+
+{% block content %}
+<p class="centrado">
+    <strong>ACUERDO DE ACUMULACI&Oacute;N DE EXPEDIENTES</strong>
+</p>
+<p>
+    En la [LUGAR DE EMISIÓN], siendo las [HORA] horas del día [FECHA], el Lic. 
+    [NOMBRE], [CARGO] adscrito a la [ADSCRIPCION] del Instituto Nacional de Migración, quien actúa legalmente ante la presencia de dos testigos que al final firman de conformidad.
+    <br> 
+    En virtud de que esta autoridad constata que dentro de los registros con que cuenta el Archivo Migratorio de esta 
+    [AUTORIDAD EMISORA DEL ACTO], el extranjero [NOMBRE Y APELLIDO] de nacionalidad 
+    [NACIONALIDAD], cuenta con un antecedente de presentación ante la autoridad migratoria y alojamiento en la Estación Migratoria de la 
+    [NOMBRE DE LA EM], en fecha [FECHA DE ÚLTIMO ALOJAMIENTO], con número de expediente 
+    [NUMERO DE EXPEDIENTE ANTERIOR], instaurado por [AUTORIDAD EMISORA DE ESE EXPEDIENTE]. Siendo que con fecha 07 de agosto del año en curso, se tuvo un reingreso por parte del extranjero en cita asignándose para tal efecto el número de expediente 
+    [NUMERO DE NUEVO EXPEDIENTE], por lo que fue necesario realizar una búsqueda en los archivos y posteriormente una  acumulación de expedientes, por lo que esta autoridad de conformidad a lo establecido en el artículo 45 de la Ley Federal de Procedimiento Administrativo que a la letra dice:
+</p>
+<p style="text-decoration: underline; font-style: italic;">
+    <strong>Art&iacute;culo 45.-&nbsp;</strong>Los titulares de los órganos administrativos ante quienes se inicie o se tramite cualquier procedimiento administrativo, de oficio o a petición de parte interesada, podrán disponer su acumulación.
+    Contra el acuerdo de acumulación no procederá recurso alguno.    
+</p>
+<p>
+    Por lo que esta autoridad migratoria acuerda lo siguiente: 
+</p>
+<p class="centrado">
+    <strong>ACUERDA</strong>
+</p>
+<p>
+    <strong>&Uacute;nico.-&nbsp;</strong>Acumúlense los expedientes números [NUMERO DE EXPEDIENTE ANTERIOR] y el expediente 
+    [NUMERO DE NUEVO EXPEDIENTE] ambos instaurados a nombre del extranjero [NOMBRE Y APELLIDO] 
+    de nacionalidad [NACIONALIDAD], a efecto de que todas las diligencias realizadas consten en un solo expediente.
+</p>
+<p class="centrado">
+    <strong>C&Uacute;MPLASE</strong>
+</p>
+<p>
+    Así lo acordó y firmo el Lic. [NOMBRE], [CARGO] adscrito a la [ADSCRIPCION] del Instituto Nacional de Migración, quien actúa legalmente asistido de los testigos que al final firman de conformidad.
+</p>
+<div style="text-align: center;">
+    <p><strong>[Cargo AC]</strong></p>
+    <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    <strong>Lic. [Nombre y Apellido]</strong>
+</div>
+<p class="centrado">
+    <strong>TESTIGOS DE ASISTENCIA</strong>
+</p>
+<div class="columnas">
+    <div class="columna">
+        <p class="firma"><strong>C. [Nombre y Apellido]</strong></p>
+    </div>
+    <div class="columna">
+        <p class="firma"><strong>C. [Nombre y Apellido]</strong></p>
+    </div>
+</div>
+{% endblock %}

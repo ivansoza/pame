@@ -7,7 +7,9 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, nombramientoRepresentante_pdf, \
     listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
-    certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf
+    certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
+    continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, \
+    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
@@ -39,6 +41,18 @@ urlpatterns = [
     path('recepcion-documentos', recepcionDoc_pdf, name='recepcionDocPDF'),
     path('no-firma', noFirma_pdf, name='noFirmaPDF'),
     path('ac-radicacion', radicacion_pdf, name='radicacionPDF'),
+    path('separacion-alojados', separacionAlojados_pdf, name='separacionPDF'),
+    path('acumulacion-expedientes', acumulacionExpedientes_pdf, name='acumulacionPDF'),
+    path('suspension-provisional', suspensionProvisional_pdf, name='suspensionPDF'),
+    path('continuacion-procedimiento', continuacionProcedimiento_pdf, name='continuacionPDF'),
+    path('egreso-instalacion', egresoInstalacion_pdf, name='egresoPDF'),
+    path('acadministrativo', administrativo_pdf, name='administrativoPDF'),
+    path('conclusion-procedimiento', conclusionProcedimiento_pdf, name='conclusionPDF'),
+    path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
+    path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
+    path('notificacion-consulado', notificacionConsulado_pdf, name='consuladoPDF'),
+    path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
+    path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
@@ -68,12 +82,14 @@ urlpatterns = [
 
     path('registro_acuerdo_inicio/<str:proceso_id>/', views.registro_acuerdo_inicio, name='registro_acuerdo_inicio'),
     path('generar_qr/<str:testigo>/<int:acuerdo_id>/', views.generar_qr_acuerdos, name='generar_qr_acuerdos'),
-    # path('firma_testigo_uno/<int:acuerdo_id>/', FirmaTestigoUnoCreateView.as_view(), name='firma_testigo_uno_create'),
-    # path('firma_testigo_dos/<int:acuerdo_id>/', FirmaTestigoDosCreateView.as_view(), name='firma_testigo_dos_create'),
+
     path('check_firma_testigo_uno/<int:acuerdo_id>/', check_firma_testigo_uno, name='check_firma_testigo_uno'),
     path('check_firma_testigo_dos/<int:acuerdo_id>/', check_firma_testigo_dos, name='check_firma_testigo_dos'),
 
     path('firma_testigo_uno/<int:acuerdo_id>/', views.firma_testigo_uno, name='firma_testigo_uno'),
     path('firma_testigo_dos/<int:acuerdo_id>/', views.firma_testigo_dos, name='firma_testigo_dos'),
+    
+    path('comparecencia/guardar/<int:comparecencia_id>/', guardar_comparecencia, name='guardar_comparecencia'),
+    path('mostrar-comparecencia/<int:comparecencia_id>/', mostrar_comparecencia_pdf, name='guardar_comparecencia'),
 
 ]

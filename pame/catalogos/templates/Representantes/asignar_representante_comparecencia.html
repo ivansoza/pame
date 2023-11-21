@@ -1,0 +1,55 @@
+{% load static %}
+
+<style>
+    .btn-custom3 {
+        color: #803042; /* Cambia el color del texto al blanco */
+        text-decoration: underline; /* Subrayar para que parezca un enlace */
+    }
+    .btn-custom3:hover {
+        color: #803042; /* Color del texto al pasar el ratón por encima */
+
+    }
+</style>
+
+
+<!-- Bootstrap CSS -->
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header custom-header-color">
+            <h2 class="modal-title">Asignar Representantes Legales en la Estación </h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+
+        {% load crispy_forms_tags %}
+
+        <form  action="{% url 'asignar-representante-comparecencia' nup %}" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 text-right mb-3">
+                        <a href="{% url 'representante-legal-create-comparecencia' %}" class="btn btn-custom3">Registrar nuevo Representante Legal</a>
+                    </div>
+                </div>
+    
+          
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        {{ form.representante_legal|as_crispy_field}}
+                    </div>
+                 
+                </div>
+         
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-custom2">Confirmar</button>
+            </div>
+        </form>
+        
+        
+    </div>
+</div>

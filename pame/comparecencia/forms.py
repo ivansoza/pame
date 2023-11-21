@@ -1,6 +1,5 @@
 from django import forms
-from .models import Comparecencia
-
+from .models import Comparecencia, FirmaComparecencia
 
 class ComparecenciaForm(forms.ModelForm):
     fechaIngresoMexico = forms.DateField(
@@ -53,7 +52,7 @@ class ComparecenciaForm(forms.ModelForm):
     class Meta:
         model = Comparecencia
         fields = ['estadoCivil', 'escolaridad', 'ocupacion', 'nacionalidad', 'DomicilioPais', 'lugarOrigen', 
-                  'domicilioEnMexico', 'nombrePadre', 
+                  'domicilioEnMexico', 'domicilioPaisMexico','nombrePadre', 
                   'nacionalidadPadre', 'nombreMadre', 
                   'nacionalidadMadre', 'fechaIngresoMexico', 'lugarIngresoMexico', 'formaIngresoMexico', 
                   'declaracion', 'solicitaRefugio', 'victimaDelito', 'autoridadActuante', 'representanteLegal', 
@@ -82,5 +81,52 @@ class ComparecenciaForm(forms.ModelForm):
         self.fields['testigo1'].widget.attrs['placeholder'] = 'Nombre completo del Testigo 1'
         self.fields['testigo2'].widget.attrs['placeholder'] = 'Nombre completo del Testigo 2'
   
+  # Agregar asterisco al label y placeholder para domicilioPaisMexico
+        self.fields['domicilioPaisMexico'].label = "Domicilio y/o Residencia en México *"
+        self.fields['domicilioPaisMexico'].widget.attrs.update({
+            'placeholder': 'Ingrese el domicilio en México'
+        })
 
-   
+        # Asegurarse de que el campo sea requerido
+        self.fields['domicilioPaisMexico'].required = False
+class FirmaAutoridadActuanteForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaComparecencia
+        fields = ['firmaAutoridadActuante']
+
+class FirmaRepresentanteLegalForm(forms.ModelForm):
+    firmaRepresentanteLegal = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaComparecencia
+        fields = ['firmaRepresentanteLegal']
+
+class FirmaTraductorForm(forms.ModelForm):
+    firmaTraductor = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaComparecencia
+        fields = ['firmaTraductor']
+
+class FirmaExtranjeroForm(forms.ModelForm):
+    firmaExtranjero = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaComparecencia
+        fields = ['firmaExtranjero']
+
+class FirmaTestigo1Form(forms.ModelForm):
+    firmaTestigo1 = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaComparecencia
+        fields = ['firmaTestigo1']
+
+class FirmaTestigo2Form(forms.ModelForm):
+    firmaTestigo2 = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaComparecencia
+        fields = ['firmaTestigo2']

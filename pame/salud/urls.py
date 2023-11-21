@@ -1,8 +1,8 @@
 from django.urls import path, include
 
 from .views import homeMedicoGeneral, homeMedicoResponsable, manejar_imagen
-from .views import listaExtranjerosEstacion, certificadoMedico, perfilMedicoInterno, datosDelMedico, listaConsultasExtranjero, certificadoEgreso
-from .views import listarExtranjerosServicioExterno, CargaCertificadoMedico, consultaMedica, listaExtranjerosConsulta, constanciaLesiones
+from .views import listaExtranjerosEstacion, certificadoMedico, perfilMedicoInterno, datosDelMedico, listaConsultasExtranjero, certificadoEgreso, documentosReferencia, verificar_firma, listaDExternos
+from .views import listarExtranjerosServicioExterno, documentosExternos, consultaMedica, listaExtranjerosConsulta, constanciaLesiones, referencia, listaDocumentos, QrsMedico, FirmaCreateMedicoView
 urlpatterns = [
     path("", homeMedicoGeneral, name="menusalud"),
     path('medico-general/', homeMedicoGeneral, name="homeMedicoGeneral"),
@@ -10,7 +10,7 @@ urlpatterns = [
     path('listExtranjeroEstacion/', listaExtranjerosEstacion.as_view(), name="listExtranjeroEstacion"),
     path('certificadoMedicoExtranjero/<int:pk>/', certificadoMedico.as_view(), name='certificadoMedicoExtranjero'),
     path('listExtranjeroExterno/', listarExtranjerosServicioExterno.as_view(), name="listExtranjeroExterno"),
-    path('certificadoMedicoExterno/<int:pk>/', CargaCertificadoMedico.as_view(), name='certificadoMedicoExterno'),
+    path('certificadoMedicoExterno/<int:pk>/', documentosExternos.as_view(), name='certificadoMedicoExterno'),
     path('perfilMedico/', perfilMedicoInterno.as_view(), name="perfilMedico"),
     path('datosMedico/', datosDelMedico.as_view(), name="datosMedico"),
     path("manejar_imagen", manejar_imagen, name="manejar_imagen"),
@@ -19,5 +19,12 @@ urlpatterns = [
     path('listConsultas/<int:pk>/', listaConsultasExtranjero.as_view(), name='listConsultas'),
     path('constanciaLesiones/<int:pk>/', constanciaLesiones.as_view(), name='constanciaLesiones'),
     path('certificadoMedicoEgreso/<int:pk>/', certificadoEgreso.as_view(), name='certificadoMedicoEgreso'),
+    path('referenciaMedica/<int:pk>/', referencia.as_view(), name='referenciaMedica'),
+    path('documentosReferencia/<int:referencia_id>/', documentosReferencia.as_view(), name='documentosReferencia'),
+    path('documentos/<int:consulta_id>/', listaDocumentos.as_view(), name='lista_documentos'),
+    path('qrMedico/<int:pk>/', QrsMedico.as_view(), name='qrMedico'),
+    path('verificar_firma1/<int:pk>/', verificar_firma, name='verificar_firma1'),
+    path('crear_firma_Medico/<int:pk>/', FirmaCreateMedicoView.as_view(), name='crear_firma_Medico'),
+    path('documentosExternos/<int:pk>/', listaDExternos.as_view(), name='documentosExternos'),
 
 ]

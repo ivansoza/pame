@@ -111,8 +111,15 @@
             <td>{{ extranjero.delaEstacion }}</td>
             
             <td>
-              <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'recetaPDF' extranjero.nup extranjero.id %}" target="_blank" data-title="Receta m&eacute;dica">
-                <i class="fa-solid fa-file-medical"></i>
+                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "listConsultas" extranjero.id%} " data-title="Receta Medica">
+                    <i class="fa-solid fa-pills"></i>                </a>      
+                    {% if extranjero.tiene_referencia_medica %}
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosReferencia"  referencia_id=extranjero.referenciamedica_set.first.id  %}" data-title="Referencia Medica">
+                        <i class="fa-solid fa-truck-medical"></i>                  
+                    </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "lista_documentos"  consulta_id=extranjero.id  %}" data-title="Lista de Documentos">
+                        <i class="fa-solid fa-folder-plus"></i>                    </a>
+                {% endif %}
             </td>
                        
         </tr>
