@@ -6,53 +6,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>login</title>
-  <link rel="stylesheet" href=" {% static 'css/styleLogin.css' %}">
+  <link rel="stylesheet" href=" {% static 'css/elloginfer.css' %}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <img src=" {% static 'img/gobierno.png' %} " alt="logo del gobierno" class="logo-img">
-  </div>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
   <nav>
-    <a href="{% url 'home' %}" class="nav-link" style="color: white; font-size: 20px">P A M E</a>
+    <div class="logo">
+      <img src="{% static 'img/gobierno.png' %}" alt="logo del gobierno" class="logo-img">
+    </div>
+    <a href="{% url 'home' %}" class="nav-link">P A M E</a>
   </nav>
-  
-</header>
   <div class="wrapper">
-    <div class="form-box login" style="text-align: center; display: flex; justify-content:center ;">
-      <div class="hijo1">
-        <h2>Login</h2>
-        <img src=" {% static 'img/gh.jpg' %} " style="width: 200px;" class="logo-img">
-      </div>
-      <div class="hijo2">
-        <form action="" method="post">
-          {% csrf_token %}
-          <div class="input-box">
-            <span class="icon"><i class="fa fa-user" aria-hidden="true"></i></span>
-            <input type="text" name="username" class="form-control" >
-            <label>Nombre Usuario</label>
-          </div>
-          <div class="input-box">
-            <span class="icon"><ion-icon name="lock"></ion-icon></span>
-            <input type="password" name="password" class="form-control" >
-            <label>Contraseña</label>
-          </div>
-          <button type="submit"  class="btn-dark">Ingresar</button>
-          <div class="recup-acceso">
-          </div>
-          <br>
-          <div class="remember-forgot" >
-            <a href="#" style="color: black;display:none;">Ingresar con huella<span class="icon" ><ion-icon name="finger-print"></ion-icon></span>
-              |
-            <a href="{% url 'password_reset' %}" style="display:none;">Recuperar Contraseña<span class="icon">
-            </div>
-          </form>
+    <div class="form-box login">
+        <div class="hijo1">
+          <h2>Iniciar sesión</h2>
+            <img src="{% static 'img/gh.jpg' %}" style="width: 200px;left:40px;" class="logo-img">
+        </div>
+        <div class="hijo2">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="input-box">
+                    <span class="icon-1"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <input type="text" name="username" class="form-control" required>
+                    <label>Nombre Usuario</label>
+                </div>
+                <div class="input-box">
+                  <span class="icon">
+                      <button type="button" class="toggle-password" onclick="togglePassword('passwordField')" >
+                        <i class="fa fa-eye"></i>
+                      </button>
+                  </span>
+                  <input type="password" name="password" id="passwordField" class="form-control" required>
+                  <label>Contraseña</label>
+              </div>
+                <button type="submit" class="btn-dark">Ingresar</button>
+                <div class="recup-acceso"></div>
+                <br>
+                <div class="remember-forgot">
+                    <a href="#" style="color: black;display:none;">Ingresar con huella<span class="icon"><ion-icon
+                                name="finger-print"></ion-icon></span>
+                        |
+                        <a href="{% url 'password_reset' %}" style="display:none;">Recuperar Contraseña<span
+                                class="icon"></span></a>
+                </div>
+            </form>
         </div>
     </div>
-  </div>
-  
+</div>
+
+</body>
+</html>
+<script>
+  function togglePassword(fieldId) {
+      var passwordField = document.getElementById(fieldId);
+      passwordField.type = passwordField.type === "password" ? "text" : "password";
+  }
+</script>
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
   <script>

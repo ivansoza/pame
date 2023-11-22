@@ -19,7 +19,7 @@
 
         {% load crispy_forms_tags %}
 
-        <form action="{% url "listnotificacion" extranjero.id defensoria.id %}" method="POST" enctype="multipart/form-data">
+        <form action="{% url "listnotificacion" extranjero.id defensoria.id %}" method="POST" enctype="multipart/form-data" target="_blank">
             {% csrf_token %}
             {{ form.as_hidden }}
             <div class="row">
@@ -51,7 +51,9 @@
             
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-custom2">Confirmar</button>
+                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Firmar documento</button>
+                <a class="btn btn-sm btn-icon1" href="{% url 'representacionPDF' %}" target="_blank">Generar Notificación
+                </a>            
             </div>
         </form>
 
