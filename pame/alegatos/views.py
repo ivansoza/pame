@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from catalogos.models import Estacion
+from catalogos.models import Estacion, AutoridadesActuantes
 from django.shortcuts import get_object_or_404, redirect
 from generales.mixins import HandleFileMixin
 from django.db.models import Max
@@ -21,6 +21,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.db.models import Q
 
 class listaExtranjertoAlegatos(LoginRequiredMixin, ListView):
     model = Extranjero
@@ -89,6 +90,29 @@ class creaAlegato(LoginRequiredMixin,CreateView):
         initial['nup'] = ultimo_no_proceso_id
         initial['extranjero'] = extranjero
         return initial
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        nup_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=nup_id)
+        
+        autoridades = AutoridadesActuantes.objects.none()  
+
+        if extranjero.deLaPuestaIMN:
+            autoridades = AutoridadesActuantes.objects.filter(
+                Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+            )
+        elif extranjero.deLaPuestaAC:
+            autoridades = AutoridadesActuantes.objects.filter(
+                Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+            )
+        else:
+            autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+
+        form.fields['autoridadActuante'].queryset = autoridades
+
+        return form
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero_id = self.kwargs.get('pk')

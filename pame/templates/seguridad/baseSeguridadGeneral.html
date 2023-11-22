@@ -489,7 +489,23 @@
             <li class="nav-item">
               <a href="{% url "listaExtranjerosAlegatos" %}" class="nav-link {% if seccion == 'extranjerosa' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Lista de Extranjeros</p>
+                <p>Recepción de Documentos</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listaExtranjerosAlegatos" %}" class="nav-link {% if seccion == 'desahogo' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Desahogo de Pruebas y/o Alegatos</p>
+              </a>
+            </li>
+          </ul>
+          <ul class="nav nav-treeview" style="margin-left: 20px;">
+            <li class="nav-item">
+              <a href="{% url "listaExtranjerosAlegatos" %}" class="nav-link {% if seccion == 'nofirma' %}active {% endif %}">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Constancia de No Firma</p>
               </a>
             </li>
           </ul>
