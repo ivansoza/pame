@@ -15,5 +15,5 @@ class notifificacionLlamada(forms.ModelForm):
         model = Notificacion
         fields = '__all__'
         widgets = {
-            'deseaLlamar': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')))
+            'deseaLlamar': forms.RadioSelect(choices=((True, 'Si'), (False, 'No')))
         }

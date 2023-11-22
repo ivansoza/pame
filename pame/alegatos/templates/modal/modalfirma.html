@@ -1,0 +1,235 @@
+{% load static %}
+<style>
+    .custom-header-color {
+        background-color: #8B2941;
+        color: white; /* Ajusta el color del texto según tu preferencia */
+    }
+    .custom-close-button {
+        color: white;
+    }
+</style>
+<div class="modal-dialog modal-lg" role="document" >
+    <div class="modal-content">
+        <div class="modal-header custom-header-color"> <!-- Agrega la clase personalizada aquí -->
+            <h2 class="modal-title">Confirmar eliminación</h2>
+            <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <button id="mostrarContenidoBtn" class="btn btn-primary">Mostrar Contenido</button>
+        <div id="qrCode"  class="card p-3">
+            <!-- Firma de la Autoridad Actuante -->
+          
+          
+            <div class="firma-section center-content" id="autoridadActuanteSection">
+                <h4>Firma de la Autoridad Actuante</h4>
+                <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+                <div id="mensajeFirmaAutoridadActuante"></div>
+                <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+              </div>
+            
+            <!-- Firma del Representante Legal -->
+            <div class="firma-section center-content" id="representanteLegalSection">
+              <h4>Firma del Representante Legal</h4>
+              <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
+              <div id="mensajeFirmaRepresentanteLegal"></div>
+              <button id="nextToTraductor">Siguiente: Traductor</button>
+              <button id="nextToExtranjero" style="display: none;">Siguiente: Extranjero</button>
+          
+            </div>
+             
+            <!-- Firma del Testigo 1 -->
+            <div class="firma-section center-content" id="testigo1Section">
+              <h4>Firma del Testigo 1</h4>
+              <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
+              <div id="mensajeFirmaTestigo1"></div>
+              <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+            </div>
+            
+            <!-- Firma del Testigo 2 -->
+            <div class="firma-section center-content" id="testigo2Section" >
+              <h4>Firma del Testigo 2</h4>
+              <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
+              <div id="mensajeFirmaTestigo2"></div>
+              <button id="finalizarFirmas">Finalizar Firmas</button>
+            </div>
+          </div>
+          
+          
+          <div id="generatePDFSection" style="display:none;">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <!-- Ícono de FontAwesome para representar un PDF -->
+                    <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+                    <br>
+                    <br>
+                    <br>
+          
+                    <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+                </div>
+            </div>
+          </div>
+          
+          <div id="pdfPreviewContainer" style="display:none;">
+            <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
+          </div>
+          <div id="pdfPreviewContainer" style="display:none;">
+              <iframe id="pdfPreview" style="width:100%; height:700px;"></iframe>
+          </div>
+          
+          
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+          <script>
+            
+              function verificarEstadoFirmas(alegatoId) {
+                fetch('/alegatos/estado_firmas_alegato/' + alegatoId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.firmaAutoridadActuante) {
+                        // La firma de la Autoridad Actuante está completa, mostrar el siguiente QR
+                        document.getElementById('autoridadActuanteSection').style.display = 'none';
+                        document.getElementById('representanteLegalSection').style.display = 'block';
+                        document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/representanteLegal/' + alegatoId;
+                        // Iniciar el intervalo para verificar la siguiente firma
+                        intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(alegatoId); }, 1000);
+                    } else if (data.firmaRepresentanteLegal) {
+                        // La firma del Representante Legal está completa, mostrar el siguiente QR, y así sucesivamente
+                        document.getElementById('representanteLegalSection').style.display = 'none';
+                        document.getElementById('testigo1Section').style.display = 'block';
+                        document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
+                        intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(alegatoId); }, 1000);
+                    } else {
+                        // Si ninguna firma está completa, actualizar la interfaz según el estado actual
+                        actualizarInterfazFirmas(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar el estado de las firmas:', error);
+                });
+            }  
+              function actualizarInterfazFirmas(estadoFirmas) {
+                  // Ocultar todas las secciones de firma al inicio
+                  document.getElementById('autoridadActuanteSection').style.display = 'none';
+                  document.getElementById('representanteLegalSection').style.display = 'none';
+                  document.getElementById('testigo1Section').style.display = 'none';
+                  document.getElementById('testigo2Section').style.display = 'none';
+              
+                  // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
+                  if (!estadoFirmas.firmaAutoridadActuante) {
+                      document.getElementById('autoridadActuanteSection').style.display = 'block';
+                  } else if (!estadoFirmas.firmaRepresentanteLegal) {
+                      document.getElementById('representanteLegalSection').style.display = 'block';
+                  } else if (!estadoFirmas.firmaTestigo1) {
+                      document.getElementById('testigo1Section').style.display = 'block';
+                  } else if (!estadoFirmas.firmaTestigo2) {
+                      document.getElementById('testigo2Section').style.display = 'block';
+                  } else {
+                      // Si todas las firmas están completas, puedes mostrar la sección final o realizar alguna otra acción
+                      console.log('Todas las firmas han sido completadas');
+                      // Aquí puedes colocar alguna lógica adicional para cuando todas las firmas estén completas
+                  }
+              }
+              
+              document.addEventListener('DOMContentLoaded', function () {
+                var alegatoId = sessionStorage.getItem('alegato_id');
+                if (alegatoId) {
+                    verificarEstadoFirmas(alegatoId);
+                }
+            });
+            function mostrarSiguienteSeccion(alegatoId) {
+              // Aquí gestionas la transición entre las secciones y muestras el QR correspondiente
+              // Puedes adaptar esta lógica según tus necesidades
+          
+              if (!estadoFirmas.firmaAutoridadActuante) {
+                  // Mostrar la sección de la Autoridad Actuante y el QR correspondiente
+                  document.getElementById('autoridadActuanteSection').style.display = 'block';
+                  document.getElementById('qrImageAutoridadActuante').src = '/alegatos/generar_qr_alegato/autoridadActuante/' + alegatoId;
+              } else if (!estadoFirmas.firmaRepresentanteLegal) {
+                  // Mostrar la sección del Representante Legal y el QR correspondiente
+                  document.getElementById('representanteLegalSection').style.display = 'block';
+                  document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/representanteLegal/' + alegatoId;
+              } else if (!estadoFirmas.firmaTestigo1) {
+                  // Mostrar la sección del Testigo 1 y el QR correspondiente
+                  document.getElementById('testigo1Section').style.display = 'block';
+                  document.getElementById('qrImageTestigo1').src = '/alegatos/generar_qr_alegato/testigo1/' + alegatoId;
+              } else {
+                  // Si todas las firmas están completas, puedes realizar alguna otra acción o mostrar un mensaje
+                  console.log('Todas las firmas han sido completadas');
+              }
+          }
+          
+          function actualizarInterfazFirmas(estadoFirmas) {
+              // Ocultar todas las secciones de firma al inicio
+              document.getElementById('autoridadActuanteSection').style.display = 'none';
+              document.getElementById('representanteLegalSection').style.display = 'none';
+              document.getElementById('testigo1Section').style.display = 'none';
+              document.getElementById('testigo2Section').style.display = 'none';
+          
+              // Lógica para mostrar la sección y QR correspondiente según el estado de las firmas
+              mostrarSiguienteSeccion(alegatoId);
+          }
+          </script>
+          <script>
+            function verificarFirmaAutoridadActuante(alegatoId) {
+              fetch('/alegatos/verificar_firma/autoridadActuante_alegato/' + alegatoId)
+              .then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+          
+                      document.getElementById('autoridadActuanteSection').style.display = 'none';
+                      document.getElementById('representanteLegalSection').style.display = 'block';
+                      document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/representanteLegal/' + alegatoId;
+                      intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(alegatoId); }, 1000); // Iniciar el intervalo para la siguiente firma
+                  }
+              });
+          }
+          
+          function verificarFirmaRepresentanteLegal(alegatoId) {
+            fetch('/alegatos/verificar_firma/representanteLegal_alegato/' + alegatoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                  clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+                  estadoFirmas.firmaAutoridadActuante = true; // Actualizar el estado de la firma
+          
+                  // Llamar a la función para mostrar la siguiente sección y QR
+                  mostrarSiguienteSeccion(alegatoId);
+                }
+            });
+          }
+          </script>
+          
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Obtener el botón y el elemento que contiene el contenido oculto
+                var mostrarContenidoBtn = document.getElementById('mostrarContenidoBtn');
+                var qrCodeDiv = document.getElementById('qrCode');
+                var tabla = document.getElementById('tabla');
+          
+                // Agregar un evento de clic al botón
+                mostrarContenidoBtn.addEventListener('click', function () {
+                    // Cambiar la propiedad 'display' del estilo del div
+                    qrCodeDiv.style.display = 'block';
+                    tabla.style.display = 'none';  // Oculta la tabla al mostrar el contenido
+          
+                    // Aquí puedes agregar la lógica para generar y mostrar los códigos QR
+                    // Puedes utilizar fetch u otras técnicas para obtener la información necesaria
+          
+                    // Ejemplo de generación de código QR
+                    // Reemplaza 'alegatoId' con la variable o información necesaria
+                    var alegatoId = {{ale}};  // Reemplaza con tu lógica
+                    document.getElementById('qrImageAutoridadActuante').src = '/alegatos/generar_qr_alegato/autoridadActuante/' + 1;
+                    document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/representanteLegal/' + alegatoId;
+                    document.getElementById('qrImageTestigo1').src = '/alegatos/generar_qr_alegato/testigo1/' + alegatoId;
+                    document.getElementById('qrImageTestigo2').src = '/alegatos/generar_qr_alegato/testigo2/' + alegatoId;
+          
+                    // Aquí puedes agregar más lógica según tus necesidades
+          
+                    // Puedes ajustar esto según la respuesta del backend o tu lógica específica
+                    // intervaloAutoridadActuante = setInterval(function () { verificarFirmaAutoridadActuante(alegatoId); }, 1000);
+                });
+            });
+          </script>
+    </div>
+</div>
