@@ -1,0 +1,98 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[Oficina de representacion]
+<br>[Estacion migratoria]
+<br>
+<br>[Lugar y fecha completa]
+<br>[NUMERO DE EXPEDIENTE]
+<br>NÚMERO DE ACUERDO: INM/-----/------/-------/2023
+{% endblock %}
+
+{% block title %}
+<title>
+    Oficio con fines de regularizaci&oacute;n
+</title>
+{% endblock %}
+
+{% block content %}
+<table style="width: 3.5cm; border-collapse: collapse; border: 1px solid rgb(0, 0, 0); height: 3.5cm;">
+    <tbody>
+        <tr>
+            <td style="width: 3.5cm; height: 3.5cm; border: 1px solid rgb(0, 0, 0);"><br></td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    NOMBRE: [NOMBRE Y APELLIDO]
+    <br>FECHA DE NACIMIENTO: [DD/MM/AAAA]
+    <br>NACIONALIDAD: [NACIONALIDAD] 
+    <br>SEXO: [GENERO] 
+</div>
+<p class="centrado">
+    <strong>OFICIO CON FINES DE REGULARIZACIÓN</strong>
+</p>
+<p>
+    En la [LUGAR DE EMISIÓN], siendo las [HH:MM] horas del día [DD de MM de AAAA], el Licenciado [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a la [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, mediante la cual se resolvió la situación migratoria de la extranjera [NOMBRE Y APELLIDO] de nacionalidad [NACIONALIDAD] y en ejercicio de las facultades que me confieren los artículos 1, 11, 14, 16  de la Constitución Política de los Estados Unidos Mexicanos; 1, 2, 3 fracción XXVII, 6, 7, 11, 12, 14, 16 fracciones II, III y IV, 18 fracción VIII, 20 fracción III, IV, V y X, 37, 42, 59, 66, 70, 77, 79, 111, 115, 123 133 y 144 de la Ley de Migración; 1, 2, 55, 58, 144, 205, 222 del Reglamento de la Ley de Migración; artículo 27 fracción IV la Ley Orgánica de la Administración Pública Federal; artículos 1, 3, 9, 12, 13, 16 fracciones I, III, IV, V, VI, IX y X, 18, 19, 28, 29, 30, 32, 33, 35, 36, 38, 39, 44 y 49 de la Ley Federal del Procedimiento Administrativo; le notifico lo siguiente:
+    <br> 
+    Por lo que esta autoridad migratoria visto el procedimiento administrativo migratorio y considerando los elementos aportados por el extranjero y una vez verificados por esta autoridad migratoria, asimismo y toda vez que el extranjero en comento bajo protesta de decir verdad señaló que todo lo aportado es verídico, sin que medie dolo, mala fe y/o alevosía, por lo que esta autoridad actuando de buena fe y bajo los principios de equidad, justicia, observancia al debido proceso e irrestricto respeto a los derechos humanos, se considera viable otorgarle un oficio con fines de regularización migratoria, a efecto de que en un término no mayor de 30 días hábiles, inicie con los trámites correspondientes ante la oficina de regulación de la Oficina de Representación del Instituto Nacional de Migración más cercana a su domicilio y cumpla con los requisitos necesarios para regular su estancia en territorio mexicano, en virtud a lo establecido en el artículo 133 de la Ley de Migración al haber acreditado alguno de los supuestos que señala el propio artículo que a la letra dice:
+</p>
+<div style="font-style: italic; margin: 1cm;">
+    <p>
+        <strong>Artículo 133.</strong> El Instituto podrá regularizar la situación migratoria de los extranjeros que se ubiquen en territorio nacional y manifiesten su interés de residir de forma temporal o permanente en territorio nacional, siempre y cuando cumplan con los requisitos de esta Ley, su Reglamento y demás disposiciones jurídicas aplicables. La regularización se podrá otorgar concediendo al extranjero la condición de estancia que corresponda conforme a esta Ley.
+    </p>
+    <p>
+        Con independencia de lo anterior, tienen derecho a la regularización de su situación migratoria los extranjeros que se ubiquen en territorio nacional y se encuentren en alguno de los siguientes supuestos: 
+    </p>
+    <p>
+        I. Acredite ser cónyuge, concubina o concubinario de persona mexicana o de persona extranjera con condición de estancia de residente;
+        <br>
+        II. Acredite ser padre, madre o hijo, o tener la representación legal o custodia de persona mexicana o extranjera con condición de estancia de residente;
+        <br>
+        III. Que el extranjero sea identificado por el Instituto o por autoridad competente, como víctima o testigo de algún delito grave cometido en territorio nacional;
+        <br>
+        IV. Que se trate de personas cuyo grado de vulnerabilidad dificulte o haga imposible su deportación o retorno asistido, 
+        <br> y 
+        <br>
+        V. Cuando se trate de niñas, niños y adolescentes que se encuentren sujetos al procedimiento de sustracción y restitución internacional de niños, niñas o adolescentes.
+    </p>
+</div>
+<p class="centrado">
+    <strong>C&Uacute;MPLASE</strong>
+</p>
+<P>
+    Así lo acordó y firmo el Lic. [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a 
+    la [LUGAR DE ADSCRIPCIÓN DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente asistido de los testigos que al final firman de conformidad. 
+</P>
+<div class="columnas">
+    <div class="columna">
+        <p><strong>[CARGO AC]</strong></p>
+        <p class="firma">Lic. [Nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p><strong>LA PERSONA EXTRANJERA</strong></p>
+        <p class="firma">[Nombre y apellido]</p>
+    </div>
+</div>
+<p class="centrado">
+    <strong>TESTIGOS DE ASISTENCIA</strong>
+</p>
+<div class="columnas">
+    <div class="columna">
+        <p class="firma">Lic. [Nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p class="firma">Lic. [Nombre y apellido]</p>
+    </div>
+</div>
+<div class="columnas">
+    <div class="columna">
+        <p><strong>REPRESENTANTE LEGAL</strong></p>
+        <p class="firma">Lic. [Nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p><strong>TRADUCTOR PR&Aacute;CTICO HABILITADO</strong></p>
+        <p class="firma">[Nombre y apellido]</p>
+    </div>
+</div>  
+{% endblock %}
