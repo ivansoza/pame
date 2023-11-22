@@ -14,21 +14,33 @@
 {% block titulo %}PAME | Documentos Alegatos y Pruebas{% endblock titulo %}
 {% block dashboard %}
 <!-- FLECHA DE BACK  -->
-
 <a class="btn btn-sm btn-icon1 " href="{% url 'listaExtranjerosAlegatos' %}">
   <i class="fas fa-arrow-left"></i>
 </a>
 
 {% endblock dashboard %}
 {% block contenido %}
+<style>
+  #qrCode {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas con igual ancho */
+    gap: 10px; /* Espacio entre las columnas */
+  }
+
+  .firma-section {
+    width: 100%; /* O ajusta según tus necesidades específicas */
+    box-sizing: border-box; /* Incluir el padding y border en el ancho */
+    padding: 10px; /* Ajusta el espaciado interno según tus necesidades */
+  }
+</style>
 <br>
 <div class="titulo-general-container">
     <h1 class="titulo-general">
-        Documentos alegatos y pruebas del extranjero       
+        Documentos de pruebas del extranjero       
         <span class="puesta-color"><strong>{{nombre}} {{ape1}} {% if ape2 %} {{ape2}} {% endif %} </strong></span>
     </h1>
 </div>
-<div class="row">
+<div class="row" id='datos_extranjero'>
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
@@ -96,7 +108,47 @@
       </div>
     </div>
   </div>
-<div class="table-responsive">
+  <button id="iniciarFirmas">Iniciar Captura de Firmas</button>
+  <div id="qrCode" style="display:none;" class="card p-3">
+    <!-- Firma de la Autoridad Actuante -->
+
+
+    <div class="firma-section center-content" id="autoridadActuanteSection" style='margin-left: auto;margin-right: auto; '>
+        <h4>Firma de la Autoridad Actuante</h4>
+        <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+        <div id="mensajeFirmaAutoridadActuante"></div>
+        <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+      </div>
+    
+    <!-- Firma del Representante Legal -->
+    <div class="firma-section center-content" id="representanteLegalSection" >
+      <h4>Firma del Representante Legal</h4>
+      <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
+      <div id="mensajeFirmaRepresentanteLegal"></div>
+      <button id="nextToTraductor">Siguiente: Traductor</button>
+      <button id="nextToExtranjero" style="display: none;">Siguiente: Extranjero</button>
+
+    </div>
+    <!-- Firma del Testigo 1 -->
+    <div class="firma-section center-content" id="testigo1Section" >
+      <h4>Firma del Testigo 1</h4>
+      <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
+      <div id="mensajeFirmaTestigo1"></div>
+      <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+    </div>
+    
+    <!-- Firma del Testigo 2 -->
+    <div class="firma-section center-content" id="testigo2Section">
+      <h4>Firma del Testigo 2</h4>
+      <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
+      <div id="mensajeFirmaTestigo2"></div>
+      <button id="finalizarFirmas">Finalizar Firmas</button>
+    </div>
+  </div>
+  <br>
+</div>
+
+<div class="table-responsive" id='contenido_tabla'>
 
 
     <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
@@ -139,8 +191,143 @@
 <div id="pdfPreviewContainer" style="display:none;">
     <iframe id="pdfPreview" style="width:100%; height:700px;"></iframe>
 </div>
+<script>
+  function verificarEstadoFirmas(alegatoId) {
+            fetch('/alegatos/estado_firmas_alegato/' + alegatoId)
+            .then(response => response.json())
+            .then(data => {
+                actualizarInterfazFirmas(data);
+            })
+            .catch(error => {
+                console.error('Error al verificar el estado de las firmas:', error);
+            });
+        }
+        function actualizarInterfazFirmas(estadoFirmas) {
+          // Ocultar todas las secciones de firma al inicio
+          document.getElementById('autoridadActuanteSection').style.display = 'none';
+          document.getElementById('representanteLegalSection').style.display = 'none';
+          document.getElementById('testigo1Section').style.display = 'none';
+          document.getElementById('testigo2Section').style.display = 'none';
+      
+          // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
+          if (!estadoFirmas.firmaAutoridadActuante) {
+              document.getElementById('autoridadActuanteSection').style.display = 'block';
+          } else if (!estadoFirmas.firmaRepresentanteLegal) {
+              document.getElementById('representanteLegalSection').style.display = 'block';
+          } else if (!estadoFirmas.firmaTestigo1) {
+              document.getElementById('testigo1Section').style.display = 'block';
+          } else if (!estadoFirmas.firmaTestigo2) {
+              document.getElementById('testigo2Section').style.display = 'block';
+          } else {
+              // Si todas las firmas están completas, puedes mostrar la sección final o realizar alguna otra acción
+              console.log('Todas las firmas han sido completadas');
+              // Aquí puedes colocar alguna lógica adicional para cuando todas las firmas estén completas
+          }
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        var alegatoId = sessionStorage.getItem('alegatoId'); // O localStorage.getItem('comparecenciaId');
+        if (alegatoId) {
+            verificarEstadoFirmas(alegatoId);
+        }
+    });
+
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Escucha el clic en el botón
+    document.getElementById('iniciarFirmas').addEventListener('click', function() {
+        
+                // Continúa con el código después del éxito de la petición
+                document.getElementById('qrCode').style.display = 'block';
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+                document.getElementById('contenido_tabla').style.display = 'none';
+                document.getElementById('datos_extranjero').style.display = 'none';
+
+                var alegatoId = {{ale}};
+                document.getElementById('qrImageAutoridadActuante').src = '/alegatos/generar_qr_alegato/autoridadActuante/' + alegatoId;
+                document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/representanteLegal/' + alegatoId;
+
+                document.getElementById('qrImageTestigo1').src = '/alegatos/generar_qr_alegato/testigo1/' + alegatoId;
+                document.getElementById('qrImageTestigo2').src = '/alegatos/generar_qr_alegato/testigo2/' + alegatoId;
+
+                // Comienza a verificar si la firma ha sido capturada en un intervalo regular
+                intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(alegatoId); }, 1000);
+          
+     
+    });
+});
+
+
+
+
+
+  function verificarFirmaAutoridadActuante(alegatoId) {
+    fetch('/alegatos/verificar_firma/autoridadActuante_alegato/' + alegatoId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('representanteLegalSection').style.display = 'block';
+            document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/representanteLegal/' + alegatoId;
+            intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(alegatoId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+        }
+    });
+}
+function verificarFirmaRepresentanteLegal(alegatoId) {
+  fetch('/alegatos/verificar_firma/representanteLegal_alegato/' + alegatoId)
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+          clearInterval(intervaloRepresentanteLegal); // Detener el intervalo
+
+          
+          document.getElementById('representanteLegalSection').style.display = 'none';
+          document.getElementById('testigo1Section').style.display = 'block';
+          document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_alegato/testigo1/' + alegatoId;
+          intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(alegatoId); }, 1000);
+          }
+      
+  });
+}
+function verificarFirmaTestigo1(alegatoId) {
+  fetch('/alegatos/verificar_firma/testigo1_alegato/' + alegatoId)
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+
+          clearInterval(intervaloTestigo1); // Detener el intervalo
+
+          document.getElementById('testigo1Section').style.display = 'none';
+          document.getElementById('testigo2Section').style.display = 'block';
+          document.getElementById('qrImageTestigo2').src = '/alegatos/generar_qr_alegato/testigo2/' + alegatoId;
+          intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(alegatoId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+      }
+  });
+}
+function verificarFirmaTestigo2(alegatoId) {
+  fetch('/alegatos/verificar_firma/testigo2_alegato/' + alegatoId)
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+          clearInterval(intervaloTestigo2); // Detener el intervalo
+          document.getElementById('testigo2Section').style.display = 'none';
+          // Mostrar la sección para generar el PDF
+          document.getElementById('generatePDFSection').style.display = 'block';
+      }
+  });
+}    
+
+</script>
+</script>
+
+
 {% endblock contenido %}
 {% block script %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var pdfViewer = document.getElementById('pdfPreview');
