@@ -1,8 +1,6 @@
 .body {
     margin: 0;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
     background-color: whitesmoke;
 }
@@ -15,14 +13,15 @@ nav {
     z-index: 100;
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Para centrar verticalmente los elementos en la barra de navegación */
+    align-items: center;
     padding: 10px;
-    margin: 0; /* Asegura que no haya márgenes por defecto */
+    margin: 0;
     width: 100%;
 }
 
 body {
-    margin: 0; /* Asegura que no haya márgenes en el cuerpo de la página */
+    margin: 0;
+    overflow: hidden;
 }
 
 nav a {
@@ -31,7 +30,6 @@ nav a {
     font-size: 20px;
     padding: 14px 16px;
 }
-
 
 .logo img {
     height: 50px;
@@ -61,6 +59,7 @@ nav a {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    overflow: hidden;
 }
 
 .form-box {
@@ -72,9 +71,8 @@ nav a {
     width: 750px;
     max-width: 100%;
     display: flex;
-    margin-top: -160px; /* Ajusta este valor según sea necesario */
+    margin-top: -160px;
 }
-
 
 .hijo1 {
     padding: 20px;
@@ -82,7 +80,7 @@ nav a {
 }
 
 .hijo1 img {
-    margin-right: 10px; /* Adjust the margin as needed */
+    margin-right: 10px;
 }
 
 .hijo1 h2 {
@@ -107,13 +105,13 @@ nav a {
 
 .input-box input {
     width: 100%;
-    padding: 15px; /* Increase the padding for larger input fields */
+    padding: 15px;
     box-sizing: border-box;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: medium;
-    font-weight: bold; /* Añade esta línea para el estilo de letra en negrita */
+    font-weight: bold;
 }
 
 .input-box label {
@@ -136,7 +134,7 @@ nav a {
 .btn-dark {
     background-color: #333;
     color: #fff;
-    padding: 15px; /* Increase the padding for a larger button */
+    padding: 15px;
     border: none;
     border-radius: 15px;
     cursor: pointer;
@@ -152,10 +150,10 @@ nav a {
         max-width: 100%;
         flex-direction: column;
     }
-    
+
     .hijo1 img {
-        margin-right: 0; /* Adjust the margin for mobile view */
-        margin-bottom: 10px; /* Add margin-bottom for spacing */
+        margin-right: 0;
+        margin-bottom: 10px;
     }
 }
 

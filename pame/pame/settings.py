@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-50)&z+hib^$mh!wl%w=u$=95!1=5%6ttd3%s=73x4luay*d2v7
 DEBUG = True
 #Despliegue en AMAZON
 # ALLOWED_HOSTS = ["3.17.57.188"]
-ALLOWED_HOSTS = ['192.168.1.128']
+ALLOWED_HOSTS = ['*']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
