@@ -1349,7 +1349,7 @@ def constancia_llamada(request, extranjero_id=None):
         return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
     
     
-    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+    locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
