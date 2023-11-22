@@ -100,6 +100,23 @@
 
 }
 
+.titulo-compare{
+    background-color: #777777;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: default;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+
+}
+
+
 
 </style>
 
@@ -230,10 +247,10 @@
    
 
         <div class="firma-section center-content" id="autoridadActuanteSection">
-            <h4>Firma de la Autoridad Actuante</h4>
-            <div>Nombre de la Autoridad Actuante: <span id="nombreAutoridadActuante"></span></div>
+            <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+            <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
 
-            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
             <div id="mensajeFirmaAutoridadActuante"></div>
             <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
             
@@ -241,8 +258,8 @@
         
         <!-- Firma del Representante Legal -->
         <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
-          <h4>Firma del Representante Legal</h4>
-          <div>Nombre del Representante Legal: <span id="nombreRepresentanteLegal"></span></div>
+          <h4 class="titulo-compare">Firma del Representante Legal</h4>
+          <div>Nombre: <span id="nombreRepresentanteLegal"></span></div>
 
           <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
           <div id="mensajeFirmaRepresentanteLegal"></div>
@@ -253,8 +270,8 @@
         
         <!-- Firma del Traductor -->
         <div class="firma-section center-content" id="traductorSection" style="display:none;">
-          <h4>Firma del Traductor</h4>
-          <div>Nombre del Traductor: <span id="nombreTraductor"></span></div>
+          <h4 class="titulo-compare">Firma del Traductor</h4>
+          <div>Nombre: <span id="nombreTraductor"></span></div>
 
           <img id="qrImageTraductor" src="" alt="Código QR Traductor">
           <div id="mensajeFirmaTraductor"></div>
@@ -263,8 +280,8 @@
         
         <!-- Firma del Extranjero -->
         <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
-          <h4>Firma del Extranjero</h4>
-          <div>Nombre del Extranjero: <span id="nombreExtranjero"></span></div>
+          <h4 class="titulo-compare">Firma del Extranjero</h4>
+          <div>Nombre: <span id="nombreExtranjero"></span></div>
 
           <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
           <div id="mensajeFirmaExtranjero"></div>
@@ -273,8 +290,8 @@
         
         <!-- Firma del Testigo 1 -->
         <div class="firma-section center-content" id="testigo1Section" style="display:none;">
-          <h4>Firma del Testigo 1</h4>
-          <div>Nombre del Testigo 1: <span id="nombreTestigo1"></span></div>
+          <h4 class="titulo-compare">Firma del Testigo 1</h4>
+          <div>Nombre: <span id="nombreTestigo1"></span></div>
 
           <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
           <div id="mensajeFirmaTestigo1"></div>
@@ -283,8 +300,8 @@
         
         <!-- Firma del Testigo 2 -->
         <div class="firma-section center-content" id="testigo2Section" style="display:none;">
-          <h4>Firma del Testigo 2</h4>
-          <div>Nombre del Testigo 2: <span id="nombreTestigo2"></span></div>
+          <h4 class="titulo-compare">Firma del Testigo 2</h4>
+          <div>Nombre: <span id="nombreTestigo2"></span></div>
 
           <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
           <div id="mensajeFirmaTestigo2"></div>

@@ -50,6 +50,8 @@ urlpatterns = [
     path('conclusion-procedimiento', conclusionProcedimiento_pdf, name='conclusionPDF'),
     path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
+    
+    
     path('notificacion-consulado', notificacionConsulado_pdf, name='consuladoPDF'),
     path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
     path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
