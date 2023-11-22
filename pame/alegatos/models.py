@@ -29,3 +29,10 @@ class presentapruebas(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
     presenta = models.BooleanField()
+
+class FirmaAlegato(models.Model):
+    alegato = models.ForeignKey(Alegatos, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaRepresentanteLegal = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo1= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo2= models.ImageField(upload_to='files/', null=True, blank=True) 

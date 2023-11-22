@@ -1,5 +1,5 @@
 from django import forms
-from .models import Alegatos, DocumentosAlegatos
+from .models import Alegatos, DocumentosAlegatos, FirmaAlegato
 
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
@@ -30,4 +30,30 @@ class DocumentosAlegatosForms(forms.ModelForm, ValidacionArchivos):
         model = DocumentosAlegatos
         fields = '__all__'
 
+class FirmaAutoridadActuanteForm1(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaAlegato
+        fields = ['firmaAutoridadActuante']
+
+class FirmaRepresentanteLegalForm1(forms.ModelForm):
+    firmaRepresentanteLegal = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaAlegato
+        fields = ['firmaRepresentanteLegal']
     
+class FirmaTestigoForm1(forms.ModelForm):
+    firmaTestigo1 = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaAlegato
+        fields = ['firmaTestigo1']
+
+class FirmaTestigo2Form1(forms.ModelForm):
+    firmaTestigo2 = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaAlegato
+        fields = ['firmaTestigo2']

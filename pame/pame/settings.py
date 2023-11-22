@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-50)&z+hib^$mh!wl%w=u$=95!1=5%6ttd3%s=73x4luay*d2v7
 DEBUG = True
 #Despliegue en AMAZON
 # ALLOWED_HOSTS = ["3.17.57.188"]
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['192.168.1.128']
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 LOGIN_REDIRECT_URL = '/'
@@ -137,7 +137,7 @@ WSGI_APPLICATION = 'pame.wsgi.application'
 
 "URL DE LA PAGINA PARA RENDERIZAR LOS QR "
 # BASE_URL = "https://sfti.tech/"
-BASE_URL = "http://127.0.0.1:8000/"
+BASE_URL = "http://192.168.1.128:8082/"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

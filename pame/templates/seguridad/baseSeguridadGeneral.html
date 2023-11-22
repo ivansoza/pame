@@ -482,8 +482,8 @@
        
         </li>
 
-        <li class="nav-item {% if navbar == '' %}menu-is-opening menu-open{% endif %}">
-          <a href="#" class="nav-link {% if navbar == '' %}active first-li{% endif %}">
+        <li class="nav-item {% if navbar == 'Notificaciones' %}menu-is-opening menu-open{% endif %}">
+          <a href="#" class="nav-link {% if navbar == 'Notificaciones' %}active first-li{% endif %}">
             <i class="nav-icon fas  fa-bell"></i>
             <p>
               Notificaciones
@@ -492,7 +492,7 @@
           </a>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+              <a href="{% url "listExtranjerosFiscalia" %}" class="nav-link {% if seccion == 'fiscalia' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Fiscalía</p>
               </a>
@@ -500,7 +500,7 @@
           </ul>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+              <a href="{% url "listExtranjerosComar" %}" class="nav-link {% if seccion == 'comar' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>COMAR</p>
               </a>
@@ -508,7 +508,7 @@
           </ul>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+              <a href="{% url "listExtranjerosConsulado" %}" class="nav-link {% if seccion == 'consulado' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Consulado</p>
               </a>

@@ -561,3 +561,19 @@ def estado_firmas(request, comparecencia_id):
 
     # Devolver el estado de las firmas en formato JSON
     return JsonResponse(estado_firmas)
+
+
+def obtener_datos_comparecencia(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    nup = comparecencia.nup
+
+    datos = {
+        'nombreAutoridadActuante': f"{comparecencia.autoridadActuante.autoridad.nombre} {comparecencia.autoridadActuante.autoridad.apellidoPaterno} {comparecencia.autoridadActuante.autoridad.apellidoMaterno or ''}".strip() if comparecencia.autoridadActuante else '',
+        'nombreRepresentanteLegal': f"{comparecencia.representanteLegal.nombre} {comparecencia.representanteLegal.apellido_paterno} {comparecencia.representanteLegal.apellido_materno or ''}".strip() if comparecencia.representanteLegal else '',
+        'nombreTraductor': f"{comparecencia.traductor.nombre} {comparecencia.traductor.apellido_paterno} {comparecencia.traductor.apellido_materno or ''}".strip() if comparecencia.traductor else '',
+        'nombreTestigo1': comparecencia.testigo1,
+        'nombreTestigo2': comparecencia.testigo2,
+        'nombreExtranjero': f"{nup.extranjero.nombreExtranjero} {nup.extranjero.apellidoPaternoExtranjero} {nup.extranjero.apellidoMaternoExtranjero or ''}".strip()
+    }
+
+    return JsonResponse(datos)
