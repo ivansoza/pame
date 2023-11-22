@@ -26,6 +26,8 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Prefetch
+from acuerdos.models import Repositorio
 from acuerdos.views import guardar_comparecencia
 def homeComparecencia(request):
     return render(request,"homeComparecencia.html")
@@ -38,44 +40,53 @@ class listExtranjerosComparecencia(ListView):
     context_object_name = "extranjeros"
 
     def get_queryset(self):
-            estacion_usuario = self.request.user.estancia
-            estado = self.request.GET.get('estado_filtrado', 'activo')
-            
-            representantes_asignados = AsignacionRepresentante.objects.filter(
-                no_proceso=OuterRef('pk')
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
+
+        representantes_asignados = AsignacionRepresentante.objects.filter(
+            no_proceso=OuterRef('pk')
+        )
+
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+        ultimo_no_proceso = NoProceso.objects.filter(
+            extranjero_id=OuterRef('pk')
+        ).order_by('-consecutivo')
+
+        extranjeros_filtrados = extranjeros_filtrados.annotate(
+            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+        )
+
+        queryset = NoProceso.objects.filter(
+            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id],
+            extranjero__deLaEstacion=estacion_usuario
+        ).annotate(
+            tiene_asignacion=Exists(representantes_asignados)
+        )
+
+        # Prefetch para optimizar la consulta de documentos de tipo Comparecencia
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                "repositorio_set",
+                queryset=Repositorio.objects.filter(delTipo__descripcion="Comparecencia"),
+                to_attr="comparecencia_docs"
             )
-            
-            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-            if estado == 'activo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-            elif estado == 'inactivo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+        )
 
-            ultimo_no_proceso = NoProceso.objects.filter(
-                extranjero_id=OuterRef('pk')
-            ).order_by('-consecutivo')
-            
-            extranjeros_filtrados = extranjeros_filtrados.annotate(
-                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-            )
+        tiene_representante = self.request.GET.get('con_representante', None)
+        
+        if tiene_representante == 'no':
+            queryset = queryset.filter(tiene_asignacion=False)
+        elif tiene_representante == 'si':
+            queryset = queryset.filter(tiene_asignacion=True)
+        else:
+            queryset = queryset.filter(tiene_asignacion=True)
 
-            queryset = NoProceso.objects.filter(
-                nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id],
-                extranjero__deLaEstacion=estacion_usuario
-            ).annotate(
-                tiene_asignacion=Exists(representantes_asignados)
-            )
-
-            tiene_representante = self.request.GET.get('con_representante', None)
-            
-            if tiene_representante == 'no':
-                queryset = queryset.filter(tiene_asignacion=False)
-            elif tiene_representante == 'si':
-                queryset = queryset.filter(tiene_asignacion=True)
-            else:
-                queryset = queryset.filter(tiene_asignacion=True)
-
-            return queryset
+        return queryset
 
     def get_context_data(self, **kwargs): 
             context = super().get_context_data(**kwargs)
@@ -173,7 +184,7 @@ class CrearComparecenciaAjax(View):
 
         # Si ya se realizó una comparecencia, redirigir a una página de mensaje
         if no_proceso.comparecencia:
-            return render(request, 'pagina_mensaje_comparecencia_completa.html', {'nup_id': nup_id})
+            return render(request, 'comparecencia/comparecencia_registrada.html', {'nup_id': nup_id})
 
         extranjero = no_proceso.extranjero
         asignacion_rep_legal = AsignacionRepresentante.objects.filter(no_proceso=no_proceso).first()
@@ -406,14 +417,7 @@ def firma_testigo2(request, comparecencia_id):
 
             firma.firmaTestigo2.save(file_name, file, save=True)
 
-            # Actualizar el estado de la comparecencia en NoProceso
-            no_proceso = comparecencia.nup
-            no_proceso.comparecencia = True
-            no_proceso.save()
-
-            # Llamar a la función para procesar la comparecencia
-            guardar_comparecencia(request, comparecencia_id)
-
+       
             # Limpiar la sesión para eliminar el ID de la comparecencia
             if 'comparecencia_id' in request.session:
                 del request.session['comparecencia_id']
@@ -557,3 +561,19 @@ def estado_firmas(request, comparecencia_id):
 
     # Devolver el estado de las firmas en formato JSON
     return JsonResponse(estado_firmas)
+
+
+def obtener_datos_comparecencia(request, comparecencia_id):
+    comparecencia = get_object_or_404(Comparecencia, pk=comparecencia_id)
+    nup = comparecencia.nup
+
+    datos = {
+        'nombreAutoridadActuante': f"{comparecencia.autoridadActuante.autoridad.nombre} {comparecencia.autoridadActuante.autoridad.apellidoPaterno} {comparecencia.autoridadActuante.autoridad.apellidoMaterno or ''}".strip() if comparecencia.autoridadActuante else '',
+        'nombreRepresentanteLegal': f"{comparecencia.representanteLegal.nombre} {comparecencia.representanteLegal.apellido_paterno} {comparecencia.representanteLegal.apellido_materno or ''}".strip() if comparecencia.representanteLegal else '',
+        'nombreTraductor': f"{comparecencia.traductor.nombre} {comparecencia.traductor.apellido_paterno} {comparecencia.traductor.apellido_materno or ''}".strip() if comparecencia.traductor else '',
+        'nombreTestigo1': comparecencia.testigo1,
+        'nombreTestigo2': comparecencia.testigo2,
+        'nombreExtranjero': f"{nup.extranjero.nombreExtranjero} {nup.extranjero.apellidoPaternoExtranjero} {nup.extranjero.apellidoMaternoExtranjero or ''}".strip()
+    }
+
+    return JsonResponse(datos)

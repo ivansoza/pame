@@ -66,7 +66,58 @@
         align-items: center; /* Centra los elementos flexibles horizontalmente */
         justify-content: center; /* Centra los elementos flexibles verticalmente */
     }
-      
+
+    
+    #nextToRepresentanteLegal,
+#nextToExtranjero,
+#nextToTraductor,
+#nextToTestigo1,
+#nextToTestigo2,
+#finalizarFirmas {
+    background-color: #902F4A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilos al pasar el mouse por encima de los botones */
+#nextToRepresentanteLegal:hover,
+#nextToExtranjero:hover,
+#nextToTraductor:hover,
+#nextToTestigo1:hover,
+#nextToTestigo2:hover,
+#finalizarFirmas:hover {
+    background-color: #902F4A; /* Mantiene el mismo color de fondo */
+    box-shadow: none; /* Elimina la sombra para un aspecto más plano */
+    cursor: default; /* Cambia el cursor al estilo predeterminado */
+
+}
+
+.titulo-compare{
+    background-color: #777777;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: default;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+
+}
+
+
+
 </style>
 
 <div class="container mt-3">
@@ -178,13 +229,13 @@
 
                         <div id="finalOptions" style="display:none; text-align:center;">
                             <button type="button" class="btn btn-info" id="previewButton">Previsualizar</button>
-                            <button type="button" class="btn btn-success" id="createAgreementButton">Crear acuerdo de comparecencia</button>
+                            <button type="button" class="btn btn-custom4" id="createAgreementButton">Crear acuerdo de comparecencia</button>
                         </div>
                         <!-- Botones de navegación -->
                         <div class="navigation-buttons">
                             <button type="button" class="btn btn-custom5" onclick="navigateTabs('prev')">Anterior</button>
                             <button type="button" class="btn btn-custom6" onclick="navigateTabs('next')">Siguiente</button>
-                            <button type="button" class="btn btn-info" id="previewPdfButton">Previsualizar PDF</button>
+                            <button type="button" class="btn btn-icon2 " id="previewPdfButton">Previsualizar PDF</button>
                             <button type="submit" class="btn btn-custom2" id="submitForm" style="display:none;">Crear Comparecencia</button>
                         </div>
                     </div>
@@ -196,15 +247,20 @@
    
 
         <div class="firma-section center-content" id="autoridadActuanteSection">
-            <h4>Firma de la Autoridad Actuante</h4>
-            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante">
+            <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+            <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
+
+            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
             <div id="mensajeFirmaAutoridadActuante"></div>
             <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+            
           </div>
         
         <!-- Firma del Representante Legal -->
         <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
-          <h4>Firma del Representante Legal</h4>
+          <h4 class="titulo-compare">Firma del Representante Legal</h4>
+          <div>Nombre: <span id="nombreRepresentanteLegal"></span></div>
+
           <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal">
           <div id="mensajeFirmaRepresentanteLegal"></div>
           <button id="nextToTraductor">Siguiente: Traductor</button>
@@ -214,7 +270,9 @@
         
         <!-- Firma del Traductor -->
         <div class="firma-section center-content" id="traductorSection" style="display:none;">
-          <h4>Firma del Traductor</h4>
+          <h4 class="titulo-compare">Firma del Traductor</h4>
+          <div>Nombre: <span id="nombreTraductor"></span></div>
+
           <img id="qrImageTraductor" src="" alt="Código QR Traductor">
           <div id="mensajeFirmaTraductor"></div>
           <button id="nextToExtranjero">Siguiente: Extranjero</button>
@@ -222,7 +280,9 @@
         
         <!-- Firma del Extranjero -->
         <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
-          <h4>Firma del Extranjero</h4>
+          <h4 class="titulo-compare">Firma del Extranjero</h4>
+          <div>Nombre: <span id="nombreExtranjero"></span></div>
+
           <img id="qrImageExtranjero" src="" alt="Código QR Extranjero">
           <div id="mensajeFirmaExtranjero"></div>
           <button id="nextToTestigo1">Siguiente: Testigo 1</button>
@@ -230,7 +290,9 @@
         
         <!-- Firma del Testigo 1 -->
         <div class="firma-section center-content" id="testigo1Section" style="display:none;">
-          <h4>Firma del Testigo 1</h4>
+          <h4 class="titulo-compare">Firma del Testigo 1</h4>
+          <div>Nombre: <span id="nombreTestigo1"></span></div>
+
           <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1">
           <div id="mensajeFirmaTestigo1"></div>
           <button id="nextToTestigo2">Siguiente: Testigo 2</button>
@@ -238,7 +300,9 @@
         
         <!-- Firma del Testigo 2 -->
         <div class="firma-section center-content" id="testigo2Section" style="display:none;">
-          <h4>Firma del Testigo 2</h4>
+          <h4 class="titulo-compare">Firma del Testigo 2</h4>
+          <div>Nombre: <span id="nombreTestigo2"></span></div>
+
           <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2">
           <div id="mensajeFirmaTestigo2"></div>
           <button id="finalizarFirmas">Finalizar Firmas</button>
@@ -246,7 +310,7 @@
       </div>
       
 
-      <div id="generatePDFSection" style="display:none;">
+      <div id="generatePDFSection" style="display:none;" class="card p-3">
         <div class="row">
             <div class="col-md-12 text-center">
                 <!-- Ícono de FontAwesome para representar un PDF -->
@@ -255,18 +319,32 @@
                 <br>
                 <br>
 
-                <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+                <a href="#"  id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
             </div>
         </div>
     </div>
-
-    <div id="pdfPreviewContainer" style="display:none;">
-        <iframe id="pdfPreview" style="width:100%; height:600px;"></iframe>
+    <div id="postSaveOptions" style="display:none;" class="card p-3">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
+                <br><br><br>
+                <a href="{% url "lisExtranjerosComparecencia" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
+                <a href="/ruta/a/verComparecencia" class="btn btn-secondary">Ver Comparecencia</a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div id="pdfPreviewContainer" style="display:none; position: relative;">
+        <button id="closePdfPreviewButton" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: #873542; color: white;">Cerrar</button>
+        <iframe id="pdfPreview" style="width:100%; height:600px; margin-top: 60px;"></iframe>
     </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+
+     
 
         function verificarEstadoFirmas(comparecenciaId) {
             fetch('/comparecencia/estado_firmas/' + comparecenciaId)
@@ -286,7 +364,7 @@
             document.getElementById('extranjeroSection').style.display = 'none';
             document.getElementById('testigo1Section').style.display = 'none';
             document.getElementById('testigo2Section').style.display = 'none';
-        
+
             // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
             if (!estadoFirmas.firmaAutoridadActuante) {
                 document.getElementById('autoridadActuanteSection').style.display = 'block';
@@ -441,9 +519,12 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('comparecenciaForm').addEventListener('submit', function(e) {
+                document.getElementById('pdfPreviewContainer').style.display = 'none';
+
                 e.preventDefault(); // Previene el envío normal del formulario
                 var formData = new FormData(this); // Recoge los datos del formulario
-                
+
+
                 fetch('', { // Enviar a la misma URL que maneja el GET y POST
                     method: 'POST',
                     body: formData,
@@ -454,6 +535,7 @@
                 }).then(response => response.json())
                   .then(data => {
                     if(data.success) {
+                        obtenerDatosDeComparecencia(comparecenciaId)
                         document.getElementById('comparecenciaForm').style.display = 'none';
                         document.getElementById('qrCode').style.display = 'block';
                         document.getElementById('autoridadActuanteSection').style.display = 'block';
@@ -481,30 +563,39 @@
                  });
             });
         });
-        
-        document.getElementById('previewPdfButton').addEventListener('click', function() {
-            var formData = new FormData(document.getElementById('comparecenciaForm'));
-            
-            // Enviar solicitud para generar vista previa del PDF
-            fetch('/acuerdos/ver-comparecencia/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                credentials: 'same-origin'
-            }).then(response => response.blob())
-              .then(blob => {
-                  // Mostrar el PDF en el iframe
-                  var pdfUrl = URL.createObjectURL(blob);
-                  document.getElementById('pdfPreview').src = pdfUrl;
-                  document.getElementById('pdfPreviewContainer').style.display = 'block';
-              })
-              .catch(error => {
-                  // Manejo de errores
-                  console.error('Error al generar la vista previa del PDF:', error);
-              });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener para abrir la vista previa del PDF
+            document.getElementById('previewPdfButton').addEventListener('click', function() {
+                var formData = new FormData(document.getElementById('comparecenciaForm'));
+                
+                // Enviar solicitud para generar vista previa del PDF
+                fetch('/acuerdos/ver-comparecencia/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    credentials: 'same-origin'
+                }).then(response => response.blob())
+                  .then(blob => {
+                      // Mostrar el PDF en el iframe
+                      var pdfUrl = URL.createObjectURL(blob);
+                      document.getElementById('pdfPreview').src = pdfUrl;
+                      document.getElementById('pdfPreviewContainer').style.display = 'block';
+                  })
+                  .catch(error => {
+                      // Manejo de errores
+                      console.error('Error al generar la vista previa del PDF:', error);
+                  });
+            });
+    
+            // Event listener para el botón de cerrar
+            document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
+                document.getElementById('pdfPreviewContainer').style.display = 'none';
+                document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
+            });
         });
+       
         document.addEventListener('DOMContentLoaded', function() {
             var checkbox = document.getElementById('necesitaTraductor');
             var campoTraductor = document.getElementById('campoTraductor');
@@ -573,6 +664,8 @@
 
 
     function verificarFirmaAutoridadActuante(comparecenciaId) {
+        obtenerDatosDeComparecencia(comparecenciaId);
+
         fetch('/comparecencia/verificar_firma/autoridadActuante/' + comparecenciaId)
         .then(response => response.json())
         .then(data => {
@@ -666,11 +759,95 @@
             if (data.status === 'success') {
                 clearInterval(intervaloTestigo2); // Detener el intervalo
                 document.getElementById('testigo2Section').style.display = 'none';
+                document.getElementById('qrCode').style.display = 'none';
+    
                 // Mostrar la sección para generar el PDF
                 document.getElementById('generatePDFSection').style.display = 'block';
+                var generatePDFBtn = document.getElementById('generatePDFBtn');
+                generatePDFBtn.setAttribute('data-comparecencia-id', comparecenciaId);
             }
+        })
+        .catch(error => {
+            // Manejar errores en la solicitud fetch
+            alert('Error al realizar la solicitud: ' + error.message);
         });
-    }    
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        var generatePDFBtn = document.getElementById('generatePDFBtn');
+        generatePDFBtn.onclick = () => {
+            var comparecenciaId = generatePDFBtn.getAttribute('data-comparecencia-id');
+            if (comparecenciaId) {
+                guardarComparecencia(comparecenciaId);
+            }
+        };
+    });
+    
+    function guardarComparecencia(comparecenciaId) {
+        var generatePDFBtn = document.getElementById('generatePDFBtn');
+        generatePDFBtn.disabled = true; 
+        fetch('/acuerdos/comparecencia/guardar/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Configurar y mostrar Toast de SweetAlert
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+    
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Comparecencia guardada con éxito. PDF disponible para descargar.'
+                });
+    
+                // Después del Toast, mostrar la nueva sección con botones
+                setTimeout(() => {
+                    document.getElementById('generatePDFSection').style.display = 'none';
+                    document.getElementById('postSaveOptions').style.display = 'block';
+                }, 1000); // Coincide con el tiempo del Toast
+            } else {
+                // Mostrar SweetAlert de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Error al guardar la comparecencia: ' + data.message,
+                    confirmButtonText: 'Cerrar'
+                });
+            }
+        })
+        .catch(error => {
+            // Manejar errores en la solicitud fetch con SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error al realizar la solicitud: ' + error.message,
+                confirmButtonText: 'Cerrar'
+            });
+        });
+    }
+    
+
+    function obtenerDatosDeComparecencia(comparecenciaId) {
+    fetch('/comparecencia/datos_comparecencia/' + comparecenciaId)
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar elementos HTML con los datos recibidos
+            document.getElementById('nombreAutoridadActuante').textContent = data.nombreAutoridadActuante || 'No disponible';
+            document.getElementById('nombreRepresentanteLegal').textContent = data.nombreRepresentanteLegal || 'No disponible';
+            document.getElementById('nombreTraductor').textContent = data.nombreTraductor || 'No disponible';
+            document.getElementById('nombreTestigo1').textContent = data.nombreTestigo1 || 'No disponible';
+            document.getElementById('nombreTestigo2').textContent = data.nombreTestigo2 || 'No disponible';
+            document.getElementById('nombreExtranjero').textContent = data.nombreExtranjero || 'No disponible';
+        })
+        .catch(error => {
+            console.error('Error al obtener datos:', error);
+        });
+    }
+
+    
     
     </script>
 </div>
