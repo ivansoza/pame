@@ -17,5 +17,7 @@ class NotificacionesAceptadasForm(forms.ModelForm):
 class modalnotificicacionForm(forms.ModelForm):
     class Meta:
         model = Relacion
-        fields = ['extranjero','nup','defensoria']
-    
+        fields = ['extranjero','nup','defensoria','firma','autoridad_actuante']
+        widgets = {
+            'firma': forms.ClearableFileInput(attrs={'multiple': True}),
+        }

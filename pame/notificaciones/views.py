@@ -1,5 +1,7 @@
+from audioop import reverse
 from datetime import timezone
 from typing import Any
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from weasyprint import HTML
@@ -338,3 +340,20 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
         context['navbar'] = 'Notificaciones'
         context['seccion'] = 'consulado'
         return context
+    
+
+from django.shortcuts import render, redirect
+from .forms import modalnotificicacionForm
+from .models import Relacion
+
+def firma(request):
+    if request.method == 'POST':
+        form = modalnotificicacionForm(request.POST, request.FILES)
+        if form.is_valid():
+            relacion = form.save()
+            return redirect('defensoria')
+    else:
+        form = modalnotificicacionForm()
+
+    return render(request, 'firmardocumento.html', {'form': form})
+

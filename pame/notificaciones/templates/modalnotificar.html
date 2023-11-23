@@ -2,13 +2,21 @@
 <style>
     .custom-header-color {
         background-color: #8B2941;
-        color: white; /* Ajusta el color del texto según tu preferencia */
+        color: white;
     }
+
     .custom-close-button {
         color: white;
     }
+
+    /* Nuevo estilo para centrar el código QR */
+    #qrcode {
+        margin: 20px auto;
+        display: block;
+    }
 </style>
-<div class="modal-dialog modal-lg" role="document" >
+
+<div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header custom-header-color">
             <h2 class="modal-title">Enviar notificación</h2>
@@ -33,35 +41,45 @@
                         <br>
                         <span class="valor ml-4">{{ extranjero.nacionalidad }}</span>
                     </div>
-                </div>                
-            
+                </div>
+
                 <div class="col-sm-12 col-md-4 col-lg-4 text-center">
                     {{ form.nup|as_crispy_field }}
                 </div>
-            
+
                 <div class="col-sm-12 col-md-4 col-lg-4 text-center">
                     {{ form.defensoria|as_crispy_field }}
                 </div>
-            
+
                 <div class="col-sm-12 col-md-4 col-lg-4 text-center" style="display:none;">
                     {{ form.extranjero|as_crispy_field}}
                 </div>
             </div>
-            
-            
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-custom" data-bs-dismiss="modal">Firmar documento</button>
-                <a class="btn btn-sm btn-icon1" href="{% url 'representacionPDF' %}" target="_blank">Generar Notificación
-                </a>            
+                <button type="button" class="btn btn-custom" onclick="generarCodigoQR()">Firmar documento</button>
+                <a class="btn btn-sm btn-icon1" href="{% url 'representacionPDF' %}" target="_blank">Generar Notificación</a>
             </div>
         </form>
 
-        <div class="col-sm-12 col-md-4 col-lg-4"style="display:none;">
+        <div id="qrcode"></div>
+
+        <div class="col-sm-12 col-md-4 col-lg-4" style="display:none;">
             {{ form.extranjero|as_crispy_field}}
         </div>
-        
 
     </div>
 </div>
 
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script>
+    function generarCodigoQR() {
+        var valorQR = "http://192.168.1.100:8082/notificaciones/firma/";
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            text: valorQR,
+            width: 128,
+            height: 128
+        });
+    }
+</script>
