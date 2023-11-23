@@ -52,9 +52,9 @@ urlpatterns = [
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
     
     
-    path('notificacion-consulado', notificacionConsulado_pdf, name='consuladoPDF'),
-    path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
-    path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
+    path('notificacion-consulado/', notificacionConsulado_pdf, name='consuladoPDF'),
+    path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
+    path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),

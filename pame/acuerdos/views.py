@@ -42,7 +42,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.core.files.storage import default_storage
 import io
-from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores
+from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion
 from salud.models import Consulta
 
 
@@ -962,6 +962,54 @@ def notificacionConsulado_pdf(request):
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/notificacionConsular.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+
+def notificacionConsulado_pdf(request):
+    # DEFINES LOS GET QUE SE CAPTURAN EN EL FORMS
+    delaEstacion = request.POST.get('delaEstacion', '')
+    nup = request.POST.get('nup', '')
+    numeroOficio = request.POST.get('numeroOficio', '')
+    delConsulado = request.POST.get('delConsulado', '')
+    accion = request.POST.get('accion', '')
+    delaAutoridad = request.POST.get('delaAutoridad', '')
+
+
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+
+    consulado = None
+    if delConsulado:  
+        consulado = get_object_or_404(Consulado, pk=delConsulado)
+
+    context = {
+        'consulado': consulado,
+        'nup': nup,
+        'numeroOficio': numeroOficio,
+        'delConsulado': delConsulado,
+        'accion': accion,
+        'autoridad_actuante': autoridad_actuante,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al contexto
+
     }
 
     # Obtener la plantilla HTML

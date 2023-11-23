@@ -49,6 +49,10 @@ class NotificcionConsular(models.Model):
     accion = models.CharField(max_length=50, choices= ACCION, verbose_name="Acción")
     delaAutoridad = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name="Autoridad Actuante")
 
+class FirmaAcuerdo(models.Model):
+    notificacionConsular = models.ForeignKey(NotificcionConsular, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
+
     
 class Defensorias(models.Model):
     entidad = models.CharField(max_length=50, verbose_name="Estado de la entidad")

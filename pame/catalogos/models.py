@@ -244,7 +244,6 @@ class Consulado(models.Model):
     ciudad = models.CharField(max_length=100)
     calle = models.CharField(max_length=100)
     colonia = models.CharField(max_length=100)
-    alcaldia = models.CharField(max_length=100, blank=True, null= True)
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE, verbose_name="Estado de la Republica")
     codigo_postal = models.CharField(max_length=5,blank=True, null=True)
     telefono1 = models.CharField(max_length=20, blank=True, null=True)
@@ -254,3 +253,13 @@ class Consulado(models.Model):
     email2 = models.EmailField(blank=True, null=True)
     def __str__(self):
         return f"{self.estado} - {self.ciudad}"
+
+    def direccion_completa(self):
+            direccion_parts = [
+                self.calle,
+                self.colonia,
+                self.ciudad,
+                self.estado.estado,  # Asumiendo que el modelo Estado tiene un campo 'nombre'
+                self.codigo_postal
+            ]
+            return ', '.join(filter(None, direccion_parts))

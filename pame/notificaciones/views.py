@@ -1,12 +1,12 @@
 from datetime import timezone
 from typing import Any
 from django.shortcuts import get_object_or_404, render
-from vigilancia.models import Extranjero
+from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, AsignacionRepresentante
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView
-from .models import Defensorias,Relacion
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm
+from django.views.generic import ListView, CreateView, View, TemplateView
+from .models import Defensorias,Relacion, NotificcionConsular
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -330,3 +330,50 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
         context['navbar'] = 'Notificaciones'
         context['seccion'] = 'consulado'
         return context
+    
+
+class CrearNotificacionConsulado(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        notificacionConsular_id = request.session.get('notificacionConsular_id')
+        notificacionConsular_existente = NotificcionConsular.objects.filter(id=notificacionConsular_id).first()
+        form = NotificacionConsularForm(request.POST, instance=notificacionConsular_existente)
+        
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero
+        notificacionConsular_id = request.session.get('notificacionConsular_id')
+        notificacionConsular_existente = Comparecencia.objects.filter(id=notificacionConsular_id).first()
+        initial_data = {
+             'delaEstacion': extranjero.deLaEstacion,
+             'nup':no_proceso,
+ 
+        }
+
+        form = NotificacionConsularForm(instance=notificacionConsular_existente) if notificacionConsular_existente else NotificacionConsularForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['delaAutoridad'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'notificacion',
+            'seccion': 'consulado',
+        }
+        
+        return render(request, 'consulado/crearNotificacionConsulado.html', context)
+

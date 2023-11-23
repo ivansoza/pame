@@ -56,7 +56,7 @@ class OficinasAdmin(admin.ModelAdmin):
 
 
 class ConsuladoAdmin(admin.ModelAdmin):
-    list_display = ('pais', 'ciudad', 'calle', 'colonia', 'alcaldia', 'estado', 'codigo_postal')
+    list_display = ('pais', 'ciudad', 'calle', 'colonia',  'estado', 'codigo_postal')
     list_filter = ('pais', 'estado', 'ciudad')
 
 

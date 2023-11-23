@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .import views
-from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia
+from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado
 
 
 urlpatterns = [
@@ -12,7 +12,13 @@ urlpatterns = [
     path('listnotificacion/<int:extranjero_id>/<int:defensoria_id>/', modalnotificar.as_view(), name='listnotificacion'),
     # Notificaciones
     path("comar/", listExtranjerosComar.as_view(), name="listExtranjerosComar"),
+
+    # consulado
     path("consulado/", listExtranjerosConsulado.as_view(), name="listExtranjerosConsulado"),
+    path('crear-notificacion-consular/<str:nup_id>/', CrearNotificacionConsulado.as_view(), name='crear_notificacion-consular'),
+
+
+    # fin de consulado
     path("fiscalia/", listExtranjerosFiscalia.as_view(), name="listExtranjerosFiscalia"),
 
 
