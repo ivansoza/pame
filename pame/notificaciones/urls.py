@@ -9,7 +9,7 @@ urlpatterns = [
     path('notificacion/<int:pk>/', notificar.as_view(), name='notificacion'),
     path('listdefensores/', tabladefensores.as_view(), name='listdefensores'),
     path('modal/', SubirArchivo.as_view(), name='modale'),
-    path('firma/', firma,name='firma'),
+    path('firma/<int:relacion_id>', firma,name='firma'),
     path('listnotificacion/<int:extranjero_id>/<int:defensoria_id>/', modalnotificar.as_view(), name='listnotificacion'),
     # Notificaciones
     path("comar/", listExtranjerosComar.as_view(), name="listExtranjerosComar"),

@@ -348,7 +348,13 @@ from django.shortcuts import render, redirect
 from .models import qrfirma
 from .forms import QrfirmaForm  # Reemplaza con el nombre correcto de tu formulario
 
-def firma(request):
+def firma(request, relacion_id):
+    relacion = get_object_or_404(Relacion, pk = relacion_id)
+    dato = relacion.id
+    initial_data={
+        'autoridad':dato
+    }
+
     if request.method == 'POST':
         form = QrfirmaForm(request.POST)
         if form.is_valid():
@@ -365,8 +371,7 @@ def firma(request):
             instancia_qrfirma.save()
 
             return redirect('defensoria')  # Reemplaza con la ruta adecuada
-
     else:
-        form = QrfirmaForm()  # Reemplaza con el nombre correcto de tu formulario
-
+        form = QrfirmaForm(initial=initial_data)  # Proporciona datos iniciales al formulario
+   
     return render(request, 'firmardocumento.html', {'form': form})

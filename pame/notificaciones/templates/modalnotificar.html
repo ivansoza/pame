@@ -75,7 +75,7 @@
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script>
     function generarCodigoQR() {
-        var valorQR = "http://192.168.1.100:8082/notificaciones/firma/";
+        var valorQR = "http://192.168.1.100:8082/notificaciones/firma/{{extranjero.id}}";
         var qrcode = new QRCode(document.getElementById("qrcode"), {
             text: valorQR,
             width: 128,
