@@ -44,8 +44,10 @@ class Relacion(models.Model):
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
     defensoria = models.ForeignKey(Defensorias, on_delete=models.CASCADE)
     fechaHora = models.DateTimeField(auto_now_add=True)
-    firma = models.ImageField(upload_to='files/', null=True, blank=True) 
-
     
     def __str__(self):
          return f"{self.extranjero}"
+     
+class qrfirma(models.Model):
+    autoridad = models.ForeignKey(Relacion, on_delete=models.CASCADE)
+    firma = models.ImageField(upload_to='files/', null=True, blank=True)

@@ -57,8 +57,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="hidden" id="inputFirmaImagen">
-
+        <input type="hidden" id="inputFirmaImagen" name="inputFirmaImagen">
         <div id="contenedor-principal">
             <div id="lienzo-container">
                 <canvas id="pizarra" style="width: 100%; height: 200px;"></canvas>

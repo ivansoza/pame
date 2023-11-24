@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Defensorias, notificacionesAceptadas,Relacion
+from .models import Defensorias, notificacionesAceptadas,Relacion,qrfirma
 
 class DefensorForm(forms.ModelForm):
     class Meta:
@@ -17,7 +17,10 @@ class NotificacionesAceptadasForm(forms.ModelForm):
 class modalnotificicacionForm(forms.ModelForm):
     class Meta:
         model = Relacion
-        fields = ['extranjero','nup','defensoria','firma','autoridad_actuante']
-        widgets = {
-            'firma': forms.ClearableFileInput(attrs={'multiple': True}),
-        }
+        fields = ['extranjero','nup','defensoria','autoridad_actuante']
+
+
+class QrfirmaForm(forms.ModelForm):
+    class Meta:
+        model=qrfirma
+        fields = '__all__'

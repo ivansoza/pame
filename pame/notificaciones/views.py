@@ -1,4 +1,5 @@
 from audioop import reverse
+import base64
 from datetime import timezone
 from typing import Any
 from django.conf import settings
@@ -18,6 +19,7 @@ from vigilancia.models import NoProceso
 from django.db.models import OuterRef, Subquery
 from comparecencia.models import Comparecencia
 from django.db.models import Q
+from django.core.files.base import ContentFile
 from django.template.loader import render_to_string, get_template
 
 class notificar(LoginRequiredMixin,ListView):
@@ -343,17 +345,28 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
     
 
 from django.shortcuts import render, redirect
-from .forms import modalnotificicacionForm
-from .models import Relacion
+from .models import qrfirma
+from .forms import QrfirmaForm  # Reemplaza con el nombre correcto de tu formulario
 
 def firma(request):
     if request.method == 'POST':
-        form = modalnotificicacionForm(request.POST, request.FILES)
+        form = QrfirmaForm(request.POST)
         if form.is_valid():
-            relacion = form.save()
-            return redirect('defensoria')
+            # Guardar el formulario sin commit para obtener la instancia
+            instancia_qrfirma = form.save(commit=False)
+
+            # Obtener la imagen del canvas desde la solicitud POST
+            data_url = request.POST.get('inputFirmaImagen', '')
+            formato, imgstr = data_url.split(';base64,')  # Asumiendo que es una imagen en formato base64
+            formato = formato.split('/')[-1]
+            instancia_qrfirma.firma.save(f'firma.{formato}', ContentFile(base64.b64decode(imgstr)), save=True)
+
+            # Ahora puedes realizar cualquier otra acción que necesites y finalmente guardar la instancia del modelo
+            instancia_qrfirma.save()
+
+            return redirect('defensoria')  # Reemplaza con la ruta adecuada
+
     else:
-        form = modalnotificicacionForm()
+        form = QrfirmaForm()  # Reemplaza con el nombre correcto de tu formulario
 
     return render(request, 'firmardocumento.html', {'form': form})
-
