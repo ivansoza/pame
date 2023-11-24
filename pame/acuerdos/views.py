@@ -1350,9 +1350,15 @@ def mostrar_derechoObligaciones_pdf(request, extranjero_id):
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
 
     nombre = extranjero
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
     
     # Crear el contenido del PDF
-    html_context = {'contexto': 'variables', 'nombre':nombre}  # Añade las variables que necesitas aquí
+    html_context = {'contexto': 'variables',
+                     'nombre':nombre,
+                     'oficina': oficina,
+                     'estacion': estacion
+                     }  # Añade las variables que necesitas aquí
     html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
     html = HTML(string=html_content)
     pdf_bytes = html.write_pdf()
