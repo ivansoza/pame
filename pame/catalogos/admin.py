@@ -1,6 +1,11 @@
 from django.contrib import admin
 from .models import Tipos, Estatus, Estado, Estacion, Responsable,Salida, Estancia, Relacion, AutoridadesActuantes, Autoridades, RepresentantesLegales, \
     Oficina
+from .models import Consulado
+from vigilancia.models import Nacionalidad  # Asegúrate de que la importación esté correctamente ubicada
+
+
+
 
 from vigilancia.models import NoProceso
 admin.site.register(Tipos)
@@ -46,3 +51,13 @@ class RepresentantesLegalesAdmin(admin.ModelAdmin):
 @admin.register(Oficina)
 class OficinasAdmin(admin.ModelAdmin):
     list_display = ('identificador', 'nombre', 'estado')
+
+
+
+
+class ConsuladoAdmin(admin.ModelAdmin):
+    list_display = ('pais', 'ciudad', 'calle', 'colonia',  'estado', 'codigo_postal')
+    list_filter = ('pais', 'estado', 'ciudad')
+
+
+admin.site.register(Consulado, ConsuladoAdmin)

@@ -10,7 +10,7 @@ class Nacionalidad(models.Model):
     class Meta:
         verbose_name_plural = "Gentilicios"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.Abreviatura
 
 GRADO_ACADEMICO = [

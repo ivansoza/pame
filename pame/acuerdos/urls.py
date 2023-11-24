@@ -51,9 +51,11 @@ urlpatterns = [
     path('conclusion-procedimiento', conclusionProcedimiento_pdf, name='conclusionPDF'),
     path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
-    path('notificacion-consulado', notificacionConsulado_pdf, name='consuladoPDF'),
-    path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
-    path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
+    
+    
+    path('notificacion-consulado/', notificacionConsulado_pdf, name='consuladoPDF'),
+    path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
+    path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
     path('resolucion-deportacion', resolucionDeportacion_pdf, name='deportacionPDF'),
     path('resolucion-libretransito', resolucionLibre_pdf, name='librePDF'),
     path('acuerdo-libretransito', acResolucionLibre_pdf, name='aclibrePDF'),
