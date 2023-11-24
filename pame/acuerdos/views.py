@@ -590,6 +590,7 @@ def recetaMedica_pdf(request, nup_id, ex_id):
     estacion = consulta.extranjero.deLaEstacion.nombre
     oficina = consulta.extranjero.deLaEstacion.oficina
     firma = extranjero.firma
+    firma_url = f"{settings.BASE_URL}{firma.firma_imagen.url}"
 
     # Dividir el tratamiento por comas y pasar la lista a la plantilla
     tratamiento_lista = tratamiento.split(',')
@@ -603,7 +604,7 @@ def recetaMedica_pdf(request, nup_id, ex_id):
         'tratamiento': tratamiento_lista,
         'estacion': estacion,
         'oficina': oficina,
-        'firma': firma
+        'firma': firma_url
     }
 
     # Obtener la plantilla HTML
