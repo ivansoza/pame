@@ -1,8 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[Oficina]
-<br>[Estacion Migratoria]
+<br>{{oficina|upper}}
+<br>{{estacion|upper}}
 {% endblock %}
 
 {% block title %}
@@ -91,6 +91,10 @@
         </tr>
     </tbody>
 </table>
+<br><br><br>
+<img src="http://127.0.0.1:8000{{ firma.firma_imagen.url }}" alt="Firma" 
+        style="position: absolute; top: 55%; left: 55%; transform: translate(-50%, -50%); max-width: 100%; max-height: 100%; z-index: 1;">
 <p style="border-top: 1px solid #000; width: 50%; margin: 80px auto 0; padding-top: 10px; text-align: center;">
-    <strong>FIRMA M&Eacute;DICO</strong></p>
+    <strong>FIRMA M&Eacute;DICO</strong>
+</p>
 {% endblock %}

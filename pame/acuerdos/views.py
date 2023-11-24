@@ -587,6 +587,9 @@ def recetaMedica_pdf(request, nup_id, ex_id):
     ex = consulta.extranjero
     receta = consulta
     tratamiento = consulta.tratamiento
+    estacion = consulta.extranjero.deLaEstacion.nombre
+    oficina = consulta.extranjero.deLaEstacion.oficina
+    firma = extranjero.firma
 
     # Dividir el tratamiento por comas y pasar la lista a la plantilla
     tratamiento_lista = tratamiento.split(',')
@@ -597,7 +600,10 @@ def recetaMedica_pdf(request, nup_id, ex_id):
         'medico': medico,
         'extranjero': ex,
         'receta': receta, 
-        'tratamiento': tratamiento_lista
+        'tratamiento': tratamiento_lista,
+        'estacion': estacion,
+        'oficina': oficina,
+        'firma': firma
     }
 
     # Obtener la plantilla HTML
@@ -1232,6 +1238,63 @@ def resolucionRetorno_pdf(request):
     
     return response
 
+# ----- Genera el documento PDF, de Anexo 6 (Documento provisional)
+def documentoProvisional_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/documentoProvisional.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de razones humanitarias
+@login_required(login_url="/permisoDenegado/") 
+def razonesHumanitarias_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/razonesHumanitarias.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
 # ----- Genera el documento PDF derechos y obligaciones y lo guarda en la ubicacion especificada 
 def mostrar_derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
@@ -1349,7 +1412,10 @@ def constancia_llamada(request, extranjero_id=None):
         return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
     
     
-    locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')
+    try:
+        locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')
+    except locale.Error:
+        pass  # Ignora el error si la localización no está disponible
     fecha = datetime.now().strftime('%d de %B de %Y')
 
     notificaciones = Notificacion.objects.filter(delExtranjero=extranjero.id)
