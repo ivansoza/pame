@@ -1348,9 +1348,11 @@ def razonesHumanitarias_pdf(request):
 def mostrar_derechoObligaciones_pdf(request, extranjero_id):
     extranjero = get_object_or_404(Extranjero, id=extranjero_id)
     nombre_pdf = f"DerechosObligaciones_{extranjero.id}.pdf"
+
+    nombre = extranjero
     
     # Crear el contenido del PDF
-    html_context = {'contexto': 'variables'}  # Añade las variables que necesitas aquí
+    html_context = {'contexto': 'variables', 'nombre':nombre}  # Añade las variables que necesitas aquí
     html_content = render_to_string('documentos/derechosObligaciones.html', html_context)
     html = HTML(string=html_content)
     pdf_bytes = html.write_pdf()
