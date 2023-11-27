@@ -1,7 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[OFICINA O ESTACION] 
+<br>{{oficina|upper}}
+<br>{{estacion|upper}}
 {% endblock %}
 
 {% block title %}
@@ -44,7 +45,7 @@
                     <td style="width: 40%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">{{ i }}</td>
                     <td style="width: 55%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">
                         {% if i %}
-                            <img src="http://127.0.0.1:8000{{ firma.firma_imagen.url }}" alt="Firma" style="display: block; margin: 0 auto; max-width: 50%; max-height: 50%;">
+                            <img src="{{ firma }}" alt="Firma" style="display: block; margin: 0 auto; max-width: 50%; max-height: 50%;">
                         {% endif %}
                     </td>
                 </tr>

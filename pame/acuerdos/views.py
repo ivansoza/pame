@@ -346,18 +346,25 @@ def inventarioPV_pdf(request):
     return response
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
-def listaLlamadas_pdf(request, extranjero_id):
-    extranjero = Extranjero.objects.get(id=extranjero_id)
-    llamadas = LlamadasTelefonicas.objects.filter(noExtranjero=extranjero_id)
-
+def listaLlamadas_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
+    
+    llamadas = LlamadasTelefonicas.objects.filter(
+        noExtranjero=extranjero,
+        nup=no_proceso
+    )
 
     #consultas
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
     nombre = extranjero.nombreExtranjero 
     paterno = extranjero.apellidoPaternoExtranjero
     materno = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad.nombre
     ingreso = extranjero.fechaRegistro
     firma = extranjero.firma
+    firma_url = f"{settings.BASE_URL}{firma.firma_imagen.url}"
 
     fechas_llamadas = [llamada.fechaHoraLlamada.strftime('%d/%m/%y') for llamada in llamadas]
 
@@ -366,13 +373,15 @@ def listaLlamadas_pdf(request, extranjero_id):
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'oficina':oficina,
+        'estacion': estacion,
         'nombreEx': nombre,
         'paterno': paterno,
         'materno': materno,
         'nacionalidad': nacionalidad,
         'ingreso': ingreso,
         'fechas_llamadas': fechas_llamadas,
-        'firma': firma
+        'firma': firma_url
     }
 
     # Obtener la plantilla HTML
@@ -580,7 +589,10 @@ def recetaMedica_pdf(request, nup_id, ex_id):
     extranjero = no_proceso.extranjero
 
     # Consultar la información de la consulta
-    consulta = Consulta.objects.get(extranjero=extranjero, nup=no_proceso, id=ex_id)
+    consulta = Consulta.objects.get(
+        extranjero=extranjero, 
+        nup=no_proceso, 
+        id=ex_id)
     
     #consultas 
     medico = consulta.delMedico
@@ -1459,15 +1471,62 @@ def generate_pdfsinguardar(request, extranjero_id):
     
     return response
 
+# ----- Genera el documento PDF de contancia de llamanda sin guardar
+def constancia_llamada(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
+    
+    notificacion = Notificacion.objects.get(
+        delExtranjero=extranjero,  # Filtrar por el id del extranjero
+        nup=no_proceso,
+    )
+
+    #consultas
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
+    desea = notificacion.deseaLlamar
+    motivo = notificacion.motivoNoLlamada
+    fecha = notificacion.fechaHoraNotificacion
+    firma = extranjero.firma
+    firma_url = f"{settings.BASE_URL}{firma.firma_imagen.url}"
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'ex': extranjero,
+        'oficina': oficina,
+        'estacion': estacion,
+        'desea':desea,
+        'motivo':motivo, 
+        'fecha':fecha,
+        'firma':firma_url
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/constanciaLlamada.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
 # ----- Genera el documento PDF de la constancia de llamada 
+# Esta vista no sirce fue reemplazada
 @login_required(login_url="/permisoDenegado/")
-def constancia_llamada(request, extranjero_id=None):
+def constancia_llamada_nofunciona(request, extranjero_id=None):
     
     try:
         extranjero = Extranjero.objects.get(id=extranjero_id)
     except Extranjero.DoesNotExist:
         return HttpResponseNotFound("No se encontró Extranjero con el ID proporcionado.")
-    
     
     try:
         locale.setlocale(locale.LC_TIME, 'es_MX.UTF-8')
@@ -1490,7 +1549,10 @@ def constancia_llamada(request, extranjero_id=None):
         motivo = notificacion.motivoNoLlamada
         fecha = notificacion.fechaHoraNotificacion
         firma = extranjero.firma
+        firma_url = f"{settings.BASE_URL}{extranjero.firma.firma_imagen.url}"
         nombre_pdf = f"Constancia_llamadas.pdf"
+        oficina = extranjero.deLaEstacion.oficina
+        estacion = extranjero.deLaEstacion.nombre
         
         html_context = {
             'id':id,
@@ -1503,7 +1565,9 @@ def constancia_llamada(request, extranjero_id=None):
             'apellidom': apellidom,
             'nacionalidad': nacionalidad,
             'fecha': fecha,
-            'firma':firma,
+            'firma':firma_url,
+            'oficina': oficina,
+            'estacion': estacion
         }
         
         html_content = render_to_string('documentos/constanciaLlamada.html', html_context)

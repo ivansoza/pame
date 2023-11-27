@@ -22,7 +22,7 @@ urlpatterns = [
     path("repositorio/", listRepositorio.as_view(), name="repositorio"),
     path('documentos/<str:nup>/', RepositorioListView.as_view(), name="ver_documentos"),
 
-    path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
+    path('constancia_llamadas/<str:nup_id>/<str:ex_id>/', constancia_llamada, name='constanciaLlamadas'),
 
     # pdf
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
@@ -31,7 +31,7 @@ urlpatterns = [
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('inventariopv', inventarioPV_pdf, name='inventarioPDF'),
-    path('listaLlamadas/<int:extranjero_id>', listaLlamadas_pdf, name='listaLlamadasPDF'),
+    path('listaLlamadas/<str:nup_id>/<str:ex_id>/', listaLlamadas_pdf, name='listaLlamadasPDF'),
     path('constancia-enseres/<str:nup_id>/', constanciaEnseres_pdf, name='enseresPDF'),
     path('formato-enseres/<str:nup_id>/<str:enseres_id>/', formatoEnseres_pdf, name='fenseresPDF'),
     path('ver-comparecencia/', comparecencia_pdf, name='comparecenciaPDF'),
