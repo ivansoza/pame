@@ -162,7 +162,43 @@
         </form>
     </div>
 </div>
+<!-- VENTANA PARA MOSTRAR EL QR -->
 
+<div id="qrCode" style="display:none;" class="card p-3">
+    <div class="firma-section center-content" id="autoridadActuanteSection">
+        <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+        <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
+
+        <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaAutoridadActuante"></div>
+        <button id="nextToRepresentanteLegal">Siguiente: Finalizar Proceso</button>
+    
+    </div>
+</div>
+
+<div id="generatePDFSection" style="display:none;" class="card p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <!-- Ícono de FontAwesome para representar un PDF -->
+            <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+            <br>
+            <br>
+            <br>
+
+            <a href="#"  id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+        </div>
+    </div>
+  </div>
+<div id="postSaveOptions" style="display:none;" class="card p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
+            <br><br><br>
+            <a href="{% url "lisExtranjerosComparecencia" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
+            <a href="/ruta/a/verComparecencia" class="btn btn-secondary">Ver Comparecencia</a>
+        </div>
+    </div>
+</div>
 
 <!-- VENTANA PARA MOSTRAR EL PDF -->
 <div id="pdfPreviewContainer" style="display:none; position: relative;">
@@ -200,6 +236,116 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
     });
 });
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('notificacionConsularForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Previene el envío normal del formulario
+        var formData = new FormData(this); // Recoge los datos del formulario
+
+        fetch('', { // Enviar a la misma URL que maneja el GET y POST
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // Necesario para la protección contra CSRF
+            },
+            credentials: 'same-origin' // Necesario para incluir las cookies de CSRF
+        }).then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                //CIERRA VENTANA DEL FORM Y MUESTRA LA CAPTURA DE FIRMAS 
+                document.getElementById('notificacionConsularForm').style.display = 'none';
+                document.getElementById('qrCode').style.display = 'block';
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+                //obtenemos la comparecencia.id
+                var consuladoId = data.consulado_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr/autoridadActuante/' + consuladoId;
+                intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(consuladoId); }, 1000);
+           }
+        }).catch(error => {
+            // Manejo de errores
+            console.error('Error:', error);
+        });
+    });
+});
+
+
+function verificarFirmaAutoridadActuante(consuladoId) {
+
+    fetch('/notificaciones/verificar_firma/autoridadActuante/' + consuladoId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('qrCode').style.display = 'none';
+
+            document.getElementById('generatePDFSection').style.display = 'block';
+            var generatePDFBtn = document.getElementById('generatePDFBtn');
+            generatePDFBtn.setAttribute('data-consulado-id', consuladoId);
+        }
+    });
+}
+
+//BOTON PARA GENERAR O GUARDAR LA NOTIFICACION
+document.addEventListener('DOMContentLoaded', (event) => {
+    var generatePDFBtn = document.getElementById('generatePDFBtn');
+    generatePDFBtn.onclick = () => {
+        var consuladoId = generatePDFBtn.getAttribute('data-consulado-id');
+        if (consuladoId) {
+            guardarNotificacionConsulado(consuladoId);
+        }
+    };
+});
+
+//FUNCION PARA GUARDAR LA NOTIFICACION 
+function guardarNotificacionConsulado(consuladoId) {
+    var generatePDFBtn = document.getElementById('generatePDFBtn');
+    generatePDFBtn.disabled = true; 
+    fetch('/acuerdos/comparecencia/guardar/' + consuladoId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Configurar y mostrar Toast de SweetAlert
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Comparecencia guardada con éxito. PDF disponible para descargar.'
+            });
+
+            // Después del Toast, mostrar la nueva sección con botones
+            setTimeout(() => {
+                document.getElementById('generatePDFSection').style.display = 'none';
+                document.getElementById('postSaveOptions').style.display = 'block';
+            }, 1000); // Coincide con el tiempo del Toast
+        } else {
+            // Mostrar SweetAlert de error
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error al guardar la comparecencia: ' + data.message,
+                confirmButtonText: 'Cerrar'
+            });
+        }
+    })
+    .catch(error => {
+        // Manejar errores en la solicitud fetch con SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Error al realizar la solicitud: ' + error.message,
+            confirmButtonText: 'Cerrar'
+        });
+    });
+}
 
 </script>
 

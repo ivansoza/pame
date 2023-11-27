@@ -39,7 +39,7 @@ ACCION= (
     ('Deportacion', 'DEPORTACION'),
     ('Retorno_Asistido', 'RETORNO ASISTIDO'),
 )
-class NotificcionConsular(models.Model):
+class NotificacionConsular(models.Model):
     delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación")
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name="Numero de Proceso")
     fechaNotificacion= models.DateField(auto_now_add=True)
@@ -49,8 +49,8 @@ class NotificcionConsular(models.Model):
     accion = models.CharField(max_length=50, choices= ACCION, verbose_name="Acción")
     delaAutoridad = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name="Autoridad Actuante")
 
-class FirmaAcuerdo(models.Model):
-    notificacionConsular = models.ForeignKey(NotificcionConsular, on_delete=models.CASCADE)
+class FirmaNotificacionConsular(models.Model):
+    notificacionConsular = models.ForeignKey(NotificacionConsular, on_delete=models.CASCADE)
     firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
 
     
