@@ -45,7 +45,7 @@ class NotificacionConsular(models.Model):
     fechaNotificacion= models.DateField(auto_now_add=True)
     horaNotificacion = models.DateTimeField(auto_now_add=True)
     numeroOficio = models.CharField(max_length=50, verbose_name="Numero de Oficio")
-    delConsulado = models.ForeignKey(Consulado, on_delete=models.CASCADE, verbose_name="Consulado")
+    delConsuladxo = models.ForeignKey(Consulado, on_delete=models.CASCADE, verbose_name="Consulado")
     accion = models.CharField(max_length=50, choices= ACCION, verbose_name="Acción")
     delaAutoridad = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name="Autoridad Actuante")
 

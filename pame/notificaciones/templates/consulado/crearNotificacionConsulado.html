@@ -195,7 +195,7 @@
             <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
             <br><br><br>
             <a href="{% url "lisExtranjerosComparecencia" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
-            <a href="/ruta/a/verComparecencia" class="btn btn-secondary">Ver Comparecencia</a>
+            <a id="verNotificacionBtn" class="btn btn-secondary" href="#" target="_blank">Ver Notificación</a>
         </div>
     </div>
 </div>
@@ -300,11 +300,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     };
 });
 
-//FUNCION PARA GUARDAR LA NOTIFICACION 
+//FUNCION PARA GUARDAR LA NOTIFICACION xx
 function guardarNotificacionConsulado(consuladoId) {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.disabled = true; 
-    fetch('/acuerdos/comparecencia/guardar/' + consuladoId)
+    fetch('/acuerdos/consulado/guardar/' + consuladoId)
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
@@ -313,14 +313,18 @@ function guardarNotificacionConsulado(consuladoId) {
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 1000
+                timer: 3000 // Tiempo del toast ajustado a 3000ms
             });
 
             Toast.fire({
                 icon: 'success',
-                title: 'Comparecencia guardada con éxito. PDF disponible para descargar.'
+                title: 'Notificación consular guardada con éxito. PDF disponible para descargar.'
             });
 
+            var verNotificacionBtn = document.getElementById('verNotificacionBtn');
+                if (verNotificacionBtn) {
+                    verNotificacionBtn.href = data.pdf_url; // Actualiza el enlace con la URL del PDF
+                }
             // Después del Toast, mostrar la nueva sección con botones
             setTimeout(() => {
                 document.getElementById('generatePDFSection').style.display = 'none';
@@ -331,7 +335,7 @@ function guardarNotificacionConsulado(consuladoId) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: 'Error al guardar la comparecencia: ' + data.message,
+                text: 'Error al guardar la notificación consular: ' + data.message,
                 confirmButtonText: 'Cerrar'
             });
         }
@@ -344,8 +348,12 @@ function guardarNotificacionConsulado(consuladoId) {
             text: 'Error al realizar la solicitud: ' + error.message,
             confirmButtonText: 'Cerrar'
         });
+    })
+    .finally(() => {
+        generatePDFBtn.disabled = false; // Reactiva el botón independientemente del resultado
     });
 }
+
 
 </script>
 

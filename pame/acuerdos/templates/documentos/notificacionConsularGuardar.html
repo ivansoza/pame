@@ -19,9 +19,10 @@
     <strong>Asunto: Notificaci&oacute;n Consular</strong>
 </div>
 <p>
-    <strong>SR. CÓNSUL GENERAL DE [PAÍS DESTINATARIO] EN MÉXICO</strong>
-    <br> [DIRECCIÓN FÍSICA DEL CONSULADO]
-    <br> [CORREO ELECTRÓNICO DEL CONSULADO]
+    <strong>SR. CÓNSUL GENERAL DE {{ notificacion_consular.delConsulado.pais|upper }}</strong>
+    <br> {{ notificacion_consular.delConsulado.direccion_completa|upper }}
+    <br> {{notificacion_consular.delConsulado.email|upper}}
+
     <br><strong>PRESENTE.</strong>
 </p>
 <p>
@@ -36,10 +37,16 @@
             <td style="width: 15%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>Nacionalidad</strong>&nbsp;</td>
         </tr>
         <tr>
-            <td style="width: 5%; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 45%; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 15%; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 15%; border: 1px solid rgb(0, 0, 0);"><br></td>
+            <td style="width: 5%; border: 1px solid rgb(0, 0, 0);"><br><strong>1</strong></td>
+            <td style="width: 20%; border: 1px solid rgb(0, 0, 0);"><br> <strong>
+                {{ notificacion_consular.nup.extranjero.nombreExtranjero }} {{ notificacion_consular.nup.extranjero.apellidoPaternoExtranjero }}
+                {% if notificacion_consular.nup.extranjero.apellidoMaternoExtranjero %}
+                    {{ notificacion_consular.nup.extranjero.apellidoMaternoExtranjero }}
+                {% endif %}
+            </strong>
+            </td>            
+            <td style="width: 15%; border: 1px solid rgb(0, 0, 0);"><br><strong>{{notificacion_consular.nup.extranjero.fechaNacimiento}}</strong></td>
+            <td style="width: 15%; border: 1px solid rgb(0, 0, 0);"><br><strong>{{notificacion_consular.nup.extranjero.nacionalidad.nombre}}</strong></td>
         </tr>
     </tbody>
 </table>
@@ -54,18 +61,20 @@
     En cumplimiento a lo dispuesto por el artículo	 36, numeral 1, inciso b de la Convención de Viena sobre Relaciones Consulares de 1963 y 69 fracción IV de la Ley de Migración, a efecto de que los documentos solicitados nos apoye a definir la situación migratoria de los extranjeros de mérito. 
 </p>
 <p>
-    No se omite mencionar que la <strong>[DEPORTACIÓN/RETORNO ASISTIDO]</strong> de dicha persona extranjera está siendo programada a la brevedad posible, motivo por el cual requerimos de su invaluable apoyo para la emisión del documento de viaje y así estar en posibilidad de comprar los boletos de avión correspondientes. 
+    No se omite mencionar que la <strong>{{notificacion_consular.accion}}</strong> de dicha persona extranjera está siendo programada a la brevedad posible, motivo por el cual requerimos de su invaluable apoyo para la emisión del documento de viaje y así estar en posibilidad de comprar los boletos de avión correspondientes. 
 </p>
 <p>
     Sin otro particular, le reitero las seguridades de mi atenta y distinguida consideración.
 </p>
 <div style="text-align: center;">
     <p><strong>RESPETUOSAMENTE</strong></p>
+    <img src="{{ firma_autoridad_actuante_url }}" alt="Firma de la Autoridad Actuante" style="display: block; margin: 0 auto; max-width: 100%; max-height: 100%; margin-bottom: -90px;" >
+
     <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
     <strong>
-        LIC. [NOMBRE DE LA AUTORIDAD ACTUANTE]
+        LIC. {{notificacion_consular.delaAutoridad.autoridad.nombre|upper}} {{notificacion_consular.delaAutoridad.autoridad.apellidoPaterno|upper}} {{notificacion_consular.delaAutoridad.autoridad.apellidoMaterno|upper}}
         <br>
-        [CARGO DE LA AUTORIDAD ACTUANTE]
+        {{notificacion_consular.delaAutoridad.cargo|upper}}
     </strong>
 </div>
 {% endblock %}
