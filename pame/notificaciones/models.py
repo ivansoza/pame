@@ -1,17 +1,59 @@
 from django.db import models
 from vigilancia.models import Extranjero,NoProceso  # Asegúrate de importar el modelo Extranjero correctamente
 from vigilancia.models import Estancia
-from catalogos.models import Estacion,AutoridadesActuantes
+from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes
 
+ACCION= (
+    ('Deportacion', 'DEPORTACION'),
+    ('Retorno_Asistido', 'RETORNO ASISTIDO'),
+)
 class Notificacion(models.Model):
-    fechaAceptacion = models.DateField(verbose_name='Fecha de Aceptación', auto_now_add=True)
-    no_proceso = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name='Número de Proceso Asociado', related_name='notificaciones_comaparecencia')
-    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Notificación')
-    descripcion = models.TextField(verbose_name='Descripción', blank=True, null=True)
-    estatus_notificacion = models.CharField(max_length=50, verbose_name='Estatus de Notificación', blank=True, null=True)
+
+    ESTATUS_PENDIENTE = 'pendiente'
+    ESTATUS_ACEPTADO = 'aceptado'
+    ESTATUS_RECHAZADO = 'rechazado'
+    ESTATUS_EN_PROCESO = 'en_proceso'
+
+    # Define una lista de opciones que se usarán en el campo 'choices'
+    ESTATUS_CHOICES = [
+        (ESTATUS_PENDIENTE, 'Pendiente'),
+        (ESTATUS_ACEPTADO, 'Aceptado'),
+        (ESTATUS_RECHAZADO, 'Rechazado'),
+        (ESTATUS_EN_PROCESO, 'En proceso'),
+    ]
+    fecha_aceptacion = models.DateField(auto_now_add=True, verbose_name='Fecha de Aceptación')
+    numero_proceso = models.ForeignKey(NoProceso,on_delete=models.CASCADE,verbose_name='Número de Proceso Asociado',related_name='notificaciones')
+    estacion = models.ForeignKey(Estacion,on_delete=models.CASCADE,verbose_name='Estación de Notificación')
+    descripcion = models.TextField(verbose_name='Descripción',blank=True,null=True)
+    estatus = models.CharField(max_length=20, choices=ESTATUS_CHOICES,verbose_name='Estatus de la Notificación',blank=True,null=True,default=ESTATUS_PENDIENTE)
 
     def __str__(self):
-        return f"Notificación de {self.no_proceso.extranjero.nombreExtranjero} en {self.estacion.nombre}"
+        return f"Notificación del proceso {self.numero_proceso} en {self.estacion.nombre}"
+
+    class Meta:
+        verbose_name = 'Notificación'
+        verbose_name_plural = 'Notificaciones'
+
+    
+ACCION= (
+    ('Deportacion', 'DEPORTACION'),
+    ('Retorno_Asistido', 'RETORNO ASISTIDO'),
+)
+class NotificacionConsular(models.Model):
+    delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación")
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name="Numero de Proceso")
+    fechaNotificacion= models.DateField(auto_now_add=True)
+    horaNotificacion = models.DateTimeField(auto_now_add=True)
+    numeroOficio = models.CharField(max_length=50, verbose_name="Numero de Oficio")
+    delConsulado = models.ForeignKey(Consulado, on_delete=models.CASCADE, verbose_name="Consulado")
+    accion = models.CharField(max_length=50, choices= ACCION, verbose_name="Acción")
+    delaAutoridad = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name="Autoridad Actuante")
+
+class FirmaNotificacionConsular(models.Model):
+    notificacionConsular = models.ForeignKey(NotificacionConsular, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
+
+    
 class Defensorias(models.Model):
     entidad = models.CharField(max_length=50, verbose_name="Estado de la entidad")
     nombreTitular = models.CharField(max_length=50, verbose_name="Nombre del titular")

@@ -9,8 +9,8 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
     certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
     continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, \
-    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf
-
+    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, \
+    guardar_notificacion_consular
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
     # urls prueba documentos pdf 
@@ -52,9 +52,13 @@ urlpatterns = [
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
     
     
-    path('notificacion-consulado', notificacionConsulado_pdf, name='consuladoPDF'),
-    path('solicitud-refugio', solicitudRefugio_pdf, name='ComarPDF'),
-    path('notificacion-fiscalia', notificacionFiscalia_pdf, name='fiscaliaPDF'),
+    path('notificacion-consulado/', notificacionConsulado_pdf, name='consuladoPDF'),
+    path('notificacion-consulado-guardar/', notificacionConsulado_pdf, name='consuladoPDF'),
+
+
+
+    path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
+    path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),
@@ -93,5 +97,10 @@ urlpatterns = [
     
     path('comparecencia/guardar/<int:comparecencia_id>/', guardar_comparecencia, name='guardar_comparecencia'),
     path('mostrar-comparecencia/<int:comparecencia_id>/', mostrar_comparecencia_pdf, name='guardar_comparecencia'),
+
+
+    path('consulado/guardar/<int:notificacion_consular_id>/', guardar_notificacion_consular, name='guardar_notificacion_consular'),
+    path('servir_pdf/<int:repositorio_id>/', views.servir_pdf, name='servir_pdf'),
+
 
 ]

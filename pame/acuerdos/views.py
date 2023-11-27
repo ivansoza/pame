@@ -31,6 +31,7 @@ import qrcode
 from django.http import JsonResponse
 from django.views import View
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, Http404
 
 from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
@@ -42,9 +43,9 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.core.files.storage import default_storage
 import io
-from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores
+from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion
 from salud.models import Consulta
-
+from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -182,6 +183,20 @@ class RepositorioListView(LoginRequiredMixin,ListView):
         context['seccion'] = 'verrepo'
         return context
 
+
+def servir_pdf(request, repositorio_id):
+    try:
+        repo = Repositorio.objects.get(id=repositorio_id)
+        file_path = repo.archivo.path
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/pdf")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        raise Http404
+    except Repositorio.DoesNotExist:
+        raise Http404
+    
 # ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
@@ -962,6 +977,54 @@ def notificacionConsulado_pdf(request):
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/notificacionConsular.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+
+def notificacionConsulado_pdf(request):
+    # DEFINES LOS GET QUE SE CAPTURAN EN EL FORMS
+    delaEstacion = request.POST.get('delaEstacion', '')
+    nup = request.POST.get('nup', '')
+    numeroOficio = request.POST.get('numeroOficio', '')
+    delConsulado = request.POST.get('delConsulado', '')
+    accion = request.POST.get('accion', '')
+    delaAutoridad = request.POST.get('delaAutoridad', '')
+
+
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+
+    consulado = None
+    if delConsulado:  
+        consulado = get_object_or_404(Consulado, pk=delConsulado)
+
+    context = {
+        'consulado': consulado,
+        'nup': nup,
+        'numeroOficio': numeroOficio,
+        'delConsulado': delConsulado,
+        'accion': accion,
+        'autoridad_actuante': autoridad_actuante,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al contexto
+
     }
 
     # Obtener la plantilla HTML
@@ -2235,3 +2298,76 @@ class listExtranjerosRetorno(LoginRequiredMixin,ListView):
         context['seccion'] = 'resoluciones'
         context['seccion1'] = 'retorno'
         return context
+    
+def obtener_datos_notificacion_consular(notificacion_consular_id):
+    try:
+        notificacion_consular = NotificacionConsular.objects.get(id=notificacion_consular_id)
+        firma = FirmaNotificacionConsular.objects.filter(notificacionConsular=notificacion_consular).first()
+        return notificacion_consular, firma
+    except NotificacionConsular.DoesNotExist:
+        return None, None
+def renderizar_pdf_notificacion_consular(context):
+    template = get_template('documentos/notificacionConsularGuardar.html')
+    html_content = template.render(context)
+    html = HTML(string=html_content)
+    return html.write_pdf()
+
+def guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, usuario_actual):
+    # Suponiendo que tienes modelos similares para clasificar y tipificar documentos de notificaciones consulares
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones Consulares")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion Consular", delaClasificacion=clasificacion)
+
+    # Genera un nombre único para el archivo PDF
+    nombre_pdf = f"Notificacion_Consular_{notificacion_consular.id}.pdf"
+
+    # Actualiza información relevante en el modelo NoProceso si es necesario
+    no_proceso = notificacion_consular.nup
+    # no_proceso.notificacion_consular = True  # Descomenta y ajusta si es necesario
+    no_proceso.save()
+
+    # Crea una nueva instancia en el repositorio para el archivo PDF
+    repo = Repositorio(
+        nup=notificacion_consular.nup,
+        delTipo=tipo_doc,
+        delaEstacion=usuario_actual.estancia,
+        delResponsable=usuario_actual.get_full_name(),
+    )
+
+    # Guarda el archivo PDF en el modelo Repositorio
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
+    return repo 
+
+
+def guardar_notificacion_consular(request, notificacion_consular_id):
+    notificacion_consular, firma = obtener_datos_notificacion_consular(notificacion_consular_id)
+    if not notificacion_consular:
+        return JsonResponse({'status': 'error', 'message': 'Notificación Consular no encontrada.'}, status=404)
+
+    try:
+        # Preparar contexto con las URLs de las firmas y otros datos necesarios
+        firma_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url) if firma and firma.firmaAutoridadActuante else None
+
+        context = {
+            'notificacion_consular': notificacion_consular,
+            'firma': firma,
+            'firma_autoridad_actuante_url': firma_url,
+            # Añadir más datos al contexto si es necesario
+        }
+
+        pdf_bytes = renderizar_pdf_notificacion_consular(context)
+        guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, request.user)
+        repo = guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, request.user)
+
+        pdf_url = request.build_absolute_uri(repo.archivo.url)
+
+ 
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Notificación Consular guardada con éxito y disponible para visualización.',
+            'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
+
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)

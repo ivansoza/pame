@@ -6,12 +6,12 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from weasyprint import HTML
-from vigilancia.models import Extranjero
+from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, AsignacionRepresentante
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView
-from .models import Defensorias,Relacion
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm
+from django.views.generic import ListView, CreateView, View, TemplateView
+from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -26,6 +26,19 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Max
+from django.conf import settings
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotFound
+import base64
+from django.views.decorators.csrf import csrf_exempt
+from acuerdos.models import Repositorio
+import qrcode
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.http import JsonResponse
+from django.db.models import Exists, OuterRef
+from django.http import HttpResponse, Http404
+import os
 
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
@@ -318,39 +331,42 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
 
     
     def get_queryset(self):
-            # Obtener la estación del usuario y el estado
-            estacion_usuario = self.request.user.estancia
-            estado = self.request.GET.get('estado_filtrado', 'activo')
+        # Obtener la estación del usuario y el estado
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
 
-            # Filtrar extranjeros por estación y estado
-            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-            if estado == 'activo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-            elif estado == 'inactivo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+        # Filtrar extranjeros por estación y estado
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-            # Obtener el último NoProceso para cada extranjero filtrado
-            ultimo_no_proceso = NoProceso.objects.filter(
-                extranjero_id=OuterRef('pk')
-            ).order_by('-consecutivo')
+        # Obtener los NUPs excluidos (comparecencias con delito o refugio)
+        comparecencias_excluidas = set(Comparecencia.objects.filter(
+            Q(victimaDelito=True) | Q(solicitaRefugio=True)
+        ).values_list('nup', flat=True))
 
-            extranjeros_filtrados = extranjeros_filtrados.annotate(
-                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-            )
+        # Consulta para verificar si existe una notificación consular
+        notificacion_consular_existente = NotificacionConsular.objects.filter(
+            nup=OuterRef('pk')
+        )
 
-            # Ahora filtramos NoProceso basado en estos últimos registros
-            comparecencias_excluidas = set(Comparecencia.objects.filter(
-                Q(victimaDelito=True) | Q(solicitaRefugio=True)
-            ).values_list('nup', flat=True))
+        repositorio_existente = Repositorio.objects.filter(
+        nup=OuterRef('pk')
+        ).order_by('-fechaGeneracion').values('id')[:1]
 
-        # Filtrar NoProceso excluyendo los NUPs de comparecencias con delito o refugio
-            queryset = NoProceso.objects.filter(
-                comparecencia=True
-            ).exclude(
-                nup__in=comparecencias_excluidas
-            )
+        queryset = NoProceso.objects.filter(
+            extranjero_id__in=extranjeros_filtrados.values('id'),
+            comparecencia=True
+        ).exclude(
+            nup__in=comparecencias_excluidas
+        ).annotate(
+            tiene_notificacion_consular=Exists(notificacion_consular_existente),
+            repositorio_id=Subquery(repositorio_existente)
+        )
 
-            return queryset
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -448,3 +464,117 @@ def verificar_firmas_no(request, noti_id):
         return JsonResponse({'firmas_existen': firmas_existen})
     except Exception as e:
         return JsonResponse({'error': str(e)})
+    
+
+
+class CrearNotificacionConsulado(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionConsularForm(request.POST)
+        if form.is_valid():
+            notificacionConsular = form.save(commit=False)
+            notificacionConsular.nup = no_proceso
+            notificacionConsular.save()
+
+            data = {
+                'success': True, 
+                'message': 'Notificación Consular creada con éxito.', 
+                'consulado_id': notificacionConsular.id
+            }
+            return JsonResponse(data, status=200)
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+        
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+
+        initial_data = {
+             'delaEstacion': extranjero.deLaEstacion,
+             'nup':no_proceso,
+ 
+        }
+
+        form = NotificacionConsularForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['delaAutoridad'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'notificacion',
+            'seccion': 'consulado',
+        }
+        
+        return render(request, 'consulado/crearNotificacionConsulado.html', context)
+
+
+
+def generar_qr_firma_notificacion_consular(request, consulado_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{consulado_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_notifi_consul(request, consulado_id):
+    notificacion_consular = get_object_or_404(NotificacionConsular, pk=consulado_id)
+    firma, created = FirmaNotificacionConsular.objects.get_or_create(notificacionConsular=notificacion_consular)
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente1')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteConsuladoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{consulado_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteConsuladoForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'consulado_id': consulado_id})
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante(request, consulado_id):
+    try:
+        firma = FirmaNotificacionConsular.objects.get(notificacionConsular=consulado_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNotificacionConsular.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)

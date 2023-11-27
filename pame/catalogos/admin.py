@@ -1,6 +1,12 @@
 from django.contrib import admin
 from .models import Tipos, Estatus, Estado, Estacion, Responsable,Salida, Estancia, Relacion, AutoridadesActuantes, Autoridades, RepresentantesLegales, \
-    Oficina
+    Oficina, FirmaAutoridad
+from .models import Consulado
+from vigilancia.models import Nacionalidad  # Asegúrate de que la importación esté correctamente ubicada
+from django.utils.html import format_html
+
+
+
 
 from vigilancia.models import NoProceso
 admin.site.register(Tipos)
@@ -24,8 +30,23 @@ admin.site.register(Responsable)
 admin.site.register(Salida)
 admin.site.register(Estancia)
 admin.site.register(Relacion)
-admin.site.register(AutoridadesActuantes)
-admin.site.register(Autoridades)
+class AutoridadesActuantesAdmin(admin.ModelAdmin):
+    list_display = ('autoridad', 'estacion', 'estatus', 'cargo', 'fechaInicio', 'fechaFin', 'firma_button')
+
+    def firma_button(self, obj):
+        # Verifica si existe una firma asociada
+        tiene_firma = FirmaAutoridad.objects.filter(autoridad=obj.autoridad).exists()
+        if tiene_firma:
+            # Botón en verde si la firma existe
+            return format_html('<button style="background-color: green; color: white;">Firmado</button>')
+        else:
+            # Botón en rojo si no existe firma, incluyendo el ID
+            return format_html('<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#qrModal">Sin Firma</button>')
+
+    firma_button.short_description = 'Firma'
+
+# Registrar el modelo con la clase de administración personalizada
+admin.site.register(AutoridadesActuantes, AutoridadesActuantesAdmin)
 
 @admin.register(RepresentantesLegales)
 class RepresentantesLegalesAdmin(admin.ModelAdmin):
@@ -46,3 +67,13 @@ class RepresentantesLegalesAdmin(admin.ModelAdmin):
 @admin.register(Oficina)
 class OficinasAdmin(admin.ModelAdmin):
     list_display = ('identificador', 'nombre', 'estado')
+
+
+
+
+class ConsuladoAdmin(admin.ModelAdmin):
+    list_display = ('pais', 'ciudad', 'calle', 'colonia',  'estado', 'codigo_postal')
+    list_filter = ('pais', 'estado', 'ciudad')
+
+
+admin.site.register(Consulado, ConsuladoAdmin)
