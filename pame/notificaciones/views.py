@@ -24,7 +24,9 @@ import qrcode
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
-
+from django.db.models import Exists, OuterRef
+from django.http import HttpResponse, Http404
+import os
 
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
@@ -301,39 +303,42 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
 
     
     def get_queryset(self):
-            # Obtener la estación del usuario y el estado
-            estacion_usuario = self.request.user.estancia
-            estado = self.request.GET.get('estado_filtrado', 'activo')
+        # Obtener la estación del usuario y el estado
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
 
-            # Filtrar extranjeros por estación y estado
-            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-            if estado == 'activo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-            elif estado == 'inactivo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+        # Filtrar extranjeros por estación y estado
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-            # Obtener el último NoProceso para cada extranjero filtrado
-            ultimo_no_proceso = NoProceso.objects.filter(
-                extranjero_id=OuterRef('pk')
-            ).order_by('-consecutivo')
+        # Obtener los NUPs excluidos (comparecencias con delito o refugio)
+        comparecencias_excluidas = set(Comparecencia.objects.filter(
+            Q(victimaDelito=True) | Q(solicitaRefugio=True)
+        ).values_list('nup', flat=True))
 
-            extranjeros_filtrados = extranjeros_filtrados.annotate(
-                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-            )
+        # Consulta para verificar si existe una notificación consular
+        notificacion_consular_existente = NotificacionConsular.objects.filter(
+            nup=OuterRef('pk')
+        )
 
-            # Ahora filtramos NoProceso basado en estos últimos registros
-            comparecencias_excluidas = set(Comparecencia.objects.filter(
-                Q(victimaDelito=True) | Q(solicitaRefugio=True)
-            ).values_list('nup', flat=True))
+        repositorio_existente = Repositorio.objects.filter(
+        nup=OuterRef('pk')
+        ).order_by('-fechaGeneracion').values('id')[:1]
 
-        # Filtrar NoProceso excluyendo los NUPs de comparecencias con delito o refugio
-            queryset = NoProceso.objects.filter(
-                comparecencia=True
-            ).exclude(
-                nup__in=comparecencias_excluidas
-            )
+        queryset = NoProceso.objects.filter(
+            extranjero_id__in=extranjeros_filtrados.values('id'),
+            comparecencia=True
+        ).exclude(
+            nup__in=comparecencias_excluidas
+        ).annotate(
+            tiene_notificacion_consular=Exists(notificacion_consular_existente),
+            repositorio_id=Subquery(repositorio_existente)
+        )
 
-            return queryset
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -342,6 +347,7 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
         context['seccion'] = 'consulado'
         return context
     
+
 
 class CrearNotificacionConsulado(View):
     def post(self, request, nup_id, *args, **kwargs):

@@ -100,6 +100,7 @@ urlpatterns = [
 
 
     path('consulado/guardar/<int:notificacion_consular_id>/', guardar_notificacion_consular, name='guardar_notificacion_consular'),
+    path('servir_pdf/<int:repositorio_id>/', views.servir_pdf, name='servir_pdf'),
 
 
 ]

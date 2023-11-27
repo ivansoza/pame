@@ -31,6 +31,7 @@ import qrcode
 from django.http import JsonResponse
 from django.views import View
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, Http404
 
 from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
@@ -182,6 +183,20 @@ class RepositorioListView(LoginRequiredMixin,ListView):
         context['seccion'] = 'verrepo'
         return context
 
+
+def servir_pdf(request, repositorio_id):
+    try:
+        repo = Repositorio.objects.get(id=repositorio_id)
+        file_path = repo.archivo.path
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/pdf")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        raise Http404
+    except Repositorio.DoesNotExist:
+        raise Http404
+    
 # ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
