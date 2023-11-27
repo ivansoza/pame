@@ -1,7 +1,8 @@
 from django.db import models
 from vigilancia.models import Extranjero,NoProceso  # Asegúrate de importar el modelo Extranjero correctamente
 from vigilancia.models import Estancia
-from catalogos.models import AutoridadesActuantes, Consulado, Estacion
+from catalogos.models import AutoridadesActuantes, Consulado, Estacion, Comar, Fiscalia
+from comparecencia.models import Comparecencia
 
 ACCION= (
     ('Deportacion', 'DEPORTACION'),
@@ -53,7 +54,39 @@ class FirmaNotificacionConsular(models.Model):
     notificacionConsular = models.ForeignKey(NotificacionConsular, on_delete=models.CASCADE)
     firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
 
+class NotificacionCOMAR(models.Model):
+    delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
+    deComar = models.ForeignKey(Comar, on_delete=models.CASCADE)
+    fechaNotificacion= models.DateField(auto_now_add=True)
+    numeroOficio = models.CharField(max_length=50)
+    nup= models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name="Numero de Proceso")
+    notificacionComar= models.TextField()
+    delaComparecencia = models.ForeignKey(Comparecencia, on_delete=models.CASCADE)
+    delaAutoridad = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name="Autoridad Actuante")
+    contstanciaAdmision_Rechazo = models.FileField(verbose_name="Constancia de Admisión/Rechazo:",upload_to='files/', null=True, blank=True)
+    acuerdoSuspension = models.FileField(verbose_name="Acuerdo Suspensión:",upload_to='files/', null=True, blank=True)
+class FirmaNotificacionComar(models.Model):
+    notificacionConsular = models.ForeignKey(NotificacionCOMAR, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
+
+CONDICION = (
+    ('Victima', 'VICTIMA'),
+    ('Testigo', 'TESTIGO'),
+)
+class NotificacionFiscalia(models.Model):
+    delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
+    nup= models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name="Numero de Proceso")
+    fechaNotificacion= models.DateField(auto_now_add=True)
+    numeroOficio = models.CharField(max_length=50)
+    delaFiscalia = models.ForeignKey(Fiscalia, on_delete=models.CASCADE)
+    delaComparecencia = models.ForeignKey(Comparecencia, on_delete=models.CASCADE)
+    condicion = models.CharField(max_length=50, choices= CONDICION)
+    documentoFGR = models.FileField(verbose_name="Documento FGR:",upload_to='files/', null=True, blank=True)
     
+class FirmaNotificacionFiscalia(models.Model):
+    notificacionConsular = models.ForeignKey(NotificacionFiscalia, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
+
 class Defensorias(models.Model):
     entidad = models.CharField(max_length=50, verbose_name="Estado de la entidad")
     nombreTitular = models.CharField(max_length=50, verbose_name="Nombre del titular")

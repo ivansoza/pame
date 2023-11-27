@@ -1412,6 +1412,8 @@ def guardar_pdf_repositorio(pdf_bytes, comparecencia, usuario_actual):
     )
     repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
     repo.save()
+    return repo 
+
 
 def guardar_comparecencia(request, comparecencia_id):
     comparecencia, firma = obtener_datos_comparecencia(comparecencia_id)
@@ -1436,13 +1438,17 @@ def guardar_comparecencia(request, comparecencia_id):
 
         pdf_bytes = renderizar_pdf_comparecencia(context)
         guardar_pdf_repositorio(pdf_bytes, comparecencia, request.user)
+        repo = guardar_pdf_repositorio(pdf_bytes, comparecencia, request.user)
 
+        pdf_url = request.build_absolute_uri(repo.archivo.url)
         if 'comparecencia_id' in request.session:
             del request.session['comparecencia_id']
 
         return JsonResponse({
             'status': 'success',
-            'message': 'Comparecencia guardada con éxito y disponible para visualización.'
+            'message': 'Comparecencia guardada con éxito y disponible para visualización.',
+            'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
+
         })
 
     except Exception as e:
