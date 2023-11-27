@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Defensorias, notificacionesAceptadas,Relacion,qrfirma
+from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma
 
 class DefensorForm(forms.ModelForm):
     class Meta:
@@ -21,6 +21,7 @@ class modalnotificicacionForm(forms.ModelForm):
 
 
 class QrfirmaForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
     class Meta:
-        model=qrfirma
-        fields = '__all__'
+        model=Qrfirma
+        fields = ['firmaAutoridadActuante']

@@ -56,10 +56,13 @@
     <h1 style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Captura de firma</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="hidden" id="inputFirmaImagen" name="inputFirmaImagen">
+        <input type="hidden" name="firmaAutoridadActuante" id="inputFirmaImagen">
+
+        <!-- Modal -->
+
         <div id="contenedor-principal">
             <div id="lienzo-container">
+                {% comment %} {{nombre}} {% endcomment %}
                 <canvas id="pizarra" style="width: 100%; height: 200px;"></canvas>
             </div>
             <div id="botones-container">
@@ -70,6 +73,9 @@
         </div>
 
     </form>
+
+
+
     <script>
         // JavaScript para abrir y cerrar el modal
         document.getElementById('open-modal').addEventListener('click', function () {
@@ -210,12 +216,6 @@
 
         document.getElementById('limpiar').addEventListener('click', limpiar, false);
         document.getElementById('guardar').addEventListener('click', guardar, false);
-
-        function guardar() {
-            const imgDataUrl = miCanvas.toDataURL("image/png");
-            document.getElementById('inputFirmaImagen').value = imgDataUrl;
-            document.forms[0].submit();
-        }
     </script>
 </body>
 
