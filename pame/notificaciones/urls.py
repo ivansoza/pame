@@ -23,7 +23,6 @@ urlpatterns = [
 
 
 
-
     # fin de consulado
     path("fiscalia/", listExtranjerosFiscalia.as_view(), name="listExtranjerosFiscalia"),
 

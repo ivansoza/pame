@@ -200,15 +200,17 @@ class SubirArchivo(LoginRequiredMixin,CreateView):
     
 
 
-class modalnotificar(LoginRequiredMixin,CreateView):
+class modalnotificar(LoginRequiredMixin, CreateView):
     template_name = 'modalnotificar.html'
     form_class = modalnotificicacionForm
     model = Relacion
     login_url = '/permisoDenegado/'
+
     def get_success_url(self):
         messages.success(self.request, 'Notificacion creada exitosamente')
+        extranjero_id = self.kwargs['extranjero_id']
+        return reverse_lazy('notificacion', kwargs={'pk': extranjero_id})
 
-        return reverse_lazy('defensoria')
     def get_initial(self):
         initial = super().get_initial()
         extranjero_id = self.kwargs.get('extranjero_id')
@@ -216,19 +218,19 @@ class modalnotificar(LoginRequiredMixin,CreateView):
         extranjero = Extranjero.objects.get(id=extranjero_id)
         ultimo_proceso = extranjero.noproceso_set.latest('consecutivo')
         proceso_id = ultimo_proceso.nup
-        initial['nup']= proceso_id
+        initial['nup'] = proceso_id
         defen = Defensorias.objects.get(id=defen_id)
-        initial['defensoria']= defen
+        initial['defensoria'] = defen
         initial['extranjero'] = extranjero
         return initial
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         extranjero = self.kwargs['extranjero_id']
         defenso = self.kwargs['defensoria_id']
-        context['extranjero']= get_object_or_404(Extranjero, pk=extranjero)
-        context['defensoria'] = get_object_or_404(Defensorias, pk=defenso)   
+        context['extranjero'] = get_object_or_404(Extranjero, pk=extranjero)
+        context['defensoria'] = get_object_or_404(Defensorias, pk=defenso)
         return context
-    
 
 class listExtranjerosComar(LoginRequiredMixin,ListView):
 
