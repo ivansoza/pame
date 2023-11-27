@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Defensorias, notificacionesAceptadas,Relacion, NotificcionConsular,qrfirma
+from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular,qrfirma
 
 class DefensorForm(forms.ModelForm):
     class Meta:
@@ -22,7 +22,7 @@ class modalnotificicacionForm(forms.ModelForm):
 
 class NotificacionConsularForm(forms.ModelForm):
     class Meta:
-        model = NotificcionConsular
+        model = NotificacionConsular
         fields = ['delaEstacion', 'nup', 'numeroOficio', 'delConsulado', 'accion', 'delaAutoridad']
         widgets = {
             'delaEstacion': forms.Select(attrs={'placeholder': 'Seleccione Estación'}),
@@ -34,10 +34,13 @@ class NotificacionConsularForm(forms.ModelForm):
         }
 
 
+class FirmaAutoridadActuanteConsuladoForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
 
-
-
-class QrfirmaForm(forms.ModelForm):
     class Meta:
-        model=qrfirma
-        fields = '__all__'
+        model = FirmaNotificacionConsular
+        fields = ['firmaAutoridadActuante']
+
+
+
+    

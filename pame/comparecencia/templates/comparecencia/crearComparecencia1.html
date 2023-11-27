@@ -540,7 +540,6 @@
                         document.getElementById('qrCode').style.display = 'block';
                         document.getElementById('autoridadActuanteSection').style.display = 'block';
                         var comparecenciaId = data.comparecencia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
-                        document.getElementById('qrImageAutoridadActuante').src = '/comparecencia/generar_qr/autoridadActuante/' + comparecenciaId;
                         document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
 
                         document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;

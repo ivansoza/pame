@@ -10,8 +10,8 @@ from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, Asign
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView
-from .models import Defensorias,Relacion, NotificcionConsular
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm
+from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -21,6 +21,17 @@ from comparecencia.models import Comparecencia
 from django.db.models import Q
 from django.core.files.base import ContentFile
 from django.template.loader import render_to_string, get_template
+from django.conf import settings
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotFound
+import base64
+from django.views.decorators.csrf import csrf_exempt
+from acuerdos.models import Repositorio
+import qrcode
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.http import JsonResponse
+
 
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
@@ -347,23 +358,34 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
 class CrearNotificacionConsulado(View):
     def post(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
-        notificacionConsular_id = request.session.get('notificacionConsular_id')
-        notificacionConsular_existente = NotificcionConsular.objects.filter(id=notificacionConsular_id).first()
-        form = NotificacionConsularForm(request.POST, instance=notificacionConsular_existente)
+        form = NotificacionConsularForm(request.POST)
+        if form.is_valid():
+            notificacionConsular = form.save(commit=False)
+            notificacionConsular.nup = no_proceso
+            notificacionConsular.save()
+
+            data = {
+                'success': True, 
+                'message': 'Notificación Consular creada con éxito.', 
+                'consulado_id': notificacionConsular.id
+            }
+            return JsonResponse(data, status=200)
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
         
 
     def get(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
-        extranjero = no_proceso.extranjero
-        notificacionConsular_id = request.session.get('notificacionConsular_id')
-        notificacionConsular_existente = Comparecencia.objects.filter(id=notificacionConsular_id).first()
+        extranjero = no_proceso.extranjero 
+
         initial_data = {
              'delaEstacion': extranjero.deLaEstacion,
              'nup':no_proceso,
  
         }
 
-        form = NotificacionConsularForm(instance=notificacionConsular_existente) if notificacionConsular_existente else NotificacionConsularForm(initial=initial_data)
+        form = NotificacionConsularForm(initial=initial_data)
         autoridades = AutoridadesActuantes.objects.none()
         if extranjero.deLaPuestaIMN:
                 autoridades = AutoridadesActuantes.objects.filter(
@@ -390,31 +412,57 @@ class CrearNotificacionConsulado(View):
         return render(request, 'consulado/crearNotificacionConsulado.html', context)
 
 
-    
 
-from django.shortcuts import render, redirect
-from .models import qrfirma
-from .forms import QrfirmaForm  # Reemplaza con el nombre correcto de tu formulario
+def generar_qr_firma_notificacion_consular(request, consulado_id, tipo_firma):
+    base_url = settings.BASE_URL
 
-def firma(request):
-    if request.method == 'POST':
-        form = QrfirmaForm(request.POST)
-        if form.is_valid():
-            # Guardar el formulario sin commit para obtener la instancia
-            instancia_qrfirma = form.save(commit=False)
-
-            # Obtener la imagen del canvas desde la solicitud POST
-            data_url = request.POST.get('inputFirmaImagen', '')
-            formato, imgstr = data_url.split(';base64,')  # Asumiendo que es una imagen en formato base64
-            formato = formato.split('/')[-1]
-            instancia_qrfirma.firma.save(f'firma.{formato}', ContentFile(base64.b64decode(imgstr)), save=True)
-
-            # Ahora puedes realizar cualquier otra acción que necesites y finalmente guardar la instancia del modelo
-            instancia_qrfirma.save()
-
-            return redirect('defensoria')  # Reemplaza con la ruta adecuada
-
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{consulado_id}/"
     else:
-        form = QrfirmaForm()  # Reemplaza con el nombre correcto de tu formulario
+        return HttpResponseBadRequest("Tipo de firma no válido")
 
-    return render(request, 'firmardocumento.html', {'form': form})
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_notifi_consul(request, consulado_id):
+    notificacion_consular = get_object_or_404(NotificacionConsular, pk=consulado_id)
+    firma, created = FirmaNotificacionConsular.objects.get_or_create(notificacionConsular=notificacion_consular)
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente1')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteConsuladoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{consulado_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteConsuladoForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'consulado_id': consulado_id})
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante(request, consulado_id):
+    try:
+        firma = FirmaNotificacionConsular.objects.get(notificacionConsular=consulado_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNotificacionConsular.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)

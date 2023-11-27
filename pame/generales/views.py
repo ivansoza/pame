@@ -105,3 +105,6 @@ class DefensoriaLoginView(LoginRequiredMixin,LoginView):
 
 class templeteDenegado(TemplateView):
     template_name = 'permisoDenegado.html'
+
+class firmaExistente(TemplateView):
+    template_name='firma/firma_exixtente.html'
