@@ -37,10 +37,7 @@
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ extranjero.nombreExtranjero }} <br> nup1: {% if extranjero.noproceso_set.exists %}{{ extranjero.noproceso_set.last.nup }}{% endif %} 
-                <br> nup 2: {{nup}}
-
-            <br>id: {{extranjero.id}}</td>
+            <td>{{ extranjero.nombreExtranjero }}
             <td>
                 {% if extranjero.apellidoPaternoExtranjero %}
                     {{ extranjero.apellidoPaternoExtranjero }}
