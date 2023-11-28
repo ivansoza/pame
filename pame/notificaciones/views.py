@@ -308,7 +308,7 @@ def generar_qr_firma_notificacion_comar(request, comar_id, tipo_firma):
     base_url = settings.BASE_URL
 
     if tipo_firma == "autoridadActuante":
-        url = f"{base_url}notificaciones/firma_autoridad_actuante/{comar_id}/"
+        url = f"{base_url}notificaciones/firma_autoridad_actuante-comar/{comar_id}/"
     else:
         return HttpResponseBadRequest("Tipo de firma no válido")
 
@@ -417,7 +417,7 @@ def generar_qr_firma_notificacion_fiscalia(request, fiscalia_id, tipo_firma):
     base_url = settings.BASE_URL
 
     if tipo_firma == "autoridadActuante":
-        url = f"{base_url}notificaciones/firma_autoridad_actuante/{fiscalia_id}/"
+        url = f"{base_url}notificaciones/firma_autoridad_actuante-fiscalia/{fiscalia_id}/"
     else:
         return HttpResponseBadRequest("Tipo de firma no válido")
 
@@ -427,7 +427,7 @@ def generar_qr_firma_notificacion_fiscalia(request, fiscalia_id, tipo_firma):
     return response
 
 def firma_autoridad_actuante_notifi_fiscalia(request, fiscalia_id):
-    notificacion_fiscalia = get_object_or_404(NotificacionCOMAR, pk=fiscalia_id)
+    notificacion_fiscalia = get_object_or_404(NotificacionFiscalia, pk=fiscalia_id)
     firma, created = FirmaNotificacionFiscalia.objects.get_or_create(notificacionFiscalia=notificacion_fiscalia)
 
     if firma.firmaAutoridadActuante:
@@ -454,7 +454,7 @@ def firma_autoridad_actuante_notifi_fiscalia(request, fiscalia_id):
 @csrf_exempt
 def verificar_firma_autoridad_actuante_fiscalia(request, fiscalia_id):
     try:
-        firma = FirmaNotificacionConsular.objects.get(notificacionComar=fiscalia_id)
+        firma = FirmaNotificacionFiscalia.objects.get(notificacionFiscalia=fiscalia_id)
         if firma.firmaAutoridadActuante:
             image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
             return JsonResponse({
@@ -462,7 +462,7 @@ def verificar_firma_autoridad_actuante_fiscalia(request, fiscalia_id):
                 'message': 'Firma de la Autoridad Actuante encontrada',
                 'image_url': image_url
             })
-    except FirmaNotificacionConsular.DoesNotExist:
+    except FirmaNotificacionFiscalia.DoesNotExist:
         pass
 
     return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
