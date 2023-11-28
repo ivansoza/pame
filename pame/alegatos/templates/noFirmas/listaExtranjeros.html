@@ -20,7 +20,7 @@
 {% block contenido %}
 <div class="titulo-general-container mt-2">
   <h1 class="titulo-general">
-      Pruebas y Alegatos Estación  <span class="puesta-color" ><strong>{{nombre_estacion}}</strong></span>
+      Constancias de No Firma Estación  <span class="puesta-color" ><strong>{{nombre_estacion}}</strong></span>
   </h1>
 </div>
 <br>
@@ -42,46 +42,22 @@
   <tbody>
       {% for extranjero in extranjeros %}
       <tr>
-          <td>{{ extranjero.nombreExtranjero }}</td>
+          <td>{{ extranjero.extranjero.nombreExtranjero }}</td>
           <td>
-              {% if extranjero.apellidoPaternoExtranjero %}
-                  {{ extranjero.apellidoPaternoExtranjero }}
+              {% if extranjero.extranjero.apellidoPaternoExtranjero %}
+                  {{ extranjero.extranjero.apellidoPaternoExtranjero }}
               {% endif %}
-              {% if extranjero.apellidoMaternoExtranjero %}
-                  {{ extranjero.apellidoMaternoExtranjero }}
+              {% if extranjero.extranjero.apellidoMaternoExtranjero %}
+                  {{ extranjero.extranjero.apellidoMaternoExtranjero }}
               {% endif %}</td>
-          <td>{{ extranjero.nacionalidad }}</td>
+          <td>{{ extranjero.extranjero.nacionalidad }}</td>
           
           <td>
-             {% if extranjero.tiene_presenta %}
-             <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert6(); return false;" data-title="Existencia de pruebas y/o alegatos registrada">
-                <i class="fa-solid fa-square-check"></i>           
-              </a> 
-               {% if extranjero.dd == True %}
-               {% if extranjero.tiene_alegato %}
-               <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert5(); return false;" data-title="Creacion de alegatos">
-                 <i class="fas fa-gavel"></i>              
-               </a>            
-               <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegato"  alegato_id=extranjero.alegato_id %}" data-title="Subir documentos">
-                 <i class="fa-solid fa-file-medical"></i>                
-             </a>
-           <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegatos" extranjero.id %}" data-title="Documentos">
-               <i class="fa-solid fa-folder-plus"></i>                
-           </a>
-              {% else %}
-               <a class="btn btn-sm btn-icon1 tooltip-link"
-                 href="{% url 'crearAlegato' extranjero.id %}"
-                 data-title="Crear alegato" onclick="abrir_modal_eliminar(this.href); return false;">
-                 <i class="fas fa-gavel"></i>              
-               </a>
-               {% endif %}                 
-               {% endif %} 
-               {% else %}
-               <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "presenta" extranjero.id %}" onclick="abrir_modal_eliminar(this.href); return false;" data-title="Registro de existencia pruebas y/o alegatos">
-                <i class="fa-solid fa-square-check"></i>           
-              </a>          
-             {% endif %}
-             
+              <a class="btn btn-sm btn-icon3 tooltip-link"
+                href="{% url 'crear-constancia_ajax' nup_id=extranjero.nup %}"
+                data-title="Crear constancia de no firma">
+                <i class="fa-solid fa-file-excel"></i>  
+              </a>
           </td>           
       </tr>
       {% endfor %}
@@ -131,16 +107,6 @@
 
                 <strong>Estación:</strong> {{ estacion }}
             `,
-            icon: 'success',
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#2A4B41'
-
-        });
-    }
-    function showBioAlert6() {
-        Swal.fire({
-            title: 'Registro de existencia de pruebas y/o alegatos',
-           
             icon: 'success',
             confirmButtonText: 'Entendido',
             confirmButtonColor: '#2A4B41'

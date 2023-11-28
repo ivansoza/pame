@@ -587,8 +587,9 @@ class QrsMedico(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         usuario = self.request.user
-        
-        qr_link = f"http://192.168.1.129:8082/salud/crear_firma_Medico/{usuario.id}"
+        base_url = settings.BASE_URL
+
+        qr_link = f"{base_url}salud/crear_firma_Medico/{usuario.id}"
 
         context['initial_qr_link'] = qr_link
         context['nombre'] = usuario.first_name

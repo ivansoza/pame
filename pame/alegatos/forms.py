@@ -1,5 +1,5 @@
 from django import forms
-from .models import Alegatos, DocumentosAlegatos, FirmaAlegato
+from .models import Alegatos, DocumentosAlegatos, FirmaAlegato, NoFirma, FirmasConstanciaNoFirma, presentapruebas
 
 class ValidacionArchivos(forms.Form):
     def clean_archivo(self, field_name):
@@ -57,3 +57,44 @@ class FirmaTestigo2Form1(forms.ModelForm):
     class Meta:
         model = FirmaAlegato
         fields = ['firmaTestigo2']
+
+class NoFirmaForms(forms.ModelForm):
+    class Meta:
+        model = NoFirma
+        fields = '__all__'
+
+class FirmaAutoridadActuanteFormNO(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmasConstanciaNoFirma
+        fields = ['firmaAutoridadActuante']
+
+class FirmaRepresentanteLegalFormNO(forms.ModelForm):
+    firmaRepresentanteLegal = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmasConstanciaNoFirma
+        fields = ['firmaRepresentanteLegal']
+    
+class FirmaTestigoFormNo(forms.ModelForm):
+    firmaTestigo1 = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmasConstanciaNoFirma
+        fields = ['firmaTestigo1']
+
+class FirmaTestigo2FormNo(forms.ModelForm):
+    firmaTestigo2 = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmasConstanciaNoFirma
+        fields = ['firmaTestigo2']
+
+class PresentaForms(forms.ModelForm):
+    class Meta:
+        model = presentapruebas
+        fields = '__all__'
+        widgets = {
+         'presenta': forms.RadioSelect(choices=((True, 'Sí'), (False, 'No')), attrs={'class': 'form-check-inline'})
+        }
