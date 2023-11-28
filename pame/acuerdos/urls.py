@@ -1,19 +1,31 @@
 from django.urls import path
 from . import views
-from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdoInicio_pdf, \
-    derechoObligaciones_pdf, listRepositorio, DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, lisExtranjerosPresentacion, listExtranjerosAcumulacion, \
-    listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, \
-    listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf,AcuerdoInicioCreateView, registro_acuerdo_inicio,  \
-    listExtranjerosConclusion,listExtranjerosRadicacion,listExtranjerosRecepcion, listExtranjerosRecepcion,listExtranjerosSeparacion,listExtranjerosTraslado, nombramientoRepresentante_pdf, \
-    listExtranjerosArticulo,listExtranjerosComar,listExtranjerosDeportacion,listExtranjerosLibre,listExtranjerosRetorno,RepositorioListView,mostrar_derechoObligaciones_pdf, \
-    notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
-    certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
-    continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, \
-    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, resolucionDeportacion_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, resolucionLibre_pdf, \
-    acResolucionLibre_pdf, resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf
-
-    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, \
+from .views import (
+    acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, 
+    acuerdoInicio_pdf, derechoObligaciones_pdf, listRepositorio, 
+    DocumentosListView, lisExtranjerosInicio, lisExtranjerosComparecencia, 
+    lisExtranjerosPresentacion, listExtranjerosAcumulacion, 
+    listExtranjerosConclusion, listExtranjerosRadicacion, 
+    listExtranjerosRecepcion, listExtranjerosSeparacion, 
+    listExtranjerosTraslado, listExtranjerosArticulo, listExtranjerosComar, 
+    listExtranjerosDeportacion, listExtranjerosLibre, listExtranjerosRetorno, 
+    RepositorioListView, mostrar_derechoObligaciones_pdf, 
+    AcuerdoInicioCreateView, registro_acuerdo_inicio, nombramientoRepresentante_pdf, 
+    notificacionRepresentacion_pdf, inventarioPV_pdf, listaLlamadas_pdf, 
+    constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, 
+    presentacion_pdf, certificadoMedico_pdf, noLesiones_pdf, 
+    recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, 
+    separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, 
+    continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, 
+    conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, 
+    ampliacionAlojamiento_pdf, notificacionConsulado_pdf, solicitudRefugio_pdf, 
+    notificacionFiscalia_pdf, resolucionDeportacion_pdf, guardar_comparecencia, 
+    mostrar_comparecencia_pdf, resolucionLibre_pdf, acResolucionLibre_pdf, 
+    resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, 
+    resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf, 
     guardar_notificacion_consular
+)
+
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
     # urls prueba documentos pdf 
