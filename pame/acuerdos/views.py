@@ -3304,7 +3304,7 @@ def inventarioPV_pdf(request):
     return response
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
-def listaLlamadas_pdf(request, extranjero_id):
+def listaLlamadas_pdf_noSirve(request, extranjero_id):
     extranjero = Extranjero.objects.get(id=extranjero_id)
     llamadas = LlamadasTelefonicas.objects.filter(noExtranjero=extranjero_id)
 

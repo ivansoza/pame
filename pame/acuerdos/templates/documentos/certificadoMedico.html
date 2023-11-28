@@ -153,13 +153,14 @@
 <p>TIPO DE DIETA:&nbsp;{{ cer.tipoDieta }}</p>
 <p>SINTOMAS COVID:&nbsp;{{ cer.sintomasCovid }}</p>
 <p>&nbsp;</p>
-<img src="{{firmadr}}" alt="Firma del medico" style="height: 25%; width: 50%; position: absolute; z-index: -1; top: 92%; left: 85%; transform: translate(-50%, -50%);">
 <table style="width: 100%;">
     <tbody>
         <tr>
             <td style="width: 33.3333%;">DR.&nbsp;{{dr.nombreMedico|title}}&nbsp;{{dr.apellidosMedico|title}}</td>
             <td style="width: 33.3333%;">C&Eacute;DULA:&nbsp;{{dr.cedula}}</td>
-            <td style="width: 33.3333%;">FIRMA:&nbsp;</td>
+            <td style="width: 33.3333%;">FIRMA:&nbsp;
+                <img src="{{firmadr}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 20; left: 15cm; transform: translate(-50%, -95%); object-fit: cover;">
+            </td>
         </tr>
     </tbody>
 </table>
@@ -171,7 +172,7 @@
         <tr>
             <td style="width: 50.0000%;">NOMBRE:&nbsp;{{ex.nombreExtranjero}} {{ex.apellidoPaternoExtranjero}} {{ex.apellidoMaternoExtranjero}}</td>
             <td style="width: 50.0000%;">FIRMA:&nbsp;
-                <img src="{{firmaex}}" alt="Firma del medico" style="height: 25%; width: 50%; position: absolute; z-index: -1; top: 10%; left: 80%; transform: translate(-50%, -50%);">
+                <img src="{{firmaex}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 15cm; transform: translate(-50%, -70%); object-fit: cover;">
             </td>
         </tr>
     </tbody>
