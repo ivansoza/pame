@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Tipos, Estatus, Estado, Estacion, Responsable,Salida, Estancia, Relacion, AutoridadesActuantes, Autoridades, RepresentantesLegales, \
-    Oficina, FirmaAutoridad
+    Oficina, FirmaAutoridad, Fiscalia, Comar
 from .models import Consulado
 from vigilancia.models import Nacionalidad  # Asegúrate de que la importación esté correctamente ubicada
 from django.utils.html import format_html
@@ -77,3 +77,8 @@ class ConsuladoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Consulado, ConsuladoAdmin)
+
+admin.site.register(Fiscalia)
+admin.site.register(Comar)
+
+

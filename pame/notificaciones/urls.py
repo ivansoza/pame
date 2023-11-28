@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .import views
-from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
+from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante, CrearNotificacionComar, CrearNotificacionFiscalia
 
 
 urlpatterns = [
@@ -26,6 +26,10 @@ urlpatterns = [
 
     # fin de consulado
     path("fiscalia/", listExtranjerosFiscalia.as_view(), name="listExtranjerosFiscalia"),
+
+
+    path('crear-notificacion-comar/<str:nup_id>/', CrearNotificacionComar.as_view(), name='crear_notificacion-comar'),
+    path('crear-notificacion-fiscalia/<str:nup_id>/', CrearNotificacionFiscalia.as_view(), name='crear_notificacion-fiscalia'),
 
 
 ]

@@ -83,6 +83,8 @@ class NotificacionFiscalia(models.Model):
     delaFiscalia = models.ForeignKey(Fiscalia, on_delete=models.CASCADE)
     delaComparecencia = models.ForeignKey(Comparecencia, on_delete=models.CASCADE)
     condicion = models.CharField(max_length=50, choices= CONDICION)
+    delaAutoridad = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name="Autoridad Actuante")
+
     documentoFGR = models.FileField(verbose_name="Documento FGR:",upload_to='files/', null=True, blank=True)
     
 class FirmaNotificacionFiscalia(models.Model):

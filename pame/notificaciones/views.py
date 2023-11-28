@@ -6,7 +6,7 @@ from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView
 from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -246,6 +246,119 @@ class listExtranjerosComar(LoginRequiredMixin,ListView):
         context['navbar'] = 'Notificaciones'
         context['seccion'] = 'comar'
         return context
+    
+
+class CrearNotificacionComar(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionComarForm(request.POST)
+        if form.is_valid():
+            notificacionComar= form.save(commit=False)
+            notificacionComar.nup = no_proceso
+            notificacionComar.save()
+            data = {
+                    'success': True, 
+                    'message': 'Notificación Comar creada con éxito.', 
+                    'comar_id': notificacionComar.id
+                }
+            return JsonResponse(data, status=200)
+
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+
+        initial_data = {
+             'delaEstacion': extranjero.deLaEstacion,
+             'nup':no_proceso,
+ 
+        }
+
+        form =  NotificacionComarForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['delaAutoridad'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'notificacion',
+            'seccion': 'comar',
+        }
+        
+        return render(request, 'comar/crearNotificacionComar.html', context)
+
+
+class CrearNotificacionFiscalia(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionFiscaliaForm(request.POST)
+        if form.is_valid():
+            notificacionFiscalia= form.save(commit=False)
+            notificacionFiscalia.nup = no_proceso
+            notificacionFiscalia.save()
+            data = {
+                    'success': True, 
+                    'message': 'Notificación Fiscalia creada con éxito.', 
+                    'fiscalia_id': notificacionFiscalia.id
+                }
+            return JsonResponse(data, status=200)
+
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+
+        initial_data = {
+             'delaEstacion': extranjero.deLaEstacion,
+             'nup':no_proceso,
+ 
+        }
+
+        form =  NotificacionFiscaliaForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['delaAutoridad'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'notificacion',
+            'seccion': 'fiscalia',
+        }
+        
+        return render(request, 'fiscalia/crearNotificacionFiscalia.html', context)
+
 
 class listExtranjerosFiscalia(LoginRequiredMixin,ListView):
 
