@@ -43,7 +43,6 @@ class PuestaDisposicionINM(models.Model):
     oficioComision = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
-
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
         ordering = ['-fechaOficio']

@@ -43,7 +43,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import base64
 from django.core.files.storage import default_storage
 import io
-from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion
+from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
 from salud.models import Consulta, CertificadoMedico, FirmaMedico
 from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular
 
@@ -4016,6 +4016,21 @@ def solicitudRefugio_pdf(request):
     delaAutoridad = request.POST.get('delaAutoridad', '')
     no_proceso = get_object_or_404(NoProceso, nup=nup)
     extranjero = no_proceso.extranjero
+    comparecencias = no_proceso.comparecencias.all()
+    comparecencia = comparecencias.last() 
+
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+    puestas = {
+        'puesta_imn': extranjero.deLaPuestaIMN,
+        'puesta_ac': extranjero.deLaPuestaAC,
+        'puesta_vp': extranjero.deLaPuestaVP,
+    }
+    puestas = {key: val for key, val in puestas.items() if val is not None}
+    comar = None
+    if deComar:  
+        comar = get_object_or_404(Comar, pk=deComar)
 
 
 
@@ -4023,6 +4038,11 @@ def solicitudRefugio_pdf(request):
         'contexto': 'variables',
         'nup': nup,
         'extranjero': extranjero,  # Agregando el objeto extranjero al context
+        'autoridad_actuante': autoridad_actuante,
+        'comparecencias': comparecencia,  # Agregar comparecencias al contexto
+        'puestas': puestas,  # Agregar el diccionario de puestas al contexto
+        'deComar': comar,
+
     }
 
     template = get_template('documentos/refugioComar.html')

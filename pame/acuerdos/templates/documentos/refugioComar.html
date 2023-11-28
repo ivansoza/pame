@@ -1,8 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[Oficina de representacion]
-<br>[Estacion migratoria]
+<br>{{extranjero.deLaEstacion.oficina|upper}}
+<br>{{extranjero.deLaEstacion.nombre|upper}}
 <br>
 <br>[Lugar y fecha completa]
 <br><br>N&Uacute;MERO DE OFICIO: INM/---/---/---/AÑO
@@ -17,21 +17,27 @@
 {% block content %}
 <div style="text-align: right;">
     <strong>
-        Asunto: SOLICITUD DE REFUGIO  
-
-            {% if extranjero %}
-            si hay 
-            {% else %}
-            no hay 
-            {% endif %}
+        Asunto: SOLICITUD DE REFUGIO <strong>
+                {{ extranjero.nombreExtranjero |upper}} {{ extranjero.apellidoPaternoExtranjero |upper}}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero |upper}}
+                {% endif %}
+            </strong>
     </strong>
 </div>
 <p>
     <strong>
         COMISIÓN MEXICANA DE AYUDA A REFUGIADOS.
     </strong>
-    <br>[DIRECCIÓN FÍSICA]
+
+    {% if deComar %}
+    <br>{{deComar.direccion_completa|upper}}
+     <br>{{deComar.email|upper}}
+    {% else %}
+    <br>[DIRECCIÓN FÍSICA]  
     <br>[CORREO ELECTRÓNICO]
+
+    {% endif %}
     <br>
     <strong>
         P R E S E N T E
@@ -39,9 +45,26 @@
 </p>
 <p>
     Por este medio y atendiendo a lo establecido por los artículos 109 fracción II de la Ley de Migración; 226 fracción IV del Reglamento de la misma Ley y artículo 17 párrafo primero del Acuerdo por el que se emiten la Normas para el funcionamiento de las Estaciones Migratorias y Estancias Provisionales del Instituto Nacional de Migración, me permito informar a usted que 
-    el [FECHA DE PUESTA A DISPOSICION] fue puesto a disposición de esta Autoridad Migratoria el 
-    extranjero [NOMBRE Y APELLIDOS] de nacionalidad [NACIONALIDAD], quien en comparecencia de 
-    fecha [FECHA DE COMPARECENCIA] solicitó de manera formal iniciar el trámite correspondiente para la obtención del reconocimiento de la condición de refugiado en México, por lo que lo se hace de su conocimiento para los efectos de cooperación interinstitucional y lo conducente.
+    el <strong>{% if puestas.puesta_imn %}
+ {{ puestas.puesta_imn.fechaOficio }}
+{% endif %}
+
+{% if puestas.puesta_ac %}
+    {{ puestas.puesta_ac.fechaOficio }}
+{% endif %}
+
+{% if puestas.puesta_vp %}
+   {{ puestas.puesta_vp.fechaOficio }}
+{% endif %}
+</strong>
+ fue puesto a disposición de esta Autoridad Migratoria el 
+    extranjero <strong>
+                {{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero}}
+                {% endif %}
+            </strong> de nacionalidad <strong>{{extranjero.nacionalidad.nombre}}</strong>, quien en comparecencia de 
+    fecha <strong>{{comparecencias.fechahoraComparecencia}}</strong> solicitó de manera formal iniciar el trámite correspondiente para la obtención del reconocimiento de la condición de refugiado en México, por lo que lo se hace de su conocimiento para los efectos de cooperación interinstitucional y lo conducente.
 </p>
 <p>
     Sin más por el momento aprovecho la oportunidad para enviarle un cordial saludo.
@@ -49,10 +72,19 @@
 <div style="text-align: center;">
     <p><strong>ATENTAMENTE.</strong></p>
     <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    {% if autoridad_actuante%}
+    <strong>
+        LIC. {{autoridad_actuante|upper}}
+        <br>
+        {{autoridad_actuante.cargo|upper}}
+    </strong>
+    {% else %}
     <strong>
         LIC. [NOMBRE DE LA AUTORIDAD ACTUANTE]
         <br>
         [CARGO DE LA AUTORIDAD ACTUANTE]
     </strong>
+    
+    {% endif %}
 </div>
 {% endblock %}
