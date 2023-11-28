@@ -1,0 +1,364 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
+{% endblock link %}
+{% block titulo %}Crear Notification a Fiscalía {% endblock titulo %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'listExtranjerosComar' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+
+
+{% endblock dashboard %}
+
+
+{% block contenido %}
+
+<style>
+    #myTab .nav-link {
+        pointer-events: none; /* Desactiva los eventos del ratón como el clic */
+        color: #9E8364; /* Color antes de ser seleccionado */
+        font-weight: normal;
+    }
+    
+    #myTab .nav-link.active {
+        pointer-events: auto; /* Activa los eventos del ratón para la pestaña activa */
+        color: #000; /* Un color más fuerte cuando esté activo */
+        font-weight: bold;
+    }
+    input[readonly] {
+        background-color: #e9ecef;
+        color: #495057;
+        cursor: not-allowed;
+      }
+
+
+      .input-required {
+        border: 2px solid #d9534f; /* Rojo con un borde más grueso para mayor visibilidad */
+        border-radius: 4px; /* Opcional, para bordes redondeados */
+      }
+      
+      /* Opcional: Agrega un asterisco rojo a las etiquetas de los campos requeridos */
+      label.required::after {
+        content: " *";
+        color: red;
+      }
+      .input-required {
+        border: 2px solid #d9534f; /* Ajusta el color y el grosor del borde según necesites */
+      }
+      
+      .input-required + label::after {
+        content: " *";
+        color: red;
+      }
+
+
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
+    }
+
+    
+    #nextToRepresentanteLegal,
+#nextToExtranjero,
+#nextToTraductor,
+#nextToTestigo1,
+#nextToTestigo2,
+#finalizarFirmas {
+    background-color: #902F4A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilos al pasar el mouse por encima de los botones */
+#nextToRepresentanteLegal:hover,
+#nextToExtranjero:hover,
+#nextToTraductor:hover,
+#nextToTestigo1:hover,
+#nextToTestigo2:hover,
+#finalizarFirmas:hover {
+    background-color: #902F4A; /* Mantiene el mismo color de fondo */
+    box-shadow: none; /* Elimina la sombra para un aspecto más plano */
+    cursor: default; /* Cambia el cursor al estilo predeterminado */
+
+}
+
+.titulo-compare{
+    background-color: #777777;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: default;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+
+}
+
+
+</style>
+
+
+<div class="container mt-3">
+    <div class="titulo-general-container ">
+        <h1 class="titulo-general">
+            Crear Notificación a Fiscalía: 
+            <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
+        </h1>
+    </div>
+    <div id="notificacionConsularFormContainer">
+        <form method="post" id="notificacionConsularForm">
+            {% csrf_token %}
+            <div class="card p-3">
+                <!-- Navegación por Pestañas -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="notificacion-tab" data-toggle="tab" href="#notificacion" role="tab" aria-controls="notificacion" aria-selected="true">Notificación Consular</a>
+                    </li>
+                    <!-- Más pestañas si son necesarias -->
+                </ul>
+
+                <!-- Contenido de las Pestañas -->
+                <div class="tab-content" id="myTabContent">
+                    <!-- Sección de Notificación Consular -->
+                    <div class="tab-pane fade show active" id="notificacion" role="tabpanel" aria-labelledby="notificacion-tab">
+                        <div class="row">
+                            <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.numeroOficio|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.delaFiscalia|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.delaComparecencia|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.condicion|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.delaAutoridad|as_crispy_field }}</div>
+                        </div>
+                    </div>
+                    <!-- Más secciones de contenido según sea necesario -->
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="action-buttons" style="text-align:left;">
+                    <button type="button" class="btn btn-icon2" id="previewPdfButton">Previsualizar PDF</button>
+                    <button type="submit" class="btn btn-custom2" id="createNotificationButton">Crear Notificación</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="qrCode" style="display:none;" class="card p-3">
+    <div class="firma-section center-content" id="autoridadActuanteSection">
+        <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+        <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
+
+        <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaAutoridadActuante"></div>
+        <button id="nextToRepresentanteLegal">Siguiente: Finalizar Proceso</button>
+    
+    </div>
+</div>
+
+<div id="generatePDFSection" style="display:none;" class="card p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <!-- Ícono de FontAwesome para representar un PDF -->
+            <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+            <br>
+            <br>
+            <br>
+
+            <a href="#"  id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+        </div>
+    </div>
+  </div>
+<div id="postSaveOptions" style="display:none;" class="card p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
+            <br><br><br>
+            <a href="{% url "listExtranjerosConsulado" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
+            <a id="verNotificacionBtn" class="btn btn-secondary" href="#" target="_blank">Ver Notificación</a>
+        </div>
+    </div>
+</div>
+
+<!-- VENTANA PARA MOSTRAR EL PDF -->
+<div id="pdfPreviewContainer" style="display:none; position: relative;">
+    <button id="closePdfPreviewButton" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: #873542; color: white;">Cerrar</button>
+    <iframe id="pdfPreview" style="width:100%; height:600px; margin-top: 60px;"></iframe>
+</div>
+
+
+
+<!-- PREVISUALIZAR PDF -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('previewPdfButton').addEventListener('click', function() {
+        var formData = new FormData(document.getElementById('notificacionConsularForm'));
+        
+        fetch('/acuerdos/notificacion-fiscalia/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            credentials: 'same-origin'
+        }).then(response => response.blob())
+          .then(blob => {
+              var pdfUrl = URL.createObjectURL(blob);
+              document.getElementById('pdfPreview').src = pdfUrl;
+              document.getElementById('pdfPreviewContainer').style.display = 'block';
+          })
+          .catch(error => {
+              console.error('Error al generar la vista previa del PDF:', error);
+          });
+    });
+
+    // Event listener para el botón de cerrar
+    document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
+        document.getElementById('pdfPreviewContainer').style.display = 'none';
+        document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
+    });
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('notificacionConsularForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Previene el envío normal del formulario
+        var formData = new FormData(this); // Recoge los datos del formulario
+
+        fetch('', { // Enviar a la misma URL que maneja el GET y POST
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // Necesario para la protección contra CSRF
+            },
+            credentials: 'same-origin' // Necesario para incluir las cookies de CSRF
+        }).then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                //CIERRA VENTANA DEL FORM Y MUESTRA LA CAPTURA DE FIRMAS 
+                document.getElementById('notificacionConsularForm').style.display = 'none';
+                document.getElementById('qrCode').style.display = 'block';
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+                //obtenemos la comparecencia.id
+                var fiscaliaId = data.fiscalia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr-fiscalia/autoridadActuante/' + fiscaliaId;
+                intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(fiscaliaId); }, 1000);
+           }
+        }).catch(error => {
+            // Manejo de errores
+            console.error('Error:', error);
+        });
+    });
+});
+
+
+function verificarFirmaAutoridadActuante(fiscaliaId) {
+
+    fetch('/notificaciones/verificar_firma-fiscalia/autoridadActuante/' + fiscaliaId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('qrCode').style.display = 'none';
+
+            document.getElementById('generatePDFSection').style.display = 'block';
+            var generatePDFBtn = document.getElementById('generatePDFBtn');
+            generatePDFBtn.setAttribute('data-consulado-id', fiscaliaId);
+        }
+    });
+}
+
+//BOTON PARA GENERAR O GUARDAR LA NOTIFICACION
+document.addEventListener('DOMContentLoaded', (event) => {
+    var generatePDFBtn = document.getElementById('generatePDFBtn');
+    generatePDFBtn.onclick = () => {
+        var fiscaliaId = generatePDFBtn.getAttribute('data-consulado-id');
+        if (fiscaliaId) {
+            guardarNotificacionConsulado(fiscaliaId);
+        }
+    };
+});
+
+//FUNCION PARA GUARDAR LA NOTIFICACION xx
+function guardarNotificacionConsulado(fiscaliaId) {
+    var generatePDFBtn = document.getElementById('generatePDFBtn');
+    generatePDFBtn.disabled = true; 
+    fetch('/acuerdos/consulado/guardar/' + fiscaliaId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Configurar y mostrar Toast de SweetAlert
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000 // Tiempo del toast ajustado a 3000ms
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Notificación consular guardada con éxito. PDF disponible para descargar.'
+            });
+
+            var verNotificacionBtn = document.getElementById('verNotificacionBtn');
+                if (verNotificacionBtn) {
+                    verNotificacionBtn.href = data.pdf_url; // Actualiza el enlace con la URL del PDF
+                }
+            // Después del Toast, mostrar la nueva sección con botones
+            setTimeout(() => {
+                document.getElementById('generatePDFSection').style.display = 'none';
+                document.getElementById('postSaveOptions').style.display = 'block';
+            }, 1000); // Coincide con el tiempo del Toast
+        } else {
+            // Mostrar SweetAlert de error
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Error al guardar la notificación consular: ' + data.message,
+                confirmButtonText: 'Cerrar'
+            });
+        }
+    })
+    .catch(error => {
+        // Manejar errores en la solicitud fetch con SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Error al realizar la solicitud: ' + error.message,
+            confirmButtonText: 'Cerrar'
+        });
+    })
+    .finally(() => {
+        generatePDFBtn.disabled = false; // Reactiva el botón independientemente del resultado
+    });
+}
+
+
+</script>
+
+{% endblock contenido %}

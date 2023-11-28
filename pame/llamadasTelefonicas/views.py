@@ -161,6 +161,7 @@ class ListLlamadas(LoginRequiredMixin,ListView):
         context['estancia_extranjero'] = estancia_extranjero
         context['navbar'] = 'seguridad'
         context['seccion'] = 'seguridadINM'
+        context['nup'] = ultimo_nup
         return context
     
 class crearLlamadas(LoginRequiredMixin,CreateView):
@@ -575,7 +576,7 @@ class validarNotificacion(LoginRequiredMixin,CreateView):
         extranjero = get_object_or_404(Extranjero, id=llamada_id)
         form.instance.noExtranjero = extranjero
         response = super().form_valid(form)
-        constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
+        # constancia_llamada(self.request, extranjero_id=self.object.delExtranjero.id)
         return response
     
     
@@ -584,7 +585,7 @@ class validarNotificacion(LoginRequiredMixin,CreateView):
         llamada_id = self.kwargs['llamada_id']
         # Obtener la instancia del Extranjero correspondiente
         llamada = Extranjero.objects.get(pk=llamada_id)
-        nombre_extranjero = llamada.nombreExtranjero
+        nombre_extranjero = llamada.nombreExtranjero 
         estancia_extranjero = llamada.deLaEstacion
         ape = llamada.apellidoPaternoExtranjero
         ame = llamada.apellidoMaternoExtranjero

@@ -46,7 +46,8 @@ class listaExtranjerosEstacion(LoginRequiredMixin, ListView):
     model = Extranjero
     template_name='servicioInterno/extranjeroEstacion.html'
     context_object_name = 'extranjeros'
-    login_url = '/permisoDenegado/'  
+    login_url = '/permisoDenegado/'
+
     def get_queryset(self):
         # Obtener la estación del usuario actualmente autenticado.
         estacion_usuario = self.request.user.estancia
@@ -94,6 +95,7 @@ class listaExtranjerosEstacion(LoginRequiredMixin, ListView):
                     context['estacion'] = estacion  # Cambia esto según la página activa
 
 
+
             extranjero.tiene_constanciaLesiones = tiene_constanciaLesiones
         for extranjero in context['extranjeros']:
             ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
@@ -108,13 +110,17 @@ class listaExtranjerosEstacion(LoginRequiredMixin, ListView):
                     context['fecha'] = fecha  # Cambia esto según la página activa
                     context['estacion'] = estacion  # Cambia esto según la página activa
 
-
             extranjero.tiene_egreso = tiene_egreso
         context['navbar'] = 'medico'  # Cambia esto según la página activa
         context['seccion'] = 'interno'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre
 
+        # Obtener el último NUP del extranjero y agregarlo al contexto
+        ultimo_nup_extranjero = extranjero.noproceso_set.order_by('-consecutivo').first()
+        context['nup'] = ultimo_nup_extranjero
+
         return context
+    
     
     
 class certificadoMedico(LoginRequiredMixin, CreateView):

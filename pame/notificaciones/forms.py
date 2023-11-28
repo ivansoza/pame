@@ -1,6 +1,8 @@
 # forms.py
 from django import forms
 from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
+from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular,qrfirma
+from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia
 
 class DefensorForm(forms.ModelForm):
     class Meta:
@@ -42,6 +44,33 @@ class FirmaAutoridadActuanteConsuladoForm(forms.ModelForm):
         model = FirmaNotificacionConsular
         fields = ['firmaAutoridadActuante']
 
+class NotificacionComarForm(forms.ModelForm):
+    class Meta:
+        model = NotificacionCOMAR
+        fields = ['delaEstacion', 'deComar','numeroOficio','nup','notificacionComar','delaComparecencia','delaAutoridad']
+
+class FirmaAutoridadActuanteComarForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaNotificacionComar
+        fields = ['firmaAutoridadActuante']
+
+class NotificacionFiscaliaForm(forms.ModelForm):
+    class Meta:
+        model = NotificacionFiscalia
+        fields = ['delaEstacion', 'nup','numeroOficio','delaFiscalia','delaComparecencia','condicion','delaAutoridad' ]
+
+
+class FirmaAutoridadActuanteFiscaliaForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = FirmaNotificacionFiscalia
+        fields = ['firmaAutoridadActuante']
+
+
+    
 
 
 
