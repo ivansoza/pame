@@ -14,7 +14,7 @@
 <div class="modal-dialog modal-lg" role="document" >
     <div class="modal-content">
         <div class="modal-header custom-header-color">
-            <h2 class="modal-title">Crear prueba o alegato</h2>
+            <h2 class="modal-title">Crear Oficio</h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -39,11 +39,14 @@
                     </div>
                 </div> 
                 <div class="row">
-                    <div class="col-sm-12 col-md-4 col-lg-6"  >
+                    <div class="col-sm-12 col-md-4 col-lg-6" style='display:none'  >
                         {{ form.lugarEmision|as_crispy_field }}
                     </div>
                     <div class="col-sm-12 col-md-4 col-lg-6" >
                         {{ form.autoridadActuante|as_crispy_field }}
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-6" >
+                        {{ form.repreLegal|as_crispy_field }}
                     </div>
                 </div>           
             </div>

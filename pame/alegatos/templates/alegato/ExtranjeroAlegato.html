@@ -36,6 +36,7 @@
           <th>Apellido(s)</th>
           <th>Nacionalidad</th>
           <th style="width: 5%;">Opciones</th>
+
       </tr>
   </thead>
   <tbody>
@@ -53,7 +54,7 @@
           
           <td>
              {% if extranjero.tiene_alegato %}
-              <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert5(); return false;" data-title="Certificado Medico Egreso">
+              <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert5(); return false;" data-title="Creacion de alegatos">
                 <i class="fas fa-gavel"></i>              
               </a>            
               <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "documentosAlegato" extranjero.id%}" data-title="Subir documentos">
@@ -70,8 +71,7 @@
               </a>
              {% endif %}
              
-          </td>
-                     
+          </td>           
       </tr>
       {% endfor %}
 
@@ -82,6 +82,7 @@
               <th>Nacionalidad</th>
               <!-- <th>Puesta</th> -->
               <th style="width: 5%;">Opciones</th>
+
           </tr>
       </tfoot>
 
