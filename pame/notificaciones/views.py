@@ -351,13 +351,13 @@ def firma_autoridad_actuante_notifi_comar(request, comar_id):
             firma.firmaAutoridadActuante.save(file_name, file, save=True)
             return redirect(reverse_lazy('firma_exitosa'))
     else:
-        form = FirmaAutoridadActuanteConsuladoForm()
+        form = FirmaAutoridadActuanteComarForm()
     return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'comar_id': comar_id})
 
 @csrf_exempt
 def verificar_firma_autoridad_actuante_comar(request, comar_id):
     try:
-        firma = FirmaNotificacionConsular.objects.get(notificacionComar=comar_id)
+        firma = FirmaNotificacionComar.objects.get(notificacionComar=comar_id)
         if firma.firmaAutoridadActuante:
             image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
             return JsonResponse({
@@ -365,7 +365,7 @@ def verificar_firma_autoridad_actuante_comar(request, comar_id):
                 'message': 'Firma de la Autoridad Actuante encontrada',
                 'image_url': image_url
             })
-    except FirmaNotificacionConsular.DoesNotExist:
+    except FirmaNotificacionComar.DoesNotExist:
         pass
 
     return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
