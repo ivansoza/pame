@@ -56,10 +56,11 @@ urlpatterns = [
     path('notificacion-consulado-guardar/', notificacionConsulado_pdf, name='consuladoPDF'),
 
 
-
+    # COMAR
     path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
+        # path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
 
-    
+    # FISCALIA
     path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
 
     # acuerdos

@@ -28,6 +28,7 @@ from django.db.models import Exists, OuterRef
 from django.http import HttpResponse, Http404
 import os
 
+from .models import NotificacionCOMAR,FirmaNotificacionComar,NotificacionFiscalia,FirmaNotificacionFiscalia
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
     template_name='notificacion.html'
@@ -303,6 +304,59 @@ class CrearNotificacionComar(View):
         
         return render(request, 'comar/crearNotificacionComar.html', context)
 
+def generar_qr_firma_notificacion_comar(request, comar_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{comar_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_notifi_comar(request, comar_id):
+    notificacion_comar = get_object_or_404(NotificacionCOMAR, pk=comar_id)
+    firma, created = FirmaNotificacionComar.objects.get_or_create(notificacionComar=notificacion_comar)
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente1')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteComarForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{comar_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteConsuladoForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'comar_id': comar_id})
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante_comar(request, comar_id):
+    try:
+        firma = FirmaNotificacionConsular.objects.get(notificacionComar=comar_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNotificacionConsular.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
 
 class CrearNotificacionFiscalia(View):
     def post(self, request, nup_id, *args, **kwargs):
@@ -358,6 +412,61 @@ class CrearNotificacionFiscalia(View):
         }
         
         return render(request, 'fiscalia/crearNotificacionFiscalia.html', context)
+
+def generar_qr_firma_notificacion_fiscalia(request, fiscalia_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{fiscalia_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_notifi_fiscalia(request, fiscalia_id):
+    notificacion_fiscalia = get_object_or_404(NotificacionCOMAR, pk=fiscalia_id)
+    firma, created = FirmaNotificacionFiscalia.objects.get_or_create(notificacionFiscalia=notificacion_fiscalia)
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente1')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteFiscaliaForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{fiscalia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteFiscaliaForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'fiscalia_id': fiscalia_id})
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante_fiscalia(request, fiscalia_id):
+    try:
+        firma = FirmaNotificacionConsular.objects.get(notificacionComar=fiscalia_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNotificacionConsular.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
 
 
 class listExtranjerosFiscalia(LoginRequiredMixin,ListView):

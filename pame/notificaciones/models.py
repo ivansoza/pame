@@ -67,7 +67,7 @@ class NotificacionCOMAR(models.Model):
     contstanciaAdmision_Rechazo = models.FileField(verbose_name="Constancia de Admisión/Rechazo:",upload_to='files/', null=True, blank=True)
     acuerdoSuspension = models.FileField(verbose_name="Acuerdo Suspensión:",upload_to='files/', null=True, blank=True)
 class FirmaNotificacionComar(models.Model):
-    notificacionConsular = models.ForeignKey(NotificacionCOMAR, on_delete=models.CASCADE)
+    notificacionComar = models.ForeignKey(NotificacionCOMAR, on_delete=models.CASCADE)
     firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
 
 CONDICION = (
@@ -88,7 +88,7 @@ class NotificacionFiscalia(models.Model):
     documentoFGR = models.FileField(verbose_name="Documento FGR:",upload_to='files/', null=True, blank=True)
     
 class FirmaNotificacionFiscalia(models.Model):
-    notificacionConsular = models.ForeignKey(NotificacionFiscalia, on_delete=models.CASCADE)
+    notificacionFiscalia = models.ForeignKey(NotificacionFiscalia, on_delete=models.CASCADE)
     firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True, verbose_name="Firma de la Autoridad Actuante") #Ubicacion de archivos/imagenes()
 
 class Defensorias(models.Model):
