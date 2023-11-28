@@ -1,6 +1,7 @@
 from django.db import models
 from vigilancia.models import Extranjero,NoProceso  # Asegúrate de importar el modelo Extranjero correctamente
 from vigilancia.models import Estancia
+from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion, Comar, Fiscalia
 from comparecencia.models import Comparecencia
 
@@ -119,9 +120,14 @@ class notificacionesAceptadas(models.Model):
 
 class Relacion(models.Model):
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    autoridad_actuante = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, related_name='autoridad_actuante')
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
     defensoria = models.ForeignKey(Defensorias, on_delete=models.CASCADE)
     fechaHora = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
          return f"{self.extranjero}"
+     
+class qrfirma(models.Model):
+    autoridad = models.ForeignKey(Relacion, on_delete=models.CASCADE)
+    firma = models.ImageField(upload_to='files/', null=True, blank=True)

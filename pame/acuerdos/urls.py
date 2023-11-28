@@ -9,6 +9,9 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     notificacionRepresentacion_pdf,AcuerdoInicioCreateView, inventarioPV_pdf, listaLlamadas_pdf, constanciaEnseres_pdf, formatoEnseres_pdf, comparecencia_pdf, presentacion_pdf, \
     certificadoMedico_pdf, noLesiones_pdf, recetaMedica_pdf, recepcionDoc_pdf, noFirma_pdf, radicacion_pdf, separacionAlojados_pdf, acumulacionExpedientes_pdf, suspensionProvisional_pdf, \
     continuacionProcedimiento_pdf, egresoInstalacion_pdf, administrativo_pdf, conclusionProcedimiento_pdf, procedimientoAdministrativo_pdf, ampliacionAlojamiento_pdf, \
+    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, resolucionDeportacion_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, resolucionLibre_pdf, \
+    acResolucionLibre_pdf, resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf
+
     notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, \
     guardar_notificacion_consular
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
@@ -21,7 +24,7 @@ urlpatterns = [
     path("repositorio/", listRepositorio.as_view(), name="repositorio"),
     path('documentos/<str:nup>/', RepositorioListView.as_view(), name="ver_documentos"),
 
-    path('constancia_llamadas/<int:extranjero_id>', constancia_llamada, name='constanciaLlamadas'),
+    path('constancia_llamadas/<str:nup_id>/<str:ex_id>/', constancia_llamada, name='constanciaLlamadas'),
 
     # pdf
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
@@ -30,12 +33,12 @@ urlpatterns = [
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('inventariopv', inventarioPV_pdf, name='inventarioPDF'),
-    path('listaLlamadas/<int:extranjero_id>', listaLlamadas_pdf, name='listaLlamadasPDF'),
+    path('listaLlamadas/<str:nup_id>/<str:ex_id>/', listaLlamadas_pdf, name='listaLlamadasPDF'),
     path('constancia-enseres/<str:nup_id>/', constanciaEnseres_pdf, name='enseresPDF'),
     path('formato-enseres/<str:nup_id>/<str:enseres_id>/', formatoEnseres_pdf, name='fenseresPDF'),
     path('ver-comparecencia/', comparecencia_pdf, name='comparecenciaPDF'),
     path('acpresentacion', presentacion_pdf, name='presentacionPDF'),
-    path('certificado-medico', certificadoMedico_pdf, name='certificadoPDF'),
+    path('certificado-medico/<str:nup_id>/<str:ex_id>/', certificadoMedico_pdf, name='certificadoPDF'),
     path('no-lesiones', noLesiones_pdf, name='nolesionesPDF'),
     path('recetaMedica/<str:nup_id>/<str:ex_id>/', recetaMedica_pdf, name='recetaPDF'),
     path('recepcion-documentos', recepcionDoc_pdf, name='recepcionDocPDF'),
@@ -62,6 +65,15 @@ urlpatterns = [
 
     # FISCALIA
     path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
+    path('resolucion-deportacion', resolucionDeportacion_pdf, name='deportacionPDF'),
+    path('resolucion-libretransito', resolucionLibre_pdf, name='librePDF'),
+    path('acuerdo-libretransito', acResolucionLibre_pdf, name='aclibrePDF'),
+    path('resolucion-regularizacion', resolucionRegularizacion_pdf, name='regularizacionPDF'),
+    path('oficio-regularizacion', oficioRegularizacion_pdf, name='oregularizacionPDF'),
+    path('resolucion-comar', resolucionComar_pdf, name='rcomarPDF'),
+    path('resolucion-retorno', resolucionRetorno_pdf, name='retornoPDF'),
+    path('documento-provisional', documentoProvisional_pdf, name='provisionalPDF'),
+    path('razones-humanitarias', razonesHumanitarias_pdf, name='razonesPDF'),
 
     # acuerdos
     path("inicio/", lisExtranjerosInicio.as_view(), name="lisExtranjerosInicio"),

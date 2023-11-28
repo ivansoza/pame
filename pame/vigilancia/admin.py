@@ -6,7 +6,7 @@ class ExtranjeroAdmin(admin.ModelAdmin):
     list_display = ["fechaRegistro", "horaRegistro","numeroExtranjero","nombreExtranjero","apellidoPaternoExtranjero"]
 
 class NacionalidadAdmin(admin.ModelAdmin):
-    list_display = ['identificador', 'Abreviatura', 'nombre']
+    list_display = ['identificador', 'nombre', 'Abreviatura']
 
 admin.site.register(Extranjero, ExtranjeroAdmin)
 

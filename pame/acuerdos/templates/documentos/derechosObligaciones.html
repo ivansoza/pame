@@ -1,40 +1,59 @@
-{% extends "documentos/base.html" %}
-
 {% block header %}
-<br>[NOMBRE OFICINA DE REPRESENTACION] 
-<br>[NOMBRE DE ESTACION MIGRATORIA]
 {% endblock %}
 
 {% block title %}
-Derechos y Obligaciones 
+<title>Derechos y Obligaciones</title>
 {% endblock %}
 
 <style>
-    {% block pagina %}
+    {
+        % block pagina %
+    }
+
     @page {
         size: 8.5in 11in;
         size: landscape;
     }
-    {% endblock %}
 
-    {% block estilosExtras %}
+        {
+        % endblock %
+    }
+
+        {
+        % block estilosExtras %
+    }
+
+    #header {
+        font-size: 10pt;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: auto;
+        text-align: right;
+        padding: 10px;
+        margin-top: -2.3cm;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
     }
 
-    th, td {
+    th,
+    td {
         padding: 8px;
         text-align: justify;
         border: 1px solid black;
-        font-size: 7pt;
+        font-size: 6pt;
     }
 
-    th:first-child, td:first-child {
+    th:first-child,
+    td:first-child {
         width: 38%;
     }
 
-    th:not(:first-child), td:not(:first-child) {
+    th:not(:first-child),
+    td:not(:first-child) {
         width: 25%;
     }
 
@@ -42,13 +61,25 @@ Derechos y Obligaciones
         padding: 8px;
         text-align: left;
     } */
-    {% endblock %}
+        {
+        % endblock %
+    }
 </style>
 
 {% block content %}
-<div style="text-align: center; font-size: 10pt;">
+<div id="header">
+    <p>
+        SECRETARÍA DE GOBERNACIÓN<br>
+        INSTITUTO NACIONAL DE MIGRACIÓN <br>
+        {{oficina|upper}} <br>
+        {{estacion|upper}}
+    </p>
+</div>
+<br>
+<div style="text-align: center; font-size: 9pt;">
     <strong>
-    Durante el tiempo que usted permanezca alojado en esta Estación Migratoria, tiene los siguientes derechos y obligaciones:
+        Durante el tiempo que usted {{nombre.nombreExtranjero}} {{nombre.apellidoPaternoExtranjero}} {{nombre.apellidoMaternoExtranjero}} permanezca alojado en esta Estación Migratoria, tiene los siguientes derechos y
+        obligaciones:
     </strong>
 </div>
 <strong>
@@ -57,73 +88,126 @@ Derechos y Obligaciones
 <table>
     <tr>
         <td>
-            <span style="font-size: 10pt;">
+            <span style="font-size: 9pt;">
                 <strong>Derechos</strong>
             </span><br>
             <div style="padding-left: 10pt;">
-                1. Recibir de los servidores públicos que laboran en esta estación migratoria un trato digno y de respeto a sus derechos humanos. 
-                2.	Ser informado oportunamente sobre su situación migratoria. <br style="padding-left: 10pt;">
-                3.	Recibir atención médica, asistencia y representación legal, al ingreso mediante su permanecía. <br>
-                4.	A declarar mediante acta administrativa en presencia de dos testigos, en que se le hagan saber los hechos que se le imputan y su derecho a ofrecer pruebas, y alegar lo que a su derecho convenga, así como a estar asistido por su representante o persona de su confianza y en su caso, a que se habilite un traductor o intérprete para el desahogo de la diligencia. <br>
-                5.	Al inventario de las pertenencias que traiga consigo, así como a su depósito y resguardo en el área establecida para ello. <br>
-                6.	A que esta autoridad notifique a su representación consular de su aseguramiento y si usted lo desea, a solicitar a dicha representación la asistencia que le pudiere otorgar. <br>
+                1. Recibir de los servidores públicos que laboran en esta estación migratoria un trato digno y de
+                respeto a sus derechos humanos.
+                2. Ser informado oportunamente sobre su situación migratoria. <br style="padding-left: 10pt;">
+                3. Recibir atención médica, asistencia y representación legal, al ingreso mediante su permanecía. <br>
+                4. A declarar mediante acta administrativa en presencia de dos testigos, en que se le hagan saber los
+                hechos que se le imputan y su derecho a ofrecer pruebas, y alegar lo que a su derecho convenga, así como
+                a estar asistido por su representante o persona de su confianza y en su caso, a que se habilite un
+                traductor o intérprete para el desahogo de la diligencia. <br>
+                5. Al inventario de las pertenencias que traiga consigo, así como a su depósito y resguardo en el área
+                establecida para ello. <br>
+                6. A que esta autoridad notifique a su representación consular de su aseguramiento y si usted lo desea,
+                a solicitar a dicha representación la asistencia que le pudiere otorgar. <br>
                 <div style="padding-left: 10pt;">
-                    Los niños, niñas y adolescentes que por alguna razón sean alojados en una estación migratoria, tendrán el derecho de permanecer a lado de su familia o reintegrarse a ella; contar con actividades de propicien la sana convivencia y estancia con otros niños, niñas y adolescentes; y que se privilegie su estancia en instituciones adecuadas para su sano desarrollo físico y emocional, salvaguardando en todo momento el interés superior del niño. <br>
+                    Los niños, niñas y adolescentes que por alguna razón sean alojados en una estación migratoria,
+                    tendrán el derecho de permanecer a lado de su familia o reintegrarse a ella; contar con actividades
+                    de propicien la sana convivencia y estancia con otros niños, niñas y adolescentes; y que se
+                    privilegie su estancia en instituciones adecuadas para su sano desarrollo físico y emocional,
+                    salvaguardando en todo momento el interés superior del niño. <br>
                 </div>
-                7.	A solicitar a que la autoridad migratoria resuelva su situación jurídica. <br>
-                8.	Solicitar al jefe de la estación migratoria, de manera pacífica y respetuosa, las audiencias que sean necesarias. <br>
-                9.	Recibir tres alimentos al día, espacio para dormir, cobija o cobertor y enseres básicos de aseo personal. <br>
-                10.	Comunicarse vía telefónica o por cualquier medio, con la persona que usted solicite, dentro del horario establecido para ellos. <br>
-                11.	A ser visitado por sus familiares, amista des, cónyuge o concubino, autoridades, re presentantes consulares y organismos no gubernamentales, representante legal y ministros de culto religioso acreditados, en los horarios determinados para tal efecto previa autorización. <br>
-                12.	A que le sean devueltas, en su oportunidad, sus pertenencias inventariadas y res guardadas por la autoridad con excepción de la documentación falsa que, en su caso, haya presentado. <br>
-                13.	A solicitar información para obtener la condición de refugiado, debido a un temor de persecución fundado por motivos de raza, religión, nacionalidad, pertenecer a un determinado grupo social, o una opinión política, se encuentra fuera del país de su nacionalidad y no pueda o, a causa de dichos temo res, no quiera acogerse a la protección del país, o en su caso, si considera que su seguridad está en riesgo en su país de origen. <br>
-                14.	A informar al responsable de la estación migratoria si durante su permanencia o tránsito por este país se han violado sus derechos y sea canalizada si queja ante la instancia que corresponda. <br>
-                15.	A denunciar ante la autoridad competen te si durante su permanencia o tránsito por este país ha sido víctima o testigo de algún delito, para lo cual el responsable de esta estación migratoria brindara las facilidades que estime necesarias. Asimismo, podrá ser considerado para regularizar su situación migratoria en el país. <br>
-                16.	A depositar sus quejas y/o sugerencias en el buzón respectivo el cual se encuentra tanto en el interior como en el exterior de la estación migratoria. <br>
-                17.	A no ser discriminado por las autoridades y alojado a causa de su origen étnico o nacional, sexo, edad, discapacidad, condición social o económica, estado de salud, embarazo, lengua, religión, opiniones, preferencias sexuales, estado civil o cualquier otra. <br>
+                7. A solicitar a que la autoridad migratoria resuelva su situación jurídica. <br>
+                8. Solicitar al jefe de la estación migratoria, de manera pacífica y respetuosa, las audiencias que sean
+                necesarias. <br>
+                9. Recibir tres alimentos al día, espacio para dormir, cobija o cobertor y enseres básicos de aseo
+                personal. <br>
+                10. Comunicarse vía telefónica o por cualquier medio, con la persona que usted solicite, dentro del
+                horario establecido para ellos. <br>
+                11. A ser visitado por sus familiares, amista des, cónyuge o concubino, autoridades, re presentantes
+                consulares y organismos no gubernamentales, representante legal y ministros de culto religioso
+                acreditados, en los horarios determinados para tal efecto previa autorización. <br>
+                12. A que le sean devueltas, en su oportunidad, sus pertenencias inventariadas y res guardadas por la
+                autoridad con excepción de la documentación falsa que, en su caso, haya presentado. <br>
+                13. A solicitar información para obtener la condición de refugiado, debido a un temor de persecución
+                fundado por motivos de raza, religión, nacionalidad, pertenecer a un determinado grupo social, o una
+                opinión política, se encuentra fuera del país de su nacionalidad y no pueda o, a causa de dichos temo
+                res, no quiera acogerse a la protección del país, o en su caso, si considera que su seguridad está en
+                riesgo en su país de origen. <br>
+                14. A informar al responsable de la estación migratoria si durante su permanencia o tránsito por este
+                país se han violado sus derechos y sea canalizada si queja ante la instancia que corresponda. <br>
+                15. A denunciar ante la autoridad competen te si durante su permanencia o tránsito por este país ha sido
+                víctima o testigo de algún delito, para lo cual el responsable de esta estación migratoria brindara las
+                facilidades que estime necesarias. Asimismo, podrá ser considerado para regularizar su situación
+                migratoria en el país. <br>
+                16. A depositar sus quejas y/o sugerencias en el buzón respectivo el cual se encuentra tanto en el
+                interior como en el exterior de la estación migratoria. <br>
+                17. A no ser discriminado por las autoridades y alojado a causa de su origen étnico o nacional, sexo,
+                edad, discapacidad, condición social o económica, estado de salud, embarazo, lengua, religión,
+                opiniones, preferencias sexuales, estado civil o cualquier otra. <br>
             </div>
-            <strong>Art. 109</strong> de la Ley de Migración. <strong>Art. 24 </strong>del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias Provisionales del INM.
+            <strong>Art. 109</strong> de la Ley de Migración. <strong>Art. 24 </strong>del Acuerdo por el que se Emiten
+            las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias Provisionales del INM.
         </td>
         <td>
-            <span style="font-size: 10pt;">
+            <span style="font-size: 9pt;">
                 <strong>Obligaciones</strong>
             </span>
             <div style="padding-left: 10pt;">
-                1.	Observar y respetar las indicaciones de los servidores públicos de la estación migratoria. <br>
-                2.	Brindar un trato digno y respetuoso o los servidores públicos que laboran en esta estación migratoria. <br>
-                3.	Responder con veracidad las preguntas que se le formulen para la integración de su expediente. <br>
-                4.	Respetar a las personas que se encuentren en su misma condición de alojados sin importar su origen étnico o nacional, sexo, edad, discapacidad, condición social o económica, estado de salud, lengua, religión, preferencias sexuales, estado civil o cualquier otra condición. <br>
-                5.	Cumplir con los horarios establecidos por la autoridad para realizar las siguientes actividades. <br>
+                1. Observar y respetar las indicaciones de los servidores públicos de la estación migratoria. <br>
+                2. Brindar un trato digno y respetuoso o los servidores públicos que laboran en esta estación
+                migratoria. <br>
+                3. Responder con veracidad las preguntas que se le formulen para la integración de su expediente. <br>
+                4. Respetar a las personas que se encuentren en su misma condición de alojados sin importar su origen
+                étnico o nacional, sexo, edad, discapacidad, condición social o económica, estado de salud, lengua,
+                religión, preferencias sexuales, estado civil o cualquier otra condición. <br>
+                5. Cumplir con los horarios establecidos por la autoridad para realizar las siguientes actividades. <br>
                 <div style="padding-left: 10pt;">
-                    •	Aseo de cama y dormitorio <br>
-                    •	Aseo personal <br>
-                    •	Desayuno <br>
-                    •	Servicio médico, recibir visitas, realizar llamadas, participar en las actividades deportivas, recreativas, educativas y culturales <br>
-                    •	Comida <br>
-                    •	Cena <br>
-                    •	Ingreso al espacio asignado para dormir <br>
-                </div>    
-                6.	Cumplir con las normas mínimas de higiene y salubridad establecidas por la autoridad. <br>
-                7.	Depositar su equipaje y demás valores en el área asignada al ingresar a esta estación. <br>
-                8.	Acatar las indicaciones de la autoridad durante su traslado o conducciones. <br>
-                9.	Cuidar las instalaciones, mobiliario y equipo de la estación migratoria, absteniéndose de maltratarlos y de no ocasionar ningún disturbio, comportarse con respeto y orden a efecto de salvaguardar la seguridad de las instalaciones y de quienes se encuentran en la misma ante cualquier intento de fuga. Así como de cualquier acto que ponga en riesgo la seguridad, en cuyo caso será acreedor a las sanciones administrativas o penales a que haya lugar, para la autoridad competente. <br>
-                10.	Abstenerse de la introducción de bebidas alcohólicas, estupefacientes, drogas, enervantes, psicotrópicos, sustancias toxicas, medicamentos no autorizados, utensilios ilícitos o punzo cortantes y explosivos. Asimismo, abstenerse de realizar actos de comercio, posesión y uso de telefonía o radio comunicación no permitidos en la estación migratoria. <br>
+                    • Aseo de cama y dormitorio <br>
+                    • Aseo personal <br>
+                    • Desayuno <br>
+                    • Servicio médico, recibir visitas, realizar llamadas, participar en las actividades deportivas,
+                    recreativas, educativas y culturales <br>
+                    • Comida <br>
+                    • Cena <br>
+                    • Ingreso al espacio asignado para dormir <br>
+                </div>
+                6. Cumplir con las normas mínimas de higiene y salubridad establecidas por la autoridad. <br>
+                7. Depositar su equipaje y demás valores en el área asignada al ingresar a esta estación. <br>
+                8. Acatar las indicaciones de la autoridad durante su traslado o conducciones. <br>
+                9. Cuidar las instalaciones, mobiliario y equipo de la estación migratoria, absteniéndose de
+                maltratarlos y de no ocasionar ningún disturbio, comportarse con respeto y orden a efecto de
+                salvaguardar la seguridad de las instalaciones y de quienes se encuentran en la misma ante cualquier
+                intento de fuga. Así como de cualquier acto que ponga en riesgo la seguridad, en cuyo caso será acreedor
+                a las sanciones administrativas o penales a que haya lugar, para la autoridad competente. <br>
+                10. Abstenerse de la introducción de bebidas alcohólicas, estupefacientes, drogas, enervantes,
+                psicotrópicos, sustancias toxicas, medicamentos no autorizados, utensilios ilícitos o punzo cortantes y
+                explosivos. Asimismo, abstenerse de realizar actos de comercio, posesión y uso de telefonía o radio
+                comunicación no permitidos en la estación migratoria. <br>
             </div>
-                <strong>Art. 26 </strong>del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las Estaciones Migratorias y Estancias Provisionales del INM. <br>
-                <strong>
-                    He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta estación migratoria. <br>
-                </strong>
-            
+            <strong>Art. 26 </strong>del Acuerdo por el que se Emiten las Normas para el Funcionamiento de las
+            Estaciones Migratorias y Estancias Provisionales del INM. <br>
+            <strong>
+                He leído y comprendo los derechos y obligaciones que debo observar durante mi permanencia en esta
+                estación migratoria. <br>
+            </strong>
+
         </td>
     </tr>
 </table>
-<div style="font-size: 7pt;">
+<div style="font-size: 6pt; text-align: justify;">
     <strong>¿Quién puede ser un refugiado?</strong> <br>
-    La Ley sobre Refugiados y Protección Complementaria establece en su artículo 13 que la condición de refugiado se reconocerá a todo extranjero que se encuentre en territorio nacional, bajo alguno de los siguientes supuestos: <br>
-    I.	Que debido a fundados temores de ser perseguido por motivos de raza, religión, nacionalidad, género, pertenencia a determinado grupo social u opiniones políticas, se encuentre fuera del país de su nacionalidad y no pueda o, a causa de dichos temores, no quiera acogerse a la protección de tal país; o que, careciendo de nacionalidad y hallándose, a consecuencia de tales acontecimientos, fuera del país donde antes tuviera residencia habitual, no pueda o, a causa de dichos temores, no quiera regresar a él; <br>
-    II.	Que ha huido de su país de origen, porque su vida, seguridad o libertad han sido amenazadas por violencia generalizada, agresión extranjera, conflictos internos, violación masiva de los derechos humanos u otras circunstancias que hayan perturbado gravemente el orden público, y <br>
-    III.	Que debido a circunstancias que hayan surgido en su país de origen o como resultado de actividades realizadas, durante su estancia en territorio nacional, tenga fundados temores de ser perseguido por motivos de raza, religión, nacionalidad, género, pertenencia a determinado grupo social u opiniones políticas, o su vida, seguridad o libertad pudieran ser amenazadas por violencia generalizada, agresión extranjera, conflictos internos, violación masiva de los derechos humanos u otras circunstancias que hayan perturbado gravemente el orden público <br>
-    <strong>Contacto: COMAR Dinamarca 84, Piso 4, Col Juárez, Delegación Cuauhtémoc, CP 06600, Ciudad de México, Tel: 5552098800, Ext 30133 y 30147</strong>
+    La Ley sobre Refugiados y Protección Complementaria establece en su artículo 13 que la condición de refugiado se
+    reconocerá a todo extranjero que se encuentre en territorio nacional, bajo alguno de los siguientes supuestos: <br>
+    I. Que debido a fundados temores de ser perseguido por motivos de raza, religión, nacionalidad, género, pertenencia
+    a determinado grupo social u opiniones políticas, se encuentre fuera del país de su nacionalidad y no pueda o, a
+    causa de dichos temores, no quiera acogerse a la protección de tal país; o que, careciendo de nacionalidad y
+    hallándose, a consecuencia de tales acontecimientos, fuera del país donde antes tuviera residencia habitual, no
+    pueda o, a causa de dichos temores, no quiera regresar a él; <br>
+    II. Que ha huido de su país de origen, porque su vida, seguridad o libertad han sido amenazadas por violencia
+    generalizada, agresión extranjera, conflictos internos, violación masiva de los derechos humanos u otras
+    circunstancias que hayan perturbado gravemente el orden público, y <br>
+    III. Que debido a circunstancias que hayan surgido en su país de origen o como resultado de actividades realizadas,
+    durante su estancia en territorio nacional, tenga fundados temores de ser perseguido por motivos de raza, religión,
+    nacionalidad, género, pertenencia a determinado grupo social u opiniones políticas, o su vida, seguridad o libertad
+    pudieran ser amenazadas por violencia generalizada, agresión extranjera, conflictos internos, violación masiva de
+    los derechos humanos u otras circunstancias que hayan perturbado gravemente el orden público <br>
+    <strong>Contacto: COMAR Dinamarca 84, Piso 4, Col Juárez, Delegación Cuauhtémoc, CP 06600, Ciudad de México, Tel:
+        5552098800, Ext 30133 y 30147</strong>
 </div>
 {% endblock %}
 

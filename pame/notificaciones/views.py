@@ -1,6 +1,11 @@
+from audioop import reverse
+import base64
 from datetime import timezone
 from typing import Any
+from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from weasyprint import HTML
 from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, AsignacionRepresentante
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,6 +19,8 @@ from vigilancia.models import NoProceso
 from django.db.models import OuterRef, Subquery
 from comparecencia.models import Comparecencia
 from django.db.models import Q
+from django.core.files.base import ContentFile
+from django.template.loader import render_to_string, get_template
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponse, HttpResponseNotFound
@@ -88,14 +95,7 @@ class defensoria(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['navbar'] = 'notificaciones'
-        context['seccion'] = 'defensoria'
-        context['nombre_estacion'] = self.request.user.estancia.nombre
-        return context
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
-        context['seccion'] = 'verextranjero'  # Cambia esto según la página activa
+        context['seccion'] = 'notificaciones'
         context['nombre_estacion'] = self.request.user.estancia.nombre
 
         ahora = timezone.now() # Hora Actual
@@ -123,6 +123,7 @@ class defensoria(LoginRequiredMixin, ListView):
             else:
                 extranjero.horas_transcurridas = 0
                 extranjero.minutos_transcurridos = 0
+                
         return context
      
 
@@ -140,8 +141,13 @@ def defensores(request):
     else:
         form = DefensorForm()
 
-    return render(request, 'defensorias.html', {'form': form})
+    context = {
+        'form': form,
+        'navbar': 'catalogos',
+        'seccion': 'defensorias',
+    }
 
+    return render(request, 'defensorias.html', context)
 
 
 
@@ -150,8 +156,14 @@ class tabladefensores(LoginRequiredMixin,ListView):
     template_name = 'tabladefensores.html'
     context_object_name = 'defensorias'
     login_url = '/permisoDenegado/' 
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'defensorias'    
+        return context
 
-
+    
 from .models import notificacionesAceptadas, Defensorias
 
 # views.py
@@ -199,7 +211,7 @@ class modalnotificar(LoginRequiredMixin,CreateView):
         extranjero = self.kwargs['extranjero_id']
         defenso = self.kwargs['defensoria_id']
         context['extranjero']= get_object_or_404(Extranjero, pk=extranjero)
-        context['defensoria'] = get_object_or_404(Defensorias, pk=defenso)
+        context['defensoria'] = get_object_or_404(Defensorias, pk=defenso)   
         return context
     
 

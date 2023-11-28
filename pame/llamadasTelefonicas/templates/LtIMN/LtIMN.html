@@ -65,12 +65,11 @@
     </tbody>
 </table>
 {{ objetos.fechaHoraLlamada }}
-<a class="btn btn-custom6" href="{% url 'listaLlamadasPDF' llamada.id %}" target="_blank">Imprimir Documento</a>
-{% if url_oficio_llamada %}
-    <a href="{{ url_oficio_llamada }}" target="_blank" class="btn btn-custom6">
+<a class="btn btn-custom6" href="{% url 'listaLlamadasPDF' nup llamada.id %}" target="_blank">Imprimir Documento</a>
+
+    <a href="{% url 'constanciaLlamadas' nup llamada.id %}" target="_blank" class="btn btn-custom6">
         Ver constancia de llamadas
     </a>
-{% endif %}
 <br>
 <br>
 
