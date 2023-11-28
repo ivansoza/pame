@@ -3495,15 +3495,42 @@ def presentacion_pdf(request):
     return response
 
 # ----- Genera el documento PDF, de Certificado Medico 
-def certificadoMedico_pdf(request):
-    # no_proceso = NoProceso.objects.get(nup=nup_id)
-    # extranjero = no_proceso.extranjero
+def certificadoMedico_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
     
-    #consultas 
-    
+    # Obtener informacion del centificado medico
+    certificado = CertificadoMedico.objects.get(
+        extranjero=extranjero,
+        nup=no_proceso
+    )
+
+    #consultas
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
+    ex = extranjero
+    cert = certificado 
+    foto = extranjero.biometrico
+    foto_url = f"{settings.BASE_URL}{foto.fotografiaExtranjero.url}"
+    firma_ex = extranjero.firma
+    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+    dr = certificado.delMedico
+    firma_dr = FirmaMedico.objects.filter(medico=dr.usuario).first()
+    firma_dr_url = f"{settings.BASE_URL}{firma_dr.firma_imagen.url}"
+
+    print("La URL de la foto es:", foto_url)
+
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'oficina': oficina,
+        'estacion': estacion,
+        'ex':ex,
+        'cer':cert,
+        'foto':foto_url,
+        'dr':dr, 
+        'firmadr':firma_dr_url,
+        'firmaex':firmaex_url
     }
 
     # Obtener la plantilla HTML
