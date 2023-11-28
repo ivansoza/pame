@@ -329,7 +329,7 @@
                 <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
                 <br><br><br>
                 <a href="{% url "lisExtranjerosComparecencia" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
-                <a href="/ruta/a/verComparecencia" class="btn btn-secondary">Ver Comparecencia</a>
+                <a id="verNotificacionBtn" class="btn btn-secondary" href="#" target="_blank">Ver Notificación</a>
             </div>
         </div>
     </div>
@@ -540,8 +540,8 @@
                         document.getElementById('qrCode').style.display = 'block';
                         document.getElementById('autoridadActuanteSection').style.display = 'block';
                         var comparecenciaId = data.comparecencia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                        document.getElementById('qrImageAutoridadActuante').src = '/comparecencia/generar_qr/autoridadActuante/' + comparecenciaId;
                         document.getElementById('qrImageRepresentanteLegal').src = '/comparecencia/generar_qr/representanteLegal/' + comparecenciaId;
-
                         document.getElementById('qrImageTraductor').src = '/comparecencia/generar_qr/traductor/' + comparecenciaId;
                         document.getElementById('qrImageExtranjero').src = '/comparecencia/generar_qr/extranjero/' + comparecenciaId;
                         document.getElementById('qrImageTestigo1').src = '/comparecencia/generar_qr/testigo1/' + comparecenciaId;
@@ -801,6 +801,11 @@
                     icon: 'success',
                     title: 'Comparecencia guardada con éxito. PDF disponible para descargar.'
                 });
+
+                var verNotificacionBtn = document.getElementById('verNotificacionBtn');
+                    if (verNotificacionBtn) {
+                        verNotificacionBtn.href = data.pdf_url; // Actualiza el enlace con la URL del PDF
+                    }
     
                 // Después del Toast, mostrar la nueva sección con botones
                 setTimeout(() => {

@@ -31,6 +31,7 @@ import qrcode
 from django.http import JsonResponse
 from django.views import View
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, Http404
 
 from .forms import FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
@@ -44,7 +45,7 @@ from django.core.files.storage import default_storage
 import io
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion
 from salud.models import Consulta, CertificadoMedico, FirmaMedico
-
+from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -182,6 +183,20 @@ class RepositorioListView(LoginRequiredMixin,ListView):
         context['seccion'] = 'verrepo'
         return context
 
+
+def servir_pdf(request, repositorio_id):
+    try:
+        repo = Repositorio.objects.get(id=repositorio_id)
+        file_path = repo.archivo.path
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/pdf")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        raise Http404
+    except Repositorio.DoesNotExist:
+        raise Http404
+    
 # ----- Comprueba si el acuerdo de inicio existe en la carpeta 
 def pdf_exist(extranjero_id):
     nombre_pdf = f"AcuerdoInicio_{extranjero_id}.pdf"
@@ -1089,6 +1104,27 @@ def solicitudRefugio_pdf(request):
     # Obtener la plantilla HTML
     template = get_template('documentos/refugioComar.html')
     html_content = template.render(context)
+    html = HTML(string=html_content)
+    pdf_bytes = html.write_pdf()
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    return response
+
+# ----- Genera el documento PDF, de Acuerdo de resolucion definitiva
+def resolucionDeportacion_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/resolucionDeportacion.html')
+    html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
     html = HTML(string=html_content)
@@ -1102,8 +1138,8 @@ def solicitudRefugio_pdf(request):
     
     return response
 
-# ----- Genera el documento PDF, de Acuerdo de Fiscalia hecho ilicito
-def notificacionFiscalia_pdf(request):
+# ----- Genera el documento PDF, de resolucion libre de transito
+def resolucionLibre_pdf(request):
     # no_proceso = NoProceso.objects.get(nup=nup_id)
     # extranjero = no_proceso.extranjero
     
@@ -1115,7 +1151,204 @@ def notificacionFiscalia_pdf(request):
     }
 
     # Obtener la plantilla HTML
-    template = get_template('documentos/notificacionFiscalia.html')
+    template = get_template('documentos/resolucionLibre.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Acuerdo de libre de transito
+def acResolucionLibre_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/acuerdoLibre.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de la resolucion de regularizacion art 133
+def resolucionRegularizacion_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/resolucionRegularizacion.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de oficio de regularizacion art 133
+def oficioRegularizacion_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/oficioRegularizacion.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de resolucion de regularizacion comar
+def resolucionComar_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/resolucionComar.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de resolucion de retorno asistido
+def resolucionRetorno_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/resolucionRetorno.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Anexo 6 (Documento provisional)
+def documentoProvisional_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/documentoProvisional.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de razones humanitarias
+@login_required(login_url="/permisoDenegado/") 
+def razonesHumanitarias_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/razonesHumanitarias.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
@@ -1759,6 +1992,8 @@ def guardar_pdf_repositorio(pdf_bytes, comparecencia, usuario_actual):
     )
     repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
     repo.save()
+    return repo 
+
 
 def guardar_comparecencia(request, comparecencia_id):
     comparecencia, firma = obtener_datos_comparecencia(comparecencia_id)
@@ -1783,13 +2018,17 @@ def guardar_comparecencia(request, comparecencia_id):
 
         pdf_bytes = renderizar_pdf_comparecencia(context)
         guardar_pdf_repositorio(pdf_bytes, comparecencia, request.user)
+        repo = guardar_pdf_repositorio(pdf_bytes, comparecencia, request.user)
 
+        pdf_url = request.build_absolute_uri(repo.archivo.url)
         if 'comparecencia_id' in request.session:
             del request.session['comparecencia_id']
 
         return JsonResponse({
             'status': 'success',
-            'message': 'Comparecencia guardada con éxito y disponible para visualización.'
+            'message': 'Comparecencia guardada con éxito y disponible para visualización.',
+            'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
+
         })
 
     except Exception as e:
@@ -2645,3 +2884,76 @@ class listExtranjerosRetorno(LoginRequiredMixin,ListView):
         context['seccion'] = 'resoluciones'
         context['seccion1'] = 'retorno'
         return context
+    
+def obtener_datos_notificacion_consular(notificacion_consular_id):
+    try:
+        notificacion_consular = NotificacionConsular.objects.get(id=notificacion_consular_id)
+        firma = FirmaNotificacionConsular.objects.filter(notificacionConsular=notificacion_consular).first()
+        return notificacion_consular, firma
+    except NotificacionConsular.DoesNotExist:
+        return None, None
+def renderizar_pdf_notificacion_consular(context):
+    template = get_template('documentos/notificacionConsularGuardar.html')
+    html_content = template.render(context)
+    html = HTML(string=html_content)
+    return html.write_pdf()
+
+def guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, usuario_actual):
+    # Suponiendo que tienes modelos similares para clasificar y tipificar documentos de notificaciones consulares
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones Consulares")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion Consular", delaClasificacion=clasificacion)
+
+    # Genera un nombre único para el archivo PDF
+    nombre_pdf = f"Notificacion_Consular_{notificacion_consular.id}.pdf"
+
+    # Actualiza información relevante en el modelo NoProceso si es necesario
+    no_proceso = notificacion_consular.nup
+    # no_proceso.notificacion_consular = True  # Descomenta y ajusta si es necesario
+    no_proceso.save()
+
+    # Crea una nueva instancia en el repositorio para el archivo PDF
+    repo = Repositorio(
+        nup=notificacion_consular.nup,
+        delTipo=tipo_doc,
+        delaEstacion=usuario_actual.estancia,
+        delResponsable=usuario_actual.get_full_name(),
+    )
+
+    # Guarda el archivo PDF en el modelo Repositorio
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
+    return repo 
+
+
+def guardar_notificacion_consular(request, notificacion_consular_id):
+    notificacion_consular, firma = obtener_datos_notificacion_consular(notificacion_consular_id)
+    if not notificacion_consular:
+        return JsonResponse({'status': 'error', 'message': 'Notificación Consular no encontrada.'}, status=404)
+
+    try:
+        # Preparar contexto con las URLs de las firmas y otros datos necesarios
+        firma_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url) if firma and firma.firmaAutoridadActuante else None
+
+        context = {
+            'notificacion_consular': notificacion_consular,
+            'firma': firma,
+            'firma_autoridad_actuante_url': firma_url,
+            # Añadir más datos al contexto si es necesario
+        }
+
+        pdf_bytes = renderizar_pdf_notificacion_consular(context)
+        guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, request.user)
+        repo = guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, request.user)
+
+        pdf_url = request.build_absolute_uri(repo.archivo.url)
+
+ 
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Notificación Consular guardada con éxito y disponible para visualización.',
+            'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
+
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)

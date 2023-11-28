@@ -11,7 +11,7 @@ from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView
 from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -31,8 +31,11 @@ import qrcode
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
+from django.db.models import Exists, OuterRef
+from django.http import HttpResponse, Http404
+import os
 
-
+from .models import NotificacionCOMAR,FirmaNotificacionComar,NotificacionFiscalia,FirmaNotificacionFiscalia
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
     template_name='notificacion.html'
@@ -256,6 +259,227 @@ class listExtranjerosComar(LoginRequiredMixin,ListView):
         context['navbar'] = 'Notificaciones'
         context['seccion'] = 'comar'
         return context
+    
+
+class CrearNotificacionComar(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionComarForm(request.POST)
+        if form.is_valid():
+            notificacionComar= form.save(commit=False)
+            notificacionComar.nup = no_proceso
+            notificacionComar.save()
+            data = {
+                    'success': True, 
+                    'message': 'Notificación Comar creada con éxito.', 
+                    'comar_id': notificacionComar.id
+                }
+            return JsonResponse(data, status=200)
+
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+
+        initial_data = {
+             'delaEstacion': extranjero.deLaEstacion,
+             'nup':no_proceso,
+ 
+        }
+
+        form =  NotificacionComarForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['delaAutoridad'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'notificacion',
+            'seccion': 'comar',
+        }
+        
+        return render(request, 'comar/crearNotificacionComar.html', context)
+
+def generar_qr_firma_notificacion_comar(request, comar_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{comar_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_notifi_comar(request, comar_id):
+    notificacion_comar = get_object_or_404(NotificacionCOMAR, pk=comar_id)
+    firma, created = FirmaNotificacionComar.objects.get_or_create(notificacionComar=notificacion_comar)
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente1')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteComarForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{comar_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteConsuladoForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'comar_id': comar_id})
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante_comar(request, comar_id):
+    try:
+        firma = FirmaNotificacionConsular.objects.get(notificacionComar=comar_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNotificacionConsular.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
+class CrearNotificacionFiscalia(View):
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionFiscaliaForm(request.POST)
+        if form.is_valid():
+            notificacionFiscalia= form.save(commit=False)
+            notificacionFiscalia.nup = no_proceso
+            notificacionFiscalia.save()
+            data = {
+                    'success': True, 
+                    'message': 'Notificación Fiscalia creada con éxito.', 
+                    'fiscalia_id': notificacionFiscalia.id
+                }
+            return JsonResponse(data, status=200)
+
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+
+        initial_data = {
+             'delaEstacion': extranjero.deLaEstacion,
+             'nup':no_proceso,
+ 
+        }
+
+        form =  NotificacionFiscaliaForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['delaAutoridad'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'notificacion',
+            'seccion': 'fiscalia',
+        }
+        
+        return render(request, 'fiscalia/crearNotificacionFiscalia.html', context)
+
+def generar_qr_firma_notificacion_fiscalia(request, fiscalia_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{fiscalia_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_notifi_fiscalia(request, fiscalia_id):
+    notificacion_fiscalia = get_object_or_404(NotificacionCOMAR, pk=fiscalia_id)
+    firma, created = FirmaNotificacionFiscalia.objects.get_or_create(notificacionFiscalia=notificacion_fiscalia)
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente1')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteFiscaliaForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{fiscalia_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteFiscaliaForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'fiscalia_id': fiscalia_id})
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante_fiscalia(request, fiscalia_id):
+    try:
+        firma = FirmaNotificacionConsular.objects.get(notificacionComar=fiscalia_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNotificacionConsular.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
+
 
 class listExtranjerosFiscalia(LoginRequiredMixin,ListView):
 
@@ -313,39 +537,42 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
 
     
     def get_queryset(self):
-            # Obtener la estación del usuario y el estado
-            estacion_usuario = self.request.user.estancia
-            estado = self.request.GET.get('estado_filtrado', 'activo')
+        # Obtener la estación del usuario y el estado
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
 
-            # Filtrar extranjeros por estación y estado
-            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-            if estado == 'activo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-            elif estado == 'inactivo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+        # Filtrar extranjeros por estación y estado
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-            # Obtener el último NoProceso para cada extranjero filtrado
-            ultimo_no_proceso = NoProceso.objects.filter(
-                extranjero_id=OuterRef('pk')
-            ).order_by('-consecutivo')
+        # Obtener los NUPs excluidos (comparecencias con delito o refugio)
+        comparecencias_excluidas = set(Comparecencia.objects.filter(
+            Q(victimaDelito=True) | Q(solicitaRefugio=True)
+        ).values_list('nup', flat=True))
 
-            extranjeros_filtrados = extranjeros_filtrados.annotate(
-                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-            )
+        # Consulta para verificar si existe una notificación consular
+        notificacion_consular_existente = NotificacionConsular.objects.filter(
+            nup=OuterRef('pk')
+        )
 
-            # Ahora filtramos NoProceso basado en estos últimos registros
-            comparecencias_excluidas = set(Comparecencia.objects.filter(
-                Q(victimaDelito=True) | Q(solicitaRefugio=True)
-            ).values_list('nup', flat=True))
+        repositorio_existente = Repositorio.objects.filter(
+        nup=OuterRef('pk')
+        ).order_by('-fechaGeneracion').values('id')[:1]
 
-        # Filtrar NoProceso excluyendo los NUPs de comparecencias con delito o refugio
-            queryset = NoProceso.objects.filter(
-                comparecencia=True
-            ).exclude(
-                nup__in=comparecencias_excluidas
-            )
+        queryset = NoProceso.objects.filter(
+            extranjero_id__in=extranjeros_filtrados.values('id'),
+            comparecencia=True
+        ).exclude(
+            nup__in=comparecencias_excluidas
+        ).annotate(
+            tiene_notificacion_consular=Exists(notificacion_consular_existente),
+            repositorio_id=Subquery(repositorio_existente)
+        )
 
-            return queryset
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -354,6 +581,7 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
         context['seccion'] = 'consulado'
         return context
     
+
 
 class CrearNotificacionConsulado(View):
     def post(self, request, nup_id, *args, **kwargs):

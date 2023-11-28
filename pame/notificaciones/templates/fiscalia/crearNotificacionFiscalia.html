@@ -1,4 +1,5 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
+
 {% load crispy_forms_tags %}
 
 {% load static %}
@@ -6,9 +7,9 @@
 {% block link %}
     <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
 {% endblock link %}
-{% block titulo %}Crear Notification a Consulado {% endblock titulo %}
+{% block titulo %}Crear Notification a Fiscalía {% endblock titulo %}
 {% block dashboard %}
-<a class="btn btn-sm btn-icon1 " href="{% url 'listExtranjerosConsulado' %}">
+<a class="btn btn-sm btn-icon1 " href="{% url 'listExtranjerosComar' %}">
     <i class="fas fa-arrow-left"></i>
 </a>
 
@@ -17,6 +18,7 @@
 
 
 {% block contenido %}
+
 <style>
     #myTab .nav-link {
         pointer-events: none; /* Desactiva los eventos del ratón como el clic */
@@ -121,7 +123,7 @@
 <div class="container mt-3">
     <div class="titulo-general-container ">
         <h1 class="titulo-general">
-            Crear Notificación Consular: 
+            Crear Notificación a Fiscalía: 
             <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
         </h1>
     </div>
@@ -145,8 +147,9 @@
                             <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.numeroOficio|as_crispy_field }}</div>
-                            <div class="col-md-6">{{ form.delConsulado|as_crispy_field }}</div>
-                            <div class="col-md-6">{{ form.accion|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.delaFiscalia|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.delaComparecencia|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.condicion|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.delaAutoridad|as_crispy_field }}</div>
                         </div>
                     </div>
@@ -162,7 +165,6 @@
         </form>
     </div>
 </div>
-<!-- VENTANA PARA MOSTRAR EL QR -->
 
 <div id="qrCode" style="display:none;" class="card p-3">
     <div class="firma-section center-content" id="autoridadActuanteSection">
@@ -206,13 +208,15 @@
     <iframe id="pdfPreview" style="width:100%; height:600px; margin-top: 60px;"></iframe>
 </div>
 
+
+
 <!-- PREVISUALIZAR PDF -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('previewPdfButton').addEventListener('click', function() {
         var formData = new FormData(document.getElementById('notificacionConsularForm'));
         
-        fetch('/acuerdos/notificacion-consulado/', {
+        fetch('/acuerdos/notificacion-fiscalia/', {
             method: 'POST',
             body: formData,
             headers: {
@@ -358,4 +362,3 @@ function guardarNotificacionConsulado(consuladoId) {
 </script>
 
 {% endblock contenido %}
-

@@ -12,6 +12,8 @@ from .views import acuerdo_inicio, constancia_llamada, homeAcuerdo, pdf, acuerdo
     notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, resolucionDeportacion_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, resolucionLibre_pdf, \
     acResolucionLibre_pdf, resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf
 
+    notificacionConsulado_pdf, solicitudRefugio_pdf, notificacionFiscalia_pdf, guardar_comparecencia, mostrar_comparecencia_pdf, \
+    guardar_notificacion_consular
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
 urlpatterns = [
     # urls prueba documentos pdf 
@@ -57,8 +59,11 @@ urlpatterns = [
     path('notificacion-consulado-guardar/', notificacionConsulado_pdf, name='consuladoPDF'),
 
 
-
+    # COMAR
     path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
+        # path('solicitud-refugio/', solicitudRefugio_pdf, name='ComarPDF'),
+
+    # FISCALIA
     path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
     path('resolucion-deportacion', resolucionDeportacion_pdf, name='deportacionPDF'),
     path('resolucion-libretransito', resolucionLibre_pdf, name='librePDF'),
@@ -107,5 +112,10 @@ urlpatterns = [
     
     path('comparecencia/guardar/<int:comparecencia_id>/', guardar_comparecencia, name='guardar_comparecencia'),
     path('mostrar-comparecencia/<int:comparecencia_id>/', mostrar_comparecencia_pdf, name='guardar_comparecencia'),
+
+
+    path('consulado/guardar/<int:notificacion_consular_id>/', guardar_notificacion_consular, name='guardar_notificacion_consular'),
+    path('servir_pdf/<int:repositorio_id>/', views.servir_pdf, name='servir_pdf'),
+
 
 ]
