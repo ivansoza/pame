@@ -1,0 +1,403 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href=" {% static 'css/forms/style.css' %}?v1.1998 ">
+        <!-- CSS PARA LA LIBRERIA DEL MODAL DE BIOMETRICOS -->
+    <link rel="stylesheet" href=" {% static 'css/biometricos/style.css' %}?v1.223SDDDdssdss22D ">
+{% endblock link %}
+
+{% block titulo %}PAME | Cosntancia de no Firma{% endblock titulo %}
+{% block dashboard %}
+<!-- FLECHA DE BACK  -->
+
+<a class="btn btn-sm btn-icon1 " href="{% url 'listaExtranjerosAlegatos'%}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+{% endblock dashboard %}
+{% block contenido %}
+<style>
+    #myTab .nav-link {
+        pointer-events: none; /* Desactiva los eventos del ratón como el clic */
+        color: #9E8364; /* Color antes de ser seleccionado */
+        font-weight: normal;
+    }
+    
+    #myTab .nav-link.active {
+        pointer-events: auto; /* Activa los eventos del ratón para la pestaña activa */
+        color: #000; /* Un color más fuerte cuando esté activo */
+        font-weight: bold;
+    }
+    input[readonly] {
+        background-color: #e9ecef;
+        color: #495057;
+        cursor: not-allowed;
+      }
+  
+  
+      .input-required {
+        border: 2px solid #d9534f; /* Rojo con un borde más grueso para mayor visibilidad */
+        border-radius: 4px; /* Opcional, para bordes redondeados */
+      }
+      
+      /* Opcional: Agrega un asterisco rojo a las etiquetas de los campos requeridos */
+      label.required::after {
+        content: " *";
+        color: red;
+      }
+      .input-required {
+        border: 2px solid #d9534f; /* Ajusta el color y el grosor del borde según necesites */
+      }
+      
+      .input-required + label::after {
+        content: " *";
+        color: red;
+      }
+  
+  
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
+    }
+  
+    
+    #nextToRepresentanteLegal,
+  #nextToExtranjero,
+  #nextToTraductor,
+  #nextToTestigo1,
+  #nextToTestigo2,
+  #finalizarFirmas {
+    background-color: #902F4A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Estilos al pasar el mouse por encima de los botones */
+  #nextToRepresentanteLegal:hover,
+  #nextToExtranjero:hover,
+  #nextToTraductor:hover,
+  #nextToTestigo1:hover,
+  #nextToTestigo2:hover,
+  #finalizarFirmas:hover {
+    background-color: #902F4A; /* Mantiene el mismo color de fondo */
+    box-shadow: none; /* Elimina la sombra para un aspecto más plano */
+    cursor: default; /* Cambia el cursor al estilo predeterminado */
+  
+  }
+  
+  .titulo-compare{
+    background-color: #777777;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: default;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+  
+  }
+</style>
+<br>
+<div class="titulo-general-container">
+    <h1 class="titulo-general">
+        Generar Constancia de no firma al extranjero:
+        <span class="puesta-color"><strong>{{extranjero.nombreExtranjero}} {{extranjero.apellidoPaternoExtranjero}} {% if extranjero.apellidoMaternoExtranjero %} {{extranjero.apellidoMaternoExtranjero}} {% endif %} </strong></span>
+
+    </h1>
+   
+</div>
+
+<form method="post" enctype="multipart/form-data" id="formulario1">
+    {% csrf_token %}
+    {{ form.puesta.as_hidden }}
+   
+    <div  class="card p-3 exploracion-fisica" enctype="multipart/form-data">
+        <div class="d-flex align-items-center justify-content-between">
+            <h1>Datos</h1>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-12" style='display:none' >
+                {{ form.extranjero|as_crispy_field }}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-12" style='display:none'>
+                {{ form.nup|as_crispy_field }}
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6" style='display:none'  >
+                {{ form.lugarEmision|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6" >
+                {{ form.autoridadActuante|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6" >
+                {{ form.repreLegal|as_crispy_field }}
+            </div>
+        </div>    
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6">
+                {{ form.testigo1|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6" >
+                {{ form.grado_academico_testigo1|as_crispy_field }}
+            </div>
+        </div>   
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-6" >
+                {{ form.testigo2|as_crispy_field }}
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-6" >
+                {{ form.grado_academico_testigo2|as_crispy_field }}
+            </div>
+        </div>  
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-12" >
+                {{ form.descripcion |as_crispy_field }}
+            </div>
+        </div>     
+        <button class="btn btn-custom float-end btn-primary" type="submit">Guardar</button>
+            <br>
+            <a href="{% url "listaExtranjerosAlegatos" %}" class="btn btn-custom1">Cancelar</a> 
+    </div>
+
+    </form>
+    <div id="qrCode" style="display:none;" class="card p-3 ">
+        <!-- Firma de la Autoridad Actuante -->
+    
+    
+        <div class="firma-section center-content" id="autoridadActuanteSection" style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;'>
+            <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+            <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
+    
+            <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
+            <div id="mensajeFirmaAutoridadActuante"></div>
+            <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
+          </div>
+        
+        <!-- Firma del Representante Legal -->
+        <div class="firma-section center-content" id="representanteLegalSection" style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;' >
+          <h4 class="titulo-compare">Firma del Representante Legal</h4>
+          <div>Nombre: <span id="nombreRepresentanteLegal"></span></div>
+    
+          <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal" style="height: 25%; width: 25%;">
+          <div id="mensajeFirmaRepresentanteLegal"></div>
+          <button id="nextToTraductor">Siguiente: Testigo 1</button>
+          <button id="nextToExtranjero" style="display: none;">Siguiente: Extranjero</button>
+    
+        </div>
+        <!-- Firma del Testigo 1 -->
+        <div class="firma-section center-content" id="testigo1Section"  style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;'>
+          <h4 class="titulo-compare">Firma del Testigo 1</h4>
+          <div>Nombre: <span id="nombreTestigo1"></span></div>
+    
+          <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1" style="height: 25%; width: 25%;">
+          <div id="mensajeFirmaTestigo1"></div>
+          <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+        </div>
+        
+        <!-- Firma del Testigo 2 -->
+        <div class="firma-section center-content" id="testigo2Section" style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;'>
+          <h4 class="titulo-compare">Firma del Testigo 2</h4>
+          <div>Nombre: <span id="nombreTestigo2"></span></div>
+    
+          <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2" style="height: 25%; width: 25%;">
+          <div id="mensajeFirmaTestigo2"></div>
+          <button id="finalizarFirmas">Finalizar Firmas</button>
+        </div>
+      <div id="generatePDFSection" style="display:none;">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <!-- Ícono de FontAwesome para representar un PDF -->
+                <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+                <br>
+                <br>
+                <br>
+    
+                <a href="{% url "noFirmaPDF" %}" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+            </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function verificarEstadoFirmas(constanciaId) {
+            fetch('/alegatos/estado_firmas_constancia/' + constanciaId)
+            .then(response => response.json())
+            .then(data => {
+                actualizarInterfazFirmas(data);
+            })
+            .catch(error => {
+                console.error('Error al verificar el estado de las firmas:', error);
+            });
+        }
+        function actualizarInterfazFirmas(estadoFirmas) {
+            // Ocultar todas las secciones de firma al inicio
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('representanteLegalSection').style.display = 'none';
+            document.getElementById('testigo1Section').style.display = 'none';
+            document.getElementById('testigo2Section').style.display = 'none';
+        
+            // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
+            if (!estadoFirmas.firmaAutoridadActuante) {
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaRepresentanteLegal) {
+                document.getElementById('representanteLegalSection').style.display = 'block';
+            } else if (!estadoFirmas.firmaTestigo1) {
+                document.getElementById('testigo1Section').style.display = 'block';
+            } else if (!estadoFirmas.firmaTestigo2) {
+                document.getElementById('testigo2Section').style.display = 'block';
+            } else {
+                // Si todas las firmas están completas, puedes mostrar la sección final o realizar alguna otra acción
+                console.log('Todas las firmas han sido completadas');
+                // Aquí puedes colocar alguna lógica adicional para cuando todas las firmas estén completas
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var constanciaId = sessionStorage.getItem('constanciaId'); // O localStorage.getItem('comparecenciaId');
+            if (constanciaId) {
+                verificarEstadoFirmas(constanciaId);
+            }
+        });
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('formulario1').addEventListener('submit', function(e) {
+
+            e.preventDefault(); // Previene el envío normal del formulario
+            var formData = new FormData(this); // Recoge los datos del formulario
+
+
+            fetch('', { // Enviar a la misma URL que maneja el GET y POST
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', // Necesario para la protección contra CSRF
+                },
+                credentials: 'same-origin' // Necesario para incluir las cookies de CSRF
+            }).then(response => response.json())
+              .then(data => {
+                if(data.success) {
+                    obtenerDatosDeComparecencia(constanciaId)
+                    document.getElementById('formulario1').style.display = 'none';
+                    document.getElementById('qrCode').style.display = 'block';
+                    document.getElementById('autoridadActuanteSection').style.display = 'block';
+                    var constanciaId = data.constancia_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                    document.getElementById('qrImageAutoridadActuante').src = '/alegatos/generar_qr_constancia/autoridadActuante/' + constanciaId;
+                    document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_constancia/representanteLegal/' + constanciaId;
+
+                    document.getElementById('qrImageTestigo1').src = '/alegatos/generar_qr_constancia/testigo1/' + constanciaId;
+                    document.getElementById('qrImageTestigo2').src = '/alegatos/generar_qr_constancia/testigo2/' + constanciaId;
+
+                    // Comenzar a verificar si la firma ha sido capturada en un intervalo regular
+                    intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(constanciaId); }, 1000);
+
+                }
+            }).catch(error => {
+                // Aquí manejas cualquier error en la solicitud de red
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Ha ocurrido un error al enviar el formulario.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+             });
+        });
+    });
+    
+  function verificarFirmaAutoridadActuante(constanciaId) {
+    obtenerDatosDeComparecencia(constanciaId)
+
+    fetch('/alegatos/verificar_firma/autoridadActuante_constancia/' + constanciaId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+
+            document.getElementById('autoridadActuanteSection').style.display = 'none';
+            document.getElementById('representanteLegalSection').style.display = 'block';
+            document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_constancia/representanteLegal/' + constanciaId;
+            intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(constanciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+        }
+    });
+}
+function verificarFirmaRepresentanteLegal(constanciaId) {
+    fetch('/alegatos/verificar_firma/representanteLegal_constancia/' + constanciaId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearInterval(intervaloRepresentanteLegal); // Detener el intervalo
+  
+            
+            document.getElementById('representanteLegalSection').style.display = 'none';
+            document.getElementById('testigo1Section').style.display = 'block';
+            document.getElementById('qrImageRepresentanteLegal').src = '/alegatos/generar_qr_constancia/testigo1/' + constanciaId;
+            intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(constanciaId); }, 1000);
+            }
+        
+    });
+  }
+  function verificarFirmaTestigo1(constanciaId) {
+    fetch('/alegatos/verificar_firma/testigo1_constancia/' + constanciaId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+  
+            clearInterval(intervaloTestigo1); // Detener el intervalo
+  
+            document.getElementById('testigo1Section').style.display = 'none';
+            document.getElementById('testigo2Section').style.display = 'block';
+            document.getElementById('qrImageTestigo2').src = '/alegatos/generar_qr_constancia/testigo2/' + constanciaId;
+            intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(constanciaId); }, 1000); // Iniciar el intervalo para la siguiente firma
+  
+        }
+    });
+  }
+  function verificarFirmaTestigo2(constanciaId) {
+    fetch('/alegatos/verificar_firma/testigo2_constancia/' + constanciaId)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            clearInterval(intervaloTestigo2); // Detener el intervalo
+            document.getElementById('testigo2Section').style.display = 'none';
+            // Mostrar la sección para generar el PDF
+            document.getElementById('generatePDFSection').style.display = 'block';
+        }
+    });
+  }    
+  function obtenerDatosDeComparecencia(constanciaId) {
+    fetch('/alegatos/datos_constancia/' + constanciaId)
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar elementos HTML con los datos recibidos
+            document.getElementById('nombreAutoridadActuante').textContent = data.nombreAutoridadActuante || 'No disponible';
+            document.getElementById('nombreRepresentanteLegal').textContent = data.nombreRepresentanteLegal || 'No disponible';
+            document.getElementById('nombreTestigo1').textContent = data.nombreTestigo1 || 'No disponible';
+            document.getElementById('nombreTestigo2').textContent = data.nombreTestigo2 || 'No disponible';
+        })
+        .catch(error => {
+            console.error('Error al obtener datos:', error);
+        });
+    }
+</script>
+{% endblock contenido %}
+{% block script %}
+{% endblock script %}
