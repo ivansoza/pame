@@ -1090,25 +1090,7 @@ def notificacionConsulado_pdf(request):
     return response
 
 # ----- Genera el documento PDF, de Acuerdo de solicitud de refugio
-def solicitudRefugio_pdf(request):
-    # no_proceso = NoProceso.objects.get(nup=nup_id)
-    # extranjero = no_proceso.extranjero
-    
-    #consultas 
-    
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
 
-    # Obtener la plantilla HTML
-    template = get_template('documentos/refugioComar.html')
-    html_content = template.render(context)
-    html = HTML(string=html_content)
-    pdf_bytes = html.write_pdf()
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    return response
 
 # ----- Genera el documento PDF, de Acuerdo de resolucion definitiva
 def resolucionDeportacion_pdf(request):
@@ -4015,27 +3997,34 @@ def notificacionConsulado_pdf(request):
 
     }
 
-    # Obtener la plantilla HTML
     template = get_template('documentos/notificacionConsular.html')
     html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
     html = HTML(string=html_content)
-
-    # Generar el PDF
     pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename=""'
-    
     return response
 
 # ----- Genera el documento PDF, de Acuerdo de solicitud de refugio
 def solicitudRefugio_pdf(request):
+    delaEstacion = request.POST.get('delaEstacion', '')
+    nup = request.POST.get('nup', '')
+    deComar = request.POST.get('deComar', '')
+    numeroOficio = request.POST.get('numeroOficio', '')
+    notificacionComar = request.POST.get('notificacionComar', '')
+    delaComparecencia = request.POST.get('delaComparecencia', '')
+    delaAutoridad = request.POST.get('delaAutoridad', '')
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+
+
+
     context = {
         'contexto': 'variables',
+        'nup': nup,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al context
     }
+
     template = get_template('documentos/refugioComar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
@@ -4043,7 +4032,6 @@ def solicitudRefugio_pdf(request):
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename=""'
     return response
-
 # ----- Genera el documento PDF, de Acuerdo de Fiscalia hecho ilicito
 def notificacionFiscalia_pdf(request):
     # no_proceso = NoProceso.objects.get(nup=nup_id)
