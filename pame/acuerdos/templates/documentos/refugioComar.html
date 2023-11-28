@@ -17,7 +17,13 @@
 {% block content %}
 <div style="text-align: right;">
     <strong>
-        Asunto: SOLICITUD DE REFUGIO [NOMBRE DEL EXTRANJERO] 
+        Asunto: SOLICITUD DE REFUGIO  
+
+            {% if extranjero %}
+            si hay 
+            {% else %}
+            no hay 
+            {% endif %}
     </strong>
 </div>
 <p>

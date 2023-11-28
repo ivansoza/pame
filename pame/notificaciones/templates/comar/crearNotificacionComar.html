@@ -263,9 +263,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('qrCode').style.display = 'block';
                 document.getElementById('autoridadActuanteSection').style.display = 'block';
                 //obtenemos la comparecencia.id
-                var consuladoId = data.consulado_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
-                document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr/autoridadActuante/' + consuladoId;
-                intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(consuladoId); }, 1000);
+                var comarId = data.comar_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr-comar/autoridadActuante/' + comarId;
+                intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(comarId); }, 1000);
            }
         }).catch(error => {
             // Manejo de errores
@@ -275,9 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-function verificarFirmaAutoridadActuante(consuladoId) {
+function verificarFirmaAutoridadActuante(comarId) {
 
-    fetch('/notificaciones/verificar_firma/autoridadActuante/' + consuladoId)
+    fetch('/notificaciones/verificar_firma-comar/autoridadActuante/' + comarId)
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
@@ -288,7 +288,7 @@ function verificarFirmaAutoridadActuante(consuladoId) {
 
             document.getElementById('generatePDFSection').style.display = 'block';
             var generatePDFBtn = document.getElementById('generatePDFBtn');
-            generatePDFBtn.setAttribute('data-consulado-id', consuladoId);
+            generatePDFBtn.setAttribute('data-consulado-id', comarId);
         }
     });
 }
@@ -297,18 +297,18 @@ function verificarFirmaAutoridadActuante(consuladoId) {
 document.addEventListener('DOMContentLoaded', (event) => {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.onclick = () => {
-        var consuladoId = generatePDFBtn.getAttribute('data-consulado-id');
-        if (consuladoId) {
-            guardarNotificacionConsulado(consuladoId);
+        var comarId = generatePDFBtn.getAttribute('data-consulado-id');
+        if (comarId) {
+            guardarNotificacionConsulado(comarId);
         }
     };
 });
 
 //FUNCION PARA GUARDAR LA NOTIFICACION xx
-function guardarNotificacionConsulado(consuladoId) {
+function guardarNotificacionConsulado(comarId) {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.disabled = true; 
-    fetch('/acuerdos/consulado/guardar/' + consuladoId)
+    fetch('/acuerdos/consulado/guardar/' + comarId)
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
