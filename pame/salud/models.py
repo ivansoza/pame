@@ -151,7 +151,7 @@ class CertificadoMedico(models.Model):
     tipoDieta = models.CharField(max_length=50, verbose_name='Tipo de Dietas', choices=TIPO_DIETAS)
     sintomasCovid=models.TextField(verbose_name='Síntomas COVID')
     embarazo = models.BooleanField(verbose_name='Embarazo')
-    tiempoEmbarazo=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Tiempo Embarazo', null=True, blank=True)
+    tiempoEmbarazo=models.CharField(max_length=100, verbose_name='Tiempo Embarazo', null=True, blank=True)
     conclusionDiagnostica= models.TextField(verbose_name='Concision Diagnostica')
     observaciones =models.TextField(verbose_name='Observaciones')
     tratamiento = models.BooleanField(

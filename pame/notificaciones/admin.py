@@ -5,7 +5,8 @@ from .models import Defensorias,notificacionesAceptadas,Relacion,qrfirma, Notifi
 admin.site.register(Defensorias)
 admin.site.register(notificacionesAceptadas)
 admin.site.register(Relacion)
-admin.site.register(qrfirma)admin.site.register(NotificacionConsular)
+admin.site.register(qrfirma)
+admin.site.register(NotificacionConsular)
 admin.site.register(FirmaNotificacionConsular)
 
 

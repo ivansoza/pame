@@ -37,7 +37,10 @@
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>{{ extranjero.nombreExtranjero }} <br> nup1: {% if extranjero.noproceso_set.exists %}{{ extranjero.noproceso_set.last.nup }}{% endif %} 
+                <br> nup 2: {{nup}}
+
+            <br>id: {{extranjero.id}}</td>
             <td>
                 {% if extranjero.apellidoPaternoExtranjero %}
                     {{ extranjero.apellidoPaternoExtranjero }}
@@ -50,7 +53,7 @@
             <td>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.tiene_certificadoMedico %}
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="Certificado Medico Registrado">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'certificadoPDF' extranjero.noproceso_set.last.nup extranjero.id %}" target="_blank" data-title="Certificado Medico Registrado si">
                     <i class="fas fa-file-medical"></i>
                 </a>
                  {% if extranjero.tiene_constanciaLesiones %}
@@ -157,7 +160,7 @@
             // Acción cuando se hace clic en 'Entendido'
         } else if (result.isDenied) {
             // Acción cuando se hace clic en 'Documento'
-            window.open('{% url 'certificadoPDF' %}', '_blank');  // Reemplaza 'URL_DEL_DOCUMENTO' con la URL correcta
+            window.open();  // Reemplaza 'URL_DEL_DOCUMENTO' con la URL correcta
         }
     });
 }
