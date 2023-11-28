@@ -4,6 +4,7 @@ from vigilancia.models import Estancia
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion, Comar, Fiscalia
 from comparecencia.models import Comparecencia
+from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes
 
 ACCION= (
     ('Deportacion', 'DEPORTACION'),
@@ -128,6 +129,6 @@ class Relacion(models.Model):
     def __str__(self):
          return f"{self.extranjero}"
      
-class qrfirma(models.Model):
+class Qrfirma(models.Model):
     autoridad = models.ForeignKey(Relacion, on_delete=models.CASCADE)
-    firma = models.ImageField(upload_to='files/', null=True, blank=True)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 

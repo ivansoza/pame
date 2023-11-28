@@ -82,9 +82,35 @@
       </div>
     </div>
   </div>
-<div style="text-align: center;font-size:250%;color:#922E42">
-    Seleccione una defensoría a notificar
 </div>
+
+<div style="text-align: center; font-size: 250%; color: #922E42;">
+  Seleccione una defensoría a notificar
+</div>
+<button id="iniciarFirmas">firmar documento</button>
+<div id="qrCode" style="display:none;" class="card p-3">
+  <div class="firma-section center-content" id="autoridadActuanteSection" style='margin-left: auto; margin-right: auto;'>
+      <h4>Firma del representante</h4>
+      <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="display: block; margin: 0 auto;">
+      <div id="mensajeFirmaAutoridadActuante"></div>
+  </div>
+  <div id="generatePDFSection" style="width: 300px; height: 45px; margin: 0 auto; color: #922E41; font-size: 22px; text-align: center;">
+    El extranjero ya cuenta con una notificación
+</div>
+</div>
+
+
+
+<style>
+  #iniciarFirmas {
+    background-color: #922E41;
+    color: #fff;
+    width: 160px;
+    height: 40px;
+}
+</style>
+
+
 <div>
     <div class="table-responsive">
         <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width:100%">
@@ -109,11 +135,15 @@
                         <td class="text-center">{{ defensoria.telefono }}</td>
                         <td class="text-center">{{ defensoria.cp }}</td>
                         <td class="text-center">
-
                             <a class="btn btn-sm btn-icon1 tooltip-link"
                             href="{% url 'listnotificacion' extranjero_id=extranjero.id defensoria_id=defensoria.id %}"
-                            data-title="Subir documento" onclick="abrir_modal_notifi(this.href); return false">
+                            data-title="crear notificación" onclick="abrir_modal_notifi(this.href); return false">
                             <i class="fas fa-bell"></i>
+                            </a>
+                            <a class="btn btn-sm btn-icon1 tooltip-link"
+                            href="{% url 'representacionPDF' %}"target="_blank"
+                            data-title="Generar documento">
+                            <i class="fas fa-file"></i>
                             </a>
                             <!-- Agrega más botones según tus necesidades -->
                         </td>
@@ -136,7 +166,70 @@
 </div>
 
 <div class="modal fade" id="mostrararchivo" role="dialog"></div>
+<script>
+  function verificarEstadoFirmas(notiId) {
+    fetch('/notificaciones/estado_firmas_notificacion/' + notiId)
+    .then(response => response.json())
+    .then(data => {
+        actualizarInterfazFirmas(data);
+    })
+    .catch(error => {
+        console.error('Error al verificar el estado de las firmas:', error);
+    });
+}
+function actualizarInterfazFirmas(estadoFirmas) {
+  // Ocultar todas las secciones de firma al inicio
+  document.getElementById('autoridadActuanteSection').style.display = 'none';
 
+  // Comprobar el estado de cada firma y mostrar la sección correspondiente a la primera firma incompleta
+  if (!estadoFirmas.firmaAutoridadActuante) {
+      document.getElementById('autoridadActuanteSection').style.display = 'block';
+  } else {
+      // Si todas las firmas están completas, puedes mostrar la sección final o realizar alguna otra acción
+      console.log('Todas las firmas han sido completadas');
+      // Aquí puedes colocar alguna lógica adicional para cuando todas las firmas estén completas
+  }
+}document.addEventListener('DOMContentLoaded', function() {
+  var notiId = sessionStorage.getItem('notiId'); // O localStorage.getItem('comparecenciaId');
+  if (notiId) {
+      verificarEstadoFirmas(notiId);
+  }
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Escucha el clic en el botón
+    document.getElementById('iniciarFirmas').addEventListener('click', function() {
+        
+                // Continúa con el código después del éxito de la petición
+                document.getElementById('qrCode').style.display = 'block';
+                document.getElementById('autoridadActuanteSection').style.display = 'block';
+                document.getElementById('generatePDFSection').style.display = 'none';
+
+
+                var alegatoId = {{noti}};
+                document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr_notificaciones/autoridadActuante/' + alegatoId;
+
+
+                // Comienza a verificar si la firma ha sido capturada en un intervalo regular
+                intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(alegatoId); }, 1000);
+          
+     
+    });
+});
+function verificarFirmaAutoridadActuante(notiId) {
+  fetch('/notificaciones/verificar_firma/autoridadActuante_notificacion/' + notiId)
+  .then(response => response.json())
+  .then(data => {
+      if (data.status === 'success') {
+          clearInterval(intervaloAutoridadActuante); // Detener el intervalo
+          document.getElementById('autoridadActuanteSection').style.display = 'none';
+          // Mostrar la sección para generar el PDF
+          document.getElementById('generatePDFSection').style.display = 'block';
+      }
+  });
+}   
+</script>
 
 {% block scripts %}
 

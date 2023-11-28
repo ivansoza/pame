@@ -1,5 +1,6 @@
 # forms.py
 from django import forms
+from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular,qrfirma
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia
 
@@ -19,6 +20,7 @@ class modalnotificicacionForm(forms.ModelForm):
     class Meta:
         model = Relacion
         fields = ['extranjero','nup','defensoria','autoridad_actuante']
+
 
 
 class NotificacionConsularForm(forms.ModelForm):
@@ -69,3 +71,11 @@ class FirmaAutoridadActuanteFiscaliaForm(forms.ModelForm):
 
 
     
+
+
+
+class QrfirmaForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model=Qrfirma
+        fields = ['firmaAutoridadActuante']
