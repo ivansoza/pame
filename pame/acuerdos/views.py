@@ -3941,7 +3941,6 @@ def guardar_notificacion_consular(request, notificacion_consular_id):
         }
 
         pdf_bytes = renderizar_pdf_notificacion_consular(context)
-        guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, request.user)
         repo = guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, request.user)
 
         pdf_url = request.build_absolute_uri(repo.archivo.url)
@@ -4067,7 +4066,6 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
         }
 
         pdf_bytes = renderizar_pdf_notificacion_comar(context)
-        guardar_pdf_notificacion_comar(pdf_bytes, notificacion_comar, request.user)
         repo = guardar_pdf_notificacion_comar(pdf_bytes, notificacion_comar, request.user)
 
         pdf_url = request.build_absolute_uri(repo.archivo.url)
@@ -4100,7 +4098,77 @@ def notificacionFiscalia_pdf(request):
     return response
 
 
+def obtener_datos_notificacion_fiscalia(notificacion_comar_id):
+    try:
+        notificacion_comar = NotificacionCOMAR.objects.get(id=notificacion_comar_id)
+        firma = FirmaNotificacionComar.objects.filter(notificacionComar=notificacion_comar).first()
+        return notificacion_comar, firma
+    except NotificacionCOMAR.DoesNotExist:
+        return None, None
+    
+def renderizar_pdf_notificacion_fiscalia(context):
+    template = get_template('documentos/notificacionFiscalia.html')
+    html_content = template.render(context)
+    html = HTML(string=html_content)
+    return html.write_pdf()
 
+def guardar_pdf_notificacion_fiscalia(pdf_bytes, notificacion_fiscalia, usuario_actual):
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion a Fiscalía", delaClasificacion=clasificacion)
+
+    # Genera un nombre único para el archivo PDF
+    nombre_pdf = f"Notificacion_Consular_{notificacion_fiscalia.id}.pdf"
+
+    # Actualiza información relevante en el modelo NoProceso si es necesario
+    no_proceso = notificacion_fiscalia.nup
+    # no_proceso.notificacion_consular = True  # Descomenta y ajusta si es necesario
+    no_proceso.save()
+
+    # Crea una nueva instancia en el repositorio para el archivo PDF
+    repo = Repositorio(
+        nup=notificacion_fiscalia.nup,
+        delTipo=tipo_doc,
+        delaEstacion=usuario_actual.estancia,
+        delResponsable=usuario_actual.get_full_name(),
+    )
+
+    # Guarda el archivo PDF en el modelo Repositorio
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
+    return repo 
+
+
+def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
+    notificacion_fiscalia, firma = obtener_datos_notificacion_fiscalia(notificacion_fiscalia_id)
+    if not notificacion_fiscalia:
+        return JsonResponse({'status': 'error', 'message': 'Notificación Fiscalía no encontrada.'}, status=404)
+
+    try:
+        # Preparar contexto con las URLs de las firmas y otros datos necesarios
+        firma_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url) if firma and firma.firmaAutoridadActuante else None
+
+        context = {
+            'notificacion_fiscalia': notificacion_fiscalia,
+            'firma': firma,
+            'firma_autoridad_actuante_url': firma_url,
+            # Añadir más datos al contexto si es necesario
+        }
+
+        pdf_bytes = renderizar_pdf_notificacion_fiscalia(context)
+        repo = guardar_pdf_notificacion_fiscalia(pdf_bytes, notificacion_fiscalia, request.user)
+
+        pdf_url = request.build_absolute_uri(repo.archivo.url)
+
+ 
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Notificación Fiscalía guardada con éxito y disponible para visualización.',
+            'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
+
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)
 
 #------ FIN DE NOTIFICACION FISCALIA
 

@@ -301,10 +301,16 @@ class CrearNotificacionComar(View):
     def get(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
         extranjero = no_proceso.extranjero 
+        try:
+            ultima_comparecencia = Comparecencia.objects.filter(nup=no_proceso).order_by('-fechahoraComparecencia').first()
+        except Comparecencia.DoesNotExist:
+            ultima_comparecencia = None
 
         initial_data = {
              'delaEstacion': extranjero.deLaEstacion,
              'nup':no_proceso,
+             'delaComparecencia': ultima_comparecencia,  # Añadir la instancia de Comparecencia aquí
+
  
         }
 

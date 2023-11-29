@@ -288,7 +288,7 @@ function verificarFirmaAutoridadActuante(fiscaliaId) {
 
             document.getElementById('generatePDFSection').style.display = 'block';
             var generatePDFBtn = document.getElementById('generatePDFBtn');
-            generatePDFBtn.setAttribute('data-consulado-id', fiscaliaId);
+            generatePDFBtn.setAttribute('data-fiscalia-id', fiscaliaId);
         }
     });
 }
@@ -297,7 +297,7 @@ function verificarFirmaAutoridadActuante(fiscaliaId) {
 document.addEventListener('DOMContentLoaded', (event) => {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.onclick = () => {
-        var fiscaliaId = generatePDFBtn.getAttribute('data-consulado-id');
+        var fiscaliaId = generatePDFBtn.getAttribute('data-fiscalia-id');
         if (fiscaliaId) {
             guardarNotificacionConsulado(fiscaliaId);
         }
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function guardarNotificacionConsulado(fiscaliaId) {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.disabled = true; 
-    fetch('/acuerdos/consulado/guardar/' + fiscaliaId)
+    fetch('/acuerdos/fiscalia/guardar/' + fiscaliaId)
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
@@ -322,7 +322,7 @@ function guardarNotificacionConsulado(fiscaliaId) {
 
             Toast.fire({
                 icon: 'success',
-                title: 'Notificación consular guardada con éxito. PDF disponible para descargar.'
+                title: 'Notificación a Fiscalia guardada con éxito. PDF disponible para descargar.'
             });
 
             var verNotificacionBtn = document.getElementById('verNotificacionBtn');

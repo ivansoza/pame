@@ -23,7 +23,7 @@ from .views import (
     mostrar_comparecencia_pdf, resolucionLibre_pdf, acResolucionLibre_pdf, 
     resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, 
     resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf, 
-    guardar_notificacion_consular, guardar_notificacion_comar
+    guardar_notificacion_consular, guardar_notificacion_comar, guardar_notificacion_fiscalia
 )
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
@@ -140,6 +140,9 @@ urlpatterns = [
 
     #inicio notificacion FISCALIA 
     path('notificacion-fiscalia/', notificacionFiscalia_pdf, name='fiscaliaPDF'),
+    path('fiscalia/guardar/<int:notificacion_fiscalia_id>/', guardar_notificacion_fiscalia, name='guardar_notificacion_fiscalia'),
+
+
 
     #FIN notificacion FISCALIA 
 
