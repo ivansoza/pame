@@ -3,6 +3,7 @@ from django import forms
 from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia
+from django.forms.widgets import HiddenInput
 
 class DefensorForm(forms.ModelForm):
     class Meta:
@@ -47,8 +48,13 @@ class FirmaAutoridadActuanteConsuladoForm(forms.ModelForm):
 class NotificacionComarForm(forms.ModelForm):
     class Meta:
         model = NotificacionCOMAR
-        fields = ['delaEstacion', 'deComar','numeroOficio','nup','notificacionComar','delaComparecencia','delaAutoridad']
-
+        fields = ['delaEstacion', 'deComar', 'numeroOficio', 'nup', 'notificacionComar', 'delaComparecencia', 'delaAutoridad']
+        widgets = {
+            'delaEstacion': HiddenInput(),
+            'nup': HiddenInput(),
+            'delaComparecencia': HiddenInput(),
+            # Puedes agregar más campos aquí si es necesario
+        }
 class FirmaAutoridadActuanteComarForm(forms.ModelForm):
     firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
 

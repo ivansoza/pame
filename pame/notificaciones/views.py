@@ -334,10 +334,11 @@ class CrearNotificacionComar(View):
             'form': form,
             'nup_id': nup_id,
             'extranjero': extranjero,
-            'navbar': 'notificacion',
-            'seccion': 'comar',
+            'navbar': 'Notificaciones',
+            'seccion':'comar',
         }
         
+         
         return render(request, 'comar/crearNotificacionComar.html', context)
 
 def generar_qr_firma_notificacion_comar(request, comar_id, tipo_firma):
@@ -445,6 +446,8 @@ class CrearNotificacionFiscalia(View):
             'extranjero': extranjero,
             'navbar': 'notificacion',
             'seccion': 'fiscalia',
+            'navbar': 'Notificaciones',
+            'seccion':'fiscalia',
         }
         
         return render(request, 'fiscalia/crearNotificacionFiscalia.html', context)
@@ -747,7 +750,7 @@ class CrearNotificacionConsulado(View):
             'form': form,
             'nup_id': nup_id,
             'extranjero': extranjero,
-            'navbar': 'notificacion',
+            'navbar': 'Notificaciones',
             'seccion': 'consulado',
         }
         
