@@ -288,7 +288,7 @@ function verificarFirmaAutoridadActuante(comarId) {
 
             document.getElementById('generatePDFSection').style.display = 'block';
             var generatePDFBtn = document.getElementById('generatePDFBtn');
-            generatePDFBtn.setAttribute('data-consulado-id', comarId);
+            generatePDFBtn.setAttribute('data-comar-id', comarId);
         }
     });
 }
@@ -297,18 +297,18 @@ function verificarFirmaAutoridadActuante(comarId) {
 document.addEventListener('DOMContentLoaded', (event) => {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.onclick = () => {
-        var comarId = generatePDFBtn.getAttribute('data-consulado-id');
+        var comarId = generatePDFBtn.getAttribute('data-comar-id');
         if (comarId) {
-            guardarNotificacionConsulado(comarId);
+            guardarNotificacionComar(comarId);
         }
     };
 });
 
 //FUNCION PARA GUARDAR LA NOTIFICACION xx
-function guardarNotificacionConsulado(comarId) {
+function guardarNotificacionComar(comarId) {
     var generatePDFBtn = document.getElementById('generatePDFBtn');
     generatePDFBtn.disabled = true; 
-    fetch('/acuerdos/consulado/guardar/' + comarId)
+    fetch('/acuerdos/comar/guardar/' + comarId)
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
@@ -322,7 +322,7 @@ function guardarNotificacionConsulado(comarId) {
 
             Toast.fire({
                 icon: 'success',
-                title: 'Notificación consular guardada con éxito. PDF disponible para descargar.'
+                title: 'Notificación a COMAR guardada con éxito. PDF disponible para descargar.'
             });
 
             var verNotificacionBtn = document.getElementById('verNotificacionBtn');
