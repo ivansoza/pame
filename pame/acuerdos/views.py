@@ -3565,13 +3565,20 @@ def recetaMedica_pdf(request, nup_id, ex_id):
     extranjero = no_proceso.extranjero
 
     # Consultar la información de la consulta
-    consulta = Consulta.objects.get(extranjero=extranjero, nup=no_proceso, id=ex_id)
+    consulta = Consulta.objects.get(
+        extranjero=extranjero, 
+        nup=no_proceso, 
+        id=ex_id)
     
     #consultas 
     medico = consulta.delMedico
     ex = consulta.extranjero
     receta = consulta
     tratamiento = consulta.tratamiento
+    estacion = consulta.extranjero.deLaEstacion.nombre
+    oficina = consulta.extranjero.deLaEstacion.oficina
+    firma = extranjero.firma
+    firma_url = f"{settings.BASE_URL}{firma.firma_imagen.url}"
 
     # Dividir el tratamiento por comas y pasar la lista a la plantilla
     tratamiento_lista = tratamiento.split(',')
@@ -3582,7 +3589,10 @@ def recetaMedica_pdf(request, nup_id, ex_id):
         'medico': medico,
         'extranjero': ex,
         'receta': receta, 
-        'tratamiento': tratamiento_lista
+        'tratamiento': tratamiento_lista,
+        'estacion': estacion,
+        'oficina': oficina,
+        'firma': firma_url
     }
 
     # Obtener la plantilla HTML
