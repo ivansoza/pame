@@ -29,14 +29,14 @@ class NotificacionConsularForm(forms.ModelForm):
         model = NotificacionConsular
         fields = ['delaEstacion', 'nup', 'numeroOficio', 'delConsulado', 'accion', 'delaAutoridad']
         widgets = {
-            'delaEstacion': forms.Select(attrs={'placeholder': 'Seleccione Estación'}),
-            'nup': forms.Select(attrs={'placeholder': 'Seleccione Número de Proceso'}),
+            'delaEstacion': HiddenInput(),
+            'nup': HiddenInput(),
             'numeroOficio': forms.TextInput(attrs={'placeholder': 'Número de Oficio'}),
             'delConsulado': forms.Select(attrs={'placeholder': 'Seleccione Consulado'}),
             'accion': forms.Select(attrs={'placeholder': 'Seleccione Acción'}),
             'delaAutoridad': forms.Select(attrs={'placeholder': 'Seleccione Autoridad Actuante'}),
         }
-
+     
 
 class FirmaAutoridadActuanteConsuladoForm(forms.ModelForm):
     firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
@@ -44,7 +44,7 @@ class FirmaAutoridadActuanteConsuladoForm(forms.ModelForm):
     class Meta:
         model = FirmaNotificacionConsular
         fields = ['firmaAutoridadActuante']
-
+   
 class NotificacionComarForm(forms.ModelForm):
     class Meta:
         model = NotificacionCOMAR
@@ -66,7 +66,12 @@ class NotificacionFiscaliaForm(forms.ModelForm):
     class Meta:
         model = NotificacionFiscalia
         fields = ['delaEstacion', 'nup','numeroOficio','delaFiscalia','delaComparecencia','condicion','delaAutoridad' ]
-
+        widgets = {
+            'delaEstacion': HiddenInput(),
+            'nup': HiddenInput(),
+            'delaComparecencia': HiddenInput(),
+            # Puedes agregar más campos aquí si es necesario
+        }
 
 class FirmaAutoridadActuanteFiscaliaForm(forms.ModelForm):
     firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())

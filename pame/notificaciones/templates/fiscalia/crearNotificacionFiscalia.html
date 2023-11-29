@@ -144,13 +144,14 @@
                     <!-- Sección de Notificación Consular -->
                     <div class="tab-pane fade show active" id="notificacion" role="tabpanel" aria-labelledby="notificacion-tab">
                         <div class="row">
-                            <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
-                            <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.numeroOficio|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.delaFiscalia|as_crispy_field }}</div>
-                            <div class="col-md-6">{{ form.delaComparecencia|as_crispy_field }}</div>
-                            <div class="col-md-6">{{ form.condicion|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.delaAutoridad|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.condicion|as_crispy_field }}</div>
+
+                            <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.delaComparecencia|as_crispy_field }}</div>
                         </div>
                     </div>
                     <!-- Más secciones de contenido según sea necesario -->
