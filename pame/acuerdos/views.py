@@ -598,10 +598,21 @@ def noLesiones_pdf(request, nup_id, ex_id):
     )
     
     #consultas 
-    
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion
+    ex = extranjero
+    les = lesiones
+    firma_ex = extranjero.firma
+    firma_ex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'oficina': oficina,
+        'estacion': estacion,
+        'ex':ex,
+        'les':les,
+        'firma_ex':firma_ex_url
     }
 
     # Obtener la plantilla HTML
@@ -3336,141 +3347,6 @@ def presentacion_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/presentacion.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de Certificado Medico 
-def certificadoMedico_pdf(request, nup_id, ex_id):
-    no_proceso = NoProceso.objects.get(nup=nup_id)
-    extranjero = Extranjero.objects.get(id=ex_id)
-    
-    # Obtener informacion del centificado medico
-    certificado = CertificadoMedico.objects.get(
-        extranjero=extranjero,
-        nup=no_proceso
-    )
-
-    #consultas
-    oficina = extranjero.deLaEstacion.oficina
-    estacion = extranjero.deLaEstacion.nombre
-    ex = extranjero
-    cert = certificado 
-    foto = extranjero.biometrico
-    foto_url = f"{settings.BASE_URL}{foto.fotografiaExtranjero.url}"
-    firma_ex = extranjero.firma
-    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
-    dr = certificado.delMedico
-    firma_dr = FirmaMedico.objects.filter(medico=dr.usuario).first()
-    firma_dr_url = f"{settings.BASE_URL}{firma_dr.firma_imagen.url}"
-
-    print("La URL de la foto es:", foto_url)
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-        'oficina': oficina,
-        'estacion': estacion,
-        'ex':ex,
-        'cer':cert,
-        'foto':foto_url,
-        'dr':dr, 
-        'firmadr':firma_dr_url,
-        'firmaex':firmaex_url
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/certificadoMedico.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de Constancia de no lesiones
-def noLesiones_pdf(request):
-    # no_proceso = NoProceso.objects.get(nup=nup_id)
-    # extranjero = no_proceso.extranjero
-    
-    #consultas 
-    
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/noLesiones.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de receta medica 
-def recetaMedica_pdf(request, nup_id, ex_id):
-    no_proceso = NoProceso.objects.get(nup=nup_id)
-    extranjero = no_proceso.extranjero
-
-    # Consultar la información de la consulta
-    consulta = Consulta.objects.get(
-        extranjero=extranjero, 
-        nup=no_proceso, 
-        id=ex_id)
-    
-    #consultas 
-    medico = consulta.delMedico
-    ex = consulta.extranjero
-    receta = consulta
-    tratamiento = consulta.tratamiento
-    estacion = consulta.extranjero.deLaEstacion.nombre
-    oficina = consulta.extranjero.deLaEstacion.oficina
-    firma = extranjero.firma
-    firma_url = f"{settings.BASE_URL}{firma.firma_imagen.url}"
-
-    # Dividir el tratamiento por comas y pasar la lista a la plantilla
-    tratamiento_lista = tratamiento.split(',')
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-        'medico': medico,
-        'extranjero': ex,
-        'receta': receta, 
-        'tratamiento': tratamiento_lista,
-        'estacion': estacion,
-        'oficina': oficina,
-        'firma': firma_url
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/recetaMedica.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
