@@ -238,6 +238,7 @@ class constanciaNoLesiones(models.Model):
     delaEstacion = models.ForeignKey(Estacion, on_delete= models.CASCADE)
     delMedico = models.ForeignKey(PerfilMedico, on_delete=models.CASCADE)
     fechaHoraCertificado = models.DateTimeField(auto_now_add=True)
+    expediente = models.CharField(max_length=50,null=True, blank=True)
     presentaLesion = models.BooleanField(
         verbose_name='¿Presenta Lesiones?',
         choices=LESIONES_BOOL,
