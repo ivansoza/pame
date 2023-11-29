@@ -44,7 +44,7 @@ import base64
 from django.core.files.storage import default_storage
 import io
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
-from salud.models import Consulta, CertificadoMedico, FirmaMedico
+from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones
 from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
@@ -598,9 +598,15 @@ def certificadoMedico_pdf(request, nup_id, ex_id):
     return response
 
 # ----- Genera el documento PDF, de Constancia de no lesiones
-def noLesiones_pdf(request):
-    # no_proceso = NoProceso.objects.get(nup=nup_id)
-    # extranjero = no_proceso.extranjero
+def noLesiones_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
+
+    # Obtener informacion del certificado no lesiones
+    lesiones = constanciaNoLesiones.objects.get(
+        extranjero=extranjero,
+        nup=no_proceso
+    )
     
     #consultas 
     
