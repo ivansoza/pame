@@ -126,6 +126,7 @@ urlpatterns = [
     path('servir_pdf/<int:repositorio_id>/', views.servir_pdf, name='servir_pdf'),
     #fin notificacion consulado 
 
+
     #inicio notificacion consulado 
     path('consulado/guardar/<int:notificacion_consular_id>/', guardar_notificacion_consular, name='guardar_notificacion_consular'),
     path('notificacion-consulado/', notificacionConsulado_pdf, name='consuladoPDF'),

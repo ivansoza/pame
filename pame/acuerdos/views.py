@@ -3784,25 +3784,19 @@ def obtener_datos_notificacion_consular(notificacion_consular_id):
     except NotificacionConsular.DoesNotExist:
         return None, None
 def renderizar_pdf_notificacion_consular(context):
-    template = get_template('documentos/notificacionConsularGuardar.html')
+    template = get_template('guardar/notificacionConsularGuardar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
 
 def guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, usuario_actual):
-    # Suponiendo que tienes modelos similares para clasificar y tipificar documentos de notificaciones consulares
     clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones Consulares")
     tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion Consular", delaClasificacion=clasificacion)
-
-    # Genera un nombre único para el archivo PDF
     nombre_pdf = f"Notificacion_Consular_{notificacion_consular.id}.pdf"
 
-    # Actualiza información relevante en el modelo NoProceso si es necesario
     no_proceso = notificacion_consular.nup
-    # no_proceso.notificacion_consular = True  # Descomenta y ajusta si es necesario
     no_proceso.save()
 
-    # Crea una nueva instancia en el repositorio para el archivo PDF
     repo = Repositorio(
         nup=notificacion_consular.nup,
         delTipo=tipo_doc,
@@ -3810,7 +3804,6 @@ def guardar_pdf_notificacion_consular(pdf_bytes, notificacion_consular, usuario_
         delResponsable=usuario_actual.get_full_name(),
     )
 
-    # Guarda el archivo PDF en el modelo Repositorio
     repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
     repo.save()
     return repo 
@@ -3905,12 +3898,23 @@ def obtener_datos_notificacion_comar(notificacion_comar_id):
     try:
         notificacion_comar = NotificacionCOMAR.objects.get(id=notificacion_comar_id)
         firma = FirmaNotificacionComar.objects.filter(notificacionComar=notificacion_comar).first()
-        return notificacion_comar, firma
+        no_proceso = notificacion_comar.nup
+        extranjero = no_proceso.extranjero
+        comparecencia = Comparecencia.objects.filter(nup=no_proceso).order_by('-fechahoraComparecencia').first()
+
+        puestas = {
+            'puesta_imn': extranjero.deLaPuestaIMN,
+            'puesta_ac': extranjero.deLaPuestaAC,
+            'puesta_vp': extranjero.deLaPuestaVP,
+        }
+        puestas = {key: val for key, val in puestas.items() if val is not None}
+
+        return notificacion_comar, firma, extranjero, comparecencia, puestas
     except NotificacionCOMAR.DoesNotExist:
-        return None, None
+        return None, None, None, None, None
     
 def renderizar_pdf_notificacion_comar(context):
-    template = get_template('documentos/refugioComar.html')
+    template = get_template('guardar/refugioComarGuardar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
@@ -3954,6 +3958,8 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
             'notificacion_comar': notificacion_comar,
             'firma': firma,
             'firma_autoridad_actuante_url': firma_url,
+            # 'puestas': puestas,
+
             # Añadir más datos al contexto si es necesario
         }
 

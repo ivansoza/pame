@@ -1,13 +1,13 @@
 from django.urls import path, include
 from .import views
-from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante, CrearNotificacionComar, CrearNotificacionFiscalia,\
+from .views import listExtranjerosDefensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante, CrearNotificacionComar, CrearNotificacionFiscalia,\
 generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, firma_autoridad_actuante_notifi_fiscalia, firma_autoridad_actuante_notifi_comar ,verificar_firma_autoridad_actuante_comar, verificar_firma_autoridad_actuante_fiscalia
 
-from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
+from .views import notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
 from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no
 
 urlpatterns = [
-    path('defensoria', defensoria.as_view(), name="defensoria"),
+    path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
     path('defensores', views.defensores, name='defensores'),
     path('notificacion/<int:pk>/', notificar.as_view(), name='notificacion'),
     path('listdefensores/', tabladefensores.as_view(), name='listdefensores'),

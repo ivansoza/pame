@@ -39,6 +39,8 @@ from django.http import JsonResponse
 from django.db.models import Exists, OuterRef
 from django.http import HttpResponse, Http404
 import os
+from django.utils import timezone
+from datetime import timedelta
 
 from .models import NotificacionCOMAR,FirmaNotificacionComar,NotificacionFiscalia,FirmaNotificacionFiscalia
 class notificar(LoginRequiredMixin,ListView):
@@ -90,58 +92,58 @@ class notificar(LoginRequiredMixin,ListView):
         return context
 
     
-class defensoria(LoginRequiredMixin, ListView):
-    model = Extranjero
-    template_name='defensoria.html'
-    context_object_name = 'extranjeros'
-    login_url = '/permisoDenegado/'  
+# LISTA DE EXTRANJEROS PARA DEFENSORIA
+class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
+
+    model = NoProceso
+    template_name = 'defensoria/defensoria.html'
+    context_object_name = "extranjeros"
+    
     def get_queryset(self):
+        # Obtener la estación del usuario y el estado
         estacion_usuario = self.request.user.estancia
-
         estado = self.request.GET.get('estado_filtrado', 'activo')
-        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario).order_by('nombreExtranjero')
 
+        # Filtrar extranjeros por estación y estado
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
         if estado == 'activo':
-            queryset = queryset.filter(estatus='Activo')
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
         elif estado == 'inactivo':
-            queryset = queryset.filter(estatus='Inactivo')
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+
+        # Obtener el último NoProceso para cada extranjero filtrado
+        ultimo_no_proceso = NoProceso.objects.filter(
+            extranjero_id=OuterRef('pk')
+        ).order_by('-consecutivo')
+
+        extranjeros_filtrados = extranjeros_filtrados.annotate(
+            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+        )
+
+        # Filtrar NoProceso basado en estos últimos registros
+        queryset = NoProceso.objects.filter(
+            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+        )
+
+        # Calcular la diferencia de tiempo para cada NoProceso
+        now = timezone.now()
+        for no_proceso in queryset:
+            time_diff = now - no_proceso.horaRegistroNup
+            no_proceso.horas_desde_registro = time_diff // timedelta(hours=1)
+
         return queryset
-        
-   
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['navbar'] = 'notificaciones'
-        context['seccion'] = 'notificaciones'
-        context['nombre_estacion'] = self.request.user.estancia.nombre
+        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
+        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
 
-        ahora = timezone.now() # Hora Actual
-
-        for extranjero in context['extranjeros']:
-            # Obtener el último NoProceso asociado a este extranjero
-            ultimo_nup = extranjero.noproceso_set.order_by('-consecutivo').first()
-
-            if ultimo_nup:
-                # Obtener la hora de registro del último NoProceso
-                hora_registro_nup = ultimo_nup.horaRegistroNup
-
-                tiempo_transcurrido = ahora - hora_registro_nup
-                horas_transcurridas, minutos_transcurridos = divmod(tiempo_transcurrido.total_seconds() / 3600, 1)
-                horas_transcurridas = int(horas_transcurridas)
-                minutos_transcurridos = int(minutos_transcurridos * 60)
-
-                # Limitar a un máximo de 36 horas
-                if horas_transcurridas > 36:
-                    horas_transcurridas = 36
-                    minutos_transcurridos = 0
-
-                extranjero.horas_transcurridas = horas_transcurridas
-                extranjero.minutos_transcurridos = minutos_transcurridos
-            else:
-                extranjero.horas_transcurridas = 0
-                extranjero.minutos_transcurridos = 0
-                
+        context['seccion'] = 'resoluciones'
+        context['seccion1'] = 'retorno'
         return context
-     
+        
+   
+
 
 
 # views.py
