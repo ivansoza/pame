@@ -137,7 +137,7 @@ WSGI_APPLICATION = 'pame.wsgi.application'
 
 "URL DE LA PAGINA PARA RENDERIZAR LOS QR "
 # BASE_URL = "https://sfti.tech/"
-BASE_URL = "http://127.0.0.1:8000/"
+BASE_URL = "http://127.0.0.1:8090/"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
