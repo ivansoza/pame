@@ -1,7 +1,6 @@
 from django.db import models
 from vigilancia.models import Extranjero,NoProceso  # Asegúrate de importar el modelo Extranjero correctamente
-from vigilancia.models import Estancia
-from catalogos.models import Estacion
+from catalogos.models import Estacion, Estado
 
 class Notificacion(models.Model):
     fechaAceptacion = models.DateField(verbose_name='Fecha de Aceptación', auto_now_add=True)
@@ -12,23 +11,59 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"Notificación de {self.no_proceso.extranjero.nombreExtranjero} en {self.estacion.nombre}"
+    
+OPCIONES_CARGO=[
+    ('Director', 'Director'),
+    ('Subdirector', 'Subdirector'),
+    ('Jefe de Seguridad', 'Jefe de Seguridad'),
+    ('Oficial de Inmigración', 'Oficial de Inmigración'),
+    ('Oficial de Custodia', 'Oficial de Custodia'),
+    ('Oficial de Documentación', 'Oficial de Documentación'),
+    ('Oficial de Derechos Humanos', 'Oficial de Derechos Humanos'),
+    ('Oficial Médico', 'Oficial Médico'),
+    ('Oficial de Procesamiento de Solicitudes', 'Oficial de Procesamiento de Solicitudes'),
+    ('Abogado de Inmigración', 'Abogado de Inmigración'),
+    ('Traductor', 'Traductor'),
+    ('Oficial de Seguridad Nacional', 'Oficial de Seguridad Nacional'),
+    ('Oficial de Reubicación', 'Oficial de Reubicación'),
+    ('Consejero de Asilo', 'Consejero de Asilo'),
+    ('Asistente Social', 'Asistente Social'),
+    ('Oficial de Derechos de los Menores', 'Oficial de Derechos de los Menores'),
+    ('Otro', 'Otro'),
+
+]
+ESTATUS_DEFENSO = [
+    ('Activo','Activo'),
+    ('Inactivo','Inactivo'),
+]
 class Defensorias(models.Model):
-    entidad = models.CharField(max_length=50, verbose_name="Estado de la entidad")
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, verbose_name="Estado de la Republica")
     nombreTitular = models.CharField(max_length=50, verbose_name="Nombre del titular")
     apellidoPaternoTitular = models.CharField(max_length=50, verbose_name="Apellido paterno del titular")
     apellidoMaternoTitular = models.CharField(max_length=50, verbose_name="Apellido materno del titular")
-    cargoTitular = models.CharField(max_length=50, verbose_name="Cargo del titular")
-    email1 = models.CharField(max_length=50,verbose_name="Correo 1")
-    email2 = models.CharField(max_length=50, verbose_name="Correo 2")
-    telefono = models.CharField(max_length=20,verbose_name="Telefono")
-    calle = models.CharField(max_length=50,verbose_name="Calle")
-    colonia = models.CharField(max_length=50,verbose_name="Colonia")
-    municipio = models.CharField(max_length=50,verbose_name="Municipio")
-    cp = models.CharField(max_length=10,verbose_name="CP")
-    
+    cargoTitular = models.CharField(choices=OPCIONES_CARGO, verbose_name='Cargo de la autoridad', max_length=75)
+    email1 = models.CharField(max_length=50, verbose_name="Correo 1")
+    email2 = models.CharField(max_length=50, verbose_name="Correo 2", blank=True, null=True)
+    telefono = models.CharField(max_length=20, verbose_name="Teléfono")
+    telefono2 = models.CharField(max_length=20, verbose_name="Teléfono 2", blank=True,null=True)
+    calle = models.CharField(max_length=50, verbose_name="Calle")
+    colonia = models.CharField(max_length=50, verbose_name="Colonia")
+    municipio = models.CharField(max_length=50, verbose_name="Municipio")
+    cp = models.CharField(max_length=10, verbose_name="CP")
+    estatus = models.CharField(choices=ESTATUS_DEFENSO,max_length=25, verbose_name='Estatus de la autoridad en la estación', default='Activo')
 
-    def __str__(self):
-        return (self.entidad)
+    def _str_(self):
+        return self.estado
+
+    def direccion_completa(self):
+        direccion_parts = [
+            self.calle,
+            self.colonia,
+            self.municipio,
+            self.estado,  # Asumiendo que 'entidad' representa el estado
+            self.cp
+        ]
+        return ', '.join(filter(None, direccion_parts))
     
     
 class notificacionesAceptadas(models.Model):

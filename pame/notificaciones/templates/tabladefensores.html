@@ -7,16 +7,16 @@
 {% endblock link %}
 
 {% block dashboard %}
-    <a class="btn btn-sm btn-icon1" href="{% url 'menu' %}">Regresar al menu
-        <i class="fas fa-arrow-left"></i>
-    </a>
+<a class="btn btn-sm btn-icon1" href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+  </a>
 {% endblock dashboard %}
 
 {% block contenido %}
 
     <div class="titulo-general-container mt-2">
         <h1 class="titulo-general">
-            Lista de defensorias:
+            Lista de defensorias
         </h1>
     </div>
     <br>
@@ -33,17 +33,34 @@
                     <th>Correos</th>
                     <th>Teléfono</th>
                     <th>CP</th>
+                    <th style="width: 5%;">Opciones</th>
+
                 </tr>
             </thead>
             <tbody>
                 {% for defensoria in defensorias %}
                     <tr>
-                        <td>{{ defensoria.entidad }}</td>
+                        <td>{{ defensoria.estado }}</td>
                         <td>{{ defensoria.nombreTitular }} {{ defensoria.apellidoPaternoTitular }} {{ defensoria.apellidoMaternoTitular }}</td>
                         <td>{{ defensoria.cargoTitular }}</td>
-                        <td>{{ defensoria.email1 }}|{{ defensoria.email2 }}</td>
-                        <td>{{ defensoria.telefono }}</td>
+                        <td>
+                            {{ defensoria.email1 }}
+                            {% if defensoria.email2 %}
+                            |{{ defensoria.email2 }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ defensoria.telefono }} 
+                            {% if defensoria.telefono2 %}
+                            | {{defensoria.telefono2}} 
+                            {% endif %}
+                        </td>
                         <td>{{ defensoria.cp }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "editarDefensoria" defensoria.id%}" data-title="Editar Defensoria">
+                                <i class="fa-solid fa-user-pen"></i> 
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -55,6 +72,7 @@
                     <th>Correos </th>
                     <th>Teléfono</th>
                     <th>CP</th>
+                    <th style="width: 5%;">Opciones</th>
                 </tr>
             </tfoot>
         </table>
@@ -71,7 +89,7 @@
     className: 'btn btn-custom mr-2',
     action: function (e, dt, node, config) {
       // Redirigir a la URL relativa a la ubicación actual
-      window.location.href = '{% url 'defensores' %}';
+      window.location.href = '{% url 'crearDefensoria' %}';
    }
   },
 

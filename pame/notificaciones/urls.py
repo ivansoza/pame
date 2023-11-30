@@ -1,11 +1,10 @@
 from django.urls import path, include
-from .import views
-from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia
+from .views import editarDefensoria 
+from .views import defensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia, createDEfensoria
 
 
 urlpatterns = [
     path('defensoria', defensoria.as_view(), name="defensoria"),
-    path('defensores', views.defensores, name='defensores'),
     path('notificacion/<int:pk>/', notificar.as_view(), name='notificacion'),
     path('listdefensores/', tabladefensores.as_view(), name='listdefensores'),
     path('modal/', SubirArchivo.as_view(), name='modale'),
@@ -15,5 +14,7 @@ urlpatterns = [
     path("consulado/", listExtranjerosConsulado.as_view(), name="listExtranjerosConsulado"),
     path("fiscalia/", listExtranjerosFiscalia.as_view(), name="listExtranjerosFiscalia"),
 
+    path("crearDefensoria/", createDEfensoria.as_view(), name="crearDefensoria"),
+    path("editarDefensoria/<int:pk>", editarDefensoria.as_view(), name="editarDefensoria"),
 
 ]

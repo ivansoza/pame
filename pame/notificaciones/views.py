@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from vigilancia.models import Extranjero
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from .models import Defensorias,Relacion
 from .forms import NotificacionesAceptadasForm,modalnotificicacionForm
 from django.urls import reverse_lazy
@@ -117,6 +117,33 @@ class defensoria(LoginRequiredMixin, ListView):
 from django.shortcuts import render, redirect
 from .forms import DefensorForm
 
+class createDEfensoria(CreateView):
+    template_name='defensorias.html'
+    model = Defensorias
+    form_class = DefensorForm
+    def get_success_url(self):
+        messages.success(self.request, 'Defensoria creada exitosamente')
+        return reverse_lazy('listdefensores')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'defensor'
+        return context
+
+
+class editarDefensoria(UpdateView):
+    template_name='editarDefensoria.html'
+    model = Defensorias
+    form_class= DefensorForm
+    def get_success_url(self):
+        messages.success(self.request, 'Defensoria editada exitosamente')
+        return reverse_lazy('listdefensores')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'defensor'
+        return context
+
 def defensores(request):
     if request.method == 'POST':
         form = DefensorForm(request.POST)
@@ -136,6 +163,11 @@ class tabladefensores(LoginRequiredMixin,ListView):
     template_name = 'tabladefensores.html'
     context_object_name = 'defensorias'
     login_url = '/permisoDenegado/' 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'defensor'
+        return context
 
 
 from .models import notificacionesAceptadas, Defensorias

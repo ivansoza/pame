@@ -638,19 +638,15 @@ class CrearConstanciaAjax(View):
 
     def post(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
-        constancia_id = request.session.get('pk')
-        constancia_existente = NoFirma.objects.filter(id=constancia_id).first()
+       
 
-        form = NoFirmaForms(request.POST, instance=constancia_existente)
+        form = NoFirmaForms(request.POST)
         if form.is_valid():
             constancia = form.save(commit=False)
             constancia.nup = no_proceso
-
-            if not constancia_existente:
                 # Solo guarda una nueva comparecencia si no existe una previa
-                constancia.save()
+            constancia.save()
                 # Guardar el ID de la comparecencia en la sesión
-                request.session['constancia_id'] = constancia.id
 
             data = {'success': True, 'message': 'Constancia creada con éxito.', 'constancia_id': constancia.id}
             return JsonResponse(data, status=200)
@@ -668,8 +664,7 @@ class CrearConstanciaAjax(View):
         extranjero = no_proceso.extranjero
         asignacion_rep_legal = AsignacionRepresentante.objects.filter(no_proceso=no_proceso).first()
 
-        constancia_id = request.session.get('constancia_id')
-        constancia_existente = NoFirma.objects.filter(id=constancia_id).first()
+   
 
         initial_data = {
             'extranjero':extranjero.id,
@@ -681,8 +676,7 @@ class CrearConstanciaAjax(View):
         if asignacion_rep_legal:
             initial_data['repreLegal'] = asignacion_rep_legal.representante_legal
 
-        form = NoFirmaForms(instance=constancia_existente) if constancia_existente else NoFirmaForms(initial=initial_data)
-
+        form = NoFirmaForms(initial= initial_data)
         autoridades = AutoridadesActuantes.objects.none()
         # ... lógica para establecer autoridades y traductor ...
         if extranjero.deLaPuestaIMN:
@@ -989,28 +983,36 @@ class PresentaPruebas(CreateView):
         return context
 
 class listaExtranjerosDesahogo(ListView):
-    template_name='desahogo/listaDeExtranjeros.html'
+    template_name = 'desahogo/listaDeExtranjeros.html'
     model = Extranjero
     context_object_name = 'extranjeros'
-    login_url = '/permisoDenegado/' 
+    login_url = '/permisoDenegado/'
+
     def get_queryset(self):
-        # Obtener la estación del usuario actualmente autenticado.
-        estacion_usuario = self.request.user.estancia
+        # Obtener el NUP actual del extranjero
+        subquery_nup_actual = NoProceso.objects.filter(
+            extranjero=OuterRef('pk')
+        ).order_by('-consecutivo').values('nup')[:1]
 
-        # Filtrar extranjeros con estatus "Activo"
-        queryset = Extranjero.objects.filter(deLaEstacion=estacion_usuario, estatus='Activo')
+        # Obtener los NUP registrados en presentapruebas para cada extranjero
+        subquery_nups_registrados = presentapruebas.objects.filter(
+            extranjero=OuterRef('pk')
+        ).values('nup__nup')
 
-        # Filtrar extranjeros que tengan un registro en presentapruebas con presenta=True
-        queryset = queryset.filter(presentapruebas__presenta=True)
+        # Filtra los extranjeros activos
+        extranjeros_activos = Extranjero.objects.filter(estatus='Activo')
 
-        # Filtrar extranjeros que tengan el último nup registrado en presentapruebas
-        queryset = queryset.annotate(ultimo_nup=Max('noproceso__consecutivo'))
-        queryset = queryset.filter(noproceso__consecutivo=F('ultimo_nup'))
+        # Filtra los extranjeros cuyo NUP actual coincide con al menos un NUP registrado en presentapruebas
+        extranjeros_filtrados = extranjeros_activos.filter(
+        noproceso__nup__in=subquery_nup_actual,
+        presentapruebas__nup__in=subquery_nups_registrados
+        ).distinct()
 
-        return queryset
+        return extranjeros_filtrados
+
     def get_context_data(self, **kwargs):
-         context = super().get_context_data(**kwargs)
-         context['navbar'] = 'alegatos'  # Cambia esto según la página activa
-         context['seccion'] = 'desahogo'  # Cambia esto según la página activa   
-         return context 
+        context = super().get_context_data(**kwargs)
+        context['navbar'] = 'alegatos'  # Cambia esto según la página activa
+        context['seccion'] = 'desahogo'  # Cambia esto según la página activa
+        return context
          

@@ -54,7 +54,7 @@
           
           <td>
              {% if extranjero.tiene_presenta %}
-             <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert6(); return false;" data-title="Existencia de pruebas y/o alegatos registrada">
+             <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert6(); return false;" data-title="Pruebas registradas">
                 <i class="fa-solid fa-square-check"></i>           
               </a> 
                {% if extranjero.dd == True %}
@@ -77,7 +77,7 @@
                {% endif %}                 
                {% endif %} 
                {% else %}
-               <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "presenta" extranjero.id %}" onclick="abrir_modal_eliminar(this.href); return false;" data-title="Registro de existencia pruebas y/o alegatos">
+               <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "presenta" extranjero.id %}" onclick="abrir_modal_eliminar(this.href); return false;" data-title="Registro de pruebas">
                 <i class="fa-solid fa-square-check"></i>           
               </a>          
              {% endif %}
