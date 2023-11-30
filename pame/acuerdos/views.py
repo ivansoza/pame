@@ -3898,23 +3898,12 @@ def obtener_datos_notificacion_comar(notificacion_comar_id):
     try:
         notificacion_comar = NotificacionCOMAR.objects.get(id=notificacion_comar_id)
         firma = FirmaNotificacionComar.objects.filter(notificacionComar=notificacion_comar).first()
-        no_proceso = notificacion_comar.nup
-        extranjero = no_proceso.extranjero
-        comparecencia = Comparecencia.objects.filter(nup=no_proceso).order_by('-fechahoraComparecencia').first()
-
-        puestas = {
-            'puesta_imn': extranjero.deLaPuestaIMN,
-            'puesta_ac': extranjero.deLaPuestaAC,
-            'puesta_vp': extranjero.deLaPuestaVP,
-        }
-        puestas = {key: val for key, val in puestas.items() if val is not None}
-
-        return notificacion_comar, firma, extranjero, comparecencia, puestas
+        return notificacion_comar, firma
     except NotificacionCOMAR.DoesNotExist:
-        return None, None, None, None, None
+        return None, None
     
 def renderizar_pdf_notificacion_comar(context):
-    template = get_template('guardar/refugioComarGuardar.html')
+    template = get_template('documentos/refugioComar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
@@ -3958,8 +3947,6 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
             'notificacion_comar': notificacion_comar,
             'firma': firma,
             'firma_autoridad_actuante_url': firma_url,
-            # 'puestas': puestas,
-
             # Añadir más datos al contexto si es necesario
         }
 
@@ -3996,26 +3983,26 @@ def notificacionFiscalia_pdf(request):
     return response
 
 
-def obtener_datos_notificacion_fiscalia(notificacion_comar_id):
+def obtener_datos_notificacion_fiscalia(notificacion_fiscalia_id):
     try:
-        notificacion_comar = NotificacionCOMAR.objects.get(id=notificacion_comar_id)
-        firma = FirmaNotificacionComar.objects.filter(notificacionComar=notificacion_comar).first()
-        return notificacion_comar, firma
-    except NotificacionCOMAR.DoesNotExist:
+        notificacion_fiscalia = NotificacionFiscalia.objects.get(id=notificacion_fiscalia_id)
+        firma = FirmaNotificacionFiscalia.objects.filter(notificacionFiscalia=notificacion_fiscalia).first()
+        return notificacion_fiscalia, firma
+    except NotificacionFiscalia.DoesNotExist:
         return None, None
     
 def renderizar_pdf_notificacion_fiscalia(context):
-    template = get_template('documentos/notificacionFiscalia.html')
+    template = get_template('documentos/notificacionFiscaliacopy.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
 
 def guardar_pdf_notificacion_fiscalia(pdf_bytes, notificacion_fiscalia, usuario_actual):
     clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones")
-    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion a Fiscalía", delaClasificacion=clasificacion)
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion a Fiscalia", delaClasificacion=clasificacion)
 
     # Genera un nombre único para el archivo PDF
-    nombre_pdf = f"Notificacion_Consular_{notificacion_fiscalia.id}.pdf"
+    nombre_pdf = f"Notificacion_Fiscalia_{notificacion_fiscalia.id}.pdf"
 
     # Actualiza información relevante en el modelo NoProceso si es necesario
     no_proceso = notificacion_fiscalia.nup
@@ -4039,7 +4026,7 @@ def guardar_pdf_notificacion_fiscalia(pdf_bytes, notificacion_fiscalia, usuario_
 def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
     notificacion_fiscalia, firma = obtener_datos_notificacion_fiscalia(notificacion_fiscalia_id)
     if not notificacion_fiscalia:
-        return JsonResponse({'status': 'error', 'message': 'Notificación Fiscalía no encontrada.'}, status=404)
+        return JsonResponse({'status': 'error', 'message': 'Notificación Fiscalia no encontrada.'}, status=404)
 
     try:
         # Preparar contexto con las URLs de las firmas y otros datos necesarios
@@ -4060,14 +4047,12 @@ def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
  
         return JsonResponse({
             'status': 'success',
-            'message': 'Notificación Fiscalía guardada con éxito y disponible para visualización.',
+            'message': 'Notificación Fiscalia guardada con éxito y disponible para visualización.',
             'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
 
         })
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)
-
+    
 #------ FIN DE NOTIFICACION FISCALIA
-
-
