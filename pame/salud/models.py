@@ -168,7 +168,7 @@ class CertificadoMedicoEgreso(models.Model):
     delaEstacion = models.ForeignKey(Estacion, on_delete= models.CASCADE)
     delMedico = models.ForeignKey(PerfilMedico, on_delete=models.CASCADE)
     fechaHoraCertificado = models.DateTimeField(auto_now_add=True)
-    tipoCertificado = models.CharField(verbose_name='Tipo Certificado', max_length=25, choices=OPCION_TIPO_CHOICES, default='INGRESO')
+    tipoCertificado = models.CharField(verbose_name='Tipo Certificado', max_length=25, choices=OPCION_TIPO_CHOICES, default='EGRESO')
 # Exploracion física
     temperatura = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Temperatura')
     frecuenciaRespiratoria = models.IntegerField(verbose_name='Frecuencia Respiratoria')
@@ -208,7 +208,7 @@ class CertificadoMedicoEgreso(models.Model):
     tipoDieta = models.CharField(max_length=50, verbose_name='Tipo de Dietas', choices=TIPO_DIETAS)
     sintomasCovid=models.TextField(verbose_name='Síntomas COVID')
     embarazo = models.BooleanField(verbose_name='Embarazo')
-    tiempoEmbarazo=models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Tiempo Embarazo', null=True, blank=True)
+    tiempoEmbarazo=models.CharField(max_length=50, verbose_name='Tiempo Embarazo', null=True, blank=True)
     conclusionDiagnostica= models.TextField(verbose_name='Concision Diagnostica')
     observaciones =models.TextField(verbose_name='Observaciones')
     tratamiento = models.TextField(verbose_name='Tratamiento')

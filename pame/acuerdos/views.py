@@ -29,7 +29,7 @@ from llamadasTelefonicas.models import Notificacion, LlamadasTelefonicas
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc, Repositorio, TipoAcuerdo, Acuerdo
 from pertenencias.models import EnseresBasicos
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
-from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones
+from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones, CertificadoMedicoEgreso
 from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar
 
 from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm
@@ -555,8 +555,6 @@ def certificadoMedico_pdf(request, nup_id, ex_id):
     firma_dr = FirmaMedico.objects.filter(medico=dr.usuario).first()
     firma_dr_url = f"{settings.BASE_URL}{firma_dr.firma_imagen.url}"
 
-    print("La URL de la foto es:", foto_url)
-
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
@@ -572,6 +570,59 @@ def certificadoMedico_pdf(request, nup_id, ex_id):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/certificadoMedico.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Certificado Medico 
+def certificadoMedicoEgreso_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
+    
+    # Obtener informacion del centificado medico
+    certificado = CertificadoMedicoEgreso.objects.get(
+        extranjero=extranjero,
+        nup=no_proceso
+    )
+
+    #consultas
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
+    ex = extranjero
+    cert = certificado 
+    foto = extranjero.biometrico
+    foto_url = f"{settings.BASE_URL}{foto.fotografiaExtranjero.url}"
+    firma_ex = extranjero.firma
+    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+    dr = certificado.delMedico
+    firma_dr = FirmaMedico.objects.filter(medico=dr.usuario).first()
+    firma_dr_url = f"{settings.BASE_URL}{firma_dr.firma_imagen.url}"
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'oficina': oficina,
+        'estacion': estacion,
+        'ex':ex,
+        'cer':cert,
+        'foto':foto_url,
+        'dr':dr, 
+        'firmadr':firma_dr_url,
+        'firmaex':firmaex_url
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/certificadoMedicoEg.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML

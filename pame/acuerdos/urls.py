@@ -23,7 +23,8 @@ from .views import (
     mostrar_comparecencia_pdf, resolucionLibre_pdf, acResolucionLibre_pdf, 
     resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, 
     resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf, 
-    guardar_notificacion_consular, guardar_notificacion_comar, guardar_notificacion_fiscalia
+    guardar_notificacion_consular, guardar_notificacion_comar, guardar_notificacion_fiscalia,
+    certificadoMedicoEgreso_pdf
 )
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
@@ -51,6 +52,7 @@ urlpatterns = [
     path('ver-comparecencia/', comparecencia_pdf, name='comparecenciaPDF'),
     path('acpresentacion', presentacion_pdf, name='presentacionPDF'),
     path('certificado-medico/<str:nup_id>/<str:ex_id>/', certificadoMedico_pdf, name='certificadoPDF'),
+    path('certificado-medico-egreso/<str:nup_id>/<str:ex_id>/', certificadoMedicoEgreso_pdf, name='certificadoegPDF'),
     path('no-lesiones/<str:nup_id>/<str:ex_id>/', noLesiones_pdf, name='nolesionesPDF'),
     path('recetaMedica/<str:nup_id>/<str:ex_id>/', recetaMedica_pdf, name='recetaPDF'),
     path('recepcion-documentos', recepcionDoc_pdf, name='recepcionDocPDF'),
