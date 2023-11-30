@@ -37,7 +37,7 @@
     <tbody>
         {% for extranjero in extranjeros %}
         <tr>
-            <td>{{ extranjero.nombreExtranjero }}</td>
+            <td>{{ extranjero.nombreExtranjero }}
             <td>
                 {% if extranjero.apellidoPaternoExtranjero %}
                     {{ extranjero.apellidoPaternoExtranjero }}
@@ -50,11 +50,11 @@
             <td>
                 <!-- INICIO DE ICONO DE LLAMADA  -->
                 {% if extranjero.tiene_certificadoMedico %}
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert(); return false;" data-title="Certificado Medico Registrado">
+                <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'certificadoPDF' extranjero.noproceso_set.last.nup extranjero.id %}" target="_blank" data-title="Certificado Medico Registrado">
                     <i class="fas fa-file-medical"></i>
                 </a>
                  {% if extranjero.tiene_constanciaLesiones %}
-                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert3(); return false;" data-title="Cosntancia de no lesiones Registrada">
+                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'nolesionesPDF' extranjero.noproceso_set.last.nup extranjero.id %}" target="_blank" data-title="Cosntancia de no lesiones Registrada">
                     <i class="fas fa-file-medical"></i>
                 </a>
                  {% else %}
@@ -157,7 +157,7 @@
             // Acción cuando se hace clic en 'Entendido'
         } else if (result.isDenied) {
             // Acción cuando se hace clic en 'Documento'
-            window.open('{% url 'certificadoPDF' %}', '_blank');  // Reemplaza 'URL_DEL_DOCUMENTO' con la URL correcta
+            window.open();  // Reemplaza 'URL_DEL_DOCUMENTO' con la URL correcta
         }
     });
 }

@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from multiselectfield import MultiSelectField 
-
 class Tipos(models.Model):
     tipo = models.CharField(max_length=50, null=False)
 
@@ -235,3 +234,83 @@ class RepresentantesLegales(models.Model):
         return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno or ""}'
     
 
+class Consulado(models.Model):
+    # Aquí se difiere el import hasta que se necesite
+    def __init__(self, *args, **kwargs):
+        from vigilancia.models import Nacionalidad
+        super().__init__(*args, **kwargs)
+
+    pais = models.ForeignKey('vigilancia.Nacionalidad', on_delete=models.CASCADE, verbose_name="País")
+    ciudad = models.CharField(max_length=100)
+    calle = models.CharField(max_length=100)
+    colonia = models.CharField(max_length=100)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, verbose_name="Estado de la Republica")
+    codigo_postal = models.CharField(max_length=5,blank=True, null=True)
+    telefono1 = models.CharField(max_length=20, blank=True, null=True)
+    telefono2 = models.CharField(max_length=20, blank=True, null=True)
+    fax = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    email2 = models.EmailField(blank=True, null=True)
+    def __str__(self):
+        return f"{self.estado} - {self.ciudad}"
+
+    def direccion_completa(self):
+            direccion_parts = [
+                self.calle,
+                self.colonia,
+                self.ciudad,
+                self.estado.estado,  # Asumiendo que el modelo Estado tiene un campo 'nombre'
+                self.codigo_postal
+            ]
+            return ', '.join(filter(None, direccion_parts))
+    
+
+class Comar(models.Model):
+
+    ciudad = models.CharField(max_length=100)
+    calle = models.CharField(max_length=100)
+    colonia = models.CharField(max_length=100)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, verbose_name="Estado de la Republica")
+    codigo_postal = models.CharField(max_length=5,blank=True, null=True)
+    telefono1 = models.CharField(max_length=20, blank=True, null=True)
+    telefono2 = models.CharField(max_length=20, blank=True, null=True)
+    fax = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    email2 = models.EmailField(blank=True, null=True)
+    def __str__(self):
+        return f"{self.estado} - {self.ciudad}"
+
+    def direccion_completa(self):
+            direccion_parts = [
+                self.calle,
+                self.colonia,
+                self.ciudad,
+                self.estado.estado,  # Asumiendo que el modelo Estado tiene un campo 'nombre'
+                self.codigo_postal
+            ]
+            return ', '.join(filter(None, direccion_parts))
+    
+class Fiscalia(models.Model):
+
+    ciudad = models.CharField(max_length=100)
+    calle = models.CharField(max_length=100)
+    colonia = models.CharField(max_length=100)
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, verbose_name="Estado de la Republica")
+    codigo_postal = models.CharField(max_length=5,blank=True, null=True)
+    telefono1 = models.CharField(max_length=20, blank=True, null=True)
+    telefono2 = models.CharField(max_length=20, blank=True, null=True)
+    fax = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    email2 = models.EmailField(blank=True, null=True)
+    def __str__(self):
+        return f"{self.estado} - {self.ciudad}"
+
+    def direccion_completa(self):
+            direccion_parts = [
+                self.calle,
+                self.colonia,
+                self.ciudad,
+                self.estado.estado,  # Asumiendo que el modelo Estado tiene un campo 'nombre'
+                self.codigo_postal
+            ]
+            return ', '.join(filter(None, direccion_parts))

@@ -10,7 +10,7 @@ class Nacionalidad(models.Model):
     class Meta:
         verbose_name_plural = "Gentilicios"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.Abreviatura
 
 GRADO_ACADEMICO = [
@@ -43,7 +43,6 @@ class PuestaDisposicionINM(models.Model):
     oficioComision = models.FileField(upload_to=user_directory_pathINM, verbose_name='Oficio de Comisión', null=True, blank=True)
     puntoRevision = models.CharField(verbose_name='Punto de Revisión', max_length=100)
     deLaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación de Origen', null=True, blank=True)
-
     class Meta:
         verbose_name_plural = "Puestas a Disposición INM"
         ordering = ['-fechaOficio']
@@ -154,8 +153,9 @@ class Extranjero(models.Model):
     nacionalidad_Madre = models.ForeignKey(Nacionalidad, on_delete=models.CASCADE, verbose_name='Nacionalidad de la madre',blank=True,null=True,related_name='extranjeros_nacionalidad_madre')
     edad = models.IntegerField(verbose_name='Edad')    
     domicilio = models.CharField(verbose_name="Domicilio y/o Residencia ", max_length=150, blank=True, null=True, default="")
-    def _str_(self):
-         return (self.nombreExtranjero)
+    def __str__(self):
+        return f"{self.nombreExtranjero}"
+    
     def save(self, *args, **kwargs):
     # Si el númeroExtranjero no está establecido, asigna un valor único basado en el ID del registro.
      if not self.numeroExtranjero:

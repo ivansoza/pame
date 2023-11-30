@@ -1,6 +1,6 @@
 from django.urls import path, include
 from django.contrib.auth.views import LoginView
-from .views import CustomLoginView, templeteDenegado, DefensoriaLoginView, menuDefensoria
+from .views import CustomLoginView, templeteDenegado, DefensoriaLoginView, menuDefensoria, firmaExistente
 from .views import home, menu, exit
 from django.contrib.auth import views as auth_views
 
@@ -20,5 +20,8 @@ urlpatterns = [
     path('recuperar-contrasena/hecho/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('recuperar-contrasena/confirmar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('recuperar-contrasena/completado/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
+    path('firma_existente/', firmaExistente.as_view(), name='firma_existente1'),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

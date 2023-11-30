@@ -26,4 +26,8 @@ urlpatterns = [
 
     path('editar-representante/<int:id>/', AsignacionRepresentanteUpdateView.as_view(), name='editar-representante'),
 
+
+
+    path('generar_qr/<int:autoridad_actuante_id>/', views.generar_qr_firma_autoridad_actuante, name='generar_qr_firma_autoridad_actuante'),
+
 ]

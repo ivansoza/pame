@@ -1,0 +1,180 @@
+.body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    background-color: whitesmoke;
+}
+
+nav {
+    background-color: #0b231e;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 14px 16px;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.pame {
+    margin-right: 10px;
+}
+
+@media screen and (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        float: none;
+        display: block;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.form-box {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(60px);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+    width: 750px;
+    max-width: 100%;
+    display: flex;
+    margin-top: -160px;
+}
+
+.hijo1 {
+    padding: 20px;
+    text-align: center;
+}
+
+.hijo1 img {
+    margin-right: 10px;
+}
+
+.hijo1 h2 {
+    margin: 0;
+}
+
+.hijo2 {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.hijo2 form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-box {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-70%);
+    font-size: 16px;
+    color: black;
+    pointer-events: none;
+    transition: 0.6s;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label {
+    top: 0;
+    font-size: 10px;
+}
+
+.btn-dark {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+@media only screen and (max-width: 600px) {
+    .wrapper {
+        padding: 10px;
+    }
+
+    .form-box {
+        max-width: 100%;
+        flex-direction: column;
+    }
+
+    .hijo1 img {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
+
+.input-box {
+    position: relative;
+}
+
+.icon-1 {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    left: 95%;
+    color: #888;
+}
+
+.icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    left: 92%;
+    color: #888;
+}

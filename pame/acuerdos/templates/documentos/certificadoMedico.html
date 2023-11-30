@@ -1,8 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[Oficina]
-<br>[Estacion Migratoria]
+<br>{{oficina|upper}}
+<br>{{estacion|upper}}
 {% endblock %}
 
 {% block title %}
@@ -12,21 +12,23 @@
 {% endblock %}
 
 {% block content %}
-<p style="text-align: center;">CERTIFICADO M&Eacute;DICO</p>
+<p style="text-align: center;">CERTIFICADO M&Eacute;DICO</p> 
 <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000;">
     <tbody>
-        <tr style="height: 18.5px;">
-            <td style="width: 16.6897%; text-align: center; border: 1px solid #000000; height: 55.5px;" rowspan="3">&nbsp;</td>
-            <td style="width: 48.9993%; border: 1px solid #000000; height: 18.5px;">FECHA:</td>
-            <td style="width: 34.1499%; border: 1px solid #000000; height: 18.5px;">EDAD:</td>
+        <tr style="height: 1.2cm;">
+            <td style="width: 15.6897%; text-align: center; border: 1px solid #000000;" rowspan="3">&nbsp;
+                <img src="{{ foto }}" alt="Foto extranjero" style="height: 3cm; width: 2.5cm; position: absolute; z-index: -1; top: 13%; left: 9%; transform: translate(-50%, -50%);">
+            </td>
+            <td style="width: 48.9993%; border: 1px solid #000000;">FECHA: {{cer.fechaHoraCertificado|date:"d/m/Y"}}</td>
+            <td style="width: 34.1499%; border: 1px solid #000000;">EDAD: {{ex.edad}} Años</td>
         </tr>
-        <tr style="height: 18.5px;">
-            <td style="width: 48.9993%; border: 1px solid #000000; height: 18.5px;">NOMBRE:</td>
-            <td style="width: 34.1499%; border: 1px solid #000000; height: 18.5px;">SEXO:</td>
+        <tr style="height: 1.2cm;">
+            <td style="width: 48.9993%; border: 1px solid #000000;">NOMBRE: {{ex.nombreExtranjero}} {{ex.apellidoPaternoExtranjero}} {{ex.apellidoMaternoExtranjero}}</td>
+            <td style="width: 34.1499%; border: 1px solid #000000;">SEXO: {{ex.get_genero_display|title}}</td>
         </tr>
-        <tr style="height: 18.5px;">
-            <td style="width: 48.9993%; border: 1px solid #000000; height: 18.5px;">NACIONALIDAD:</td>
-            <td style="width: 34.1499%; border: 1px solid #000000; height: 18.5px;">ESTADO CIVIL:</td>
+        <tr style="height: 1.2cm;">
+            <td style="width: 48.9993%; border: 1px solid #000000;">NACIONALIDAD: {{ex.nacionalidad.nombre}}</td>
+            <td style="width: 34.1499%; border: 1px solid #000000;">ESTADO CIVIL: {{ex.estado_Civil}}</td>
         </tr>
     </tbody>
 </table>
@@ -39,46 +41,47 @@
             <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); text-align: center; height: 18.5px;">NO&nbsp;</td>
             <td style="width: 2.0188%; border-width: 1px; border-style: solid; border-color: transparent rgb(0, 0, 0); border-image: initial;" rowspan="5">&nbsp;</td>
             <td style="width: 41.0017%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); text-align: center; height: 18.5px;">SI</td>
+            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); text-align: center; height: 18.5px;">S&Iacute;</td>
             <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); text-align: center; height: 18.5px;">NO</td>
         </tr>
         <tr style="height: 18.5px;">
             <td style="width: 42.6008%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">HEPATITIS</td>
-            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.hepatitis|yesno:'X,' }}</td>
+            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.hepatitis|yesno:',X' }}</td>
             <td style="width: 41.0017%; border: 1.1px solid rgb(0, 0, 0); height: 18.5px;">C&Oacute;LERA</td>
-            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.colera|yesno:'X,' }}</td>
+            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.colera|yesno:',X' }}</td>
         </tr>
         <tr style="height: 18.5px;">
             <td style="width: 42.6008%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">TUBERCULOSIS&nbsp;</td>
-            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.tubercolisis|yesno:'X,' }}</td>
+            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.tubercolisis|yesno:',X' }}</td>
             <td style="width: 41.0017%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">HIPERTENSI&Oacute;N&nbsp;</td>
-            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.hipertension|yesno:'X,' }}</td>
+            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.hipertension|yesno:',X' }}</td>
         </tr>
         <tr style="height: 18.5px;">
             <td style="width: 42.6008%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">PALUDISMO</td>
-            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.paludismo|yesno:'X,' }}</td>
+            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.paludismo|yesno:',X' }}</td>
             <td style="width: 41.0017%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">CARDIOPAT&Iacute;AS&nbsp;</td>
-            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.cardiopatias|yesno:'X,' }}</td>
+            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.cardiopatias|yesno:',X' }}</td>
         </tr>
         <tr style="height: 18.5px;">
             <td style="width: 42.6008%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">DENGUE</td>
-            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 3.2942%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.dengue|yesno:'X,' }}</td>
+            <td style="width: 3.1629%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.dengue|yesno:',X' }}</td>
             <td style="width: 41.0017%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">VIH</td>
-            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
-            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;</td>
+            <td style="width: 4.0185%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.vih|yesno:'X,' }}</td>
+            <td style="width: 3.8313%; border: 1px solid rgb(0, 0, 0); height: 18.5px;">&nbsp;{{ cer.vih|yesno:',X' }}</td>
         </tr>
     </tbody>
 </table>
-<p>&nbsp;OTROS ANTECEDENTES:&nbsp;</p>
-<p>ANTECEDENTES QUIR&Uacute;RGICOS:</p>
-<p>PADECIMIENTOS CR&Oacute;NICOS DEGENERATIVOS:</p>
+<p>OTROS ANTECEDENTES:&nbsp;{{cer.otrosAntecedentes}}</p>
+<p>ANTECEDENTES QUIR&Uacute;RGICOS:&nbsp;{{cer.antecedentesQuirurgicos}}</p>
+<p>PADECIMIENTOS CR&Oacute;NICOS DEGENERATIVOS:&nbsp;{{cer.padecimientosCronicos}}</p>
+<p>ALERGIAS:&nbsp;{{cer.alergias}}</p>
 <p style="text-align: center;"><strong>PADECIMIENTOS ACTUALES SIGNOS Y S&Iacute;NTOMAS:</strong></p>
 <table style="width: 100.08%; border-collapse: collapse; border: 1px solid #000000;">
     <tbody>
@@ -93,83 +96,86 @@
         </tr>
         <tr>
             <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">DIARREA&nbsp;</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.diarrea|yesno:'X,' }}</td>
+            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.diarrea|yesno:',X' }}</td>
             <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">NAUSEAS Y VOMITO&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.nauseasVomito|yesno:'X,' }}</td>
+            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.nauseasVomito|yesno:',X' }}</td>
         </tr>
         <tr>
             <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">I. RESPIRATORIA&nbsp;</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.infeccionesRespiratorias|yesno:'X,' }}</td>
+            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.infeccionesRespiratorias|yesno:',X' }}</td>
             <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">TOS&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.tos|yesno:'X,' }}</td>
+            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.tos|yesno:',X' }}</td>
         </tr>
         <tr>
             <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">FIEBRE</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.fiebre|yesno:'X,' }}</td>
+            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.fiebre|yesno:',X' }}</td>
             <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">DOLORES&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.dolores|yesno:'X,' }}</td>
+            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.dolores|yesno:',X' }}</td>
         </tr>
         <tr>
             <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">HEMORRAGIAS&nbsp;</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.hemorragias|yesno:'X,' }}</td>
+            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.hemorragias|yesno:',X' }}</td>
             <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">LESIONES EN PIEL&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.lesionesPiel|yesno:'X,' }}</td>
+            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.lesionesPiel|yesno:',X' }}</td>
         </tr>
         <tr>
-            <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">TRAUMATISMO&nbsp;</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">BEBIDAS ALCOH&Oacute;LICAS&nbsp;</td>
+            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.bebidasAlcoholicas|yesno:'X,' }}</td>
+            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.bebidasAlcoholicas|yesno:',X' }}</td>
             <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">MAREOS, V&Eacute;RTIGOS&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.mareosVertigo|yesno:'X,' }}</td>
+            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.mareosVertigo|yesno:',X' }}</td>
         </tr>
         <tr>
-            <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">{{ cer.embarazo|yesno:'EMBARAZO,' }}&nbsp;</td>
+            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.embarazo|yesno:'X,' }}</td>
             <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
             <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">TABAQUISMO&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-        </tr>
-        <tr>
-            <td style="width: 42.6312%; border: 1px solid rgb(0, 0, 0);">TOXICOMAN&Iacute;A &nbsp;</td>
-            <td style="width: 3.3311%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 2.9273%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 40.9489%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
-            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;</td>
+            <td style="width: 4.0713%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.tabaquismo|yesno:'X,' }}</td>
+            <td style="width: 3.8432%; border: 1px solid rgb(0, 0, 0);">&nbsp;{{ cer.tabaquismo|yesno:',X' }}</td>
         </tr>
     </tbody>
 </table>
+<p>
+    {% if cer.embarazo %} 
+    TIEMPO DE EMBARAZO:&nbsp;{{ cer.tiempoEmbarazo }}
+    {% else %} {% endif %}
+</p>
+<P>TOXICOMANIAS:&nbsp;{{ cer.toxicomanias }}</P>
+<p>TIPO DE DIETA:&nbsp;{{ cer.tipoDieta }}</p>
+<p>SINTOMAS COVID:&nbsp;{{ cer.sintomasCovid }}</p>
 <p>&nbsp;</p>
 <table style="width: 100%;">
     <tbody>
         <tr>
-            <td style="width: 33.3333%;">DR.&nbsp;</td>
-            <td style="width: 33.3333%;">C&Eacute;DULA:</td>
-            <td style="width: 33.3333%;">FIRMA:</td>
+            <td style="width: 33.3333%;">DR.&nbsp;{{dr.nombreMedico|title}}&nbsp;{{dr.apellidosMedico|title}}</td>
+            <td style="width: 33.3333%;">C&Eacute;DULA:&nbsp;{{dr.cedula}}</td>
+            <td style="width: 33.3333%;">FIRMA:&nbsp;
+                <img src="{{firmadr}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 20; left: 15cm; transform: translate(-50%, -95%); object-fit: cover;">
+            </td>
         </tr>
     </tbody>
 </table>
-<p>CONCLUSI&Oacute;N:&nbsp;</p>
-<p>OBSERVACIONES:&nbsp;</p>
-<p>TRATAMIENTO:&nbsp;</p>
+<p>CONCLUSI&Oacute;N:&nbsp;{{cer.conclusionDiagnostica}}</p>
+<p>OBSERVACIONES:&nbsp;{{cer.observaciones}}</p>
+<p>TRATAMIENTO:&nbsp;{{ cer.tratamiento|yesno:'S&Iacute;,NO' }}</p>
 <table style="width: 100%;">
     <tbody>
         <tr>
-            <td style="width: 50.0000%;">NOMBRE:&nbsp;</td>
-            <td style="width: 50.0000%;">FIRMA:</td>
+            <td style="width: 50.0000%;">NOMBRE:&nbsp;{{ex.nombreExtranjero}} {{ex.apellidoPaternoExtranjero}} {{ex.apellidoMaternoExtranjero}}</td>
+            <td style="width: 50.0000%;">FIRMA:&nbsp;
+                <img src="{{firmaex}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 15cm; transform: translate(-50%, -70%); object-fit: cover;">
+            </td>
         </tr>
     </tbody>
 </table>
 <p style="text-align: center;">SE ME HA INTERROGADO SOBRE MIS ANTECEDENTES DE SALUD Y ESTOY DE ACUERDO CON LA CONCLUSI&Oacute;N&nbsp;</p>
-
 {% endblock %}

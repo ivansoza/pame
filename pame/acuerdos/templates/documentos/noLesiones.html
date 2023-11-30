@@ -1,8 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[Oficina]
-<br>[Estacion Migratoria]
+<br>{{oficina|upper}}
+<br>{{estacion.nombre|upper}}
 {% endblock %}
 
 {% block title %}
@@ -19,8 +19,8 @@
     </strong>
 </p>
 <div style="text-align: right;">
-    Expediente n&uacute;mero:
-    <br> [cd],[fecha]
+    Expediente n&uacute;mero:&nbsp;{{les.expediente|upper}}
+    <br> {{estacion.estado}},&nbsp;{{les.fechaHoraCertificado|date}}
 </div>
 <div style="border-top: 3px solid #000; margin-top: 0.5cm;"></div>
 <p class="centrado">
@@ -32,14 +32,14 @@
     <strong>A S U N T O:&nbsp;</strong>CONSTANCIA DE NO LESIONES.
 </p>
 <p>
-    SE HACE CONSTAR QUE LA PERSONA EXTRANJERA DE NOMBRE <strong>[NOMBRE DEL EXTRANJERO],</strong>&nbsp;
-    DE NACIONALIDAD <strong>[NACIONALIDAD],</strong>&nbsp;A SIMPLE VISTA [SI O NO] MUESTRA LESI&Oacute;N 
+    SE HACE CONSTAR QUE LA PERSONA EXTRANJERA DE NOMBRE <strong>{{ex.nombreExtranjero|upper}}&nbsp;{{ex.apellidoPaternoExtranjero|upper}}&nbsp;{{ex.apellidoMaternoExtranjero|upper}},</strong>&nbsp;
+    DE NACIONALIDAD <strong>{{ex.nacionalidad.nombre|upper}},</strong>&nbsp;A SIMPLE VISTA {{les.presentaLesion|yesno:'SI,NO'}} MUESTRA LESI&Oacute;N 
     F&Iacute;SICA, LO CUAL SE CORROBORA CON SUS PROPIAS MANIFESTACIONES, QUE EXPRESA DE MANERA VOLUNTARIA.
 </p>
 <P>
     LO ANTERIOR, CON LA FINALIDAD DE DAR CUENTA DE LAS CONDICIONES Y EL ESTADO F&Iacute;SICO QUE PRESENTA
     LA PERSONA EXTRANJERA AL MOMENTO EN EL QUE SE APERSON&Oacute; EN LAS INTALACIONES QUE OCUPA LA ESTACI&Oacute;N 
-    MIGRATORIA DE LA [CIUDAD]. 
+    MIGRATORIA DE {{estacion.estado|upper}}. 
 </P>
 <div class="columnas">
     <div class="columna">
@@ -48,15 +48,8 @@
     </div>
     <div class="columna">
         <p><strong>EL EXTRANJERO</strong></p>
-        <p class="firma">[Nombre y Apellido]</p>
-    </div>
-</div>
-<div class="columnas">
-    <div class="columna">
-        <p class="firma">[Nombre y Apellido]</p>
-    </div>
-    <div class="columna">
-        <p class="firma">[Nombre y Apellido]</p>
+        <img src="{{firma_ex}}" alt="Firma extranjero" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 20; left: 14cm; transform: translate(-50%, -32%); object-fit: cover;">
+        <p class="firma">{{ex.nombreExtranjero|upper}}&nbsp;{{ex.apellidoPaternoExtranjero|upper}}&nbsp;{{ex.apellidoMaternoExtranjero|upper}}</p>
     </div>
 </div>
 {% endblock %}

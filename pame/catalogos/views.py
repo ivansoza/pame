@@ -19,7 +19,9 @@ from django.db.models import OuterRef, Subquery, Exists, Value
 from django.contrib.auth.decorators import login_required 
 from django.db.models.functions import Concat
 from django.utils.text import format_lazy
-
+import qrcode
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.conf import settings
 def home(request):
     return render(request,"index.html")
 
@@ -465,3 +467,18 @@ class AsignacionRepresentanteUpdateView(UpdateView):
 
         # Agregar información adicional al contexto, si es necesario
         return context
+    
+
+
+
+def generar_qr_firma_autoridad_actuante(request, autoridad_actuante_id):
+    base_url = settings.BASE_URL
+
+    # Construir la URL específica para la AutoridadActuante
+    url = f"{base_url}ruta/a/tu/vista/{autoridad_actuante_id}/"
+
+    # Generar el código QR
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response

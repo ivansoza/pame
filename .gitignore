@@ -49,3 +49,6 @@ pame/settings.py
 
 # Ignorar archivos de caché
 *.cache
+
+# Ignorar llaves de acceso 
+pame.pem

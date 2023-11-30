@@ -130,3 +130,5 @@ class FirmaTestigo2Form(forms.ModelForm):
     class Meta:
         model = FirmaComparecencia
         fields = ['firmaTestigo2']
+
+

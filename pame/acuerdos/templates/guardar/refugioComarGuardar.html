@@ -1,0 +1,57 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[Oficina de representacion]
+<br>[Estacion migratoria]
+<br>
+<br>[Lugar y fecha completa]
+<br><br>N&Uacute;MERO DE OFICIO: INM/---/---/---/AÑO
+{% endblock %}
+
+{% block title %}
+<title>
+    Solicitud de refugio
+</title>
+{% endblock %}
+
+{% block content %}
+<div style="text-align: right;">
+    <strong>
+        Asunto: SOLICITUD DE REFUGIO <strong>
+                {{ notificacion_comar.nup.extranjero.nombreExtranjero |upper }} {{ notificacion_comar.nup.extranjero.apellidoPaternoExtranjero|upper}}
+                {% if notificacion_comar.nup.extranjero.apellidoMaternoExtranjero %}
+                    {{ notificacion_comar.nup.extranjero.apellidoMaternoExtranjero|upper}}
+                {% endif %}
+            </strong>
+    </strong>
+</div>
+<p>
+    <strong>
+        COMISIÓN MEXICANA DE AYUDA A REFUGIADOS.
+    </strong>
+    <br>{{notificacion_comar.deComar.direccion_completa|upper}}
+    <br>{{notificacion_comar.deComar.email|upper}}
+    <br>
+    <strong>
+        P R E S E N T E
+    </strong>
+</p>
+<p>
+    Por este medio y atendiendo a lo establecido por los artículos 109 fracción II de la Ley de Migración; 226 fracción IV del Reglamento de la misma Ley y artículo 17 párrafo primero del Acuerdo por el que se emiten la Normas para el funcionamiento de las Estaciones Migratorias y Estancias Provisionales del Instituto Nacional de Migración, me permito informar a usted que 
+    el [FECHA DE PUESTA A DISPOSICION] fue puesto a disposición de esta Autoridad Migratoria el 
+    extranjero [NOMBRE Y APELLIDOS] de nacionalidad [NACIONALIDAD], quien en comparecencia de 
+    fecha [FECHA DE COMPARECENCIA] solicitó de manera formal iniciar el trámite correspondiente para la obtención del reconocimiento de la condición de refugiado en México, por lo que lo se hace de su conocimiento para los efectos de cooperación interinstitucional y lo conducente.
+</p>
+<p>
+    Sin más por el momento aprovecho la oportunidad para enviarle un cordial saludo.
+</p>
+<div style="text-align: center;">
+    <p><strong>ATENTAMENTE.</strong></p>
+    <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    <strong>
+        LIC. [NOMBRE DE LA AUTORIDAD ACTUANTE]
+        <br>
+        [CARGO DE LA AUTORIDAD ACTUANTE]
+    </strong>
+</div>
+{% endblock %}

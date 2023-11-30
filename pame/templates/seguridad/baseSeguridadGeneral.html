@@ -332,19 +332,14 @@
             </ul>
           </li>
               <!-- Cierre de Puesta disposición -->
-
-
-                   <!--   defensoria -->
-                   <li class="nav-item {% if navbar == 'notificaciones'%}menu-is-opening menu-open{% endif %} ">
-                      <li class="nav-item">
-                        <a href="{% url 'defensoria' %}" class="nav-link {% if seccion == 'interno' %}active {% endif %} ">
-                          <i class="nav-icon fas fa-city"></i>
-                          <p>Defensoria</p>
-                        </a>
-                      </li>
-                  </li>
         
-                  
+            <li class="nav-item {% if navbar == 'notificaciones' %}menu-is-opening menu-open{% endif %}">
+                <a href="{% url 'defensoria' %}" class="nav-link {% if navbar == 'notificaciones' %}active first-li{% endif %}">
+                  <i class="nav-icon fas fa-city"></i>
+                  <p>
+                    Defensoria
+                  </p>
+                </a>
                   <!--   Extranjeros -->
 
               <li class="nav-item {% if navbar == 'comparecencia' %}menu-is-opening menu-open{% endif %}">
@@ -537,7 +532,7 @@
           </ul>
           <ul class="nav nav-treeview" style="margin-left: 20px;">
             <li class="nav-item">
-              <a href="#" class="nav-link {% if seccion == '' %}active {% endif %}">
+              <a href=" {% url "defensoria" %}" class="nav-link {% if seccion == '' %}active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Defensoría</p>
               </a>
