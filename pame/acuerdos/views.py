@@ -3949,12 +3949,22 @@ def obtener_datos_notificacion_comar(notificacion_comar_id):
     try:
         notificacion_comar = NotificacionCOMAR.objects.get(id=notificacion_comar_id)
         firma = FirmaNotificacionComar.objects.filter(notificacionComar=notificacion_comar).first()
-        return notificacion_comar, firma
+        no_proceso = notificacion_comar.nup
+        extranjero = no_proceso.extranjero
+        comparecencia = Comparecencia.objects.filter(nup=no_proceso).order_by('-fechahoraComparecencia').first()
+        puestas = {
+                'puesta_imn': extranjero.deLaPuestaIMN,
+                'puesta_ac': extranjero.deLaPuestaAC,
+                'puesta_vp': extranjero.deLaPuestaVP,
+            }
+        puestas = {key: val for key, val in puestas.items() if val is not None}
+
+        return notificacion_comar, firma, extranjero, comparecencia,puestas
     except NotificacionCOMAR.DoesNotExist:
         return None, None
     
 def renderizar_pdf_notificacion_comar(context):
-    template = get_template('documentos/refugioComar.html')
+    template = get_template('guardar/refugioComarGuardar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
@@ -3986,7 +3996,7 @@ def guardar_pdf_notificacion_comar(pdf_bytes, notificacion_comar, usuario_actual
 
 
 def guardar_notificacion_comar(request, notificacion_comar_id):
-    notificacion_comar, firma = obtener_datos_notificacion_comar(notificacion_comar_id)
+    notificacion_comar, firma, extranjero, comparecencia, puestas  = obtener_datos_notificacion_comar(notificacion_comar_id)
     if not notificacion_comar:
         return JsonResponse({'status': 'error', 'message': 'Notificación Comar no encontrada.'}, status=404)
 
@@ -3998,8 +4008,12 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
             'notificacion_comar': notificacion_comar,
             'firma': firma,
             'firma_autoridad_actuante_url': firma_url,
+            'extranjero': extranjero,
+            'comparecencia': comparecencia,
+            'puestas': puestas,
             # Añadir más datos al contexto si es necesario
         }
+
 
         pdf_bytes = renderizar_pdf_notificacion_comar(context)
         repo = guardar_pdf_notificacion_comar(pdf_bytes, notificacion_comar, request.user)
