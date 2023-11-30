@@ -8,7 +8,7 @@ from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion,
 
 urlpatterns = [
     path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
-    path('defensores', views.defensores, name='defensores'),
+    # path('defensores', views.defensores, name='defensores'),
     path('notificacion/<int:pk>/', notificar.as_view(), name='notificacion'),
     path('listdefensores/', tabladefensores.as_view(), name='listdefensores'),
     path('modal/', SubirArchivo.as_view(), name='modale'),
