@@ -927,9 +927,7 @@ class crearRelacionAjax(View):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
         defensoria = get_object_or_404(Defensorias, id=defensoria_id)
 
-        # Si ya se realizó una comparecencia, redirigir a una página de mensaje
-        if no_proceso.comparecencia:
-            return render(request, 'comparecencia/comparecencia_registrada.html', {'nup_id': nup_id})
+    
 
         extranjero = no_proceso.extranjero
         dd = defensoria
