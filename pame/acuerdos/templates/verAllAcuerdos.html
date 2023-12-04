@@ -6,8 +6,12 @@
     <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
 {% endblock link %}
 
-{% block titulo %}Acuerdos Generales {% endblock titulo %}
-
+{% block titulo %}Repositorio Digital {% endblock titulo %}
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'repositorio' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 {% block contenido %}
 <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">

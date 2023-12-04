@@ -289,16 +289,31 @@ class listExtranjerosComar(LoginRequiredMixin,ListView):
             extranjeros_filtrados = extranjeros_filtrados.annotate(
                 ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
             )
+
             comparecencias_con_refugio = set(Comparecencia.objects.filter(solicitaRefugio=True).values_list('nup', flat=True))
             nups_extranjeros_filtrados = set([e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id])
             nups_finales = nups_extranjeros_filtrados & comparecencias_con_refugio
-            
-            queryset = NoProceso.objects.filter(
-            nup__in=nups_finales,
-            comparecencia=True
-            )
-            return queryset
 
+            # Subconsulta para verificar si existe una notificación COMAR
+            notificacion_comar_existente = NotificacionCOMAR.objects.filter(
+                nup=OuterRef('pk')
+            )
+
+            # Subconsulta para repositorio existente
+            repositorio_existente = Repositorio.objects.filter(
+                nup=OuterRef('pk')
+            ).order_by('-fechaGeneracion').values('id')[:1]
+
+            # Construir el queryset con anotaciones
+            queryset = NoProceso.objects.filter(
+                nup__in=nups_finales,
+                comparecencia=True
+            ).annotate(
+                tiene_notificacion_comar=Exists(notificacion_comar_existente),
+                repositorio_id=Subquery(repositorio_existente)
+            )
+
+            return queryset
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -541,45 +556,58 @@ def verificar_firma_autoridad_actuante_fiscalia(request, fiscalia_id):
 
 
 
-class listExtranjerosFiscalia(LoginRequiredMixin,ListView):
-
+class listExtranjerosFiscalia(LoginRequiredMixin, ListView):
     model = NoProceso
     template_name = 'fiscalia/listExtranjeroFiscalia.html'
     context_object_name = "extranjeros"
     login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
-    
     def get_queryset(self):
-            # Obtener la estación del usuario y el estado
-            estacion_usuario = self.request.user.estancia
-            estado = self.request.GET.get('estado_filtrado', 'activo')
+        # Obtener la estación del usuario y el estado
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
 
-            # Filtrar extranjeros por estación y estado
-            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-            if estado == 'activo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-            elif estado == 'inactivo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+        # Filtrar extranjeros por estación y estado
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-            # Obtener el último NoProceso para cada extranjero filtrado
-            ultimo_no_proceso = NoProceso.objects.filter(
-                extranjero_id=OuterRef('pk')
-            ).order_by('-consecutivo')
+        # Obtener el último NoProceso para cada extranjero filtrado
+        ultimo_no_proceso = NoProceso.objects.filter(
+            extranjero_id=OuterRef('pk')
+        ).order_by('-consecutivo')
 
-            extranjeros_filtrados = extranjeros_filtrados.annotate(
-                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-            )
-            comparecencias_con_delito = set(Comparecencia.objects.filter(victimaDelito=True).values_list('nup', flat=True))
-            nups_extranjeros_filtrados = set([e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id])
-            nups_finales = nups_extranjeros_filtrados & comparecencias_con_delito
+        extranjeros_filtrados = extranjeros_filtrados.annotate(
+            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+        )
 
-      
-            queryset = NoProceso.objects.filter(
+        # Filtrado adicional (si necesario)
+        comparecencias_con_delito = set(Comparecencia.objects.filter(victimaDelito=True).values_list('nup', flat=True))
+        nups_extranjeros_filtrados = set([e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id])
+        nups_finales = nups_extranjeros_filtrados & comparecencias_con_delito
+
+        # Subconsulta para verificar si existe una notificación fiscalía
+        notificacion_fiscalia_existente = NotificacionFiscalia.objects.filter(
+            nup=OuterRef('pk')
+        )
+
+        # Subconsulta para repositorio existente
+        repositorio_existente = Repositorio.objects.filter(
+            nup=OuterRef('pk')
+        ).order_by('-fechaGeneracion').values('id')[:1]
+
+        # Construir el queryset con anotaciones
+        queryset = NoProceso.objects.filter(
             nup__in=nups_finales,
             comparecencia=True
-            )
+        ).annotate(
+            tiene_notificacion_fiscalia=Exists(notificacion_fiscalia_existente),
+            repositorio_id=Subquery(repositorio_existente)
+        )
 
-            return queryset
+        return queryset
 
 
     def get_context_data(self, **kwargs):

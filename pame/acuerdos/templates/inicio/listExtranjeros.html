@@ -7,7 +7,11 @@
 {% endblock link %}
 
 {% block titulo %}Acuerdos Inicio {% endblock titulo %}
-
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
 {% block contenido  %}
 <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
