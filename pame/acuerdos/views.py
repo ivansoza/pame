@@ -4083,7 +4083,7 @@ def obtener_datos_notificacion_fiscalia(notificacion_fiscalia_id):
         return None, None
     
 def renderizar_pdf_notificacion_fiscalia(context):
-    template = get_template('documentos/notificacionFiscaliacopy.html')
+    template = get_template('guardar/notificacionFiscaliaGuardar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
