@@ -10,8 +10,9 @@ from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, Asign
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView, UpdateView
-from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm
+from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso
+from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -877,3 +878,186 @@ def verificar_firma_autoridad_actuante(request, consulado_id):
         pass
 
     return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
+
+
+
+
+
+
+#-------------------------------------------------Selección Defesoria------------------------------
+class selectDefensoria(ListView):
+    model = Defensorias
+    template_name = 'defensoria/elegirDefensoria.html'
+    context_object_name = 'defensorias'
+    login_url = '/permisoDenegado/' 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        extranjero_id = self.kwargs.get('pk')
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        ultimo_proceso = extranjero.noproceso_set.latest('consecutivo')
+        proceso_id = ultimo_proceso.nup       
+        context['nup'] = proceso_id
+        context['extranjero'] = extranjero
+        context['navbar'] = 'catalogos'
+        context['seccion'] = 'defensor'
+        return context
+   
+class crearRelacionAjax(View):
+    def post(self, request, nup_id,defensoria_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        defensoria = get_object_or_404(Defensorias, id=defensoria_id)
+
+
+        form = ExtranjeroDefensoriaForm(request.POST)
+        if form.is_valid():
+            notificacion = form.save(commit=False)
+            notificacion.nup = no_proceso
+            notificacion.defensoria = defensoria
+                # Solo guarda una nueva comparecencia si no existe una previa
+            notificacion.save()
+                # Guardar el ID de la comparecencia en la sesión
+
+            data = {'success': True, 'message': 'Constancia creada con éxito.', 'notificacion_id': notificacion.id}
+            return JsonResponse(data, status=200)
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+    def get(self, request, nup_id,defensoria_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        defensoria = get_object_or_404(Defensorias, id=defensoria_id)
+
+        # Si ya se realizó una comparecencia, redirigir a una página de mensaje
+        if no_proceso.comparecencia:
+            return render(request, 'comparecencia/comparecencia_registrada.html', {'nup_id': nup_id})
+
+        extranjero = no_proceso.extranjero
+        dd = defensoria
+        defenso = defensoria.id
+        initial_data = {
+            'nup':no_proceso,
+            'defensoria':defenso,
+            # ... otros campos que quieras incluir ...
+        }
+        form = ExtranjeroDefensoriaForm(initial= initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        # ... lógica para establecer autoridades y traductor ...
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+
+            # Establecer el queryset de autoridades actuantes y traductor
+        form.fields['autoridadActuante'].queryset = autoridades
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'alegatos',
+            'seccion': 'nofirma',
+            'defensorias':dd,
+
+        }
+
+        return render(request, 'modalDefensoria/crearRelacion.html', context)
+
+def generar_qr_firmas_defensoria(request, notificacion_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_defensoria_/{notificacion_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+def firma_autoridad_actuante_defensoria(request, notificacion_id):
+    notificacion = get_object_or_404(ExtranjeroDefensoria, pk=notificacion_id)
+    firma, created = firmasDefensoForms.objects.get_or_create(defensoria=notificacion)  # Usar comparecencia aquí
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    if request.method == 'POST':
+        form = firmasDefensoForms(request.POST, request.FILES)
+        if form.is_valid():
+            # Procesamiento similar para guardar la firma...
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{notificacion_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = firmasDefensoForms()
+    return render(request, 'modalDefensoria/firmaDefensoria.html', {'form': form, 'notificacion_id': notificacion_id})
+@csrf_exempt
+def verificar_firma_autoridad_actuante_defensoria(request, notificacion_id):
+    try:
+        firma = firmasDefensoForms.objects.get(defensoria=notificacion_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except firmasDefensoForms.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
+def estado_firmas_defensoria(request, notificacion_id):
+    # Obtener la instancia de Comparecencia, o devolver un error 404 si no se encuentra
+    notificacion = get_object_or_404(ExtranjeroDefensoria, pk=notificacion_id)
+
+    # Obtener la instancia de FirmaComparecencia asociada a la Comparecencia
+    firma = firmasDefensoForms.objects.filter(defenosria=notificacion).first()
+
+    # Si no existe una instancia de FirmaComparecencia, establecer todas las firmas como None
+    if not firma:
+        estado_firmas = {
+            'firmaAutoridadActuante': None,
+        }
+    else:
+        # Crear un diccionario con el estado de cada firma (True si existe, False si no)
+        estado_firmas = {
+            'firmaAutoridadActuante': firma.firmaAutoridadActuante is not None,
+        }
+
+    # Devolver el estado de las firmas en formato JSON
+    return JsonResponse(estado_firmas)
+
+def verificar_firmas_defensoria(request, constancia_id):
+    try:
+        constancia_firmas = firmasDefensoForms.objects.filter(constancia_id=constancia_id).values('firmaAutoridadActuante')
+        
+        firmas_existen = all(constancia_firma for constancia_firma in constancia_firmas[0].values())
+        
+        return JsonResponse({'firmas_existen': firmas_existen})
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
+
+def obtener_datos_defensoria(request, notificacion_id):
+    constancia = get_object_or_404(ExtranjeroDefensoria, pk=notificacion_id)
+
+    datos = {
+        'nombreAutoridadActuante': f"{constancia.autoridadActuante.autoridad.nombre} {constancia.autoridadActuante.autoridad.apellidoPaterno} {constancia.autoridadActuante.autoridad.apellidoMaterno or ''}".strip() if constancia.autoridadActuante else '',
+    }
+
+    return JsonResponse(datos)
