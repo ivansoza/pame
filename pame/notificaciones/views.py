@@ -101,18 +101,15 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
     context_object_name = "extranjeros"
     
     def get_queryset(self):
-        # Obtener la estación del usuario y el estado
         estacion_usuario = self.request.user.estancia
         estado = self.request.GET.get('estado_filtrado', 'activo')
 
-        # Filtrar extranjeros por estación y estado
         extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
         if estado == 'activo':
             extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
         elif estado == 'inactivo':
             extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-        # Obtener el último NoProceso para cada extranjero filtrado
         ultimo_no_proceso = NoProceso.objects.filter(
             extranjero_id=OuterRef('pk')
         ).order_by('-consecutivo')
@@ -121,12 +118,25 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
             ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
         )
 
-        # Filtrar NoProceso basado en estos últimos registros
-        queryset = NoProceso.objects.filter(
-            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+        defensoria_asignada = ExtranjeroDefensoria.objects.filter(
+            nup=OuterRef('pk')
         )
 
-        # Calcular la diferencia de tiempo para cada NoProceso
+        estado_defensoria = self.request.GET.get('estado_defensoria', None)
+
+        queryset = NoProceso.objects.filter(
+            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+        ).annotate(
+            tiene_defensoria_asignada=Exists(defensoria_asignada)
+        )
+
+        if estado_defensoria == 'por_notificar':
+            queryset = queryset.filter(tiene_defensoria_asignada=False)
+        elif estado_defensoria == 'ya_notificado':
+            queryset = queryset.filter(tiene_defensoria_asignada=True)
+        else:
+            queryset = queryset.filter(tiene_defensoria_asignada=False)
+
         now = timezone.now()
         for no_proceso in queryset:
             time_diff = now - no_proceso.horaRegistroNup
