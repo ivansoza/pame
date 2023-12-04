@@ -129,7 +129,8 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
         now = timezone.now()
         for no_proceso in queryset:
             time_diff = now - no_proceso.horaRegistroNup
-            no_proceso.horas_desde_registro = time_diff // timedelta(hours=1)
+            horas_desde_registro = time_diff // timedelta(hours=1)
+            no_proceso.horas_desde_registro = min(horas_desde_registro, 36)
 
         return queryset
 
@@ -261,67 +262,66 @@ class modalnotificar(LoginRequiredMixin, CreateView):
         context['defensoria'] = get_object_or_404(Defensorias, pk=defenso)
         return context
 
-class listExtranjerosComar(LoginRequiredMixin,ListView):
-
+class listExtranjerosComar(LoginRequiredMixin, ListView):
     model = NoProceso
     template_name = 'comar/listExtranjerosComar.html'
     context_object_name = "extranjeros"
     login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
 
-    
     def get_queryset(self):
-            # Obtener la estación del usuario y el estado
-            estacion_usuario = self.request.user.estancia
-            estado = self.request.GET.get('estado_filtrado', 'activo')
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
 
-            # Filtrar extranjeros por estación y estado
-            extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
-            if estado == 'activo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-            elif estado == 'inactivo':
-                extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-            # Obtener el último NoProceso para cada extranjero filtrado
-            ultimo_no_proceso = NoProceso.objects.filter(
-                extranjero_id=OuterRef('pk')
-            ).order_by('-consecutivo')
+        ultimo_no_proceso = NoProceso.objects.filter(
+            extranjero_id=OuterRef('pk')
+        ).order_by('-consecutivo')
 
-            extranjeros_filtrados = extranjeros_filtrados.annotate(
-                ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
-            )
+        extranjeros_filtrados = extranjeros_filtrados.annotate(
+            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+        )
 
-            comparecencias_con_refugio = set(Comparecencia.objects.filter(solicitaRefugio=True).values_list('nup', flat=True))
-            nups_extranjeros_filtrados = set([e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id])
-            nups_finales = nups_extranjeros_filtrados & comparecencias_con_refugio
+        comparecencias_con_refugio = set(Comparecencia.objects.filter(solicitaRefugio=True).values_list('nup', flat=True))
+        nups_extranjeros_filtrados = set([e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id])
+        nups_finales = nups_extranjeros_filtrados & comparecencias_con_refugio
 
-            # Subconsulta para verificar si existe una notificación COMAR
-            notificacion_comar_existente = NotificacionCOMAR.objects.filter(
-                nup=OuterRef('pk')
-            )
+        notificacion_comar_existente = NotificacionCOMAR.objects.filter(
+            nup=OuterRef('pk')
+        )
 
-            # Subconsulta para repositorio existente
-            repositorio_existente = Repositorio.objects.filter(
-                nup=OuterRef('pk')
-            ).order_by('-fechaGeneracion').values('id')[:1]
+        repositorio_existente = Repositorio.objects.filter(
+            nup=OuterRef('pk')
+        ).order_by('-fechaGeneracion').values('id')[:1]
 
-            # Construir el queryset con anotaciones
-            queryset = NoProceso.objects.filter(
-                nup__in=nups_finales,
-                comparecencia=True
-            ).annotate(
-                tiene_notificacion_comar=Exists(notificacion_comar_existente),
-                repositorio_id=Subquery(repositorio_existente)
-            )
+        estado_notificacion = self.request.GET.get('estado_notificacion', None)
 
-            return queryset
+        queryset = NoProceso.objects.filter(
+            nup__in=nups_finales,
+            comparecencia=True
+        ).annotate(
+            tiene_notificacion_comar=Exists(notificacion_comar_existente),
+            repositorio_id=Subquery(repositorio_existente)
+        )
+
+        if estado_notificacion == 'por_notificar':
+            queryset = queryset.filter(tiene_notificacion_comar=False)
+        elif estado_notificacion == 'ya_notificado':
+            queryset = queryset.filter(tiene_notificacion_comar=True)
+        else:
+            queryset = queryset.filter(tiene_notificacion_comar=False)
+
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        context['navbar'] = 'Notificaciones'
+        context['navbar'] = 'Notificaciones'  # Cambia esto según la página activa
         context['seccion'] = 'comar'
         return context
-    
-
 class CrearNotificacionComar(View):
     def post(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
@@ -560,21 +560,18 @@ class listExtranjerosFiscalia(LoginRequiredMixin, ListView):
     model = NoProceso
     template_name = 'fiscalia/listExtranjeroFiscalia.html'
     context_object_name = "extranjeros"
-    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    login_url = '/permisoDenegado/'
 
     def get_queryset(self):
-        # Obtener la estación del usuario y el estado
         estacion_usuario = self.request.user.estancia
         estado = self.request.GET.get('estado_filtrado', 'activo')
 
-        # Filtrar extranjeros por estación y estado
         extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
         if estado == 'activo':
             extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
         elif estado == 'inactivo':
             extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-        # Obtener el último NoProceso para cada extranjero filtrado
         ultimo_no_proceso = NoProceso.objects.filter(
             extranjero_id=OuterRef('pk')
         ).order_by('-consecutivo')
@@ -583,22 +580,20 @@ class listExtranjerosFiscalia(LoginRequiredMixin, ListView):
             ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
         )
 
-        # Filtrado adicional (si necesario)
         comparecencias_con_delito = set(Comparecencia.objects.filter(victimaDelito=True).values_list('nup', flat=True))
         nups_extranjeros_filtrados = set([e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id])
         nups_finales = nups_extranjeros_filtrados & comparecencias_con_delito
 
-        # Subconsulta para verificar si existe una notificación fiscalía
         notificacion_fiscalia_existente = NotificacionFiscalia.objects.filter(
             nup=OuterRef('pk')
         )
 
-        # Subconsulta para repositorio existente
         repositorio_existente = Repositorio.objects.filter(
             nup=OuterRef('pk')
         ).order_by('-fechaGeneracion').values('id')[:1]
 
-        # Construir el queryset con anotaciones
+        estado_notificacion = self.request.GET.get('estado_notificacion', None)
+
         queryset = NoProceso.objects.filter(
             nup__in=nups_finales,
             comparecencia=True
@@ -606,6 +601,13 @@ class listExtranjerosFiscalia(LoginRequiredMixin, ListView):
             tiene_notificacion_fiscalia=Exists(notificacion_fiscalia_existente),
             repositorio_id=Subquery(repositorio_existente)
         )
+
+        if estado_notificacion == 'por_notificar':
+            queryset = queryset.filter(tiene_notificacion_fiscalia=False)
+        elif estado_notificacion == 'ya_notificado':
+            queryset = queryset.filter(tiene_notificacion_fiscalia=True)
+        else:
+            queryset = queryset.filter(tiene_notificacion_fiscalia=False)
 
         return queryset
 
@@ -616,39 +618,35 @@ class listExtranjerosFiscalia(LoginRequiredMixin, ListView):
         context['navbar'] = 'Notificaciones'
         context['seccion'] = 'fiscalia'
         return context
-class listExtranjerosConsulado(LoginRequiredMixin,ListView):
-
+class listExtranjerosConsulado(LoginRequiredMixin, ListView):
     model = NoProceso
     template_name = 'consulado/listExtranjerosConsulado.html'
     context_object_name = "extranjeros"
-    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión
+    login_url = '/permisoDenegado/'
 
-    
     def get_queryset(self):
-        # Obtener la estación del usuario y el estado
         estacion_usuario = self.request.user.estancia
         estado = self.request.GET.get('estado_filtrado', 'activo')
 
-        # Filtrar extranjeros por estación y estado
         extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
         if estado == 'activo':
             extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
         elif estado == 'inactivo':
             extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-        # Obtener los NUPs excluidos (comparecencias con delito o refugio)
         comparecencias_excluidas = set(Comparecencia.objects.filter(
             Q(victimaDelito=True) | Q(solicitaRefugio=True)
         ).values_list('nup', flat=True))
 
-        # Consulta para verificar si existe una notificación consular
         notificacion_consular_existente = NotificacionConsular.objects.filter(
             nup=OuterRef('pk')
         )
 
         repositorio_existente = Repositorio.objects.filter(
-        nup=OuterRef('pk')
+            nup=OuterRef('pk')
         ).order_by('-fechaGeneracion').values('id')[:1]
+
+        estado_notificacion = self.request.GET.get('estado_notificacion', None)
 
         queryset = NoProceso.objects.filter(
             extranjero_id__in=extranjeros_filtrados.values('id'),
@@ -659,6 +657,13 @@ class listExtranjerosConsulado(LoginRequiredMixin,ListView):
             tiene_notificacion_consular=Exists(notificacion_consular_existente),
             repositorio_id=Subquery(repositorio_existente)
         )
+
+        if estado_notificacion == 'por_notificar':
+            queryset = queryset.filter(tiene_notificacion_consular=False)
+        elif estado_notificacion == 'ya_notificado':
+            queryset = queryset.filter(tiene_notificacion_consular=True)
+        else:
+            queryset = queryset.filter(tiene_notificacion_consular=False)
 
         return queryset
 

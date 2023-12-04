@@ -19,6 +19,17 @@
     </h1>
 </div>
 
+    <div class="d-flex justify-content-center mb-3 mt-3">
+        <div class="btn-group" role="group">
+            <a href="{% url 'listExtranjerosConsulado' %}?estado_notificacion=por_notificar" class="btn {% if request.GET.estado_notificacion == 'por_notificar' or not request.GET.estado_notificacion%}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+                Por Notificar
+            </a>
+            <a href="{% url 'listExtranjerosConsulado' %}?estado_notificacion=ya_notificado" class="btn {% if request.GET.estado_notificacion == 'ya_notificado' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
+                Ya Notificados
+            </a>
+        </div>
+    </div>
+
 <div class="table-responsive">
     <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width: 100%;">
         <thead>
