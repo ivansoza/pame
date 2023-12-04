@@ -124,6 +124,8 @@ TEMPLATES = [
                 'traslados.context_processors.user_groups',
                 'salud.context_processors.perfil_medico',
                 'acuerdos.context_processors.base_url',
+                'usuarios.context_processors.estacion_usuario',
+
 
                 
 
@@ -137,7 +139,7 @@ WSGI_APPLICATION = 'pame.wsgi.application'
 
 "URL DE LA PAGINA PARA RENDERIZAR LOS QR "
 # BASE_URL = "https://sfti.tech/"
-BASE_URL = "http://127.0.0.1:8090/"
+BASE_URL = "http://127.0.0.1:8000/"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

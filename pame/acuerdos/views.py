@@ -4035,9 +4035,35 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
 
 #------- INICIO NOTIFICACION FISCALIA
 def notificacionFiscalia_pdf(request):
+    numeroOficio = request.POST.get('numeroOficio', '')
+    delaFiscalia = request.POST.get('delaFiscalia', '')
+    delaAutoridad = request.POST.get('delaAutoridad', '')
+    condicion = request.POST.get('condicion', '')
+    delaEstacion = request.POST.get('delaEstacion', '')
+    nup = request.POST.get('nup', '')
+    delaComparecencia = request.POST.get('delaComparecencia', '')
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+    comparecencias = no_proceso.comparecencias.all()
+    comparecencia = comparecencias.last() 
 
+    
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+    
+    fiscalia = None
+    if delaFiscalia:  
+        fiscalia = get_object_or_404(Fiscalia, pk=delaFiscalia)
     context = {
         'contexto': 'variables',
+        'nup': nup,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al context
+        'autoridad_actuante': autoridad_actuante,
+        'comparecencias': comparecencia,  
+        'fiscalia': fiscalia,
+        'condicion':condicion,
+
     }
     template = get_template('documentos/notificacionFiscalia.html')
     html_content = template.render(context)
