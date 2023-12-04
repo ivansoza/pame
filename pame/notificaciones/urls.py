@@ -1,11 +1,11 @@
 from django.urls import path, include
-from .views import editarDefensoria 
+from .views import editarDefensoria, crearRelacionAjax
 from .views import listExtranjerosDefensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia, createDEfensoria,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante, CrearNotificacionComar, CrearNotificacionFiscalia,\
 generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, firma_autoridad_actuante_notifi_fiscalia, firma_autoridad_actuante_notifi_comar ,verificar_firma_autoridad_actuante_comar, verificar_firma_autoridad_actuante_fiscalia
 
 from .views import notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
-from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no
-
+from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no, selectDefensoria
+from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria
 urlpatterns = [
     path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
     # path('defensores', views.defensores, name='defensores'),
@@ -49,5 +49,22 @@ urlpatterns = [
     path('verificar_firmas_no/<int:noti_id>/', verificar_firmas_no, name='verificar_firmas_no'),
     path("crearDefensoria/", createDEfensoria.as_view(), name="crearDefensoria"),
     path("editarDefensoria/<int:pk>", editarDefensoria.as_view(), name="editarDefensoria"),
+
+
+
+
+
+
+
+#-----------------------Defensoria (modulo: seleccion y notificacion)------------
+    path('seleccionarDefensoria/<int:pk>/', selectDefensoria.as_view(), name='seleccionarDefensoria'),
+    path('crearNotificacion/<str:nup_id>/<int:defensoria_id>/', crearRelacionAjax.as_view(), name='crearNotificacion'),
+    path('generar_qr_defensoria/<str:tipo_firma>/<int:constancia_id>/', generar_qr_firmas_defensoria, name='generar_qr_firmas_defensoria'),
+    path('firma_autoridad_actuante_defensoria/<int:constancia_id>/', firma_autoridad_actuante_defensoria, name='firma_autoridad_actuante_defensoria'),
+    path('verificar_firma/autoridadActuante_defensoria/<int:constancia_id>/', verificar_firma_autoridad_actuante_defensoria, name='verificar_firma_autoridad_actuante_defensoria'),
+    path('estado_firmas_defensoria/<int:constancia_id>/', estado_firmas_defensoria, name='estado_firmas_defensoria'),
+    path('verificar_firmas_defensoria/<int:constancia_id>/', verificar_firmas_defensoria, name='verificar_firmas_defensoria'),
+    path('datos_defensoria/<int:constancia_id>/', obtener_datos_defensoria, name='datos_defensoria'),
+
 
 ]

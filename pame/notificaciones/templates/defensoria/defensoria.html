@@ -95,11 +95,9 @@
 
 
                 <td align="center">
-                        <a class="btn btn-sm btn-icon3 tooltip-link btn-primary"
-                            href="#"
-                            data-title="Notificar a Defensoría" onclick="abrir_modal_eliminar(this.href); return false;">
-                            <i class="fas fa-bell"></i>
-                        </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "seleccionarDefensoria" extranjero.extranjero.id%}" data-title="Seleccionar Defensoria">
+                        <i class="fa-solid fa-bell"></i>                   
+                     </a>
                 </td>                         
 
                 </tr>
