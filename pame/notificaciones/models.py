@@ -4,7 +4,8 @@ from catalogos.models import AutoridadesActuantes, Consulado, Estacion,Autoridad
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion, Comar, Fiscalia
 from comparecencia.models import Comparecencia
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes, Estado
-
+import os
+from acuerdos.models import Repositorio
 ACCION= (
     ('Deportacion', 'DEPORTACION'),
     ('Retorno_Asistido', 'RETORNO ASISTIDO'),
@@ -178,3 +179,25 @@ class ExtranjeroDefensoria(models.Model):
 class firmasDefenso(models.Model):
      defensoria = models.ForeignKey(ExtranjeroDefensoria, on_delete=models.CASCADE)
      firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 
+
+def upload(instance, filename):
+    # Toma el nup de la instancia de NoProceso relacionada
+    nup_folder = instance.nup.nup
+    # Crea la estructura de directorio final
+    path = os.path.join('extranjeros', nup_folder, filename)
+    return path
+class DocumentoRespuestaDefensoria(models.Model):
+    extranjero_defensoria = models.ForeignKey(ExtranjeroDefensoria, on_delete=models.CASCADE, related_name='documentos_respuesta')
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
+    archivo = models.FileField(verbose_name="Documento:",upload_to=upload, null=True, blank=True)
+    descripcion = models.CharField(max_length=50)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Documento para {self.extranjero_defensoria.nup}"
+    def delete(self, *args, **kwargs):
+            # Si el modelo tiene un archivo asociado, elimínalo
+            if self.archivo:
+                self.archivo.delete(save=False)
+            super(Repositorio, self).delete(*args, **kwargs)
+   

@@ -10,9 +10,9 @@ from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, Asign
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView, UpdateView
-from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria
+from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, DocumentoRespuestaDefensoria
 from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso
-from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms
+from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms, DocumentoRespuestaDefensoriaForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -157,6 +157,15 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
    
 
 
+class DocumentoRespuestaDefensoriaCreateView(CreateView):
+    model = DocumentoRespuestaDefensoria
+    form_class = DocumentoRespuestaDefensoriaForm
+    template_name = 'defensoria/respuesta_defensoria.html'  # Reemplaza con el nombre de tu plantilla HTML
+    success_url = reverse_lazy('defensoria')  # Reemplaza con el nombre de tu URL de éxito
+
+    def form_valid(self, form):
+        # Puedes agregar lógica adicional aquí si es necesario
+        return super().form_valid(form)
 
 # views.py
 from django.shortcuts import render, redirect
