@@ -76,11 +76,11 @@
                 {% endif %}
                 {% if extranjero.tiene_certificadoMedico %}
                 {% if extranjero.tiene_egreso %}
-                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showBioAlert5(); return false;" data-title="Certificado Medico Egreso">
+                 <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url 'certificadoegPDF' extranjero.noproceso_set.last.nup extranjero.id %}" target="_blank" data-title="Certificado Medico Egreso">
                     <i class="fas fa-file-medical"></i>
                  </a>
                 {% else %}
-                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "certificadoMedicoEgreso" extranjero.id%}" data-title="Consulta Medica">
+                 <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url "certificadoMedicoEgreso" extranjero.id%}" data-title="Certificado Medico Egreso">
                     <i class="fas fa-file-medical-alt"></i>
                  </a>
                 {% endif %}

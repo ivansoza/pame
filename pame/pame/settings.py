@@ -124,6 +124,8 @@ TEMPLATES = [
                 'traslados.context_processors.user_groups',
                 'salud.context_processors.perfil_medico',
                 'acuerdos.context_processors.base_url',
+                'usuarios.context_processors.estacion_usuario',
+
 
                 
 

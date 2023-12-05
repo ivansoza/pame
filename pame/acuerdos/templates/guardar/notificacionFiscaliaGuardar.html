@@ -1,0 +1,76 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>{{notificacion_fiscalia.nup.extranjero.deLaEstacion.oficina|upper}}
+<br>{{notificacion_fiscalia.nup.extranjero.deLaEstacion.nombre|upper}}
+<br>
+<br>[Lugar y fecha completa]
+<br><br>N&Uacute;MERO DE OFICIO: INM/---/---/---/AÑO
+{% endblock %}
+
+{% block title %}
+<title>
+    Solicitud de refugio
+</title>
+{% endblock %}
+
+{% block content %}
+<div style="text-align: right;">
+    <strong>
+        Asunto: DENUNCIA DE PRESUNTO HECHO ILICITO 
+    </strong>
+</div>
+<p>
+    <strong>
+        FISCALÍA GENERAL DE LA REPÚBLICA / FISCALÍA GENERAL DEL JUSTICIA DEL ESTADO DE {{notificacion_fiscalia.delaFiscalia.estado|upper}}
+    </strong>
+    <br>
+    {{notificacion_fiscalia.delaFiscalia.direccion_completa|upper}}
+    <br><strong>PRESENTE.</strong>
+</p>
+<p>
+    De conformidad con lo dispuesto por los artículos 73, 92 de la Ley de Migración; artículos 179 fracciones III y IV, 181 del Reglamento de la Ley de Migración, me permito solicitar a usted su intervención en la denuncia de hechos probablemente delictivos, manifestados por el extranjero que abajo se enlista, a través de comparecencia rendida en 
+    fecha <strong>{{notificacion_fiscalia.delaComparecencia.fechahoraComparecencia}}</strong> dentro de su procedimiento administrativo migratorio, en virtud de encontrarse presentado y alojado en las instalaciones de 
+    esta <strong>{{notificacion_fiscalia.delaEstacion}}</strong>.
+</p>
+<table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(0, 0, 0);">
+    <tbody>
+        <tr>
+            <td style="width: 5%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>No</strong>.&nbsp;</td>
+            <td style="width: 20%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>Nombre</strong></td>
+            <td style="width: 15%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>Fecha de Nac.</strong></td>
+            <td style="width: 15%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>Nacionalidad</strong>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 5%; border: 1px solid rgb(0, 0, 0);"><br><strong>1</strong></td>
+            <td style="width: 20%; border: 1px solid rgb(0, 0, 0);"><br><strong>
+                {{ notificacion_fiscalia.nup.extranjero.nombreExtranjero }} {{ notificacion_fiscalia.nup.extranjero.apellidoPaternoExtranjero }}
+                {% if notificacion_fiscalia.nup.extranjero.apellidoMaternoExtranjero %}
+                    {{ notificacion_fiscalia.nup.extranjero.apellidoMaternoExtranjero }}
+                {% endif %}
+            </strong></td>
+            <td style="width: 15%; border: 1px solid rgb(0, 0, 0);"><br><strong>{{notificacion_fiscalia.nup.extranjero.fechaNacimiento}}</strong></td>
+            <td style="width: 15%; border: 1px solid rgb(0, 0, 0);"><br><strong>{{notificacion_fiscalia.nup.extranjero.nacionalidad.nombre}}</strong></td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    Cabe señalar que la ubicación física de la <strong>{{notificacion_fiscalia.nup.extranjero.deLaEstacion.nombre}}</strong> donde se encuentra alojado el extranjero en 
+    comento <strong>{{notificacion_fiscalia.nup.extranjero.deLaEstacion.direccion_completa}}</strong>, del cual es su deseo levantar la denuncia formal por el hecho presuntamente ilícito en su condición 
+    de <strong>{{notificacion_fiscalia.condicion}}</strong> ante esa autoridad ministerial.
+</p>
+<p>
+    Sin otro particular por el momento, reciba un cordial saludo.
+</p>
+<div style="text-align: center;">
+    <p><strong>RESPETUOSAMENTE</strong></p>
+    <img src="{{ firma_autoridad_actuante_url }}" alt="Firma de la Autoridad Actuante" style="display: block; margin: 0 auto; max-width: 100%; max-height: 100%; margin-bottom: -90px;" >
+
+    <p style="width: 50%; text-align: center; border-bottom: 1px solid black; height: 20px; margin: 0 auto; padding: 10px;"></p>
+    <strong>
+        LIC. {{notificacion_fiscalia.delaAutoridad.autoridad|upper}}
+        <br>
+        {{notificacion_fiscalia.delaAutoridad.cargo|upper}}
+    </strong>
+</div>
+{% endblock %}

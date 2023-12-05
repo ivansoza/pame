@@ -74,6 +74,18 @@ class Estacion(models.Model):
     capacidad = models.IntegerField( null=False)
     servicioMedico = models.BooleanField(verbose_name='¿Cuenta con servicio medico?')
     
+        
+    def direccion_completa(self):
+        direccion_parts = [
+            self.calle,
+            f"No. Ext: {self.noext}" if self.noext else None,
+            f"No. Int: {self.noint}" if self.noint else None,
+            self.colonia,
+            f"{self.municipio}, {self.estado.estado}",  # Asumiendo que el modelo Estado tiene un campo 'nombre'
+            f"CP: {self.cp}"
+        ]
+        return ', '.join(filter(None, direccion_parts))
+
     def __str__(self) -> str:
         return self.nombre 
     

@@ -5,7 +5,7 @@ generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, fir
 
 from .views import notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
 from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no, selectDefensoria
-from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria
+from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView
 urlpatterns = [
     path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
     # path('defensores', views.defensores, name='defensores'),
@@ -65,6 +65,7 @@ urlpatterns = [
     path('estado_firmas_defensoria/<int:defensoria_id>/', estado_firmas_defensoria, name='estado_firmas_defensoria'),
     path('verificar_firmas_defensoria/<int:defensoria_id>/', verificar_firmas_defensoria, name='verificar_firmas_defensoria'),
     path('datos_defensoria/<int:defensoria_id>/', obtener_datos_defensoria, name='datos_defensoria'),
+    path('respuesta/defensoria', DocumentoRespuestaDefensoriaCreateView.as_view(), name='respuestaDefensoria'),
 
 
 ]

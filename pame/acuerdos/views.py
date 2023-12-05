@@ -29,7 +29,7 @@ from llamadasTelefonicas.models import Notificacion, LlamadasTelefonicas
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc, Repositorio, TipoAcuerdo, Acuerdo
 from pertenencias.models import EnseresBasicos
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
-from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones
+from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones, CertificadoMedicoEgreso
 from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar, ExtranjeroDefensoria
 
 from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm
@@ -562,8 +562,6 @@ def certificadoMedico_pdf(request, nup_id, ex_id):
     firma_dr = FirmaMedico.objects.filter(medico=dr.usuario).first()
     firma_dr_url = f"{settings.BASE_URL}{firma_dr.firma_imagen.url}"
 
-    print("La URL de la foto es:", foto_url)
-
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
@@ -579,6 +577,59 @@ def certificadoMedico_pdf(request, nup_id, ex_id):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/certificadoMedico.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Certificado Medico 
+def certificadoMedicoEgreso_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
+    
+    # Obtener informacion del centificado medico
+    certificado = CertificadoMedicoEgreso.objects.get(
+        extranjero=extranjero,
+        nup=no_proceso
+    )
+
+    #consultas
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
+    ex = extranjero
+    cert = certificado 
+    foto = extranjero.biometrico
+    foto_url = f"{settings.BASE_URL}{foto.fotografiaExtranjero.url}"
+    firma_ex = extranjero.firma
+    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+    dr = certificado.delMedico
+    firma_dr = FirmaMedico.objects.filter(medico=dr.usuario).first()
+    firma_dr_url = f"{settings.BASE_URL}{firma_dr.firma_imagen.url}"
+
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+        'oficina': oficina,
+        'estacion': estacion,
+        'ex':ex,
+        'cer':cert,
+        'foto':foto_url,
+        'dr':dr, 
+        'firmadr':firma_dr_url,
+        'firmaex':firmaex_url
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/certificadoMedicoEg.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
@@ -3881,17 +3932,16 @@ def obtener_datos_notificacion_comar(notificacion_comar_id):
         no_proceso = notificacion_comar.nup
         extranjero = no_proceso.extranjero
         comparecencia = Comparecencia.objects.filter(nup=no_proceso).order_by('-fechahoraComparecencia').first()
-
         puestas = {
-            'puesta_imn': extranjero.deLaPuestaIMN,
-            'puesta_ac': extranjero.deLaPuestaAC,
-            'puesta_vp': extranjero.deLaPuestaVP,
-        }
+                'puesta_imn': extranjero.deLaPuestaIMN,
+                'puesta_ac': extranjero.deLaPuestaAC,
+                'puesta_vp': extranjero.deLaPuestaVP,
+            }
         puestas = {key: val for key, val in puestas.items() if val is not None}
 
-        return notificacion_comar, firma, extranjero, comparecencia, puestas
+        return notificacion_comar, firma, extranjero, comparecencia,puestas
     except NotificacionCOMAR.DoesNotExist:
-        return None, None, None, None, None
+        return None, None
     
 def renderizar_pdf_notificacion_comar(context):
     template = get_template('guardar/refugioComarGuardar.html')
@@ -3926,7 +3976,7 @@ def guardar_pdf_notificacion_comar(pdf_bytes, notificacion_comar, usuario_actual
 
 
 def guardar_notificacion_comar(request, notificacion_comar_id):
-    notificacion_comar, firma = obtener_datos_notificacion_comar(notificacion_comar_id)
+    notificacion_comar, firma, extranjero, comparecencia, puestas  = obtener_datos_notificacion_comar(notificacion_comar_id)
     if not notificacion_comar:
         return JsonResponse({'status': 'error', 'message': 'Notificación Comar no encontrada.'}, status=404)
 
@@ -3938,10 +3988,12 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
             'notificacion_comar': notificacion_comar,
             'firma': firma,
             'firma_autoridad_actuante_url': firma_url,
-            # 'puestas': puestas,
-
+            'extranjero': extranjero,
+            'comparecencia': comparecencia,
+            'puestas': puestas,
             # Añadir más datos al contexto si es necesario
         }
+
 
         pdf_bytes = renderizar_pdf_notificacion_comar(context)
         repo = guardar_pdf_notificacion_comar(pdf_bytes, notificacion_comar, request.user)
@@ -3963,9 +4015,35 @@ def guardar_notificacion_comar(request, notificacion_comar_id):
 
 #------- INICIO NOTIFICACION FISCALIA
 def notificacionFiscalia_pdf(request):
+    numeroOficio = request.POST.get('numeroOficio', '')
+    delaFiscalia = request.POST.get('delaFiscalia', '')
+    delaAutoridad = request.POST.get('delaAutoridad', '')
+    condicion = request.POST.get('condicion', '')
+    delaEstacion = request.POST.get('delaEstacion', '')
+    nup = request.POST.get('nup', '')
+    delaComparecencia = request.POST.get('delaComparecencia', '')
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+    comparecencias = no_proceso.comparecencias.all()
+    comparecencia = comparecencias.last() 
 
+    
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+    
+    fiscalia = None
+    if delaFiscalia:  
+        fiscalia = get_object_or_404(Fiscalia, pk=delaFiscalia)
     context = {
         'contexto': 'variables',
+        'nup': nup,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al context
+        'autoridad_actuante': autoridad_actuante,
+        'comparecencias': comparecencia,  
+        'fiscalia': fiscalia,
+        'condicion':condicion,
+
     }
     template = get_template('documentos/notificacionFiscalia.html')
     html_content = template.render(context)
@@ -3976,26 +4054,26 @@ def notificacionFiscalia_pdf(request):
     return response
 
 
-def obtener_datos_notificacion_fiscalia(notificacion_comar_id):
+def obtener_datos_notificacion_fiscalia(notificacion_fiscalia_id):
     try:
-        notificacion_comar = NotificacionCOMAR.objects.get(id=notificacion_comar_id)
-        firma = FirmaNotificacionComar.objects.filter(notificacionComar=notificacion_comar).first()
-        return notificacion_comar, firma
-    except NotificacionCOMAR.DoesNotExist:
+        notificacion_fiscalia = NotificacionFiscalia.objects.get(id=notificacion_fiscalia_id)
+        firma = FirmaNotificacionFiscalia.objects.filter(notificacionFiscalia=notificacion_fiscalia).first()
+        return notificacion_fiscalia, firma
+    except NotificacionFiscalia.DoesNotExist:
         return None, None
     
 def renderizar_pdf_notificacion_fiscalia(context):
-    template = get_template('documentos/notificacionFiscalia.html')
+    template = get_template('guardar/notificacionFiscaliaGuardar.html')
     html_content = template.render(context)
     html = HTML(string=html_content)
     return html.write_pdf()
 
 def guardar_pdf_notificacion_fiscalia(pdf_bytes, notificacion_fiscalia, usuario_actual):
     clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones")
-    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion a Fiscalía", delaClasificacion=clasificacion)
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion a Fiscalia", delaClasificacion=clasificacion)
 
     # Genera un nombre único para el archivo PDF
-    nombre_pdf = f"Notificacion_Consular_{notificacion_fiscalia.id}.pdf"
+    nombre_pdf = f"Notificacion_Fiscalia_{notificacion_fiscalia.id}.pdf"
 
     # Actualiza información relevante en el modelo NoProceso si es necesario
     no_proceso = notificacion_fiscalia.nup
@@ -4019,7 +4097,7 @@ def guardar_pdf_notificacion_fiscalia(pdf_bytes, notificacion_fiscalia, usuario_
 def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
     notificacion_fiscalia, firma = obtener_datos_notificacion_fiscalia(notificacion_fiscalia_id)
     if not notificacion_fiscalia:
-        return JsonResponse({'status': 'error', 'message': 'Notificación Fiscalía no encontrada.'}, status=404)
+        return JsonResponse({'status': 'error', 'message': 'Notificación Fiscalia no encontrada.'}, status=404)
 
     try:
         # Preparar contexto con las URLs de las firmas y otros datos necesarios
@@ -4040,14 +4118,12 @@ def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
  
         return JsonResponse({
             'status': 'success',
-            'message': 'Notificación Fiscalía guardada con éxito y disponible para visualización.',
+            'message': 'Notificación Fiscalia guardada con éxito y disponible para visualización.',
             'pdf_url': pdf_url  # Envía la URL del PDF en la respuesta
 
         })
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)
-
+    
 #------ FIN DE NOTIFICACION FISCALIA
-
-

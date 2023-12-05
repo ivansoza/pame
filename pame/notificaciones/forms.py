@@ -2,7 +2,7 @@
 from django import forms
 from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, firmasDefenso
-from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia
+from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia,DocumentoRespuestaDefensoria
 from django.forms.widgets import HiddenInput
 
 class DefensorForm(forms.ModelForm):
@@ -104,3 +104,16 @@ class firmasDefensoForms(forms.ModelForm):
     class Meta:
         model=firmasDefenso
         fields = ['firmaAutoridadActuante']
+
+
+class DocumentoRespuestaDefensoriaForm(forms.ModelForm):
+    class Meta:
+        model = DocumentoRespuestaDefensoria
+        fields = ['archivo', 'descripcion']
+        widgets = {
+            'descripcion': forms.TextInput(attrs={'placeholder': 'Descripción del documento'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(DocumentoRespuestaDefensoriaForm, self).__init__(*args, **kwargs)
+        self.fields['archivo'].required = False

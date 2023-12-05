@@ -35,13 +35,12 @@
 
 <div class="d-flex justify-content-center mb-3 mt-3">
     <div class="btn-group" role="group">
-        <a href="#" class="btn {% if request.GET.con_representante == 'si' or not request.GET.con_representante %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
-            Apto para Notificar
+        <a href="{% url 'defensoria' %}?estado_defensoria=por_notificar" class="btn {% if request.GET.estado_defensoria == 'por_notificar' or not request.GET.estado_defensoria %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+            Por Notificar
         </a>
-        <a href="#" class="btn {% if request.GET.con_representante == 'no' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
-            Notificados
+        <a href="{% url 'defensoria' %}?estado_defensoria=ya_notificado" class="btn {% if request.GET.estado_defensoria == 'ya_notificado' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
+            Ya Notificados
         </a>
-        
     </div>
 </div>
 
@@ -95,9 +94,23 @@
 
 
                 <td align="center">
-                    <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "seleccionarDefensoria" extranjero.extranjero.id%}" data-title="Seleccionar Defensoria">
-                        <i class="fa-solid fa-bell"></i>                   
-                     </a>
+                    {% if extranjero.tiene_defensoria_asignada %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href=" {% url "respuestaDefensoria"%} " data-title="Subir Documento">
+                            <i class="fa-solid fa-upload"></i>                   
+                        </a>
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Generar Nombramiento">
+                            <i class="fa-solid fa-file-alt"></i>                   
+                        </a>
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Ver Documento">
+                            <i class="fa-solid fa-eye"></i>                   
+                        </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="{% url "seleccionarDefensoria" extranjero.extranjero.id%}" data-title="Seleccionar Defensoria">
+                            <i class="fa-solid fa-bell"></i>                   
+                        </a>
+                    {% endif %}
+
+              
                 </td>                         
 
                 </tr>
