@@ -165,13 +165,21 @@ class DocumentoRespuestaDefensoriaCreateView(CreateView):
     model = DocumentoRespuestaDefensoria
     form_class = DocumentoRespuestaDefensoriaForm
     template_name = 'defensoria/respuesta_defensoria.html'  # Reemplaza con el nombre de tu plantilla HTML
-    success_url = reverse_lazy('defensoria')  # Reemplaza con el nombre de tu URL de éxito
 
     def form_valid(self, form):
-        # Puedes agregar lógica adicional aquí si es necesario
-        return super().form_valid(form)
+        # Obtener los IDs de la URL
+        extranjero_defensoria_id = self.kwargs.get('extranjero_defensoria_id')
+        nup_id = self.kwargs.get('nup_id')
 
+        # Obtener los objetos basados en los IDs y asignarlos al objeto del formulario
+        form.instance.extranjero_defensoria = ExtranjeroDefensoria.objects.get(id=extranjero_defensoria_id)
+        form.instance.nup = NoProceso.objects.get(nup=nup_id)
 
+        return super(DocumentoRespuestaDefensoriaCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('defensoria')
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         

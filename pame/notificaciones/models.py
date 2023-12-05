@@ -6,6 +6,11 @@ from comparecencia.models import Comparecencia
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes, Estado
 import os
 from acuerdos.models import Repositorio
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
+
+
 ACCION= (
     ('Deportacion', 'DEPORTACION'),
     ('Retorno_Asistido', 'RETORNO ASISTIDO'),
@@ -200,4 +205,16 @@ class DocumentoRespuestaDefensoria(models.Model):
             if self.archivo:
                 self.archivo.delete(save=False)
             super(Repositorio, self).delete(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        # Si el archivo es una imagen, conviértelo a PDF
+        if 'image' in self.archivo.file.content_type:
+            # Abre la imagen usando Pillow
+            img = Image.open(self.archivo)
+            # Convierte la imagen a PDF
+            buffer = BytesIO()
+            img.save(buffer, format='PDF')
+            # Guarda el PDF en lugar de la imagen
+            file_name = os.path.splitext(self.archivo.name)[0] + '.pdf'
+            self.archivo.save(file_name, ContentFile(buffer.getvalue()), save=False)
+        super().save(*args, **kwargs)
    
