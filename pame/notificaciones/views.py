@@ -130,6 +130,13 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
             tiene_defensoria_asignada=Exists(defensoria_asignada)
         )
 
+        # Añade una anotación para obtener el ID de ExtranjeroDefensoria
+        queryset = queryset.annotate(
+            extranjero_defensoria_id=Subquery(
+                ExtranjeroDefensoria.objects.filter(nup=OuterRef('pk')).values('id')[:1]
+            )
+        )
+
         if estado_defensoria == 'por_notificar':
             queryset = queryset.filter(tiene_defensoria_asignada=False)
         elif estado_defensoria == 'ya_notificado':
@@ -144,14 +151,11 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
             no_proceso.horas_desde_registro = min(horas_desde_registro, 36)
 
         return queryset
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['navbar'] = 'acuerdos'  # Cambia esto según la página activa
-        context['navbar1'] = 'resoluciones'  # Cambia esto según la página activa
+        context['navbar'] = 'Notificaciones'  # Cambia esto según la página activa
 
-        context['seccion'] = 'resoluciones'
-        context['seccion1'] = 'retorno'
+        context['seccion'] = 'defensoria'
         return context
         
    
@@ -167,6 +171,29 @@ class DocumentoRespuestaDefensoriaCreateView(CreateView):
         # Puedes agregar lógica adicional aquí si es necesario
         return super().form_valid(form)
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Obtener los IDs de la URL
+        extranjero_defensoria_id = self.kwargs.get('extranjero_defensoria_id')
+        nup_id = self.kwargs.get('nup_id')
+
+        # Obtener el objeto ExtranjeroDefensoria
+        extranjero_defensoria = ExtranjeroDefensoria.objects.get(id=extranjero_defensoria_id)
+        context['extranjero_defensoria'] = extranjero_defensoria
+
+        # Obtener el objeto NoProceso
+        nup = NoProceso.objects.get(nup=nup_id)
+        context['nup'] = nup
+
+        # Si es necesario, puedes agregar también el objeto Defensoria
+        defensoria = extranjero_defensoria.defensoria
+        context['defensoria'] = defensoria
+        context['navbar'] = 'Notificaciones'  # Cambia esto según la página activa
+
+        context['seccion'] = 'defensoria'
+        return context
 # views.py
 from django.shortcuts import render, redirect
 from .forms import DefensorForm

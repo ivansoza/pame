@@ -65,7 +65,7 @@ urlpatterns = [
     path('estado_firmas_defensoria/<int:constancia_id>/', estado_firmas_defensoria, name='estado_firmas_defensoria'),
     path('verificar_firmas_defensoria/<int:constancia_id>/', verificar_firmas_defensoria, name='verificar_firmas_defensoria'),
     path('datos_defensoria/<int:constancia_id>/', obtener_datos_defensoria, name='datos_defensoria'),
-    path('respuesta/defensoria', DocumentoRespuestaDefensoriaCreateView.as_view(), name='respuestaDefensoria'),
+    path('respuesta/defensoria/<int:extranjero_defensoria_id>/<str:nup_id>/', DocumentoRespuestaDefensoriaCreateView.as_view(), name='respuestaDefensoria'),
 
 
 ]
