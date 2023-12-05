@@ -59,12 +59,12 @@ urlpatterns = [
 #-----------------------Defensoria (modulo: seleccion y notificacion)------------
     path('seleccionarDefensoria/<int:pk>/', selectDefensoria.as_view(), name='seleccionarDefensoria'),
     path('crearNotificacion/<str:nup_id>/<int:defensoria_id>/', crearRelacionAjax.as_view(), name='crearNotificacion'),
-    path('generar_qr_defensoria/<str:tipo_firma>/<int:constancia_id>/', generar_qr_firmas_defensoria, name='generar_qr_firmas_defensoria'),
-    path('firma_autoridad_actuante_defensoria/<int:constancia_id>/', firma_autoridad_actuante_defensoria, name='firma_autoridad_actuante_defensoria'),
-    path('verificar_firma/autoridadActuante_defensoria/<int:constancia_id>/', verificar_firma_autoridad_actuante_defensoria, name='verificar_firma_autoridad_actuante_defensoria'),
-    path('estado_firmas_defensoria/<int:constancia_id>/', estado_firmas_defensoria, name='estado_firmas_defensoria'),
-    path('verificar_firmas_defensoria/<int:constancia_id>/', verificar_firmas_defensoria, name='verificar_firmas_defensoria'),
-    path('datos_defensoria/<int:constancia_id>/', obtener_datos_defensoria, name='datos_defensoria'),
+    path('generar_qr_defensoria/<str:tipo_firma>/<int:defensoria_id>/', generar_qr_firmas_defensoria, name='generar_qr_firmas_defensoria'),
+    path('firma_autoridad_actuante_defensoria/<int:defensoria_id>/', firma_autoridad_actuante_defensoria, name='firma_autoridad_actuante_defensoria'),
+    path('verificar_firma/autoridadActuante_defensoria/<int:defensoria_id>/', verificar_firma_autoridad_actuante_defensoria, name='verificar_firma_autoridad_actuante_defensoria'),
+    path('estado_firmas_defensoria/<int:defensoria_id>/', estado_firmas_defensoria, name='estado_firmas_defensoria'),
+    path('verificar_firmas_defensoria/<int:defensoria_id>/', verificar_firmas_defensoria, name='verificar_firmas_defensoria'),
+    path('datos_defensoria/<int:defensoria_id>/', obtener_datos_defensoria, name='datos_defensoria'),
     path('respuesta/defensoria/<int:extranjero_defensoria_id>/<str:nup_id>/', DocumentoRespuestaDefensoriaCreateView.as_view(), name='respuestaDefensoria'),
 
 
