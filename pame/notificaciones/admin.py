@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Defensorias,notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular, FirmaNotificacionComar, FirmaNotificacionFiscalia, NotificacionConsular, NotificacionConsular, NotificacionCOMAR,NotificacionFiscalia, ExtranjeroDefensoria
+from .models import Defensorias,notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular, FirmaNotificacionComar, FirmaNotificacionFiscalia, NotificacionConsular, NotificacionConsular, NotificacionCOMAR,NotificacionFiscalia, ExtranjeroDefensoria, firmasDefenso
 
 admin.site.register(Defensorias)
 admin.site.register(notificacionesAceptadas)
@@ -13,5 +13,7 @@ admin.site.register(FirmaNotificacionFiscalia)
 admin.site.register(NotificacionCOMAR)
 admin.site.register(NotificacionFiscalia)
 admin.site.register(ExtranjeroDefensoria)
+
+admin.site.register(firmasDefenso)
 
 

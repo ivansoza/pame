@@ -30,7 +30,7 @@ from acuerdos.models import Documentos, ClasificaDoc, TiposDoc, Repositorio, Tip
 from pertenencias.models import EnseresBasicos
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
 from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones
-from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar
+from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar, ExtranjeroDefensoria
 
 from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
@@ -296,14 +296,21 @@ def nombramientoRepresentante_pdf(request):
     return response
 
 # ----- Genera el documento PDF, de Notificacion de representacion
-def notificacionRepresentacion_pdf(request):
+def notificacionRepresentacion_pdf(request, nup_id):
     # extranjero = Extranjero.objects.get(id=extranjero_id)
-
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+    defensoria = get_object_or_404(ExtranjeroDefensoria, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
+    oficio = defensoria
+    defen = defensoria.defensoria
     #consultas 
-
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'oficio': oficio,
+        'extranjero':extranjero,
+        'defensoria': defen,
+        "defenso":defensoria,
     }
 
     # Obtener la plantilla HTML
@@ -3120,33 +3127,6 @@ def nombramientoRepresentante_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/nombramientoRepresentante.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de Notificacion de representacion
-def notificacionRepresentacion_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
-
-    #consultas 
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/notificacionRepresentacion.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML

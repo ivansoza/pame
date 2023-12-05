@@ -141,7 +141,7 @@ class Defensorias(models.Model):
             self.calle,
             self.colonia,
             self.municipio,
-            self.estado,  # Asumiendo que 'entidad' representa el estado
+            self.estado.estado,  # Asumiendo que 'entidad' representa el estado
             self.cp
         ]
         return ', '.join(filter(None, direccion_parts))
@@ -171,8 +171,10 @@ class Qrfirma(models.Model):
 
 class ExtranjeroDefensoria(models.Model):
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
-    autoridadActuante = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE)
+    autoridadActuante = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name='Autoridad Actuante')
+    numeroExpediente = models.CharField(max_length=50, verbose_name='Numero de expediente')
     defensoria = models.ForeignKey(Defensorias, on_delete=models.CASCADE)
+    oficio = models.CharField(max_length=100, verbose_name='Numero de oficio')
     fechaHora = models.DateTimeField(auto_now_add=True)
 
 class firmasDefenso(models.Model):

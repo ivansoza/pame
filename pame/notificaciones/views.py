@@ -878,14 +878,17 @@ class crearRelacionAjax(View):
 
         form = ExtranjeroDefensoriaForm(request.POST)
         if form.is_valid():
-            notificacion = form.save(commit=False)
-            notificacion.nup = no_proceso
-            notificacion.defensoria = defensoria
+            defensorias = form.save(commit=False)
+            defensorias.nup = no_proceso
+            defensorias.defensoria = defensoria
+
                 # Solo guarda una nueva comparecencia si no existe una previa
-            notificacion.save()
+            defensorias.save()
+            defensoria_id = defensorias.id
+
                 # Guardar el ID de la comparecencia en la sesión
 
-            data = {'success': True, 'message': 'Constancia creada con éxito.', 'notificacion_id': notificacion.id}
+            data = {'success': True, 'message': 'Constancia creada con éxito.', 'defensoria_id': defensoria_id}
             return JsonResponse(data, status=200)
         else:
             data = {'success': False, 'errors': form.errors}
@@ -936,11 +939,11 @@ class crearRelacionAjax(View):
 
         return render(request, 'modalDefensoria/crearRelacion.html', context)
 
-def generar_qr_firmas_defensoria(request, notificacion_id, tipo_firma):
+def generar_qr_firmas_defensoria(request, defensoria_id, tipo_firma):
     base_url = settings.BASE_URL
 
     if tipo_firma == "autoridadActuante":
-        url = f"{base_url}notificaciones/firma_autoridad_defensoria_/{notificacion_id}/"
+        url = f"{base_url}notificaciones/firma_autoridad_actuante_defensoria/{defensoria_id}/"
     else:
         return HttpResponseBadRequest("Tipo de firma no válido")
 
@@ -949,9 +952,9 @@ def generar_qr_firmas_defensoria(request, notificacion_id, tipo_firma):
     img.save(response, "PNG")
     return response
 
-def firma_autoridad_actuante_defensoria(request, notificacion_id):
-    notificacion = get_object_or_404(ExtranjeroDefensoria, pk=notificacion_id)
-    firma, created = firmasDefensoForms.objects.get_or_create(defensoria=notificacion)  # Usar comparecencia aquí
+def firma_autoridad_actuante_defensoria(request, defensoria_id):
+    notificacion = get_object_or_404(ExtranjeroDefensoria, pk=defensoria_id)
+    firma, created = firmasDefenso.objects.get_or_create(defensoria=notificacion)  # Usar comparecencia aquí
 
     if firma.firmaAutoridadActuante:
         # Redirigir o manejar el caso de que la firma ya exista
@@ -965,18 +968,18 @@ def firma_autoridad_actuante_defensoria(request, notificacion_id):
             ext = format.split('/')[-1]  # Ejemplo: "png"
             data = ContentFile(base64.b64decode(imgstr))
             
-            file_name = f"firmaAutoridadActuante_{notificacion_id}.{ext}"
+            file_name = f"firmaAutoridadActuante_{defensoria_id}.{ext}"
             file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
 
             firma.firmaAutoridadActuante.save(file_name, file, save=True)
             return redirect(reverse_lazy('firma_exitosa'))
     else:
-        form = firmasDefensoForms()
-    return render(request, 'modalDefensoria/firmaDefensoria.html', {'form': form, 'notificacion_id': notificacion_id})
+        form = firmasDefenso()
+    return render(request, 'modalDefensoria/firmaDefensoria.html', {'form': form, 'defensoria_id': defensoria_id})
 @csrf_exempt
-def verificar_firma_autoridad_actuante_defensoria(request, notificacion_id):
+def verificar_firma_autoridad_actuante_defensoria(request, defensoria_id):
     try:
-        firma = firmasDefensoForms.objects.get(defensoria=notificacion_id)
+        firma = firmasDefenso.objects.get(defensoria=defensoria_id)
         if firma.firmaAutoridadActuante:
             image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
             return JsonResponse({
@@ -984,14 +987,14 @@ def verificar_firma_autoridad_actuante_defensoria(request, notificacion_id):
                 'message': 'Firma de la Autoridad Actuante encontrada',
                 'image_url': image_url
             })
-    except firmasDefensoForms.DoesNotExist:
+    except firmasDefenso.DoesNotExist:
         pass
 
     return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
 
-def estado_firmas_defensoria(request, notificacion_id):
+def estado_firmas_defensoria(request, defensoria_id):
     # Obtener la instancia de Comparecencia, o devolver un error 404 si no se encuentra
-    notificacion = get_object_or_404(ExtranjeroDefensoria, pk=notificacion_id)
+    notificacion = get_object_or_404(ExtranjeroDefensoria, pk=defensoria_id)
 
     # Obtener la instancia de FirmaComparecencia asociada a la Comparecencia
     firma = firmasDefensoForms.objects.filter(defenosria=notificacion).first()
@@ -1010,9 +1013,9 @@ def estado_firmas_defensoria(request, notificacion_id):
     # Devolver el estado de las firmas en formato JSON
     return JsonResponse(estado_firmas)
 
-def verificar_firmas_defensoria(request, constancia_id):
+def verificar_firmas_defensoria(request, defensoria_id):
     try:
-        constancia_firmas = firmasDefensoForms.objects.filter(constancia_id=constancia_id).values('firmaAutoridadActuante')
+        constancia_firmas = firmasDefensoForms.objects.filter(defensoria=defensoria_id).values('firmaAutoridadActuante')
         
         firmas_existen = all(constancia_firma for constancia_firma in constancia_firmas[0].values())
         
@@ -1020,8 +1023,8 @@ def verificar_firmas_defensoria(request, constancia_id):
     except Exception as e:
         return JsonResponse({'error': str(e)})
 
-def obtener_datos_defensoria(request, notificacion_id):
-    constancia = get_object_or_404(ExtranjeroDefensoria, pk=notificacion_id)
+def obtener_datos_defensoria(request, defensoria_id):
+    constancia = get_object_or_404(ExtranjeroDefensoria, pk=defensoria_id)
 
     datos = {
         'nombreAutoridadActuante': f"{constancia.autoridadActuante.autoridad.nombre} {constancia.autoridadActuante.autoridad.apellidoPaterno} {constancia.autoridadActuante.autoridad.apellidoMaterno or ''}".strip() if constancia.autoridadActuante else '',

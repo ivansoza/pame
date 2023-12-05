@@ -1,21 +1,21 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[OFICINA O ESTACION]
+<br>{{extranjero.deLaEstacion.oficina|upper}}
+<br>{{extranjero.deLaEstacion.nombre|upper}}
+<br>{{extranjero.deLaEstacion.estado|upper}} {{oficio.fechaHora|date:'Y-m-d'}}
+<br>{{oficio.numeroExpediente|upper}} 
 <br>
-<br>[LUGAR Y FECHA COMPLETA]
-<br>[NUMERO DE EXPEDIENTE] 
-<br>
-<br>NÚMERO DE OFICIO: INM/-----/-----/-----/2023 
+<br>NÚMERO DE OFICIO:{{oficio.oficio}}
 <br>Asunto: Se solicita representación legal.
 {% endblock %}
 
 {% block content %}
 <p>
-    [NOMBRE] 
-    <br>[CARGO] 
-    <br>[DIRECCION] 
-    <br>[CORREO] 
+    {{defensoria.nombreTitular}} {{defensoria.apellidoPaternoTitular}} {{defensoria.apellidoMaternoTitular}}
+    <br>{{defensoria.cargoTitular}} 
+    <br>{{defensoria.direccion_completa}} 
+    <br>{{defensoria.email1}} 
     <br>(SE DEBERÁ CONSIDERAR EN LAS OFICINAS DE REPRESENTACIÓN NOTIFICAR  A LA DEFENSORÍA LOCAL 
     EN CASO DE NO TENER SEDE DEL CONSEJO DE LA JUDICATURA FEDERAL)
     <br><strong>Presente.</strong>
@@ -25,16 +25,16 @@
 </p>
 <p>
     Al respecto, me permito señalar que atendiendo al principio del debido proceso de aquellas personas extranjeras puestas a disposición ante esta autoridad migratoria, se recibió el oficio 
-    [NÚMERO DE OFICIO PUESTA A DISPOSICIÓN] de fecha [FECHA DE PUESTA A DISPOSICIÓN] suscrito por 
-    [AUTORIDAD FIRMANTE], a las [HORA] horas para dar inicio al procedimiento administrativo migratorio a la persona extranjera que dijo llamarse 
-    [NOMBRE DEL EXTRANJERO] de nacionalidad [NACIONALIDAD] con fecha de nacimiento 
+    {% if extranjero.deLaPuestaIMN  %}{{extranjero.deLaPuestaIMN.identificadorProceso}} {% elif extranjero.deLaPuestaAC %}{{extranjero.deLaPuestaAC.identificadorProceso }}{% else %}{{extranjero.deLaPuestaVP.identificadorProceso}}{% endif %}de fecha {% if extranjero.deLaPuestaIMN  %}{{extranjero.deLaPuestaIMN.fechaOficio}} {% elif extranjero.deLaPuestaAC %}{{extranjero.deLaPuestaAC.fechaOficio}}{% else %}{{extranjero.deLaPuestaVP.fechaOficio}}{% endif %} suscrito por 
+    {{oficio.autoridadActuante}}, a las {{oficio.fechaHora|time:"H:i"}} horas para dar inicio al procedimiento administrativo migratorio a la persona extranjera que dijo llamarse 
+    {{extranjero.nombreExtranjero}} {{extranjero.apellidoPaternoExtranjero}} {% if extranjero.apellidoMaternoExtranjero %}{{extranjero.apellidoMaternoExtranjero}}{% endif %} de nacionalidad {{extranjero.nacionalidad.nombre}} con fecha de nacimiento 
     [DD/MM/AAAA], por lo que se requiere la presencia de personal de esa Defensoría Pública para su nombramiento formal por parte del interesado en su representación dentro de la sustanciación del procedimiento instaurado, hasta la resolución definitiva del mismo. 
 </p>
 <p>
     No omito informar que esta autoridad migratoria cuenta con 36 horas para resolver la situación migratoria del extranjero,  por lo que para tales efectos se requiere de celeridad en el procedimiento instaurado y la presencia de un defensor de oficio a la brevedad respetando el principio al debido proceso.
 </p>
 <p>
-    Para tales efectos sito el domicilio en [DOMICILIO INSTALACION MIGRATORIA], a fin de llevar a cabo las actuaciones referentes al nombramiento y demás aplicativas al procedimiento administrativo migratorio
+    Para tales efectos sito el domicilio en <strong>{{defenso.nup.extranjero}}</strong>, a fin de llevar a cabo las actuaciones referentes al nombramiento y demás aplicativas al procedimiento administrativo migratorio
 </p>
 <p>
     Saludos cordiales.
@@ -42,13 +42,13 @@
 <div class="columnas">
     <div class="columna">
         <p><strong>RESPETUOSAMENTE</strong></p>
-        <p class="firma">Lic. [NOMBRE AC] 
-            <br>[CARGO AC]
+        <p class="firma">Lic. {{defenso.autoridadActuante.autoridad.deLaEstacion}}
+            <br>{{defenso.autoridadActuante.cargo}}
         </p>
     </div>
     <div class="columna">
         <p style="display: none;"><strong>Campo para otra firma</strong></p>
-        <p class="firma" style="display: none;">[nombre]</p>
+        <p class="firma" style="display: none;">[nombre]x</p>
     </div>
 </div>
 {% endblock %}
