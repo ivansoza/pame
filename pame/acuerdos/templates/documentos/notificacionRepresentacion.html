@@ -3,7 +3,7 @@
 {% block header %}
 <br>{{extranjero.deLaEstacion.oficina|upper}}
 <br>{{extranjero.deLaEstacion.nombre|upper}}
-<br>{{extranjero.deLaEstacion.estado|upper}} {{oficio.fechaHora|date:'Y-m-d'}}
+<br>{{extranjero.deLaEstacion.estado|upper}}, {{ oficio.fechaHora|date:"d \d\e F \d\e Y"|upper }}
 <br>{{oficio.numeroExpediente|upper}} 
 <br>
 <br>NÚMERO DE OFICIO:{{oficio.oficio}}
@@ -25,16 +25,16 @@
 </p>
 <p>
     Al respecto, me permito señalar que atendiendo al principio del debido proceso de aquellas personas extranjeras puestas a disposición ante esta autoridad migratoria, se recibió el oficio 
-    {% if extranjero.deLaPuestaIMN  %}{{extranjero.deLaPuestaIMN.identificadorProceso}} {% elif extranjero.deLaPuestaAC %}{{extranjero.deLaPuestaAC.identificadorProceso }}{% else %}{{extranjero.deLaPuestaVP.identificadorProceso}}{% endif %}de fecha {% if extranjero.deLaPuestaIMN  %}{{extranjero.deLaPuestaIMN.fechaOficio}} {% elif extranjero.deLaPuestaAC %}{{extranjero.deLaPuestaAC.fechaOficio}}{% else %}{{extranjero.deLaPuestaVP.fechaOficio}}{% endif %} suscrito por 
-    {{oficio.autoridadActuante}}, a las {{oficio.fechaHora|time:"H:i"}} horas para dar inicio al procedimiento administrativo migratorio a la persona extranjera que dijo llamarse 
-    {{extranjero.nombreExtranjero}} {{extranjero.apellidoPaternoExtranjero}} {% if extranjero.apellidoMaternoExtranjero %}{{extranjero.apellidoMaternoExtranjero}}{% endif %} de nacionalidad {{extranjero.nacionalidad.nombre}} con fecha de nacimiento 
-    [DD/MM/AAAA], por lo que se requiere la presencia de personal de esa Defensoría Pública para su nombramiento formal por parte del interesado en su representación dentro de la sustanciación del procedimiento instaurado, hasta la resolución definitiva del mismo. 
+   <strong>{% if extranjero.deLaPuestaIMN  %}{{extranjero.deLaPuestaIMN.identificadorProceso}} {% elif extranjero.deLaPuestaAC %}{{extranjero.deLaPuestaAC.identificadorProceso }}{% else %}{{extranjero.deLaPuestaVP.identificadorProceso}}{% endif %} </strong>de fecha <strong> {% if extranjero.deLaPuestaIMN  %}{{extranjero.deLaPuestaIMN.fechaOficio}} {% elif extranjero.deLaPuestaAC %}{{extranjero.deLaPuestaAC.fechaOficio}}{% else %}{{extranjero.deLaPuestaVP.fechaOficio}}{% endif %} </strong> suscrito por 
+   <strong> {{oficio.autoridadActuante}} </strong>, a las <strong>{{oficio.fechaHora|time:"H:i"}} </strong> horas para dar inicio al procedimiento administrativo migratorio a la persona extranjera que dijo llamarse 
+   <strong> {{extranjero.nombreExtranjero}} {{extranjero.apellidoPaternoExtranjero}} {% if extranjero.apellidoMaternoExtranjero %}{{extranjero.apellidoMaternoExtranjero}}{% endif %} </strong> de nacionalidad <strong>{{extranjero.nacionalidad.nombre}} </strong>  con fecha de nacimiento 
+   <strong> {{extranjero.fechaNacimiento}}</strong>, por lo que se requiere la presencia de personal de esa Defensoría Pública para su nombramiento formal por parte del interesado en su representación dentro de la sustanciación del procedimiento instaurado, hasta la resolución definitiva del mismo. 
 </p>
 <p>
     No omito informar que esta autoridad migratoria cuenta con 36 horas para resolver la situación migratoria del extranjero,  por lo que para tales efectos se requiere de celeridad en el procedimiento instaurado y la presencia de un defensor de oficio a la brevedad respetando el principio al debido proceso.
 </p>
 <p>
-    Para tales efectos sito el domicilio en <strong>{{defenso.nup.extranjero}}</strong>, a fin de llevar a cabo las actuaciones referentes al nombramiento y demás aplicativas al procedimiento administrativo migratorio
+    Para tales efectos sito el domicilio en <strong>{{defenso.nup.extranjero.deLaEstacion.direccion_completa}}</strong>, a fin de llevar a cabo las actuaciones referentes al nombramiento y demás aplicativas al procedimiento administrativo migratorio
 </p>
 <p>
     Saludos cordiales.
@@ -42,7 +42,9 @@
 <div class="columnas">
     <div class="columna">
         <p><strong>RESPETUOSAMENTE</strong></p>
-        <p class="firma">Lic. {{defenso.autoridadActuante.autoridad.deLaEstacion}}
+        <img src="{{ firma_url }}" alt="Firma de la Autoridad Actuante" style="display: block; margin: 0 auto; max-width: 100%; max-height: 100%; margin-bottom: -90px;" >
+
+        <p class="firma">Lic. {{defenso.autoridadActuante.autoridad}}
             <br>{{defenso.autoridadActuante.cargo}}
         </p>
     </div>
