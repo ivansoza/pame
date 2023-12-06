@@ -241,7 +241,7 @@ class RepresentantesLegales(models.Model):
     estatus = models.CharField(choices=ESTATUS_REPRESENTANTES, verbose_name='Estatus del representante', max_length=25, default='Activo')
     cedula = models.CharField(max_length=50, verbose_name='Número de Cédula')
     estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación migratoria')
-    defensoria = models.CharField(max_length=50, verbose_name='Defensora')
+    defensoria = models.ForeignKey('notificaciones.Defensorias', on_delete=models.CASCADE)
     def __str__(self):
         return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno or ""}'
     

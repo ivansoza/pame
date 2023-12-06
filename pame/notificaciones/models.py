@@ -138,9 +138,13 @@ class Defensorias(models.Model):
     municipio = models.CharField(max_length=50, verbose_name="Municipio")
     cp = models.CharField(max_length=10, verbose_name="CP")
     estatus = models.CharField(choices=ESTATUS_DEFENSO,max_length=25, verbose_name='Estatus de la autoridad en la estación', default='Activo')
+ 
+    def __str__(self):
+        # Asumiendo que 'estado' tiene un campo 'nombre' que representa el nombre del estado
+        nombre_estado = self.estado.estado if self.estado else ''
+        nombre_titular = f'{self.nombreTitular} {self.apellidoPaternoTitular} {self.apellidoMaternoTitular}'.strip()
+        return f'{nombre_estado} - {nombre_titular}'
 
-    def _str_(self):
-        return self.estado
 
     def direccion_completa(self):
         direccion_parts = [
@@ -219,4 +223,32 @@ class DocumentoRespuestaDefensoria(models.Model):
             file_name = os.path.splitext(self.archivo.name)[0] + '.pdf'
             self.archivo.save(file_name, ContentFile(buffer.getvalue()), save=False)
         super().save(*args, **kwargs)
+
+
+GRADOS_ACADEMICOS = [
+    ('Doctorado', 'Doctorado'),
+    ('Maestría', 'Maestría'),
+    ('Licenciatura', 'Licenciatura'),
+    ('Bachillerato', 'Bachillerato'),
+    ('Diplomado', 'Diplomado'),
+    ('Técnico', 'Técnico'),
+    ('Secundaria', 'Secundaria'),
+    ('Primaria', 'Primaria'),
+    ('Sin educación formal', 'Sin educación formal'),
+]
+# class nombramientoRepresentante(models.Model):
+#     delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación")
+#     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
+#     defensoria = models.ForeignKey(ExtranjeroDefensoria, on_delete=models.CASCADE)
+    
+#     autoridadActuante=models.ForeignKey(AutoridadesActuantes,related_name='Autoridadactuante', on_delete=models.CASCADE, verbose_name='Autoridad', blank=True, null=True)
+#     representanteLegal = models.ForeignKey(RepresentantesLegales, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Representante Legal')
+#     representanteLegalExterno = models.ForeignKey(null=True, blank=True, verbose_name='Representante Legal Externo')
+#     cedulaLegalExterno = models.CharField(max_length=50, verbose_name='Número de Cédula')
+#     traductor=models.ForeignKey(Traductores,related_name='Traductor', on_delete=models.CASCADE, verbose_name='Traductor', blank=True, null=True)
+#     testigo1=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 1")
+#     grado_academico_testigo1=models.CharField(verbose_name='Grado Académico del Testigo 1', max_length=50, choices=GRADOS_ACADEMICOS)
+#     testigo2=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 2")
+#     grado_academico_testigo2=models.CharField(verbose_name='Grado Académico del Testigo 2', max_length=50, choices=GRADOS_ACADEMICOS)
+
    
