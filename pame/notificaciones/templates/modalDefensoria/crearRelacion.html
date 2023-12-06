@@ -279,6 +279,23 @@
 
                     <a href="{% url "representacionPDF" nup_id %}" target="_blank" id="generatePDFBtn"
                         class="btn btn-primary">Generar oficio</a>
+                    
+                        <a href="{% url 'defensoria' %}?estado_defensoria=ya_notificado" class="btn {% if request.GET.estado_defensoria == 'ya_notificado' %}btn-custom6{% else %}btn-outline-secondary{% endif %}"
+                        class="btn btn-primary" style='display:none;' id='regresar' hidden>Regresar a lista de extranjeros</a>
+                </div>
+            </div>
+        </div>
+        <div id="BTNregresar" style="display:none;">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <!-- Ícono de FontAwesome para representar un PDF -->
+                    <h1>Documento generado exitosamente</h1>
+                    <i class="fa-solid fa-circle-check fa-7x" style="color: #1D1D1D;"></i>
+                    <br>
+                    <br>
+                    <br>
+                        <a href="{% url 'defensoria' %}?estado_defensoria=ya_notificado" class="btn {% if request.GET.estado_defensoria == 'ya_notificado' %}btn-custom6{% else %}btn-outline-secondary{% endif %}"
+                        class="btn btn-primary" >Regresar a lista de extranjeros</a>
                 </div>
             </div>
         </div>
@@ -385,6 +402,21 @@
                         console.error('Error al obtener datos:', error);
                     });
             }
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Obtener referencias a los botones
+                const generarPDFBtn = document.getElementById('generatePDFBtn');
+        
+                // Agregar un event listener al botón "generarPDFBtn"
+                generarPDFBtn.addEventListener('click', function () {
+                    // Ocultar el botón generarPDFBtn
+                    document.getElementById('generatePDFSection').style.display = 'none';
+        
+                    // Quitar el atributo "hidden" del botón regresar
+                    document.getElementById('BTNregresar').style.display = 'block';
+                });
+            });
         </script>
     </div>
 </div>
