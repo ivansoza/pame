@@ -3,9 +3,14 @@ from vigilancia.models import Extranjero,NoProceso  # Asegúrate de importar el 
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes
 from catalogos.models import AutoridadesActuantes, Consulado, Estacion, Comar, Fiscalia
 from comparecencia.models import Comparecencia
-from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes, Estado
+from catalogos.models import AutoridadesActuantes, Consulado, Estacion,AutoridadesActuantes, Estado, RepresentantesLegales, Traductores
 import os
 from acuerdos.models import Repositorio
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
+
+
 ACCION= (
     ('Deportacion', 'DEPORTACION'),
     ('Retorno_Asistido', 'RETORNO ASISTIDO'),
@@ -133,16 +138,20 @@ class Defensorias(models.Model):
     municipio = models.CharField(max_length=50, verbose_name="Municipio")
     cp = models.CharField(max_length=10, verbose_name="CP")
     estatus = models.CharField(choices=ESTATUS_DEFENSO,max_length=25, verbose_name='Estatus de la autoridad en la estación', default='Activo')
+ 
+    def __str__(self):
+        # Asumiendo que 'estado' tiene un campo 'nombre' que representa el nombre del estado
+        nombre_estado = self.estado.estado if self.estado else ''
+        nombre_titular = f'{self.nombreTitular} {self.apellidoPaternoTitular} {self.apellidoMaternoTitular}'.strip()
+        return f'{nombre_estado} - {nombre_titular}'
 
-    def _str_(self):
-        return self.estado
 
     def direccion_completa(self):
         direccion_parts = [
             self.calle,
             self.colonia,
             self.municipio,
-            self.estado,  # Asumiendo que 'entidad' representa el estado
+            self.estado.estado,  # Asumiendo que 'entidad' representa el estado
             self.cp
         ]
         return ', '.join(filter(None, direccion_parts))
@@ -172,8 +181,10 @@ class Qrfirma(models.Model):
 
 class ExtranjeroDefensoria(models.Model):
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
-    autoridadActuante = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE)
+    autoridadActuante = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name='Autoridad Actuante')
+    numeroExpediente = models.CharField(max_length=50, verbose_name='Numero de expediente')
     defensoria = models.ForeignKey(Defensorias, on_delete=models.CASCADE)
+    oficio = models.CharField(max_length=100, verbose_name='Numero de oficio')
     fechaHora = models.DateTimeField(auto_now_add=True)
 
 class firmasDefenso(models.Model):
@@ -200,4 +211,57 @@ class DocumentoRespuestaDefensoria(models.Model):
             if self.archivo:
                 self.archivo.delete(save=False)
             super(Repositorio, self).delete(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        # Si el archivo es una imagen, conviértelo a PDF
+        if 'image' in self.archivo.file.content_type:
+            # Abre la imagen usando Pillow
+            img = Image.open(self.archivo)
+            # Convierte la imagen a PDF
+            buffer = BytesIO()
+            img.save(buffer, format='PDF')
+            # Guarda el PDF en lugar de la imagen
+            file_name = os.path.splitext(self.archivo.name)[0] + '.pdf'
+            self.archivo.save(file_name, ContentFile(buffer.getvalue()), save=False)
+        super().save(*args, **kwargs)
+
+
+GRADOS_ACADEMICOS = [
+    ('Doctorado', 'Doctorado'),
+    ('Maestría', 'Maestría'),
+    ('Licenciatura', 'Licenciatura'),
+
+]
+class nombramientoRepresentante(models.Model):
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
+    delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación")
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
+    defensoria = models.ForeignKey(ExtranjeroDefensoria, on_delete=models.CASCADE)
+    oficio = models.CharField(max_length=100, verbose_name='Numero de oficio')
+    numeroExpediente = models.CharField(max_length=50, verbose_name='Numero de expediente')
+    autoridadActuante = models.ForeignKey(
+        AutoridadesActuantes,
+        related_name='nombramiento_representante_autoridad',
+        on_delete=models.CASCADE,
+        verbose_name='Autoridad',
+        blank=True,
+        null=True
+    )
+    es_representante_externo = models.BooleanField(default=False, verbose_name='Es Representante Legal Externo')
+    representanteLegal = models.ForeignKey(RepresentantesLegales, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Representante Legal')
+    representanteLegalExterno = models.CharField(max_length=50, null=True, blank=True, verbose_name='Representante Legal Externo')
+    grado_representante_externo=models.CharField(verbose_name='Grado Académico del Representante Legal Externo', max_length=50, choices=GRADOS_ACADEMICOS)
+    cedulaLegalExterno = models.CharField(max_length=50, verbose_name='Número de Cédula')
+    traductor = models.ForeignKey(
+        Traductores,
+        related_name='nombramiento_representante_traductor',
+        on_delete=models.CASCADE,
+        verbose_name='Traductor',
+        blank=True,
+        null=True
+    )
+    testigo1=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 1")
+    grado_academico_testigo1=models.CharField(verbose_name='Grado Académico del Testigo 1', max_length=50, choices=GRADOS_ACADEMICOS)
+    testigo2=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 2")
+    grado_academico_testigo2=models.CharField(verbose_name='Grado Académico del Testigo 2', max_length=50, choices=GRADOS_ACADEMICOS)
+
    
