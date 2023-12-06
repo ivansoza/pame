@@ -77,7 +77,6 @@ class listaExtranjertoAlegatos(LoginRequiredMixin, ListView):
                     context['dd'] = dd
 
             extranjero.tiene_presenta = tiene_presenta
-            extranjero.dd = dd
         context['navbar'] = 'alegatos'  # Cambia esto según la página activa
         context['seccion'] = 'extranjerosa'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre

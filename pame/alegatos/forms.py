@@ -22,6 +22,10 @@ class AlegatosForms(forms.ModelForm):
     class Meta:
         model = Alegatos
         fields = '__all__'
+        widgets = {
+            'testigo1': forms.TextInput(attrs={'placeholder': 'Ejemplo: Luis Granados Fuentes'}),
+            'testigo2': forms.TextInput(attrs={'placeholder': 'Ejemplo: Jose Huerta Garcia '}),
+        }
 
 class DocumentosAlegatosForms(forms.ModelForm, ValidacionArchivos):
     def clean_oficioPuesta(self):
@@ -62,6 +66,10 @@ class NoFirmaForms(forms.ModelForm):
     class Meta:
         model = NoFirma
         fields = '__all__'
+        widgets = {
+            'testigo1': forms.TextInput(attrs={'placeholder': 'Ejemplo: Luis Granados Fuentes'}),
+            'testigo2': forms.TextInput(attrs={'placeholder': 'Ejemplo: Jose Huerta Garcia '}),
+        }
 
 class FirmaAutoridadActuanteFormNO(forms.ModelForm):
     firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
