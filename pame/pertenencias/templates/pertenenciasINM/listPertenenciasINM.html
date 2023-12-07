@@ -55,6 +55,12 @@
    href="{% url 'crear_pertenenciasINM' inventario.id puesta.id%}">
    Agregar Pertenencias Personales
 </a>
+<a class='btn btn-custom6 float-end' 
+   data-bs-toggle="tooltip" 
+   data-bs-placement="top" 
+   href="{% url 'inventarioPDF' extranjero.noproceso_set.last.nup extranjero_id %}" target="_blank">
+   Documento
+</a>
 <br>
 <br>
 

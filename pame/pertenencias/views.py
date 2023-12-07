@@ -1100,11 +1100,13 @@ class ListaPertenenciasViewINM(LoginRequiredMixin,ListView):
         context['joyas']=joyas
         context['aparato']=aparatos
         context['extranjero_id'] = inventario.noExtranjero.id  # Añadiendo el ID del Extranjero al contexto
+        context['extranjero'] = inventario.noExtranjero
         context['puesta']=PuestaDisposicionINM.objects.get(id=puesta_id)
         context['puesta_id']=puesta_id
         context['inventario'] = inventario
         context['navbar'] = 'seguridad' 
         context['seccion'] = 'seguridadINM'
+        context['nup'] = ultimo_nup
         return context
     
 class ListaEnseresViewINM(LoginRequiredMixin,ListView):

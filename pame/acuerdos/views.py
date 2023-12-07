@@ -27,7 +27,10 @@ from comparecencia.models import Comparecencia, FirmaComparecencia
 from vigilancia.models import Extranjero, Firma, NoProceso
 from llamadasTelefonicas.models import Notificacion, LlamadasTelefonicas
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc, Repositorio, TipoAcuerdo, Acuerdo
-from pertenencias.models import EnseresBasicos
+from pertenencias.models import (
+    EnseresBasicos, Pertenencias, Pertenencia_aparatos, valoresefectivo, valoresjoyas,
+    documentospertenencias
+)
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
 from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones, CertificadoMedicoEgreso
 from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar
@@ -323,15 +326,67 @@ def notificacionRepresentacion_pdf(request):
     return response
 
 # ----- Genera el documento PDF de Inventario de pertenencias y valores
-def inventarioPV_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
+def inventarioPV_pdf(request, nup_id, ex_id):
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = Extranjero.objects.get(id=ex_id)
 
-    #consultas 
+    pertenencias = Pertenencias.objects.filter(
+        delInventario__noExtranjero__id=extranjero.id,
+        delInventario__nup__nup=no_proceso.nup,
+    )
+
+    aparatos = Pertenencia_aparatos.objects.filter(
+        delInventario__noExtranjero__id=extranjero.id,
+        delInventario__nup__nup=no_proceso.nup
+    )
+
+    efectivos = valoresefectivo.objects.filter(
+        delInventario__noExtranjero__id=extranjero.id,
+        delInventario__nup__nup=no_proceso.nup
+    )
+
+    alhajas = valoresjoyas.objects.filter(
+        delInventario__noExtranjero__id=extranjero.id,
+        delInventario__nup__nup=no_proceso.nup
+    )
+
+    documentos = documentospertenencias.objects.filter(
+        delInventario__noExtranjero__id=extranjero.id,
+        delInventario__nup__nup=no_proceso.nup
+    )
+
+    autoridad = AutoridadesActuantes.objects.get(
+        estacion=extranjero.deLaEstacion
+    )
+
+    #consultas
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
+    pertenencia = pertenencias
+    aparato = aparatos
+    efectivo = efectivos
+    alhaja = alhajas
+    documento = documentos
+    foto = extranjero.biometrico
+    foto_url = f"{settings.BASE_URL}{foto.fotografiaExtranjero.url}"
+    firma_ex = extranjero.firma 
+    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
 
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
-    }
+        'oficina': oficina,
+        'estacion': estacion,
+        'ex': extranjero,
+        'pert': pertenencia,
+        'apa': aparato,
+        'efe': efectivo,
+        'al': alhaja,
+        'doc': documento,
+        'foto': foto_url,
+        'firmaex': firmaex_url,
+        'autoridad': autoridad
+    } 
 
     # Obtener la plantilla HTML
     template = get_template('documentos/inventarioPV.html')
@@ -3198,33 +3253,6 @@ def notificacionRepresentacion_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/notificacionRepresentacion.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF de Inventario de pertenencias y valores
-def inventarioPV_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
-
-    #consultas 
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/inventarioPV.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
