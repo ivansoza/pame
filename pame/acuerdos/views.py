@@ -12,6 +12,7 @@ from django.urls import reverse, reverse_lazy
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.storage import default_storage
+from django.contrib.auth import get_user_model
 
 import os
 import locale
@@ -33,10 +34,11 @@ from pertenencias.models import (
 )
 from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traductores, Consulado, Estacion, Comar, Fiscalia
 from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones, CertificadoMedicoEgreso
-from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar
+from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar, ExtranjeroDefensoria
 
 from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
+from notificaciones.models import firmasDefenso
 from django.conf import settings
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
@@ -299,14 +301,30 @@ def nombramientoRepresentante_pdf(request):
     return response
 
 # ----- Genera el documento PDF, de Notificacion de representacion
-def notificacionRepresentacion_pdf(request):
+def notificacionRepresentacion_pdf(request, nup_id):
     # extranjero = Extranjero.objects.get(id=extranjero_id)
+    usuario_actual = request.user
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero
+    defensoria = get_object_or_404(ExtranjeroDefensoria, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
+    oficio = defensoria
+    defen = defensoria.defensoria
+
+    firma = firmasDefenso.objects.filter(defensoria=defensoria).first()
+    firma_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url) if firma and firma.firmaAutoridadActuante else None
 
     #consultas 
-
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'oficio': oficio,
+        'extranjero':extranjero,
+        'defensoria': defen,
+        "defenso":defensoria,
+        "firma":firma,
+        "firma_url":firma_url,
+
+
     }
 
     # Obtener la plantilla HTML
@@ -318,7 +336,21 @@ def notificacionRepresentacion_pdf(request):
 
     # Generar el PDF
     pdf_bytes = html.write_pdf()
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Notificaciones")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Notificacion a Defensoría", delaClasificacion=clasificacion)
 
+    nombre_pdf = f"Notificacion_Defensoría.pdf"
+    no_proceso = defensoria.nup
+    # no_proceso.notificacion_consular = True  # Descomenta y ajusta si es necesario
+    no_proceso.save()
+    repo = Repositorio(
+        nup=defensoria.nup,
+        delTipo=tipo_doc,
+        delaEstacion=usuario_actual.estancia,
+        delResponsable=usuario_actual.get_full_name(),
+    )
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
     # Devolver el PDF como una respuesta HTTP
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename=""'
@@ -3226,33 +3258,6 @@ def nombramientoRepresentante_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/nombramientoRepresentante.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de Notificacion de representacion
-def notificacionRepresentacion_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
-
-    #consultas 
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/notificacionRepresentacion.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML

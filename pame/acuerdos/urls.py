@@ -46,6 +46,7 @@ urlpatterns = [
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('inventariopv/<str:nup_id>/<str:ex_id>/', inventarioPV_pdf, name='inventarioPDF'),
+    path('notificacionRepresentacion/<str:nup_id>/', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('listaLlamadas/<str:nup_id>/<str:ex_id>/', listaLlamadas_pdf, name='listaLlamadasPDF'),
     path('constancia-enseres/<str:nup_id>/', constanciaEnseres_pdf, name='enseresPDF'),
     path('formato-enseres/<str:nup_id>/<str:enseres_id>/', formatoEnseres_pdf, name='fenseresPDF'),
