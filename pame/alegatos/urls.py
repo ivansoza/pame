@@ -6,7 +6,7 @@ from .views import listaExtranjertoNoFirma, creaConstanciaFirma, CrearConstancia
 from .views import generar_qr_firmas_constancia, firma_autoridad_actuante_constancia, firma_representante_legal_constancia, firma_testigo1_constancia, firma_testigo2_constancia
 from .views import verificar_firma_autoridad_actuante_constancia, verificar_firma_representante_legal_constancia, verificar_firma_testigo1_constancia, verificar_firma_testigo2_constancia, estado_firmas_constancia, verificar_firmas1, obtener_datos_constancia
 #-----------------------DESAHOGO------------------------------------
-from . views import listaExtranjerosDesahogo
+from . views import listaExtranjerosDesahogo, desahogoList, actualizar_eleccion
 urlpatterns = [
     path("listaExtranjerosAlegatos/", listaExtranjertoAlegatos.as_view(), name="listaExtranjerosAlegatos"),
     path("crearAlegato/<int:pk>/", creaAlegato.as_view(), name="crearAlegato"),
@@ -58,5 +58,7 @@ urlpatterns = [
 
 #-----------------------------
     path('listaDesahogo/', listaExtranjerosDesahogo.as_view(), name='listaDesahogo'),
+    path('listaDocumentos/<str:nup>', desahogoList.as_view(), name='listaDocumentos'),
+    path('actualizar_eleccion/<int:documento_id>/<str:is_checked>/', actualizar_eleccion, name='actualizar_eleccion'),
 
 ]
