@@ -7,7 +7,19 @@
 
 {% endblock link %}
 {% block contenido %}.
+<style>
+    .imagen-huella {
+     width: 200px;  /* Establece el ancho deseado */
+     height: 200px; /* Establece la altura deseada */
+     margin: 10px;   /* Agrega un margen entre las imágenes si es necesario */
+    }
 
+</style>
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Media Filiación
+    </h1>
+</div>
 <div class="row">
     <div class= "col-md-12">
         <div class="card">
@@ -76,8 +88,13 @@
 </div>
 </div>
 </div>
-{% for huellas in huella %}
-<img  src="data:image/jpg;base64,{% base64_encode huellas.imagen %}"/>
-{% endfor %}
+<div  class="card">
+    <div class="card-body">
+        <h3>Huellas del extranjero</h3>
+        {% for huellas in huella %}
+        <img class="imagen-huella"  src="data:image/jpg;base64,{% base64_encode huellas.imagen %}"/>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock contenido %}
