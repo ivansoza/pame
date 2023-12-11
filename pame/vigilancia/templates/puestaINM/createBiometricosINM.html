@@ -43,15 +43,11 @@
         </div>
         
         <div class="col-sm-6 col-md-6 col-lg-4">
-          <div class="file-input-container">
-            <a class="btn btn-sm btn-icon1 btn-primary btnTomarFoto mt-3"
-             class="button-link"
-            onclick="abrir_modal_eliminar(this.href); return false;"
-            data-input-id="id_fotografiaExtranjero">
-            <i class="fas fa-fingerprint"></i>
+          
+          <p style="font-size: 16px; font-weight: bold; margin-top: 0;" >Capturar Huellas:</p>
+          <a class="btn btn-sm btn-icon1a " href =capturahuella://  style="width: 100%;" onclick="mostrarAlerta({{ extranjero.id }})">
+              <i class="fas fa-fingerprint"></i>
           </a>
-          {{ form.huellaExtranjero|as_crispy_field }}
-         </div>
         </div>
         <!-- Mini card para la imagen de la firma -->
     
@@ -195,6 +191,35 @@
     }
 });
 
+</script>
+<script>
+  function mostrarAlerta(idExtranjero) {
+      if (idExtranjero) {
+          Swal.fire({
+              icon: 'info',
+              title: 'Captura de huellas',
+              text: 'Registra este numero de extranjero: ' + idExtranjero,
+              position: 'top',
+              customClass: {
+                  popup: 'custom-alert',
+              },
+              timer: 3000,  // Tiempo en milisegundos (3 segundos)
+              showConfirmButton: false,  // Oculta el botón de confirmación
+          });
+      } else {
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Por favor, captura el ID del extranjero antes de proceder.',
+              position: 'top',
+              customClass: {
+                  popup: 'custom-alert',
+              },
+              timer: 20000,  // Tiempo en milisegundos (3 segundos)
+              showConfirmButton: false,  // Oculta el botón de confirmación
+          });
+      }
+  }
 </script>
 
 {% include "includes/js/cam/createBiometricos.html" %}
