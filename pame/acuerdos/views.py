@@ -40,6 +40,7 @@ from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm
 from .models import FirmaAcuerdo
 from notificaciones.models import firmasDefenso
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 # ----- Vista de Prueba para visualizar las plantillas en html -----
 def homeAcuerdo(request):
@@ -387,9 +388,21 @@ def inventarioPV_pdf(request, nup_id, ex_id):
         delInventario__nup__nup=no_proceso.nup
     )
 
-    autoridad = AutoridadesActuantes.objects.get(
-        estacion=extranjero.deLaEstacion
-    )
+    # Obtenemos la autoridad actuante 
+    try:
+        # Intenta obtener al Director
+        autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Director', estatus='Activo')
+    except ObjectDoesNotExist:
+        try:
+            # Si no existe el Director, intenta obtener al Subdirector
+            autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Subdirector', estatus='Activo')
+        except ObjectDoesNotExist:
+            try:
+                # Si no existe el Subdirector, intenta obtener al Jefe de Seguridad
+                autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Jefe de Seguridad', estatus='Activo')
+            except ObjectDoesNotExist:
+                # Manejar el caso en que ninguno de los cargos exista
+                autoridad = ""
 
     #consultas
     oficina = extranjero.deLaEstacion.oficina
@@ -502,9 +515,32 @@ def constanciaEnseres_pdf(request, nup_id):
     materno = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad.nombre
     ingreso = extranjero.fechaRegistro
-    firma = extranjero.firma
+    firma_ex = extranjero.firma
+    firma = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
 
     fechas_enseres = [enseres.fechaEntrega.strftime('%d/%m/%y') for enseres in extranjero.enseresbasicos_set.all()]
+
+    # Obtenemos la autoridad actuante "Que superviso el bien servicio"
+    # Debe ser solo Director o Subdirector
+    try:
+        # Intenta obtener al Director
+        autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Director', estatus='Activo')
+    except ObjectDoesNotExist:
+        try:
+            # Si no existe el Director, intenta obtener al Subdirector
+            autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Subdirector', estatus='Activo')
+        except ObjectDoesNotExist:
+            autoridad = ""
+
+    # Obtenemos la autoridad actuante "Que proporciono el bien servicio"
+    # Cualquier cargo menos Director o Subdirector
+    try:
+        autoridad2 = AutoridadesActuantes.objects.exclude(cargo__in=['Director', 'Subdirector']).filter(estacion=extranjero.deLaEstacion, estatus='Activo').first()
+    except ObjectDoesNotExist:
+        autoridad2 = []
+
 
     # Definir el contexto de datos para tu plantilla
     context = {
@@ -515,7 +551,11 @@ def constanciaEnseres_pdf(request, nup_id):
         'nacionalidad': nacionalidad,
         'ingreso': ingreso,
         'fechas_enseres': fechas_enseres,
-        'firma': firma
+        'firma': firma,
+        'oficina':oficina,
+        'estacion': estacion, 
+        'autoridad':autoridad,
+        'autoridad2': autoridad2
     }
 
     # Obtener la plantilla HTML
@@ -547,13 +587,32 @@ def formatoEnseres_pdf(request, nup_id, enseres_id):
     # Obtiene los enseres extras 
     enseres_extras = enseres_asignados[0].enseresExtras if enseres_asignados else ''
 
+    # Obtenemos la autoridad actuante 
+    try:
+        # Intenta obtener al Director
+        autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Director', estatus='Activo')
+    except ObjectDoesNotExist:
+        try:
+            # Si no existe el Director, intenta obtener al Subdirector
+            autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Subdirector', estatus='Activo')
+        except ObjectDoesNotExist:
+            try:
+                # Si no existe el Subdirector, intenta obtener al Jefe de Seguridad
+                autoridad = AutoridadesActuantes.objects.get(estacion=extranjero.deLaEstacion, cargo='Jefe de Seguridad', estatus='Activo')
+            except ObjectDoesNotExist:
+                # Manejar el caso en que ninguno de los cargos exista
+                autoridad = None
+
     #consultas 
     nombre = extranjero.nombreExtranjero
     paterno = extranjero.apellidoPaternoExtranjero
     materno = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad.nombre
     ingreso = extranjero.fechaRegistro
-    firma = extranjero.firma
+    firma_ex = extranjero.firma
+    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+    oficina = extranjero.deLaEstacion.oficina
+    estacion = extranjero.deLaEstacion.nombre
 
     fechas_enseres = [enseres.fechaEntrega.strftime('%d/%m/%y') for enseres in extranjero.enseresbasicos_set.all()]
 
@@ -566,9 +625,12 @@ def formatoEnseres_pdf(request, nup_id, enseres_id):
         'nacionalidad': nacionalidad,
         'ingreso': ingreso,
         'fechas_enseres': fechas_enseres,
-        'firma': firma,
+        'firma': firmaex_url,
         'enseres_asignados': enseres_asignados_str,
-        'enseres_extras': enseres_extras
+        'enseres_extras': enseres_extras,
+        'oficina': oficina,
+        'estacion': estacion,
+        'autoridad': autoridad
     }
 
     # Obtener la plantilla HTML
@@ -3304,102 +3366,6 @@ def listaLlamadas_pdf_noSirve(request, extranjero_id):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/listaLlamadas.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de Constancia de entrega de enseres basicos de aseo personal
-def constanciaEnseres_pdf(request, nup_id):
-    no_proceso = NoProceso.objects.get(nup=nup_id)
-    extranjero = no_proceso.extranjero
-
-    #consultas 
-    nombre = extranjero.nombreExtranjero
-    paterno = extranjero.apellidoPaternoExtranjero
-    materno = extranjero.apellidoMaternoExtranjero
-    nacionalidad = extranjero.nacionalidad.nombre
-    ingreso = extranjero.fechaRegistro
-    firma = extranjero.firma
-
-    fechas_enseres = [enseres.fechaEntrega.strftime('%d/%m/%y') for enseres in extranjero.enseresbasicos_set.all()]
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-        'nombre': nombre,
-        'paterno': paterno,
-        'materno': materno,
-        'nacionalidad': nacionalidad,
-        'ingreso': ingreso,
-        'fechas_enseres': fechas_enseres,
-        'firma': firma
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/constanciaEnseres.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
-# ----- Genera el documento PDF, de formato de enseres basicos 
-def formatoEnseres_pdf(request, nup_id, enseres_id):
-    no_proceso = NoProceso.objects.get(nup=nup_id)
-    extranjero = no_proceso.extranjero
-    enseres_asignados = EnseresBasicos.objects.filter(noExtranjero=extranjero, nup=no_proceso, id=enseres_id)
-
-    
-    # Convierte los enseres a una cadena legible para mostrar en el PDF
-    enseres_asignados_str = ', '.join(enseres_asignados[0].enseres) if enseres_asignados else ''
-
-    # Obtiene los enseres extras 
-    enseres_extras = enseres_asignados[0].enseresExtras if enseres_asignados else ''
-
-    #consultas 
-    nombre = extranjero.nombreExtranjero
-    paterno = extranjero.apellidoPaternoExtranjero
-    materno = extranjero.apellidoMaternoExtranjero
-    nacionalidad = extranjero.nacionalidad.nombre
-    ingreso = extranjero.fechaRegistro
-    firma = extranjero.firma
-
-    fechas_enseres = [enseres.fechaEntrega.strftime('%d/%m/%y') for enseres in extranjero.enseresbasicos_set.all()]
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-        'nombre': nombre,
-        'paterno': paterno,
-        'materno': materno,
-        'nacionalidad': nacionalidad,
-        'ingreso': ingreso,
-        'fechas_enseres': fechas_enseres,
-        'firma': firma,
-        'enseres_asignados': enseres_asignados_str,
-        'enseres_extras': enseres_extras
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/formatoEnseres.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
