@@ -3,6 +3,9 @@ from django.db import models
 
 # Create your models here.
 
+from vigilancia.models import NoProceso, Extranjero
+from catalogos.models import Estacion
+
 class TipoDieta(models.Model):
     nombre = models.CharField(max_length=200,verbose_name='Nombre de Dieta')
     caracteristicas = models.TextField(verbose_name='Caracteristicas de la Dieta')
@@ -41,7 +44,7 @@ class Comedor(models.Model):
     
     class Meta:
         verbose_name_plural = "Comedores"
-    
+
 
 class BoxLunch(models.Model):
     fechaEvento = models.DateField(verbose_name='Fecha Evento')
@@ -55,4 +58,11 @@ class BoxLunch(models.Model):
     
     class Meta:
         verbose_name_plural = "Box Lunches"
+
+        
+class comidasAsignadas(models.Model):
+    tipoDieta = models.ForeignKey(TipoDieta, on_delete=models.CASCADE, verbose_name='Tipo de dieta')
+    nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name='Numero de proceso')
+    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Extranjero')
+    estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='estación')
     

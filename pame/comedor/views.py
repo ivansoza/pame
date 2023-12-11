@@ -11,3 +11,8 @@ def homeCocinaResponsable (request):
     return render(request, "home/homeCocinaResponsable.html")
 
 
+def comedor (request):
+    return render(request, "home/comedor.html")
+
+
+
