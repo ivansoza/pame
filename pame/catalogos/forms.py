@@ -69,6 +69,14 @@ class AutoridadesForms(forms.ModelForm):
     class Meta:
         model = Autoridades
         fields = '__all__'
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ejemplo: Luis '}),
+            'apellidoPaterno': forms.TextInput(attrs={'placeholder': 'Ejemplo:  Huerta '}),
+            'apellidoMaterno': forms.TextInput(attrs={'placeholder': 'Ejemplo: Garcia '}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Ejemplo: 5518954598'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Ejemplo:ejemplo@.com.mx'}),
+        }
+        
 
 class AutoridadesActuantesForms(forms.ModelForm):
     class Meta:
@@ -79,6 +87,13 @@ class TraductoresForms(forms.ModelForm):
     class Meta:
         model = Traductores
         fields ='__all__'
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ejemplo: Adrian '}),
+            'apellido_paterno': forms.TextInput(attrs={'placeholder': 'Ejemplo:  Huerta '}),
+            'apellido_materno': forms.TextInput(attrs={'placeholder': 'Ejemplo: Garcia '}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Ejemplo: 5518954598'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Ejemplo:ejemplo@outlook.com.mx'}),
+        }
 
 class RepresentanteLegalForm(forms.ModelForm):
     email_validator = RegexValidator(
@@ -96,13 +111,15 @@ class RepresentanteLegalForm(forms.ModelForm):
             'telefono': forms.TextInput(attrs={'placeholder': '+1234567890'}),
             'email': forms.EmailInput(attrs={'placeholder': 'ejemplo@dominio.com'}),
             'cedula': forms.TextInput(attrs={'placeholder': 'Número de Cédula'}),
-            'defensoria': forms.TextInput(attrs={'placeholder': 'Nombre de la Defensoría'}),
+            'defensoria': forms.Select(attrs={'placeholder': 'Nombre de la Defensoría'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(RepresentanteLegalForm, self).__init__(*args, **kwargs)
         self.fields['email'].validators.append(self.email_validator)
-
+    def __init__(self, *args, **kwargs):
+        super(RepresentanteLegalForm, self).__init__(*args, **kwargs)
+        self.fields['defensoria'].choices = [('', 'Seleccione una Defensoría')] + list(self.fields['defensoria'].choices)[1:]
 class RepresentanteLegalStatusForm(forms.ModelForm):
     class Meta:
         model = RepresentantesLegales

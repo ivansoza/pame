@@ -95,8 +95,8 @@
 
                 <td align="center">
                     {% if extranjero.tiene_defensoria_asignada %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href=" {% url "respuestaDefensoria"%} " data-title="Subir Documento">
-                            <i class="fa-solid fa-upload"></i>                   
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'respuestaDefensoria' extranjero.extranjero_defensoria_id extranjero.nup %}" data-title="Subir Documento">
+                            <i class="fa-solid fa-upload"></i>
                         </a>
                         <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Generar Nombramiento">
                             <i class="fa-solid fa-file-alt"></i>                   

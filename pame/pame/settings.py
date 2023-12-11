@@ -148,6 +148,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'huella_base': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'huella',
+        'USER': 'root',
+        'PASSWORD': 'pame2023',
+        'HOST': '3.12.249.162',
+        'PORT': '3306', 
     }
 }
 

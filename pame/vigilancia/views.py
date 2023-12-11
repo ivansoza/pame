@@ -1,3 +1,4 @@
+from audioop import maxpp
 import base64
 from pathlib import Path
 from typing import Any
@@ -8,14 +9,13 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion, NoProceso
+from .models import Extranjero, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, Proceso,descripcion, NoProceso, HuellaTemp
 from .models import Extranjero, Proceso, PuestaDisposicionAC, PuestaDisposicionINM, Biometrico, Acompanante, UserFace
 from pertenencias.models import Inventario
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView,DetailView, TemplateView
 from django.views.generic.edit import UpdateView, DeleteView
-from .forms import extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms,descripcionForms
+from .forms import HuellaTempForm, extranjeroFormsAC, extranjeroFormsInm, puestDisposicionINMForm, puestaDisposicionACForm, BiometricoFormINM, BiometricoFormAC, AcompananteForm, editExtranjeroINMForm, editExtranjeroACForms,descripcionForms
 from .forms import BiometricoFormVP
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -4310,4 +4310,46 @@ class DeleteAcompananteGeneral(LoginRequiredMixin,DeleteView):
         context['navbar'] = 'extranjeros'  # Cambia esto según la página activa
         context['seccion'] = 'acompanante'  # Cambia esto según la página activa
         return context
+
+   
+class afiliacion(LoginRequiredMixin,ListView):
+    model = Extranjero
+    template_name='mediafiliacion.html'
+    context_object_name = 'extranjero'
+    login_url = '/permisoDenegado/'  
+    def get_queryset(self):
+        queryset = HuellaTemp.objects.using('huella_base').all()
+        return queryset
     
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+    # Obtén el ID del extranjero del argumento en el URL
+        extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
+    # Obtén la instancia del extranjero correspondiente al ID
+        huellas = HuellaTemp.objects.using('huella_base').filter(dni=extranjero_id)
+        extranjero = Extranjero.objects.get(id=extranjero_id)
+        nombre = extranjero.nombreExtranjero
+        apellido = extranjero.apellidoPaternoExtranjero
+        nacionalidad = extranjero.nacionalidad
+        apellidom = extranjero.apellidoMaternoExtranjero
+        estacion = extranjero.deLaEstacion
+        fechanacimiento = extranjero.fechaNacimiento
+        numeroextranjero = extranjero.numeroExtranjero
+        context['extranjero']=extranjero
+        context['numeroextranjero']=numeroextranjero
+        context['fechanacimiento']=fechanacimiento
+        context['estacion']=estacion
+        context['apellidom']=apellidom
+        context['nacionalidad']=nacionalidad
+        context['apellido']=apellido 
+        context['nombre']= nombre
+        context['navbar'] = 'notificaciones'
+        context['seccion'] = 'defensoria'
+        context['nombre_estacion'] = self.request.user.estancia.nombre
+        
+    
+        context['huella'] = huellas
+        return context
+
+
