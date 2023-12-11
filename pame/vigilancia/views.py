@@ -4348,7 +4348,8 @@ class afiliacion(LoginRequiredMixin,ListView):
         context['seccion'] = 'defensoria'
         context['nombre_estacion'] = self.request.user.estancia.nombre
         
-    
+        descrip = descripcion.objects.get(delExtranjero=extranjero_id)
+        context['des']= descrip
         context['huella'] = huellas
         return context
 
