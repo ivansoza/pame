@@ -233,12 +233,6 @@ class estadisticasPuestaINM(LoginRequiredMixin,ListView):
         context['navbar'] = 'seguridad'  # Cambia esto según la página activa
         context['seccion'] = 'seguridadINM'  # Cambia esto según la página activa
         return context
-    
-    
-
-
-
-
 class createPuestaINM(LoginRequiredMixin,HandleFileMixin,CreatePermissionRequiredMixin,CreateView):
     permission_required = {
         'perm1': 'vigilancia.add_puestadisposicioninm',
@@ -3758,6 +3752,15 @@ class listarExtranjerosEstacion(LoginRequiredMixin,ListView):
                         tiene_inventario = True
 
                 extranjero.tiene_inventario = tiene_inventario
+        ids_extranjeros = [extranjero.id for extranjero in context['extranjeros']]
+
+        # Verificar si hay un registro en Descripcion para cada extranjero
+        descripciones_existen = descripcion.objects.filter(delExtranjero_id__in=ids_extranjeros).values_list('delExtranjero_id', flat=True)
+
+        for extranjero in context['extranjeros']:
+            # Verificar si existe una Descripcion para el extranjero actual
+            extranjero.tiene_descripcion = extranjero.id in descripciones_existen
+
         return context
      
     
