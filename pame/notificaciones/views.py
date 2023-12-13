@@ -95,8 +95,7 @@ class notificar(LoginRequiredMixin,ListView):
 
     
 # LISTA DE EXTRANJEROS PARA DEFENSORIA
-class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
-
+class listExtranjerosDefensoria(LoginRequiredMixin, ListView):
     model = NoProceso
     template_name = 'defensoria/defensoria.html'
     context_object_name = "extranjeros"
@@ -137,20 +136,13 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
             documento_subido=Exists(documento_existente)
         )
 
-        documento_id = DocumentoRespuestaDefensoria.objects.filter(
-            extranjero_defensoria__nup=OuterRef('nup')
-        ).order_by('-fecha_creacion').values('id')[:1]
-
-        queryset = queryset.annotate(
-            documento_id=Subquery(documento_id)
-        )
         fecha_subida_documento = DocumentoRespuestaDefensoria.objects.filter(
-                extranjero_defensoria__nup=OuterRef('nup')
-            ).order_by('-fecha_creacion').values('fecha_creacion')[:1]
+            extranjero_defensoria__nup=OuterRef('nup')
+        ).order_by('-fecha_creacion').values('fecha_creacion')[:1]
 
         queryset = queryset.annotate(
-                fecha_subida_documento=Subquery(fecha_subida_documento)
-            )
+            fecha_subida_documento=Subquery(fecha_subida_documento)
+        )
 
         # Añade una anotación para obtener el ID de ExtranjeroDefensoria
         queryset = queryset.annotate(
@@ -159,6 +151,17 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
             )
         )
 
+        # Anotación para obtener la URL del documento del repositorio
+        tipo_respuesta_defensoria = TiposDoc.objects.filter(descripcion="Respuesta de Defensoria").first()
+        if tipo_respuesta_defensoria:
+            ultimo_documento_id = Repositorio.objects.filter(
+                nup=OuterRef('pk'),
+                delTipo=tipo_respuesta_defensoria
+            ).order_by('-fechaGeneracion').values('id')[:1]
+
+            queryset = queryset.annotate(
+                ultimo_documento_id=Subquery(ultimo_documento_id)
+            )
         if estado_defensoria == 'por_notificar':
             queryset = queryset.filter(tiene_defensoria_asignada=False)
         elif estado_defensoria == 'ya_notificado':
@@ -175,7 +178,14 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
         return queryset
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        for extranjero in context['extranjeros']:
+            documento_id = getattr(extranjero, 'ultimo_documento_id', None)
+            if documento_id:
+                try:
+                    documento = Repositorio.objects.get(id=documento_id)
+                    extranjero.url_documento = documento.archivo.url
+                except Repositorio.DoesNotExist:
+                    extranjero.url_documento = None
 
         context['navbar'] = 'Notificaciones'  # Cambia esto según la página activa
 
