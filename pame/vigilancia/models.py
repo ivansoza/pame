@@ -2,7 +2,6 @@ from django.db import models
 from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion, AutoridadesActuantes,RepresentantesLegales
 from PIL import Image, ExifTags
 
-
 class Nacionalidad(models.Model):
     identificador = models.CharField(max_length=5, verbose_name='ID')
     Abreviatura = models.CharField(max_length=200,verbose_name='País')
@@ -317,6 +316,7 @@ class NoProceso(models.Model):
     @property
     def only_year(self):
         return self.agno.strftime('%Y')
+
 
 class Proceso(models.Model):
     estacionInicio = models.CharField(max_length=60)
