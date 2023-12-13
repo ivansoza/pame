@@ -36,6 +36,7 @@ class DocumentosAlegatos(models.Model):
     fechaHora = models.DateTimeField(auto_now_add=True)
     descripcion = models.TextField(verbose_name='Descripción del documento')
     documento = models.FileField(upload_to='files/', verbose_name='Documento', null=True, blank=True)
+    eleccion = models.BooleanField()
     def __str__(self):
         return f'{self.descripcion} {self.documento}'
     class Meta:

@@ -69,6 +69,14 @@ class AutoridadesForms(forms.ModelForm):
     class Meta:
         model = Autoridades
         fields = '__all__'
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ejemplo: Luis '}),
+            'apellidoPaterno': forms.TextInput(attrs={'placeholder': 'Ejemplo:  Huerta '}),
+            'apellidoMaterno': forms.TextInput(attrs={'placeholder': 'Ejemplo: Garcia '}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Ejemplo: 5518954598'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Ejemplo:ejemplo@.com.mx'}),
+        }
+        
 
 class AutoridadesActuantesForms(forms.ModelForm):
     class Meta:
@@ -79,6 +87,13 @@ class TraductoresForms(forms.ModelForm):
     class Meta:
         model = Traductores
         fields ='__all__'
+        widgets = {
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ejemplo: Adrian '}),
+            'apellido_paterno': forms.TextInput(attrs={'placeholder': 'Ejemplo:  Huerta '}),
+            'apellido_materno': forms.TextInput(attrs={'placeholder': 'Ejemplo: Garcia '}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Ejemplo: 5518954598'}),
+            'email': forms.TextInput(attrs={'placeholder': 'Ejemplo:ejemplo@outlook.com.mx'}),
+        }
 
 class RepresentanteLegalForm(forms.ModelForm):
     email_validator = RegexValidator(

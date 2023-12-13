@@ -1,6 +1,6 @@
 from django import forms
 from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, descripcion
-from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace,AsignacionRepresentante
+from .models import Extranjero, Acompanante, Nacionalidad, PuestaDisposicionAC, PuestaDisposicionINM, Estacion, Biometrico, PuestaDisposicionVP, UserFace,AsignacionRepresentante,HuellaTemp
 import datetime
 from django.core.exceptions import ValidationError
 from traslados.models import Traslado
@@ -608,3 +608,7 @@ class AsignacionRepresentanteForm(forms.ModelForm):
     class Meta:
         model = AsignacionRepresentante
         fields = ['representante_legal']
+        
+class HuellaTempForm(forms.ModelForm):
+    model = HuellaTemp
+    fields='__all__'    

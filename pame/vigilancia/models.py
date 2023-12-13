@@ -1,6 +1,8 @@
 from django.db import models
 from catalogos.models import Estacion, Responsable, Salida, Estancia, Relacion, AutoridadesActuantes,RepresentantesLegales
 from PIL import Image, ExifTags
+import base64
+
 
 class Nacionalidad(models.Model):
     identificador = models.CharField(max_length=5, verbose_name='ID')
@@ -385,3 +387,23 @@ class AsignacionRepresentante(models.Model):
     class Meta:
         verbose_name = 'Asignación de Representante Legal'
         verbose_name_plural = 'Asignaciones de Representantes Legales'
+        
+class HuellaTemp(models.Model):
+    id = models.AutoField(primary_key=True)
+    dni = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50)
+    template = models.BinaryField()  # Puedes ajustar el tipo de campo según el tipo de datos en tu base de datos
+    imagen = models.BinaryField()  # Puedes ajustar el tipo de campo según el tipo de datos en tu base de datos
+    base64e = models.TextField()
+    base64template = models.CharField(max_length=3000)
+    fecha = models.DateTimeField()
+    ndedo = models.IntegerField()
+    
+    def get_imagen_base64(self):
+        if self.imagen:
+            return base64.b64encode(self.imagen).decode('utf-8')
+        return ''
+
+    class Meta:
+        db_table = 'huellatemp'
+        managed = False  # Evitar que Django cree la tabla automáticamente

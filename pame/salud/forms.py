@@ -36,6 +36,9 @@ class perfilMedicoforms(forms.ModelForm):
     class Meta:
         model = PerfilMedico
         fields = '__all__'
+        widgets = {
+            'cedula': forms.TextInput(attrs={'placeholder': 'Ejemplo:15954897659'}),
+        }
 
 class certificadoMedicoEgresoForms(forms.ModelForm):
     class Meta:

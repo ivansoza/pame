@@ -42,19 +42,19 @@
   <tbody>
       {% for extranjero in extranjeros %}
       <tr>
-          <td>{{ extranjero.nombreExtranjero }}</td>
+          <td>{{ extranjero.extranjero.nombreExtranjero }}</td>
           <td>
-              {% if extranjero.apellidoPaternoExtranjero %}
-                  {{ extranjero.apellidoPaternoExtranjero }}
+              {% if extranjero.extranjero.apellidoPaternoExtranjero %}
+                  {{ extranjero.extranjero.apellidoPaternoExtranjero }}
               {% endif %}
-              {% if extranjero.apellidoMaternoExtranjero %}
-                  {{ extranjero.apellidoMaternoExtranjero }}
+              {% if extranjero.extranjero.apellidoMaternoExtranjero %}
+                  {{ extranjero.extranjero.apellidoMaternoExtranjero }}
               {% endif %}</td>
-          <td>{{ extranjero.nacionalidad }}</td>
+          <td>{{ extranjero.extranjero.nacionalidad }}</td>
           
           <td>
             <a class="btn btn-sm btn-icon3 tooltip-link"
-             href="#"
+             href="{% url "listaDocumentos" extranjero.nup%}"
              data-title="Crear constancia de no firma">
              <i class="fa-solid fa-folder-open"></i>         
            </a>

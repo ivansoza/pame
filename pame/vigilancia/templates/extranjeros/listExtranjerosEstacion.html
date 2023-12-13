@@ -194,6 +194,11 @@
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>
+                    <a class="btn btn-sm btn-icon3 tooltip-link"
+                    href="{% url "afiliacion" extranjero.id %}"
+                    data-title="Media de Afiliación">
+                    <i class="fa-solid fa-id-card"></i>
+                    </a>
                 {% comment %} <!-- BOTON DE RESUMEN GENERAL -->
                 <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Resumen General">
                     <i class="fas fa-chart-bar"></i>

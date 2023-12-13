@@ -9,6 +9,19 @@ class DefensorForm(forms.ModelForm):
     class Meta:
         model = Defensorias
         fields = '__all__'
+        widgets = {
+            'nombreTitular': forms.TextInput(attrs={'placeholder': 'Ejemplo: Adrian '}),
+            'apellidoPaternoTitular': forms.TextInput(attrs={'placeholder': 'Ejemplo:  Huerta '}),
+            'apellidoMaternoTitular': forms.TextInput(attrs={'placeholder': 'Ejemplo: Garcia '}),
+            'email1': forms.TextInput(attrs={'placeholder': 'Ejemplo: ejemplo@outlook.com.mx'}),
+            'email2': forms.TextInput(attrs={'placeholder': 'Ejemplo: ejemplo@outlook.com.mx'}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Ejemplo: 5518954598'}),
+            'telefono2': forms.TextInput(attrs={'placeholder': 'Ejemplo: 5518954598'}),
+            'calle': forms.TextInput(attrs={'placeholder': 'Ejemplo: av xicohtencatl 102b'}),
+            'colonia': forms.TextInput(attrs={'placeholder': 'Ejemplo: centro'}),
+            'municipio': forms.TextInput(attrs={'placeholder': 'Ejemplo: San jose'}),
+            'cp': forms.TextInput(attrs={'placeholder': 'Ejemplo:90300'}),
+        }
         
         
 

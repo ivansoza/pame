@@ -5,7 +5,7 @@ from .views import inicioACList, createPuestaAC, createExtranjeroAC, listarExtra
 from .views import homeSeguridadGeneral, addAutoridadCompetente, addHospedaje,addTraslado,homeSeguridadResponsable,homePuestaINM, homePuestaVP, createAcompananteAC, AgregarAcompananteViewVP,DeleteAcompananteVP,DeleteAcompananteVP1, EditarExtranjeroVPProceso
 from .views import CalcularTamanoDiscoView, listarTraslado, AgregarRelacionGeneral, DeleteAcompananteGeneral
 from .views import inicioVPList, createPuestaVP, listarExtranjerosVP, createExtranjeroVP, AgregarBiometricoVP, listarAcompanantesVP, EditarExtranjeroVP, DeleteExtranjeroVP,EditarBiometricoVP,createAcompananteVP, manejar_imagen, manejar_imagen2, manejar_imagen3, manejar_imagen4
-from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado, listarAcompanantesEstacion, acompananteListGeneral
+from .views import estadisticasPuestaINM, solicitar_traslado, TrasladoCreateView, procesar_traslado, listarAcompanantesEstacion, acompananteListGeneral,afiliacion
 from .views import listarExtranjerosEstacion,sesionfinal,firma, ejemplo, qrs, verificar_firma, FirmaCreateView, firmE, firmExistente, AgregarBiometricoGeneral, EditarBiometricoGeneral, EditarExtranjeroGeneral, DeleteExtranjeroGeneral
 
 from .views import compare_faces, UserFaceCreateView, search_face, guardar_firma
@@ -115,6 +115,7 @@ urlpatterns = [
     path('listAcompanantesss/<int:extranjero_id>/', acompananteListGeneral.as_view(),name='listAcompanantesss'),
     path('agregar_acompanantegeneral/<int:extranjero_principal_id>/<int:extranjero_id>/', AgregarRelacionGeneral.as_view(), name='agregar_acompanantegeneral'),
     path('DeleteAcompanantegenerales/<int:pk>/', DeleteAcompananteGeneral.as_view(), name='DeleteAcompanantegenerales'),
+    path('afiliacion/<int:pk>/', afiliacion.as_view(), name='afiliacion'),
 
 ]
 

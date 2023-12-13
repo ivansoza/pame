@@ -24,6 +24,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import Q, F
 from django.db.models import OuterRef, Subquery,Exists
+from django.views.decorators.http import require_POST
 
 class listaExtranjertoAlegatos(LoginRequiredMixin, ListView):
     model = Extranjero
@@ -77,7 +78,6 @@ class listaExtranjertoAlegatos(LoginRequiredMixin, ListView):
                     context['dd'] = dd
 
             extranjero.tiene_presenta = tiene_presenta
-            extranjero.dd = dd
         context['navbar'] = 'alegatos'  # Cambia esto según la página activa
         context['seccion'] = 'extranjerosa'  # Cambia esto según la página activa
         context['nombre_estacion'] = self.request.user.estancia.nombre
@@ -984,31 +984,45 @@ class PresentaPruebas(CreateView):
 
 class listaExtranjerosDesahogo(ListView):
     template_name = 'desahogo/listaDeExtranjeros.html'
-    model = Extranjero
+    model = NoProceso
     context_object_name = 'extranjeros'
     login_url = '/permisoDenegado/'
 
     def get_queryset(self):
-        # Obtener el NUP actual del extranjero
-        subquery_nup_actual = NoProceso.objects.filter(
-            extranjero=OuterRef('pk')
-        ).order_by('-consecutivo').values('nup')[:1]
+        estacion_usuario = self.request.user.estancia
+        estado = self.request.GET.get('estado_filtrado', 'activo')
 
-        # Obtener los NUP registrados en presentapruebas para cada extranjero
-        subquery_nups_registrados = presentapruebas.objects.filter(
-            extranjero=OuterRef('pk')
-        ).values('nup__nup')
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+        if estado == 'activo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
+        elif estado == 'inactivo':
+            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
 
-        # Filtra los extranjeros activos
-        extranjeros_activos = Extranjero.objects.filter(estatus='Activo')
+        ultimo_no_proceso = NoProceso.objects.filter(
+            extranjero_id=OuterRef('pk')
+        ).order_by('-consecutivo')
 
-        # Filtra los extranjeros cuyo NUP actual coincide con al menos un NUP registrado en presentapruebas
-        extranjeros_filtrados = extranjeros_activos.filter(
-        noproceso__nup__in=subquery_nup_actual,
-        presentapruebas__nup__in=subquery_nups_registrados
-        ).distinct()
+        extranjeros_filtrados = extranjeros_filtrados.annotate(
+            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+        )
 
-        return extranjeros_filtrados
+        defensoria_asignada = presentapruebas.objects.filter(
+            nup=OuterRef('pk'), presenta = True
+        )
+
+        estado_defensoria = self.request.GET.get('estado_defensoria', None)
+
+        queryset = NoProceso.objects.filter(
+            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
+        ).annotate(
+            tiene_defensoria_asignada=Exists(defensoria_asignada)
+        )
+
+        
+        queryset = queryset.filter(tiene_defensoria_asignada=True)
+   
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1016,3 +1030,32 @@ class listaExtranjerosDesahogo(ListView):
         context['seccion'] = 'desahogo'  # Cambia esto según la página activa
         return context
          
+class desahogoList(ListView):
+    template_name = 'desahogo/selecDocumentos.html'
+    model = DocumentosAlegatos
+    context_object_name = 'documentos'
+
+    def get_queryset(self):
+        nup_id = self.kwargs.get('nup')
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        queryset = DocumentosAlegatos.objects.filter(nup=no_proceso)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        nup_id = self.kwargs.get('nup')
+        context['nup'] = nup_id
+        return context
+@csrf_exempt
+def actualizar_eleccion(request, documento_id, is_checked):
+    # Obtener el objeto DocumentosAlegatos
+    documento = get_object_or_404(DocumentosAlegatos, id=documento_id)
+
+    # Convertir el string 'True' o 'False' en un booleano
+    is_checked = is_checked.lower() == 'true'
+
+    # Actualizar el campo eleccion
+    documento.eleccion = is_checked
+    documento.save()
+
+    return JsonResponse({'status': 'success'})
