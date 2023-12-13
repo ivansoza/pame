@@ -24,7 +24,7 @@ from .views import (
     resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, 
     resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf, 
     guardar_notificacion_consular, guardar_notificacion_comar, guardar_notificacion_fiscalia,
-    certificadoMedicoEgreso_pdf, filiacion_pdf
+    certificadoMedicoEgreso_pdf, filiacion_pdf, desahogo_pdf
 )
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
@@ -69,6 +69,7 @@ urlpatterns = [
     path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
     path('filiacion', filiacion_pdf, name='filiacionPDF'),
+    path('desahogo', desahogo_pdf, name='desahogoPDF'),
     
     
 

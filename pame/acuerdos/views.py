@@ -680,7 +680,7 @@ def presentacion_pdf(request):
     
     return response
 
-# ----- Genera el documento PDF, de Presentacion   
+# ----- Genera el documento PDF, de Filiacion (Huellas)
 def filiacion_pdf(request):
     # no_proceso = NoProceso.objects.get(nup=nup_id)
     # extranjero = no_proceso.extranjero
@@ -694,6 +694,34 @@ def filiacion_pdf(request):
 
     # Obtener la plantilla HTML
     template = get_template('documentos/filiacion.html')
+    html_content = template.render(context)
+
+    # Crear un objeto HTML a partir de la plantilla HTML
+    html = HTML(string=html_content)
+
+    # Generar el PDF
+    pdf_bytes = html.write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    
+    return response
+
+# ----- Genera el documento PDF, de Desahogo de pruebas y alegatos
+def desahogo_pdf(request):
+    # no_proceso = NoProceso.objects.get(nup=nup_id)
+    # extranjero = no_proceso.extranjero
+    
+    #consultas 
+    
+    # Definir el contexto de datos para tu plantilla
+    context = {
+        'contexto': 'variables',
+    }
+
+    # Obtener la plantilla HTML
+    template = get_template('documentos/desahogo.html')
     html_content = template.render(context)
 
     # Crear un objeto HTML a partir de la plantilla HTML
