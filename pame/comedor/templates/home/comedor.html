@@ -1,12 +1,112 @@
 {% extends 'seguridad/baseSeguridadGeneral.html' %}
-{% load crispy_forms_tags %}
 {% load static %}
-
 {% block link %}
-    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}?v1.2ggg">
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
 {% endblock link %}
+{% block titulo %}Lista de Extranjeros a comedor {% endblock titulo %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'menu' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
 
 {% block contenido %}
-<h1> estas en comedor</h1>
+<style>
+.horas-bajo {
+    background-color: #20302B; /* Reemplaza #verde con el código de color real para 0 a 18 horas */
+}
+
+.horas-medio {
+    background-color: #A3835F; /* Reemplaza #amarillo con el código de color real para 18 a 24 horas */
+}
+
+.horas-alto {
+    background-color: #873542; /* Reemplaza #rojo con el código de color real para más de 24 horas */
+}
+</style>
+<div class="titulo-general-container mt-2">
+    <h1 class="titulo-general">
+        Lista de Extranjeros y sus tipos de dieta
+    </h1>
+</div>
+
+
+<div class="d-flex justify-content-center mb-3 mt-3">
+    <div class="btn-group" role="group">
+        <a href="?estado_filtrado=activo&tipo_dieta=general" class="btn {% if request.GET.tipo_dieta == 'general' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+            Dieta General
+        </a>
+        <a href="?estado_filtrado=activo&tipo_dieta=religiosa" class="btn {% if request.GET.tipo_dieta == 'religiosa' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+            Dieta Religiosa
+        </a>
+        <a href="?estado_filtrado=activo&tipo_dieta=vegetariana" class="btn {% if request.GET.tipo_dieta == 'vegetariana' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+            Dieta Vegetariana
+        </a>
+        <a href="?estado_filtrado=activo&tipo_dieta=clinica" class="btn {% if request.GET.tipo_dieta == 'clinica' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
+            Dieta Clínica
+        </a>
+    </div>
+</div>
+
+<style>
+.horas-bajo {
+    background-color: #verde; /* Reemplaza #verde con el código de color real para 0 a 18 horas */
+}
+
+.horas-medio {
+    background-color: #amarillo; /* Reemplaza #amarillo con el código de color real para 18 a 24 horas */
+}
+
+.horas-alto {
+    background-color: #rojo; /* Reemplaza #rojo con el código de color real para más de 24 horas */
+}
+</style>
+<div class="table-responsive">
+    <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width: 100%;">
+        <thead>
+                <tr>
+                    <th>Nup</th>
+                    <th>Nombre(s)</th>
+                    <th>Apellido(s)</th>
+                    <th>Nacionalidad</th>
+                    <th>Tipo de dieta</th>
+                    <th style="width: 5%;">Opciones</th>
+                </tr>
+        </thead>
+        <tbody>
+            {% for extranjero in extranjeros %}
+                <tr>
+                <td>{{extranjero.nup}}</td>
+                <td>{{ extranjero.extranjero.nombreExtranjero }}</td>
+                <td>
+                    {% if extranjero.extranjero.apellidoPaternoExtranjero %}
+                        {{ extranjero.extranjero.apellidoPaternoExtranjero }}
+                    {% endif %}
+                    {% if extranjero.extranjero.apellidoPaternoExtranjero and extranjero.extranjero.apellidoMaternoExtranjero %}
+                        {{ extranjero.extranjero.apellidoMaternoExtranjero }}
+                    {% endif %}
+                </td>     
+                <td>{{ extranjero.extranjero.nacionalidad }}
+                </td>
+                <td>{{ extranjero.certificado_medico.tipoDieta}}</td>
+          
+
+
+                <td align="center">
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="verificar extranjero">
+                            <i class="fa-solid fa-camera"></i>                   
+                        </a>
+                </td>                         
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
 
 {% endblock contenido %}
