@@ -6,7 +6,7 @@ urlpatterns = [
     path('cocina-general/', homeCocinaGeneral, name="homeCocinaGeneral"),
     #path('cocina-general/', MiVista.as_view(), name="homeCocinaGeneral"),
     path('cocina-responsable/', homeCocinaResponsable, name="homeCocinaResponsable"),
-    path('comedor/', comedor, name="comedor"),
+    path('comedor/', comedor.as_view(), name="comedor"),
 
 
 
