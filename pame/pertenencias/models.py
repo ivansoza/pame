@@ -26,9 +26,23 @@ COLORES_CHOICES = [
         ('Negro', 'Negro'),
         ('Gris', 'Gris'),
     ]
+EQUIPAJE_CHOICES = [
+    ('Maleta', 'Maleta'),
+    ('Mochila', 'Mochila'),
+    ('Bolsa de Mano', 'Bolsa de Mano'),
+    ('Bolsa de plástico', 'Bolsa de plástico'),
+    ('Otros', 'Otros'),
+]
+ELECTRONICOS_CHOICES = [
+    ('Teléfono celular', 'Teléfono celular'),
+    ('Reproductor música', 'Reproductor música'),
+    ('Computadora', 'Computadora'),
+    ('Cámara fotográfica', 'Cámara fotográfica'),
+    ('Otros', 'Otros'),
+]
 class Pertenencias(models.Model):
-    equipaje = models.CharField(max_length=100, verbose_name='Equipaje')
-    cantidad = models.FloatField(verbose_name='Cantidad')
+    equipaje = models.CharField(max_length=100, verbose_name='Equipaje', choices=EQUIPAJE_CHOICES)
+    cantidad = models.IntegerField(verbose_name='Cantidad')
     color = models.CharField(max_length=50, verbose_name='Color', choices=COLORES_CHOICES)
     observaciones = models.CharField(max_length=100, verbose_name='Obervaciones')
     delInventario =models.ForeignKey(Inventario, on_delete=models.CASCADE, verbose_name='Numero de Inventario')
@@ -40,7 +54,7 @@ class Pertenencias(models.Model):
         
 # aqui empiezan los modales ------->>>>>>>>>>
 class Pertenencia_aparatos(models.Model):# pentenencias electronicas ----------------->>>>>>
-    electronicos = models.CharField(max_length=100, verbose_name='Electronicos')
+    electronicos = models.CharField(max_length=100, verbose_name='Electronicos', choices=ELECTRONICOS_CHOICES)
     cantidad = models.FloatField(verbose_name='Cantidad')
     marca = models.CharField(max_length=100, verbose_name='Marca')
     serie = models.CharField(max_length=100, verbose_name='Serie')

@@ -1,11 +1,12 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[OFICINA O ESTACION]
+<br>{{oficina|upper}}
+<br>{{estacion|upper}}
 {% endblock %}
 
 {% block title %}
-<title>Constancia de estrega de enseres básicos de aseo personal.</title>
+<title>Constancia de entrega de enseres básicos de aseo personal.</title>
 {% endblock %}
 
 {% block content %}
@@ -43,7 +44,7 @@
                     <td style="width: 40%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">{{ i }}</td>
                     <td style="width: 55%; text-align: center; padding: 10px; border: 1px solid rgb(0, 0, 0);">
                         {% if i %}
-                            <img src="http://127.0.0.1:8000{{ firma.firma_imagen.url }}" alt="Firma" style="display: block; margin: 0 auto; max-width: 50%; max-height: 50%;">
+                            <img src="{{ firma }}" alt="Firma" style="display: block; margin: 0 auto; max-width: 50%; max-height: 50%;">
                         {% endif %}
                     </td>
                 </tr>
@@ -53,14 +54,19 @@
 </table>
 <div class="columnas">
     <div class="columna">
-        <p class="firma">[Nombre del usuario] [paterno] [materno],
-            <br> Que proporciono el bien servicio
-        </p>
+        {% if autoridad2 %}
+            <p class="firma">{{ autoridad2 }} {{ autoridad2.cargo }}
+                <br> Que proporcionó el bien servicio
+            </p>
+        {% endif %}
     </div>
     <div class="columna">
-        <p class="firma">[Nombre del usuario] [Paterno] [Materno],
-            <br> Que superviso el bien servicio 
+        {% if autoridad %}
+        <p class="firma">{{ autoridad }} {{ autoridad.cargo }}
+            <br> Que supervisó el bien servicio 
         </p>
+        {% endif %}
     </div>
 </div>
+
 {% endblock %}

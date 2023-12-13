@@ -1,7 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[Oficina o estacion]
+<br>{{oficina|upper}}
+<br>{{estacion|upper}}
 {% endblock %}
 
 {% block title %}
@@ -116,19 +117,19 @@
 </table>
 
 <p>
-    Nota: con el presente documento acepto haber recibiso los enseres
+    Nota: Con el presente documento acepto haber recibiso los enseres
     b&aacute;sicos. 
 </p>
 
 <div class="columnas">
     <div class="columna">
-        <p class="firma">[Postgrado][Nombre del usuario] [paterno] [materno], [Cargo]
-            <br> autoridad migratoria que recibe
+        <p class="firma">{{autoridad|title}},&nbsp;{{autoridad.cargo}}
+            <br> Autoridad migratoria que recibe
         </p>
     </div>
     <div class="columna">
-        <p class="firma">{{nombre}}&nbsp;{{paterno}}{% if materno %}&nbsp;{{ materno }}{% endif %}
-        </p>
+        <p class="firma">{{nombre}}&nbsp;{{paterno}}{% if materno %}&nbsp;{{ materno }}{% endif %}</p>
+        <img src="{{firma}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 15cm; transform: translate(-65%, -115%); object-fit: cover;">
     </div>
 </div>
 {% endblock %}
