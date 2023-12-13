@@ -3363,32 +3363,6 @@ def acuerdoInicio_pdf(request, nup_id):
     
     return response
 
-# ----- Genera el documento PDF, de Acuerdo de nombramiento de representante legal
-def nombramientoRepresentante_pdf(request):
-    # extranjero = Extranjero.objects.get(id=extranjero_id)
-
-    #consultas 
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/nombramientoRepresentante.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
 def listaLlamadas_pdf_noSirve(request, extranjero_id):
@@ -4202,3 +4176,27 @@ def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
         return JsonResponse({'status': 'error', 'message': f'Ocurrió un error: {str(e)}'}, status=500)
     
 #------ FIN DE NOTIFICACION FISCALIA
+
+
+# ----- Genera el documento PDF, de Acuerdo de nombramiento de representante legal
+def nombramientoRepresentante_pdf(request):
+
+
+
+
+    nup = request.POST.get('nup', '')
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+
+    context = {
+        'nup': nup,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al context
+
+    }
+    template = get_template('documentos/nombramientoRepresentante.html')
+    html_content = template.render(context)
+    html = HTML(string=html_content)
+    pdf_bytes = html.write_pdf()
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    return response

@@ -43,7 +43,6 @@ urlpatterns = [
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
     path('mostrar-derechos-obligaciones/<int:extranjero_id>', mostrar_derechoObligaciones_pdf, name='mostrarderechosObligaciones'),
     path('inicioPDF/<str:nup_id>/', acuerdoInicio_pdf, name='inicioPDF'),
-    path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
     path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
     path('inventariopv/<str:nup_id>/<str:ex_id>/', inventarioPV_pdf, name='inventarioPDF'),
     path('notificacionRepresentacion/<str:nup_id>/', notificacionRepresentacion_pdf, name='representacionPDF'),
@@ -152,6 +151,9 @@ urlpatterns = [
 
     #FIN notificacion FISCALIA 
 
+
+    # nombramiento representante
+    path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
 
 
 

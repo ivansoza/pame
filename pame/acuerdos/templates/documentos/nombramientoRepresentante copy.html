@@ -1,0 +1,100 @@
+{% extends "documentos/base.html" %}
+
+{% block header %}
+<br>[OFICINA O ESTACION]
+<br>
+<br>[LUGAR Y FECHA COMPLETA]
+<br>[NUMERO DE EXPEDIENTE]
+<br>
+<br>NÚMERO DE ACUERDO: INM/----/----/----/2023
+{% endblock %}
+
+{% block title %}
+<title>
+    Acuerdo de nombramiento de representante legal [nombre]
+</title>
+{% endblock %}
+
+{% block content %}
+<p class="centrado">
+    <strong>ACUERDO DE NOMBRAMIENTO DE REPRESENTANTE LEGAL.</strong>
+</p>
+<P>
+    En la [LUGAR DE EMISIÓN], siendo las [HH:MM] horas del día [DD de MM de AAAA], el Licenciado 
+    [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a la 
+    [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente ante la presencia de dos testigos que al final firman de conformidad.    
+</P>
+<p class="centrado">
+    <strong>HACE CONSTAR</strong> 
+</p>
+<p>
+    Esta unidad administrativa atendiendo al principio del debido proceso de aquellas personas extranjeras alojadas y presentadas ante la autoridad migratoria y de conformidad a lo señalado en la Constitución Política Mexicana y legislación en materia migratoria, así como lo publicado el día 08 de septiembre del 2023, dentro del Semanario Judicial de la Federación, por el cual la Suprema Corte de Justicia de la Nación, 1ª sala dentro de la tesis 1ª./J.113/2023 (11ª.) tipo Jurisprudencia, acordó “PROCEDIMIENTO ADMINISTRATIVO MIGRATORIO.- LAS PERSONAS MIGRANTES TIENEN DERECHO A UNA DEFENSA ADECUADA IRRENUNCIABLE COMO GARANTIA DE DERECHO AL DEBIDO PROCESO”.
+    <br>
+    Dentro de las actuaciones que integran el procedimiento administrativo migratorio instaurado a nombre de la persona extranjera 
+    [NOMBRE Y APELLIDO] de nacionalidad [NACIONALIDAD], con fecha de nacimiento 
+    [FECHA DE NACIMIENTO] se desprende que mediante oficio [NUMERO DE OFICIO SOLICITUD DE DEFENSOR DE OFICIO] o correo electrónico institucional, se solicitó a la Defensoría Pública Federal y Local 
+    [EN CASO QUE SE TENGA REPRESENTACIÓN PARTICULAR AGREGAR DATOS], su presencia en instalaciones migratorias para su formal nombramiento con número de cédula profesional y representación del extranjero en comentó dentro del presente procedimiento de conformidad a lo establecido 
+    a los artículos 14 y 109 fracción V de la Ley de Migración y artículo 222 de su Reglamento.
+</p>
+<p class="centrado">
+    <strong>CONSTE</strong>
+</p>
+<p>
+    Por lo que con fundamento en lo dispuesto en los artículos 1, 14 y 16 de la Constitución Política de los Estados Unidos Mexicanos; 36 fracción I inciso b) de la Convención de Viena sobre Relaciones Consulares de 1963; 1, 7, 12, 13, 14, 16 fracción III, 66, 67, 70, 77, 79, 118, 132, 133 y 134 de la Ley de Migración; 1, 2, 55, 58, 194, 222, 226, 228, 229 y 232 fracción I del Reglamento de la Ley de Migración, a los servidores públicos adscritos a las Delegaciones Federales del Instituto Nacional de Migración, publicado el 13 de noviembre de 2012 en el Diario Oficial de la Federación; 1, 2 y 3 apartado noveno, del Acuerdo por el que se determina la sede y circunscripción territorial de las Delegaciones y Subdelegaciones Federales, Delegaciones y Subdelegaciones Locales del Instituto Nacional de Migración, publicado en el Diario Oficial de la Federación el día 4 de abril de 2013, y 14 fracción V del Acuerdo por el que se emiten las normas para el funcionamiento de las Estaciones migratorias y Estancias provisionales del Instituto Nacional de Migración, publicado en el Diario Oficial de la Federación en día 8 de noviembre de 2012:
+    <br>
+    En este acto la autoridad migratoria ante la presencia de personal de la Defensoría Pública Federal, se me informa sobre mi derecho de ser representado dentro del procedimiento migratorio al que soy sujeto, por lo que es mi voluntad nombrar al 
+    Lic. [NOMBRE REPRESENTANTE LEGAL] como mi abogado defensor con número de cédula profesional 
+    [NÚMERO CÉDULA PROFESIONAL], [EN CASO QUE SE TENGA REPRESENTACIÓN PARTICULAR AGREGAR DATOS], para que me represente dentro del procedimiento migratorio hasta en tanto se resuelva en definitiva mi situación migratoria en el país.
+</p>
+<p class="centrado">
+    <strong>ACUERDA</strong>
+</p>
+<p>
+    <strong>ÚNICO.- </strong>En virtud de las manifestaciones vertidas en el cuerpo de la presente, continúese con el procedimiento administrativo migratorio correspondiente, a efecto de resolver la situación migratoria de la persona extranjera 
+    <strong>
+                {{ extranjero.nombreExtranjero |upper}} {{ extranjero.apellidoPaternoExtranjero |upper}}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero |upper}}
+                {% endif %}
+            </strong> de nacionalidad [NACIONALIDAD], se cierra la presente acta el mismo día que se inicia, siendo las 
+    [HORA].
+</p>
+<p class="centrado">
+    <strong>SE CIERRA Y AUTORIZA LO ACTUADO</strong>
+</p>
+<p>
+    Así lo acordó y firmo el Lic. [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a la 
+    [LUGAR DE ADSCRIPCIÓN DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente asistido de los testigos que al final firman de conformidad.
+</p>
+<div class="columnas">
+    <div class="columna">
+        <p><strong>[PUESTO O CARGO DE AC]</strong></p>
+        <p class="firma">Lic. [nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p><strong>La persona extranjera</strong></p>
+        <p class="firma">[nombre y apellido]</p>
+    </div>
+</div>
+<p class="centrado">
+    <strong>TESTIGOS DE ASISTENCIA</strong>
+</p>
+<div class="columnas">
+    <div class="columna">
+        <p class="firma">Lic. [nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p class="firma">Lic [nombre y apellido]</p>
+    </div>
+</div>
+<div class="columnas">
+    <div class="columna">
+        <p><strong>REPRESENTANTE LEGAL</strong></p>
+        <p class="firma">Lic. [nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p><strong>TRADUCTOR PRÁCTICO HABILITADO</strong></p>
+        <p class="firma">[nombre y apellido]</p>
+    </div>
+</div>
+{% endblock %}

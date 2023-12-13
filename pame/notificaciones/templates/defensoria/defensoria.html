@@ -97,10 +97,10 @@
 
                 
                     {% if extranjero.tiene_defensoria_asignada %}
+
                         {% if extranjero.documento_subido %}
-                        {{ extranjero.url_documento }}
                             <!-- Botón con Sweet Alert para cuando el documento ya ha sido subido -->
-                            <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showSweetAlert('{{ extranjero.fecha_subida_documento }}', '{{ extranjero.nup.url_documento_respuesta_defensoria }}');" data-title="Documento Subido">
+                            <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showSweetAlert('{{ extranjero.fecha_subida_documento|date:"SHORT_DATE_FORMAT" }}', '{{ extranjero.url_documento }}');" data-title="Documento Subido">
                                 <i class="fa-solid fa-upload"></i>
                             </a>
                         {% else %}
