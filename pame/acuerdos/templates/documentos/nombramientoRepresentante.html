@@ -25,9 +25,14 @@
     <strong>ACUERDO DE NOMBRAMIENTO DE REPRESENTANTE LEGAL.</strong>
 </p>
 <P>
-    En la [LUGAR DE EMISIÓN], siendo las [HH:MM] horas del día [DD de MM de AAAA], el Licenciado 
-    [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a la 
-    [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente ante la presencia de dos testigos que al final firman de conformidad.    
+    En <strong>{{extranjero.deLaEstacion.estado|upper}}</strong>, siendo las <strong>{{ hora_actual }}</strong> horas del día <strong>{{ fecha_actual }}</strong>, el Licenciado 
+    {% if autoridad_actuante %}
+        <strong>{{autoridad_actuante}}</strong>, <strong>{{autoridad_actuante.cargo}}</strong>  adscrito a la <strong>{{autoridad_actuante.estacion}}</strong>  
+    {% else %}
+        [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE]  adscrito a la [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE]
+    {% endif %}
+    
+     del Instituto Nacional de Migración, quien actúa legalmente ante la presencia de dos testigos que al final firman de conformidad.    
 </P>
 <p class="centrado">
     <strong>HACE CONSTAR</strong> 
@@ -131,8 +136,17 @@
 </div>
 <div class="columnas">
     <div class="columna">
+
+    {% if representante_legal_info %}
+        <p><strong>REPRESENTANTE LEGAL</strong></p>
+        <p class="firma">Lic. {{representante_legal_info}}</p>
+    
+    {% else %}
         <p><strong>REPRESENTANTE LEGAL</strong></p>
         <p class="firma">Lic. [nombre y apellido]</p>
+
+    {% endif %}
+
     </div>
     <div class="columna">
         <p><strong>TRADUCTOR PRÁCTICO HABILITADO</strong></p>

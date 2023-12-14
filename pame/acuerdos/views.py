@@ -4170,7 +4170,27 @@ def nombramientoRepresentante_pdf(request):
     consulado = None
     ahora = datetime.now()
     fecha_formato_largo = ahora.strftime("%d de %B del %Y")
-    hora_actual = ahora.strftime("%H:%M:%S")
+    fecha_actual = datetime.now().strftime("%d de %B de %Y")
+
+    hora_actual = datetime.now().strftime("%H:%M")
+
+    es_representante_externo = 'necesitaRepresentanteExterno' in request.POST
+
+    representante_legal_info = None
+    cedula_representante_legal = None
+    if es_representante_externo:
+        representante_legal_externo = request.POST.get('representanteLegalExterno', '')
+        grado_representante_externo = request.POST.get('grado_representante_externo', '')
+        cedulaLegalExterno = request.POST.get('cedulaLegalExterno', '')
+        representante_legal_info = f'{grado_representante_externo} {representante_legal_externo}'
+        cedula_representante_legal = cedulaLegalExterno
+    else:
+        representante_legal_interno_id = request.POST.get('representanteLegal', '')
+        if representante_legal_interno_id:
+            representante_legal_interno = RepresentantesLegales.objects.get(id=representante_legal_interno_id)
+            representante_legal_info = f'{representante_legal_interno.nombre} {representante_legal_interno.apellido_paterno} {representante_legal_interno.apellido_materno or ""}'
+            cedula_representante_legal = representante_legal_interno.cedula
+
     context = {
         'nup': nup,
         'extranjero': extranjero,  # Agregando el objeto extranjero al context
@@ -4181,7 +4201,12 @@ def nombramientoRepresentante_pdf(request):
         'testigo2':testigo2,
         'gradoTestigo1':gradotestigo1,
         'gradoTestigo2':gradotestigo2,
-        
+        'fecha_actual': fecha_actual,
+        'autoridad_actuante':autoridad_actuante,
+        'representante_legal_info': representante_legal_info,
+        'cedula_representante_legal': cedula_representante_legal,
+
+
     }
     template = get_template('documentos/nombramientoRepresentante.html')
     html_content = template.render(context)

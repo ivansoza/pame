@@ -103,7 +103,7 @@ class RepresentanteLegalForm(forms.ModelForm):
 
     class Meta:
         model = RepresentantesLegales
-        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'cedula', 'defensoria']
+        fields = ['nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'email', 'cedula', 'defensoria','grado_representante_legal']
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Nombre'}),
             'apellido_paterno': forms.TextInput(attrs={'placeholder': 'Apellido Paterno'}),
@@ -112,6 +112,7 @@ class RepresentanteLegalForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'placeholder': 'ejemplo@dominio.com'}),
             'cedula': forms.TextInput(attrs={'placeholder': 'Número de Cédula'}),
             'defensoria': forms.Select(attrs={'placeholder': 'Nombre de la Defensoría'}),
+            'grado_representante_legal' :forms.Select(attrs={'placeholder': 'Seleccione un Grado Académico'}),
         }
 
     def __init__(self, *args, **kwargs):
