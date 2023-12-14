@@ -1,8 +1,8 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[OFICINA DE REPRESENTACION] 
-<br>[ESTACION MIGRATORIA] 
+<br>{{oficina|upper}}
+<br>{{estacion|upper}} 
 {% endblock %}
 
 {% block title %}
@@ -16,31 +16,33 @@
 <table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(5, 5, 5);">
     <tbody>
         <tr>
-            <td style="width: 19.7078%; border: 1px solid rgb(5, 5, 5);" rowspan="4"></td>
+            <td style="width: 19.7078%; border: 1px solid rgb(5, 5, 5);" rowspan="4">
+                <img src="{{ foto }}" alt="Foto extranjero" style="height: 3cm; width: 2.5cm; position: absolute; z-index: -1; top: 10%; left: 11%; transform: translate(-50%, -50%);">
+            </td>
             <td style="width: 80.2209%; text-align: center; border: 1px solid rgb(5, 5, 5); background-color: rgb(0, 0, 0);" colspan="4">
                 <div style="text-align: center;"><strong><span style="color: rgb(239, 239, 239);">FICHA DE INGRESO DEL EXTRANJERO (A)</span></strong></div>
                 <strong><span style="color: rgb(239, 239, 239);">Datos Generales</span></strong>
             </td>
         </tr>
         <tr>
-            <td style="width: 80.2209%; border: 1px solid rgb(5, 5, 5);" colspan="4"><strong>Nombre:</strong></td>
+            <td style="width: 80.2209%; border: 1px solid rgb(5, 5, 5);" colspan="4"><strong>Nombre:</strong>&nbsp;{{ex.nombreExtranjero}}&nbsp;{{ex.apellidoPaternoExtranjero}}&nbsp;{{ex.apellidoMaternoExtranjero}}</td>
         </tr>
         <tr>
-            <td style="width: 23.4162%; border: 1px solid rgb(5, 5, 5);"><strong>Nacionalidad:</strong></td>
-            <td style="width: 17.8008%; border: 1px solid rgb(5, 5, 5);"><strong>G&eacute;nero:</strong></td>
-            <td style="width: 20%; border: 1px solid rgb(5, 5, 5);"><strong>Fecha de entrada:</strong></td>
-            <td style="width: 20%; border: 1px solid rgb(5, 5, 5);"><strong>No. de extranjero:</strong></td>
+            <td style="width: 23.4162%; border: 1px solid rgb(5, 5, 5);"><strong>Nacionalidad:</strong>&nbsp;<br>{{ex.nacionalidad.nombre}}</td>
+            <td style="width: 17.8008%; border: 1px solid rgb(5, 5, 5);"><strong>G&eacute;nero:</strong>&nbsp;<br>{{ex.get_genero_display|title}}</td>
+            <td style="width: 20%; border: 1px solid rgb(5, 5, 5);"><strong>Fecha de entrada:</strong>&nbsp;<br>{{ex.horaRegistro|date:"d/m/Y"}}</td>
+            <td style="width: 20%; border: 1px solid rgb(5, 5, 5);"><strong>No. de extranjero:</strong>&nbsp;<br>{{ex.numeroExtranjero}}</td>
         </tr>
         <tr>
-            <td style="width: 23.4162%; border: 1px solid rgb(5, 5, 5);"><strong>Fecha de nacimiento:</strong></td>
-            <td style="width: 17.8008%; border: 1px solid rgb(5, 5, 5);"><strong>Edad:</strong></td>
+            <td style="width: 23.4162%; border: 1px solid rgb(5, 5, 5);"><strong>Fecha de nacimiento:</strong>&nbsp;<br>{{ex.fechaNacimiento|date:'d/m/Y'}}</td>
+            <td style="width: 17.8008%; border: 1px solid rgb(5, 5, 5);"><strong>Edad:</strong>&nbsp;<br>{{ex.edad}}&nbsp;Años</td>
             <td style="width: 40.0425%; border: 1px solid rgb(5, 5, 5);" colspan="2"><strong>Documento de identidad:</strong></td>
         </tr>
     </tbody>
 </table>
 <br>
 <table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(5, 5, 5);">
-    <tbody>
+    <tbody> 
         <tr>
             <td style="width: 100%; border: 1px solid rgb(5, 5, 5); background-color: rgb(0, 0, 0);" colspan="4">
                 <div style="text-align: center;"><strong><span style="color: rgb(239, 239, 239);">Relaci&oacute;n de pertenencias&nbsp;</span></strong></div>
@@ -52,36 +54,14 @@
             <td style="width: 14.7571%;  text-align: center;border: 1px solid rgb(5, 5, 5);"><strong>Color</strong></td>
             <td style="width: 62.4522%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Observaciones</strong></td>
         </tr>
-        <tr>
-            <td style="width: 18.2971%; border: 1px solid rgb(5, 5, 5);">Maleta</td>
-            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 14.7571%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 62.4522%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 18.2971%; border: 1px solid rgb(5, 5, 5);">Mochila&nbsp;</td>
-            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 14.7571%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 62.4522%;  text-align: center;border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 18.2971%; border: 1px solid rgb(5, 5, 5);">Bolsa de Mano&nbsp;</td>
-            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 14.7571%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 62.4522%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 18.2971%; border: 1px solid rgb(5, 5, 5);">Bolsa de pl&aacute;stico</td>
-            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 14.7571%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 62.4522%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 18.2971%; border: 1px solid rgb(5, 5, 5);">Otros&nbsp;</td>
-            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 14.7571%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 62.4522%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
+        {% for pert in pert %}
+            <tr>
+                <td style="width: 18.2971%; border: 1px solid rgb(5, 5, 5);">{{pert.equipaje}}</td>
+                <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{pert.cantidad}}</td>
+                <td style="width: 14.7571%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{pert.color}}</td>
+                <td style="width: 62.4522%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{pert.observaciones}}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 <br>
@@ -94,41 +74,15 @@
             <td style="width: 12%; text-align: center; border: 1px sFVFJKJ0BQ6L4olid rgb(5, 5, 5); background-color: rgb(0, 0, 0);"><strong><span style="color: rgb(255, 255, 255);">No. de serie</span></strong></td>
             <td style="width: 20%; text-align: center; border: 1px solid Nuevo con cajargb(5, 5, 5); background-color: rgb(0, 0, 0);"><strong><span style="color: rgb(255, 255, 255);">Observaciones</span></strong></td>
         </tr>
-        <tr>
-            <td style="width: 15%; border: 1px solid rgb(5, 5, 5);">Tel&eacute;fono celular</td>
-            <td style="width: 8%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 10%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 12%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 20%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 15%; border: 1px solid rgb(5, 5, 5);">Reproductor m&uacute;sica</td>
-            <td style="width: 8%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 10%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 12%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 20%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 15%; border: 1px solid rgb(5, 5, 5);">Computadora&nbsp;</td>
-            <td style="width: 8%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 10%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 12%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 20%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 15%; border: 1px solid rgb(5, 5, 5);">C&aacute;mara fotogr&aacute;fica</td>
-            <td style="width: 8%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 10%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 12%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 20%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
-        <tr>
-            <td style="width: 15%; border: 1px solid rgb(5, 5, 5);">Otros&nbsp;</td>
-            <td style="width: 8%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 10%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 12%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-            <td style="width: 20%; text-align: center; border: 1px solid rgb(5, 5, 5);"></td>
-        </tr>
+        {% for apa in apa %}
+            <tr>
+                <td style="width: 15%; border: 1px solid rgb(5, 5, 5);">{{apa.electronicos}}</td>
+                <td style="width: 8%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{apa.cantidad}}</td>
+                <td style="width: 10%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{apa.marca}}</td>
+                <td style="width: 12%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{apa.serie|upper}}</td>
+                <td style="width: 20%; text-align: center; border: 1px solid rgb(5, 5, 5);">{{apa.observaciones}}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 <br>
@@ -140,9 +94,15 @@
             </td>
         </tr>
         <tr>
-            <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">Importe:&nbsp;</td>
-            <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">Tipo de moneda:</td>
+            <td style="width: 18.2971%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Importe</strong></td>
+            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Tipo de moneda</strong></td>
         </tr>
+        {% for efe in efe %}
+            <tr>
+                <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">{{efe.importe}}</td>
+                <td style="width: 50%; border: 1px solid rgb(5, 5, 5); text-align: center;">{{efe.moneda}} - {{efe.get_moneda_display}}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 <br>
@@ -154,37 +114,46 @@
             </td>
         </tr>
         <tr>
-            <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">Metal:</td>
-            <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">Descripci&oacute;n:&nbsp;</td>
+            <td style="width: 18.2971%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Metal</strong></td>
+            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Descripci&oacute;n</strong></td>
         </tr>
+        {% for al in al %}
+            <tr>
+                <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">{{al.metal}}</td>
+                <td style="width: 50%; border: 1px solid rgb(5, 5, 5); text-align: center;">{{al.descripcion}}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 <br>
 <table style="width: 100%; border-collapse: collapse; border: 1px solid rgb(5, 5, 5);">
     <tbody>
         <tr>
-            <td style="width: 100%; border: 1px solid rgb(5, 5, 5); background-color: rgb(0, 0, 0);">
-                <div style="text-align: center;"><strong><span style="color: rgb(255, 255, 255);">Documentaci&oacute;n y otros objetos&nbsp;</span></strong></div>
+            <td style="width: 99.9287%; border: 1px solid rgb(5, 5, 5); background-color: rgb(0, 0, 0);" colspan="2">
+                <div style="text-align: center;"><strong><span style="color: rgb(255, 255, 255);">Documentaci&oacute;n y otros objetos</span></strong></div>
             </td>
         </tr>
         <tr>
-            <td style="width: 100%; border: 1px solid rgb(5, 5, 5);">1.</td>
+            <td style="width: 18.2971%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Tipo de Documento</strong></td>
+            <td style="width: 12.2747%; text-align: center; border: 1px solid rgb(5, 5, 5);"><strong>Descripci&oacute;n</strong></td>
         </tr>
-        <tr>
-            <td style="width: 100%; border: 1px solid rgb(5, 5, 5);">2.</td>
-        </tr>
-        <tr>
-            <td style="width: 100%; border: 1px solid rgb(5, 5, 5);">3.</td>
-        </tr>
+        {% for doc in doc %}
+            <tr>
+                <td style="width: 50%; border: 1px solid rgb(5, 5, 5);">{{doc.tipodocumento}}</td>
+                <td style="width: 50%; border: 1px solid rgb(5, 5, 5); text-align: center;">{{doc.descripcion}}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
+<br>
 <div class="columnas">
     <div class="columna">
-        <p class="firma">[Postgrado] [Nombre] [Paterno] [Materno], [Puesto] 
+        <p class="firma">{{autoridad|title}} &nbsp;{{autoridad.cargo}} 
             <br> Autoridad migratoria que recibe</p>
     </div>
     <div class="columna">
-        <p class="firma">[Nombre Extranjero] [Paterno] [Materno]</p>
+        <p class="firma"><strong>{{ex.nombreExtranjero}}&nbsp;{{ex.apellidoPaternoExtranjero}}&nbsp;{{ex.apellidoMaternoExtranjero}}</strong></p>
+        <img src="{{firmaex}}" alt="Firma del Extranjero" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 15cm; transform: translate(-65%, -115%); object-fit: cover;">
     </div>
 </div>
 {% endblock %}

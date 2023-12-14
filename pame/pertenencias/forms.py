@@ -30,7 +30,6 @@ class pertenenciaselectronicasForm(forms.ModelForm):
         model = Pertenencia_aparatos
         fields = '__all__'
         widgets ={
-            'electronicos': forms.TextInput(attrs={'placeholder': 'Electronicos'}),
             'cantidad': forms.NumberInput(attrs={'placeholder': 'Cantidad'}),
             'marca': forms.TextInput(attrs={'placeholder': 'Marca'}),
             'serie': forms.TextInput(attrs={'placeholder': 'Serie'}),

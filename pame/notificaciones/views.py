@@ -11,7 +11,7 @@ from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView, UpdateView
 from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, DocumentoRespuestaDefensoria
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso
+from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso,NombramientoRepresentanteForm
 from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms, DocumentoRespuestaDefensoriaForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
@@ -42,8 +42,9 @@ from django.http import HttpResponse, Http404
 import os
 from django.utils import timezone
 from datetime import timedelta
-
+from catalogos.models import RepresentantesLegales
 from .models import NotificacionCOMAR,FirmaNotificacionComar,NotificacionFiscalia,FirmaNotificacionFiscalia
+from acuerdos.models import Repositorio, TiposDoc, ClasificaDoc
 class notificar(LoginRequiredMixin,ListView):
     model = Defensorias
     template_name='notificacion.html'
@@ -94,8 +95,7 @@ class notificar(LoginRequiredMixin,ListView):
 
     
 # LISTA DE EXTRANJEROS PARA DEFENSORIA
-class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
-
+class listExtranjerosDefensoria(LoginRequiredMixin, ListView):
     model = NoProceso
     template_name = 'defensoria/defensoria.html'
     context_object_name = "extranjeros"
@@ -129,6 +129,20 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
         ).annotate(
             tiene_defensoria_asignada=Exists(defensoria_asignada)
         )
+        documento_existente = DocumentoRespuestaDefensoria.objects.filter(
+            extranjero_defensoria__nup=OuterRef('nup')
+        )
+        queryset = queryset.annotate(
+            documento_subido=Exists(documento_existente)
+        )
+
+        fecha_subida_documento = DocumentoRespuestaDefensoria.objects.filter(
+            extranjero_defensoria__nup=OuterRef('nup')
+        ).order_by('-fecha_creacion').values('fecha_creacion')[:1]
+
+        queryset = queryset.annotate(
+            fecha_subida_documento=Subquery(fecha_subida_documento)
+        )
 
         # Añade una anotación para obtener el ID de ExtranjeroDefensoria
         queryset = queryset.annotate(
@@ -137,6 +151,17 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
             )
         )
 
+        # Anotación para obtener la URL del documento del repositorio
+        tipo_respuesta_defensoria = TiposDoc.objects.filter(descripcion="Respuesta de Defensoria").first()
+        if tipo_respuesta_defensoria:
+            ultimo_documento_id = Repositorio.objects.filter(
+                nup=OuterRef('pk'),
+                delTipo=tipo_respuesta_defensoria
+            ).order_by('-fechaGeneracion').values('id')[:1]
+
+            queryset = queryset.annotate(
+                ultimo_documento_id=Subquery(ultimo_documento_id)
+            )
         if estado_defensoria == 'por_notificar':
             queryset = queryset.filter(tiene_defensoria_asignada=False)
         elif estado_defensoria == 'ya_notificado':
@@ -153,6 +178,15 @@ class listExtranjerosDefensoria(LoginRequiredMixin,ListView):
         return queryset
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        for extranjero in context['extranjeros']:
+            documento_id = getattr(extranjero, 'ultimo_documento_id', None)
+            if documento_id:
+                try:
+                    documento = Repositorio.objects.get(id=documento_id)
+                    extranjero.url_documento = documento.archivo.url
+                except Repositorio.DoesNotExist:
+                    extranjero.url_documento = None
+
         context['navbar'] = 'Notificaciones'  # Cambia esto según la página activa
 
         context['seccion'] = 'defensoria'
@@ -167,15 +201,43 @@ class DocumentoRespuestaDefensoriaCreateView(CreateView):
     template_name = 'defensoria/respuesta_defensoria.html'  # Reemplaza con el nombre de tu plantilla HTML
 
     def form_valid(self, form):
-        # Obtener los IDs de la URL
-        extranjero_defensoria_id = self.kwargs.get('extranjero_defensoria_id')
-        nup_id = self.kwargs.get('nup_id')
+            # Obtener los IDs de la URL
+            extranjero_defensoria_id = self.kwargs.get('extranjero_defensoria_id')
+            nup_id = self.kwargs.get('nup_id')
 
-        # Obtener los objetos basados en los IDs y asignarlos al objeto del formulario
-        form.instance.extranjero_defensoria = ExtranjeroDefensoria.objects.get(id=extranjero_defensoria_id)
-        form.instance.nup = NoProceso.objects.get(nup=nup_id)
+            # Obtener los objetos basados en los IDs y asignarlos al objeto del formulario
+            form.instance.extranjero_defensoria = ExtranjeroDefensoria.objects.get(id=extranjero_defensoria_id)
+            form.instance.nup = NoProceso.objects.get(nup=nup_id)
 
-        return super(DocumentoRespuestaDefensoriaCreateView, self).form_valid(form)
+            # Llamada al método form_valid original para guardar el DocumentoRespuestaDefensoria
+            response = super(DocumentoRespuestaDefensoriaCreateView, self).form_valid(form)
+
+            # Obtener el objeto DocumentoRespuestaDefensoria recién creado
+            documento_respuesta_defensoria = form.instance
+
+            # Crear o recuperar la categoría y el tipo de documento para el Repositorio
+            clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Defensoria")
+            tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Respuesta de Defensoria", delaClasificacion=clasificacion)
+
+            # Generar un nombre de archivo para el Repositorio
+            nombre_archivo_repo = f"Respuesta_Defensoria_{documento_respuesta_defensoria.id}.pdf"
+
+            # Crear una nueva instancia en el Repositorio
+            repo = Repositorio(
+                nup=documento_respuesta_defensoria.nup,
+                delTipo=tipo_doc,
+                delaEstacion=self.request.user.estancia,  # Asumiendo que el usuario tiene una estancia asociada
+                delResponsable=self.request.user.get_full_name(),
+            )
+
+            # Si es necesario, copiar el archivo al Repositorio
+            if documento_respuesta_defensoria.archivo:
+                with documento_respuesta_defensoria.archivo.open() as archivo:
+                    repo.archivo.save(nombre_archivo_repo, ContentFile(archivo.read()))
+
+            repo.save()
+
+            return response
 
     def get_success_url(self):
         return reverse_lazy('defensoria')
@@ -1116,3 +1178,74 @@ def obtener_datos_defensoria(request, defensoria_id):
     }
 
     return JsonResponse(datos)
+
+
+class CrearNombramiento(View):
+
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionConsularForm(request.POST)
+        if form.is_valid():
+            notificacionConsular = form.save(commit=False)
+            notificacionConsular.nup = no_proceso
+            notificacionConsular.save()
+
+            data = {
+                'success': True, 
+                'message': 'Notificación Consular creada con éxito.', 
+                'consulado_id': notificacionConsular.id
+            }
+            return JsonResponse(data, status=200)
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+        
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+        ultimo_registro = ExtranjeroDefensoria.objects.filter(nup=no_proceso).order_by('-fechaHora').first()
+        numero_oficio = ultimo_registro.oficio if ultimo_registro else None
+        defensoria = ultimo_registro.defensoria if ultimo_registro else None
+
+        initial_data = {
+            'delaEstacion': extranjero.deLaEstacion,
+            'nup':no_proceso,
+            'oficio': numero_oficio,  # Establecer el número de oficio inicial
+            'defensoria': defensoria,  # Establecer la defensoría inicial
+
+        }
+
+        form = NombramientoRepresentanteForm(initial=initial_data)
+
+        if defensoria:
+            representantes_legales = RepresentantesLegales.objects.filter(defensoria=defensoria)
+            form.fields['representanteLegal'].queryset = representantes_legales
+        else:
+            form.fields['representanteLegal'].queryset = RepresentantesLegales.objects.none()
+
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['autoridadActuante'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'Notificaciones',
+            'seccion': 'consulado',
+        }
+        
+        return render(request, 'defensoria/crearNotificacionDefensoria.html', context)
+

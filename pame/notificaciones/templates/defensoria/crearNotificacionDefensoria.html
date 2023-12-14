@@ -1,0 +1,337 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}">
+{% endblock link %}
+
+{% block titulo %}Generar Nombramiento{% endblock titulo %}
+
+{% block dashboard %}
+<a class="btn btn-sm btn-icon1 " href="{% url 'defensoria' %}">
+    <i class="fas fa-arrow-left"></i>
+</a>
+{% endblock dashboard %}
+
+{% block contenido %}
+<style>
+    #myTab .nav-link {
+        pointer-events: none; /* Desactiva los eventos del ratón como el clic */
+        color: #9E8364; /* Color antes de ser seleccionado */
+        font-weight: normal;
+    }
+    
+    #myTab .nav-link.active {
+        pointer-events: auto; /* Activa los eventos del ratón para la pestaña activa */
+        color: #000; /* Un color más fuerte cuando esté activo */
+        font-weight: bold;
+    }
+    input[readonly] {
+        background-color: #e9ecef;
+        color: #495057;
+        cursor: not-allowed;
+      }
+
+
+      .input-required {
+        border: 2px solid #d9534f; /* Rojo con un borde más grueso para mayor visibilidad */
+        border-radius: 4px; /* Opcional, para bordes redondeados */
+      }
+      
+      /* Opcional: Agrega un asterisco rojo a las etiquetas de los campos requeridos */
+      label.required::after {
+        content: " *";
+        color: red;
+      }
+      .input-required {
+        border: 2px solid #d9534f; /* Ajusta el color y el grosor del borde según necesites */
+      }
+      
+      .input-required + label::after {
+        content: " *";
+        color: red;
+      }
+
+
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
+    }
+
+    
+    #nextToRepresentanteLegal,
+#nextToExtranjero,
+#nextToTraductor,
+#nextToTestigo1,
+#nextToTestigo2,
+#finalizarFirmas {
+    background-color: #902F4A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilos al pasar el mouse por encima de los botones */
+#nextToRepresentanteLegal:hover,
+#nextToExtranjero:hover,
+#nextToTraductor:hover,
+#nextToTestigo1:hover,
+#nextToTestigo2:hover,
+#finalizarFirmas:hover {
+    background-color: #902F4A; /* Mantiene el mismo color de fondo */
+    box-shadow: none; /* Elimina la sombra para un aspecto más plano */
+    cursor: default; /* Cambia el cursor al estilo predeterminado */
+
+}
+
+.titulo-compare{
+    background-color: #777777;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: default;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+
+}
+
+
+</style>
+
+
+<div class="container mt-3">
+    <div class="titulo-general-container ">
+        <h1 class="titulo-general">
+            Generar Nombramiento: 
+            <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
+        </h1>
+    </div>
+    <div id="nombramientoRepresentanteFormContainer">
+        <form method="post" id="nombramientoRepresentanteForm">
+            {% csrf_token %}
+            <div class="card p-3">
+                <!-- Navegación por Pestañas -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="notificacion-tab" data-toggle="tab" href="#notificacion" role="tab" aria-controls="notificacion" aria-selected="true">Nombramiento Representante Legal</a>
+                    </li>
+                    <!-- Más pestañas si son necesarias -->
+                </ul>
+
+                <!-- Contenido de las Pestañas -->
+                <div class="tab-content" id="myTabContent">
+                    <!-- Sección de Notificación Consular -->
+                    <div class="tab-pane fade show active" id="notificacion" role="tabpanel" aria-labelledby="notificacion-tab">
+
+                            <br>
+                            <input type="checkbox" id="necesitaRepresentanteExterno" name="necesitaRepresentanteExterno">
+                            <label for="necesitaRepresentanteExterno">¿Tiene Representante Externo?</label>
+
+                            <!-- Campos que se mostrarán si se selecciona 'Sí' para representante externo -->
+
+                            <div id="camposRepresentanteExterno" style="display:none;">
+                        
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.representanteLegalExterno|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.grado_representante_externo|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.cedulaLegalExterno|as_crispy_field }}</div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Campo que se ocultará si se selecciona 'Sí' para representante externo -->
+                            <div id="campoRepresentanteLegal" style="display:block;">
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.representanteLegal|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.oficio|as_crispy_field }}</div>
+                                    <div class="col-md-6">{{ form.numeroExpediente|as_crispy_field }}</div>
+                                </div>
+
+                            </div>
+                        
+                        <div class="row">
+
+
+                     
+                            <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.defensoria|as_crispy_field }}</div>
+
+                            <div class="col-md-6">{{ form.autoridadActuante|as_crispy_field }}</div>       
+                            <div class="col-md-6">{{ form.testigo1|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.grado_academico_testigo1|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.testigo2|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.grado_academico_testigo2|as_crispy_field }}</div>
+
+
+
+                        </div>
+                        <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
+                        <label for="necesitaTraductor">¿Necesita Traductor?</label>
+
+
+                              <div id="camposTraductor" style="display:none;">
+                        
+                                <div class="row">
+                                    <div class="col-md-6">{{ form.traductor|as_crispy_field }}</div>
+                               
+                                </div>
+
+                            </div>
+
+                    </div>
+                    <!-- Más secciones de contenido según sea necesario -->
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="action-buttons" style="text-align:left;">
+                    <button type="button" class="btn btn-icon2" id="previewPdfButton">Previsualizar PDF</button>
+                    <button type="submit" class="btn btn-custom2" id="createNotificationButton">Crear Notificación</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- VENTANA PARA MOSTRAR EL QR -->
+
+<div id="qrCode" style="display:none;" class="card p-3">
+    <div class="firma-section center-content" id="autoridadActuanteSection">
+        <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+        <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
+
+        <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaAutoridadActuante"></div>
+        <button id="nextToRepresentanteLegal">Siguiente: Finalizar Proceso</button>
+    
+    </div>
+</div>
+
+
+
+<div id="generatePDFSection" style="display:none;" class="card p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <!-- Ícono de FontAwesome para representar un PDF -->
+            <i class="fas fa-file-pdf fa-7x" style="color: #1D1D1D;"></i> 
+            <br>
+            <br>
+            <br>
+
+            <a href="#"  id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+        </div>
+    </div>
+  </div>
+<div id="postSaveOptions" style="display:none;" class="card p-3">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <i class="fas fa-thumbs-up fa-7x" style="color: #1D1D1D;"></i>
+            <br><br><br>
+            <a href="{% url "listExtranjerosConsulado" %}" class="btn btn-primary">Regresar a la Lista de Extranjeros</a>
+            <a id="verNotificacionBtn" class="btn btn-secondary" href="#" target="_blank">Ver Notificación</a>
+        </div>
+    </div>
+</div>
+
+<!-- VENTANA PARA MOSTRAR EL PDF -->
+<div id="pdfPreviewContainer" style="display:none; position: relative;">
+    <button id="closePdfPreviewButton" class="btn" style="position: absolute; top: 10px; right: 10px; background-color: #873542; color: white;">Cerrar</button>
+    <iframe id="pdfPreview" style="width:100%; height:600px; margin-top: 60px;"></iframe>
+</div>
+
+
+
+<script>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('previewPdfButton').addEventListener('click', function() {
+        var formData = new FormData(document.getElementById('nombramientoRepresentanteForm'));
+        
+        fetch('/acuerdos/nombramientoRepresentante', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            credentials: 'same-origin'
+        }).then(response => response.blob())
+          .then(blob => {
+              var pdfUrl = URL.createObjectURL(blob);
+              document.getElementById('pdfPreview').src = pdfUrl;
+              document.getElementById('pdfPreviewContainer').style.display = 'block';
+          })
+          .catch(error => {
+              console.error('Error al generar la vista previa del PDF:', error);
+          });
+    });
+
+    // Event listener para el botón de cerrar
+    document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
+        document.getElementById('pdfPreviewContainer').style.display = 'none';
+        document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
+    });
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var checkboxRepresentanteExterno = document.getElementById('necesitaRepresentanteExterno');
+    var camposRepresentanteExterno = document.getElementById('camposRepresentanteExterno');
+    var campoRepresentanteLegal = document.getElementById('campoRepresentanteLegal');
+
+    function actualizarCamposRepresentante() {
+        if (checkboxRepresentanteExterno.checked) {
+            camposRepresentanteExterno.style.display = 'block';
+            campoRepresentanteLegal.style.display = 'none';
+        } else {
+            camposRepresentanteExterno.style.display = 'none';
+            campoRepresentanteLegal.style.display = 'block';
+        }
+    }
+
+    checkboxRepresentanteExterno.addEventListener('change', actualizarCamposRepresentante);
+    actualizarCamposRepresentante(); // Llamarlo inicialmente para establecer el estado correcto
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var checkboxTraductor = document.getElementById('necesitaTraductor');
+    var camposRepresentanteExterno = document.getElementById('camposTraduvtor');
+    var campoRepresentanteLegal = document.getElementById('campoTraductor');
+
+    function actualizarCamposTraductor() {
+        if (checkboxTraductor.checked) {
+            camposTraductor.style.display = 'block';
+            campoTraductor.style.display = 'none';
+        } else {
+            camposTraductor.style.display = 'none';
+            campoTraductor.style.display = 'block';
+        }
+    }
+
+    checkboxTraductor.addEventListener('change', actualizarCamposTraductor);
+    actualizarCamposTraductor(); // Llamarlo inicialmente para establecer el estado correcto
+});
+
+
+</script>
+{% endblock contenido %}
+
+

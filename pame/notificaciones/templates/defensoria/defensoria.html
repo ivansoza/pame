@@ -94,11 +94,23 @@
 
 
                 <td align="center">
+
+                
                     {% if extranjero.tiene_defensoria_asignada %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'respuestaDefensoria' extranjero.extranjero_defensoria_id extranjero.nup %}" data-title="Subir Documento">
-                            <i class="fa-solid fa-upload"></i>
-                        </a>
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="#" data-title="Generar Nombramiento">
+
+                        {% if extranjero.documento_subido %}
+                            <!-- Botón con Sweet Alert para cuando el documento ya ha sido subido -->
+                            <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="showSweetAlert('{{ extranjero.fecha_subida_documento|date:"SHORT_DATE_FORMAT" }}', '{{ extranjero.url_documento }}');" data-title="Documento Subido">
+                                <i class="fa-solid fa-upload"></i>
+                            </a>
+                        {% else %}
+                            <!-- Botón normal para subir documento -->
+                            <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'respuestaDefensoria' extranjero.extranjero_defensoria_id extranjero.nup %}" data-title="Subir Documento">
+                                <i class="fa-solid fa-upload"></i>
+                            </a>
+
+                        {% endif %}
+                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'CrearNombramiento' extranjero.nup%}" data-title="Generar Nombramiento">
                             <i class="fa-solid fa-file-alt"></i>                   
                         </a>
                         <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Ver Documento">
@@ -109,7 +121,6 @@
                             <i class="fa-solid fa-bell"></i>                   
                         </a>
                     {% endif %}
-
               
                 </td>                         
 
@@ -121,4 +132,21 @@
     </table>
 
 </div>
+
+<script>
+function showSweetAlert(fechaSubida, urlDocumento) {
+    Swal.fire({
+        title: 'Documento ya subido',
+        text: 'Este documento fue subido el ' + fechaSubida,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Cerrar',
+        cancelButtonText: 'Ver Documento'
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            window.open(urlDocumento, '_blank');
+        }
+    });
+}
+</script>
 {% endblock contenido %}

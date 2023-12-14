@@ -2,7 +2,7 @@
 from django import forms
 from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, firmasDefenso
-from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia,DocumentoRespuestaDefensoria
+from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia,DocumentoRespuestaDefensoria,nombramientoRepresentante
 from django.forms.widgets import HiddenInput
 
 class DefensorForm(forms.ModelForm):
@@ -130,3 +130,22 @@ class DocumentoRespuestaDefensoriaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DocumentoRespuestaDefensoriaForm, self).__init__(*args, **kwargs)
         self.fields['archivo'].required = False
+
+
+class NombramientoRepresentanteForm(forms.ModelForm):
+    class Meta:
+        model = nombramientoRepresentante
+        fields = '__all__'
+        widgets = {
+            'oficio': forms.TextInput(attrs={'placeholder': 'Ingrese el número de oficio'}),
+            'numeroExpediente': forms.TextInput(attrs={'placeholder': 'Ingrese el número de expediente'}),
+            'representanteLegalExterno': forms.TextInput(attrs={'placeholder': 'Nombre del representante legal externo'}),
+            'cedulaLegalExterno': forms.TextInput(attrs={'placeholder': 'Número de cédula del representante legal externo'}),
+            'testigo1': forms.TextInput(attrs={'placeholder': 'Nombre completo del testigo 1'}),
+            'testigo2': forms.TextInput(attrs={'placeholder': 'Nombre completo del testigo 2'}),
+        }
+    def __init__(self, *args, **kwargs):
+            super(NombramientoRepresentanteForm, self).__init__(*args, **kwargs)
+            self.fields['delaEstacion'].empty_label = "Seleccione una Estación"
+            self.fields['nup'].empty_label = "Seleccione un NoProceso"
+            self.fields['defensoria'].empty_label = "Seleccione una Defensoría"

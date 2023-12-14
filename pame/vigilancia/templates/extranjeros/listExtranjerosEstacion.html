@@ -194,16 +194,32 @@
                     data-title="Eliminar Extranjero" onclick="abrir_modal_eliminar(this.href); return false;">
                         <i class="fas fa-trash-alt"></i>
                     </a>
-                    <a class="btn btn-sm btn-icon3 tooltip-link"
-                    href="{% url "afiliacion" extranjero.id %}"
-                    data-title="Media de Afiliación">
-                    <i class="fa-solid fa-id-card"></i>
+                    {% if extranjero.tiene_descripcion %}
+                     <a class="btn btn-sm btn-icon3 tooltip-link"
+                     href="{% url "afiliacion" extranjero.id %}"
+                     data-title="Media de Afiliación">
+                     <i class="fa-solid fa-id-card"></i>
+                     </a>
+                     {% else %}
+                     <a class="btn btn-sm btn-icon1 tooltip-link" href="#" onclick="showNotification1(); return false;" data-title="No hay descripción">
+                        <i class="fa-solid fa-id-card"></i>
                     </a>
-                {% comment %} <!-- BOTON DE RESUMEN GENERAL -->
-                <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Resumen General">
-                    <i class="fas fa-chart-bar"></i>
-                </a> {% endcomment %}
+                     <script>
+                        function showNotification1() {
+                            Swal.fire({
+                                title: 'Completa la descripción del extranjero para continuar',
+                                icon: 'error',
+                                confirmButtonText: 'Entendido',
+                                confirmButtonColor: '#2A4B41',
+                                didClose: function() {
+                                    // Aquí puedes colocar la URL a la que deseas redirigir
+                                    window.location.href = '{% url "agregarBiometricosGenrales" extranjero.id %}';
+                                }
 
+                            });
+                        }
+                        </script>
+                    {% endif %}
             </td>
             <td style="text-align: center; 
             {% if extranjero.horas_transcurridas < 12 %}background-color: #2A4B41; color: white;

@@ -24,7 +24,7 @@ from .views import (
     resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, 
     resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf, 
     guardar_notificacion_consular, guardar_notificacion_comar, guardar_notificacion_fiscalia,
-    certificadoMedicoEgreso_pdf
+    certificadoMedicoEgreso_pdf, filiacion_pdf
 )
 
 from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
@@ -43,9 +43,9 @@ urlpatterns = [
     path('derechosObligaciones/<int:extranjero_id>', derechoObligaciones_pdf, name='derechosObligaciones'),
     path('mostrar-derechos-obligaciones/<int:extranjero_id>', mostrar_derechoObligaciones_pdf, name='mostrarderechosObligaciones'),
     path('inicioPDF/<str:nup_id>/', acuerdoInicio_pdf, name='inicioPDF'),
-    path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
+    path('notificacionRepresentacion', notificacionRepresentacion_pdf, name='representacionPDF'),
+    path('inventariopv/<str:nup_id>/<str:ex_id>/', inventarioPV_pdf, name='inventarioPDF'),
     path('notificacionRepresentacion/<str:nup_id>/', notificacionRepresentacion_pdf, name='representacionPDF'),
-    path('inventariopv', inventarioPV_pdf, name='inventarioPDF'),
     path('listaLlamadas/<str:nup_id>/<str:ex_id>/', listaLlamadas_pdf, name='listaLlamadasPDF'),
     path('constancia-enseres/<str:nup_id>/', constanciaEnseres_pdf, name='enseresPDF'),
     path('formato-enseres/<str:nup_id>/<str:enseres_id>/', formatoEnseres_pdf, name='fenseresPDF'),
@@ -67,6 +67,7 @@ urlpatterns = [
     path('conclusion-procedimiento', conclusionProcedimiento_pdf, name='conclusionPDF'),
     path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
+    path('filiacion', filiacion_pdf, name='filiacionPDF'),
     
     
 
@@ -149,6 +150,9 @@ urlpatterns = [
 
     #FIN notificacion FISCALIA 
 
+
+    # nombramiento representante
+    path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
 
 
 
