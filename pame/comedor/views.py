@@ -13,25 +13,21 @@ def homeCocinaGeneral (request):
 
 def homeCocinaResponsable (request):
     return render(request, "home/homeCocinaResponsable.html")
-
 class comedor(LoginRequiredMixin, ListView):
-    model = CertificadoMedico
+    model = NoProceso
     template_name='home/comedor.html'
     context_object_name = 'extranjeros'
     login_url = '/permisoDenegado/'
     
+
     def get_queryset(self):
         estacion_usuario = self.request.user.estancia
-        estado = self.request.GET.get('estado_filtrado', 'activo')
-        tipo_dieta = self.request.GET.get('tipo_dieta', None)  # Asegúrate de obtener correctamente el tipo de dieta desde la solicitud
+        tipo_dieta = self.request.GET.get('tipo_dieta', None)
 
+        # Filtrar extranjeros por estación
         extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
 
-        if estado == 'activo':
-            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Activo')
-        elif estado == 'inactivo':
-            extranjeros_filtrados = extranjeros_filtrados.filter(estatus='Inactivo')
-
+        # Filtrar por el último NoProceso para cada extranjero
         ultimo_no_proceso = NoProceso.objects.filter(
             extranjero_id=OuterRef('pk')
         ).order_by('-consecutivo')
@@ -40,32 +36,26 @@ class comedor(LoginRequiredMixin, ListView):
             ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
         )
 
-        dietas = CertificadoMedico.objects.filter(
-            nup=OuterRef('pk'),
-            tipoDieta=tipo_dieta  # Filtra por el tipo deS dieta
-        )
-
+        # Obtener todos los NoProceso que tengan al menos un CertificadoMedico
         queryset = NoProceso.objects.filter(
-            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id]
-        ).annotate(
-            tiene_defensoria_asignada=Exists(dietas)
-        )
+            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id],
+            certificados_medicos__isnull=False
+        ).distinct()
 
-        # Añade una anotación para obtener el ID de CertificadoMedico
-        queryset = queryset.annotate(
-            certificado_medico_id=Subquery(
-                CertificadoMedico.objects.filter(nup=OuterRef('pk')).values('id')[:1]
-            )
-        )
 
-        if tipo_dieta:
-            queryset = queryset.filter(certificado_medico_id__isnull=False)
-        else:
-            queryset = queryset.filter(certificado_medico_id__isnull=True)
+
+        # Aplicar el filtro de tipo de dieta
+        
+        if tipo_dieta == 'general':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='GENERAL')
+        elif tipo_dieta == 'religiosa':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='RELIGIOSA')
+        elif tipo_dieta == 'vegetariana':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='VEGETARIANA')
+        elif tipo_dieta == 'clinica':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='CLÍNICA')
 
         return queryset
-
-    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -73,4 +63,6 @@ class comedor(LoginRequiredMixin, ListView):
         context['navbar'] = 'cocina'
         context['seccion'] = 'comedor'
         context['nombre_estacion'] = self.request.user.estancia.nombre
+        context['tipo_dieta'] = CertificadoMedico.objects.values_list('tipoDieta', flat=True).distinct()
+
         return context

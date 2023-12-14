@@ -853,7 +853,7 @@
         {% if 'CocinaGeneral' in user_groups or 'CocinaResponsable' in user_groups or 'Administradores' in user_groups %}
 
           <li class="nav-item ">
-            <a href="#" class="nav-link ">
+            <a href="#" class="nav-link {% if navbar == 'cocina' %}active first-li{% endif %}">
               <i class="nav-icon fas fa-utensils"></i>
               <p>
                 Cocina
@@ -862,7 +862,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url "comedor" %}" class="nav-link ">
+                <a href="{% url "comedor" %}" class="nav-link {% if seccion == 'comedor' %}active {% endif %}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Comedor</p>
                 </a>

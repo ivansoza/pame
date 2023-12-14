@@ -35,16 +35,19 @@
 
 <div class="d-flex justify-content-center mb-3 mt-3">
     <div class="btn-group" role="group">
-        <a href="?estado_filtrado=activo&tipo_dieta=general" class="btn {% if request.GET.tipo_dieta == 'general' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+        <a href="{% url 'comedor' %}" class="btn {% if not request.GET.tipo_dieta %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+            Todas las Dietas
+        </a>
+        <a href="?tipo_dieta=general" class="btn {% if request.GET.tipo_dieta == 'general' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
             Dieta General
         </a>
-        <a href="?estado_filtrado=activo&tipo_dieta=religiosa" class="btn {% if request.GET.tipo_dieta == 'religiosa' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+        <a href="?tipo_dieta=religiosa" class="btn {% if request.GET.tipo_dieta == 'religiosa' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
             Dieta Religiosa
         </a>
-        <a href="?estado_filtrado=activo&tipo_dieta=vegetariana" class="btn {% if request.GET.tipo_dieta == 'vegetariana' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
+        <a href="?tipo_dieta=vegetariana" class="btn {% if request.GET.tipo_dieta == 'vegetariana' %}btn-custom5{% else %}btn-outline-secondary{% endif %}">
             Dieta Vegetariana
         </a>
-        <a href="?estado_filtrado=activo&tipo_dieta=clinica" class="btn {% if request.GET.tipo_dieta == 'clinica' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
+        <a href="?tipo_dieta=clinica" class="btn {% if request.GET.tipo_dieta == 'clinica' %}btn-custom6{% else %}btn-outline-secondary{% endif %}">
             Dieta Clínica
         </a>
     </div>
@@ -66,47 +69,46 @@
 <div class="table-responsive">
     <table id="tabla" class="table table-striped table-bordered display responsive nowrap" style="width: 100%;">
         <thead>
-                <tr>
-                    <th>Nup</th>
-                    <th>Nombre(s)</th>
-                    <th>Apellido(s)</th>
-                    <th>Nacionalidad</th>
-                    <th>Tipo de dieta</th>
-                    <th style="width: 5%;">Opciones</th>
-                </tr>
+            <tr>
+                <th>Nup</th>
+                <th>Nombre(s)</th>
+                <th>Apellido(s)</th>
+                <th>Nacionalidad</th>
+                <th>Tipo de dieta</th>
+                <th style="width: 5%;">Opciones</th>
+            </tr>
         </thead>
         <tbody>
             {% for extranjero in extranjeros %}
                 <tr>
-                <td>{{extranjero.nup}}</td>
-                <td>{{ extranjero.extranjero.nombreExtranjero }}</td>
-                <td>
-                    {% if extranjero.extranjero.apellidoPaternoExtranjero %}
-                        {{ extranjero.extranjero.apellidoPaternoExtranjero }}
-                    {% endif %}
-                    {% if extranjero.extranjero.apellidoPaternoExtranjero and extranjero.extranjero.apellidoMaternoExtranjero %}
-                        {{ extranjero.extranjero.apellidoMaternoExtranjero }}
-                    {% endif %}
-                </td>     
-                <td>{{ extranjero.extranjero.nacionalidad }}
-                </td>
-                <td>{{ extranjero.certificado_medico.tipoDieta}}</td>
-          
-
-
-                <td align="center">
+                    <td>{{extranjero.nup}}</td>
+                    <td>{{ extranjero.extranjero.nombreExtranjero }}</td>
+                    <td>
+                        {% if extranjero.extranjero.apellidoPaternoExtranjero %}
+                            {{ extranjero.extranjero.apellidoPaternoExtranjero }}
+                        {% endif %}
+                        {% if extranjero.extranjero.apellidoPaternoExtranjero and extranjero.extranjero.apellidoMaternoExtranjero %}
+                            {{ extranjero.extranjero.apellidoMaternoExtranjero }}
+                        {% endif %}
+                    </td>     
+                    <td>{{ extranjero.extranjero.nacionalidad }}</td>
+                    <td>            {% with certificado=extranjero.certificados_medicos.last %}
+                        {% if certificado %}
+                            {{ certificado.tipoDieta }}
+                        {% else %}
+                            Sin información
+                        {% endif %}
+                    {% endwith %}</td>
+                  
+                    <td align="center">
                         <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="verificar extranjero">
                             <i class="fa-solid fa-camera"></i>                   
                         </a>
-                </td>                         
-
+                    </td>                         
                 </tr>
-
             {% endfor %}
-
         </tbody>
     </table>
-
 </div>
 
 {% endblock contenido %}
