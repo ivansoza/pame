@@ -54,7 +54,7 @@ def pdf(request):
     }
     
     # Renderiza la plantilla HTML
-    html_template = get_template('documentos/acuerdoLibre.html')
+    html_template = get_template('documentos/acuerdoInicio.html')
     html_string = html_template.render(context)
     
     # Convierte la plantilla HTML a PDF con WeasyPrint
@@ -3135,26 +3135,6 @@ class listExtranjerosRetorno(LoginRequiredMixin,ListView):
 def homeAcuerdo(request):
     return render(request,"documentos/Derechos.html")
 
-# ----- Vista de prueba para visualizar los pdf -----
-def pdf(request):
-    # Tu lógica para obtener los datos y generar el contexto
-    context = {
-        # ...
-    }
-    
-    # Renderiza la plantilla HTML
-    html_template = get_template('documentos/notificacionFiscalia.html')
-    html_string = html_template.render(context)
-    
-    # Convierte la plantilla HTML a PDF con WeasyPrint
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="docPrueba.pdf"'
-    
-    html = HTML(string=html_string)
-    html.write_pdf(response)
-    
-    return response
-
 # ----- Lista Extranjeros para ver o generar Acuerdo de Inicio -----
 class acuerdo_inicio(LoginRequiredMixin,ListView):
     template_name = 'acuerdoInicio.html'
@@ -3306,63 +3286,6 @@ def mes_a_palabra(mes):
         'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
     ]
     return meses[mes - 1]  # Restamos 1 porque los meses se cuentan desde 1 enero a 12 diciembre 
-
-# ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
-def acuerdoInicio_pdf(request, nup_id):
-    no_proceso = NoProceso.objects.get(nup=nup_id)
-    extranjero = no_proceso.extranjero
-    acuerdo = get_object_or_404(Acuerdo, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
-    nombre = extranjero.nombreExtranjero
-    apellidop = extranjero.apellidoPaternoExtranjero
-    apellidom = extranjero.apellidoMaternoExtranjero
-    nacionalidad = extranjero.nacionalidad.nombre
-    nombreac = extranjero.deLaEstacion.responsable.nombre
-    apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
-    apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
-    lugar = extranjero.deLaEstacion.estado
-    estacion = extranjero.deLaEstacion.nombre
-    dia = extranjero.fechaRegistro.day
-    mes = extranjero.fechaRegistro.month
-    anio = extranjero.fechaRegistro.year
-
-    dia_texto = numero_a_palabra(dia)
-    mes_texto = mes_a_palabra(mes)
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-        'nombre': nombre,
-        'apellidop': apellidop,
-        'apellidom': apellidom,
-        'nacionalidad': nacionalidad,
-        'nombreac' : nombreac,
-        'apellidopac': apellidopac,
-        'apellidomac': apellidomac,
-        'lugar': lugar,
-        'estacion' : estacion,
-        'dia': dia_texto,
-        'mes': mes_texto,
-        'anio': anio,
-        'acuerdo': acuerdo,
-
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/acuerdoInicio.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
-
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"
 def listaLlamadas_pdf_noSirve(request, extranjero_id):

@@ -1,72 +1,52 @@
 {% extends "documentos/base.html" %}
 
-
-
 {% block header %}
-<style>
-    #textoMayusculas {
-        text-transform: uppercase;
-    }
-</style>
-
-<br><span id="textoMayusculas">{{estacion}}</span>
-<br>EXPEDIENTE NÚMERO: [NOMENCLATURA EXPEDIENTE]
-<br><span id="textoMayusculas">{{lugar}} - {{dia}} de {{mes}} del {{anio}}</span>
+<br>[Oficina]
+<br>[Estacion]
+<br>
+<br>[Lugar y Fecha completa]
+<br>[Numero de expediente]
 {% endblock %}
 
 {% block title %}
-<title>
-    Acuero de Inicio {{nombre}}
-</title>
+<title>Acuerdo de inicio</title>
 {% endblock %}
 
 {% block content %}
-<p class="centrado">
-    <strong>ACUERDO DE INICIO</strong>
-</p>
+<p class="centrado"><strong>ACUERDO DE INICIO</strong></p>
 <p>
-    En {{lugar}} a los {{dia}} de {{mes}} del {{anio}}, el 
-    [POSTGRADO] {{nombreac}} {{apellidopac}} {{apellidomac}}, 
-    [PUESTO O CARGO] adscrito a {{estacion}} del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
+    En la [LUGAR DE EMISIÓN], siendo las [HH:MM] horas del día [DD de MM de AAAA], el 
+    Licenciado [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] adscrito a 
+    la [LUGAR DE ADSCRIPCION DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente ante la presencia de dos testigos que al final firman de conformidad.
 </p>
-<p class="centrado">
-    <strong>HACE CONSTAR</strong>
-</p>
+<p class="centrado"><strong>HACE CONSTAR</strong></p>
 <p>
-    Que derivado de la revisión migratoria practicada por personal adscrito a esta Dirección General de Control y Verificación Migratoria, fue detectado el extranjero 
-    <strong>{{nombre}} {{apellidop}} {{apellidom}}</strong> de nacionalidad <strong>{{nacionalidad}}</strong>, sin que acreditara en ese momento su legal internación y estancia en territorio nacional, por lo que fue puesto a disposición de esta autoridad migratoria a fin de resolver conforme a las facultades que señala la Ley de Migración y su Reglamento.
+    Que siendo el día de la fecha, fue puesto a disposición el extranjero [NOMBRE Y APELLIDO] de 
+    nacionalidad [NACIONALIDAD], derivado del oficio de puesta a disposición [NUMERO DE OFICIO DE PUESTA A DISPOSICIÓN] lo anterior a efecto de que esta autoridad pueda resolver su situación migratoria en el territorio nacional.
 </p>
-<p class="centrado">
-    <strong>CONSTE</strong>
-</p>
+<p class="centrado"><strong>CONSTE</strong></p>
 <p>
-    Por lo que con fundamento en lo dispuesto en los artículos 1,11, 14 y 16 de la Constitución Política de los Estados Unidos Mexicanos, 1, 2, 6, 7, 12, 13, 14, 20 fracciones III y X, 66, 67, 68, 70, 77, 79, 111, 144 de la Ley de Migración; 1, 2, 55, 58, 194, 222, 232 y 233 del Reglamento de la Ley de Migración publicado en el Diario Oficial de la Federación en fecha 28 de septiembre de 2012 vigente a partir del 09 de noviembre de 2012; 1, 3, 9, 12, 13, 16 fracciones I, III, IV, V, VI, IX y X, 18, 19, 28, 29, 30, 32, 33, 35, 36, 38, 39, 44 y 49 de la Ley Federal del Procedimiento Administrativo;
-    [DELEGATORIO DE FACULTADES POR CADA OFICINA DE REPRESENTACIÓN].
+    Por lo que con fundamento en lo dispuesto en los artículos 1,11, 14 y 16 de la Constitución Política de los Estados Unidos Mexicanos, 1, 2, 6, 7, 12, 13, 14, 20 fracciones III y X, 66, 67, 68, 70, 77, 79, 111, 144 de la Ley de Migración; 1, 2, 55, 58, , 222, 232 y 233 del Reglamento de la Ley de Migración; 1, 3, 9, 12, 13, 16 fracciones I, III, IV, V, VI, IX y X, 18, 19, 28, 29, 30, 32, 33, 35, 36, 38, 39, 44 y 49 de la Ley Federal del Procedimiento Administrativo; y lo correspondiente a lo señalado en el Reglamento Interior de la Secretaría de Gobernación.
 </p>
-<p class="centrado">
-    <strong>ACUERDA</strong>
-</p>
+<p class="centrado"><strong>ACUERDA</strong></p>
 <p>
-    <strong>PRIMERO.- </strong>
-    Regístrese el presente asunto en el libro de gobierno bajo el número que le corresponda, e iníciese el Procedimiento Administrativo Migratorio correspondiente, a efecto de resolver en definitiva  la situación migratoria del extranjero de referencia en territorio nacional.
-    <br><strong>SEGUNDO.- </strong>
-    Notifíquese personalmente al extranjero la presente actuación para que surta los efectos legales a los que haya lugar.
+    <strong>PRIMERO.-</strong>&nbsp;Regístrese el presente asunto en el libro de gobierno bajo el número que le corresponda, e iníciese el Procedimiento Administrativo Migratorio correspondiente, a efecto de resolver en definitiva  la situación migratoria del extranjero de referencia en territorio nacional.
+    <br>
+    <strong>SEGUNDO.-</strong>&nbsp;Notifíquese personalmente al extranjero la presente actuación para que surta los efectos legales a los que haya lugar.
 </p>
-<p class="centrado">
-    <strong>CÚMPLASE</strong>
-</p>
+<p class="centrado"><strong>C&Uacute;MPLASE</strong></p>
 <p>
-    Así lo acordó y firma el [POSTGRADO] {{nombreac}} {{apellidopac}} {{apellidomac}}, [PUESTO O CARGO] 
-    del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente asistido de los testigos que al final firman para constancia del presente acto.
+    Así lo acordó y firmo el Lic. [NOMBRE DE LA AUTORIDAD ACTUANTE], [CARGO DE LA AUTORIDAD ACTUANTE] 
+    adscrito a la [LUGAR DE ADSCRIPCIÓN DE LA AUTORIDAD ACTUANTE] del Instituto Nacional de Migración, quien actúa legalmente asistido de los testigos que al final firman de conformidad. 
 </p>
 <div class="columnas">
     <div class="columna">
-        <p><strong>[PUESTO O CARGO DE AC]</strong></p>
-        <p class="firma">[POSTGRADO] {{nombreac}} {{apellidomac}} {{apellidopac}} <br></p>
+        <p><strong>[CARGO AC]</strong></p>
+        <p class="firma">Lic. [Nombre y apellido]</p>
     </div>
     <div class="columna">
-        <p><strong>La persona extranjera</strong></p>
-        <p class="firma">{{nombre}} {{apellidop}} {{apellidom}}</p>
+        <p><strong>LA PERSONA EXTRANJERA</strong></p>
+        <p class="firma">[Nombre y apellido]</p>
     </div>
 </div>
 <p class="centrado">
@@ -74,12 +54,20 @@
 </p>
 <div class="columnas">
     <div class="columna">
-        <p class="firma">{{acuerdo.nombreTestigoUno}} [{{acuerdo.apellidoPaternoTestigoUno}}] [SEGUNDO AP]</p>
+        <p class="firma">Lic. [Nombre y apellido]</p>
     </div>
     <div class="columna">
-        <p class="firma">[[NOMBRE DEL TESTIGO] [PRIMER AP] [SEGUNDO AP]</p>
+        <p class="firma">Lic. [Nombre y apellido]</p>
     </div>
 </div>
-
-
+<div class="columnas">
+    <div class="columna">
+        <p><strong>REPRESENTANTE LEGAL</strong></p>
+        <p class="firma">Lic. [Nombre y apellido]</p>
+    </div>
+    <div class="columna">
+        <p><strong>TRADUCTOR PR&Aacute;CTICO HABILITADO</strong></p>
+        <p class="firma">[Nombre y apellido]</p>
+    </div>
+</div>
 {% endblock %}
