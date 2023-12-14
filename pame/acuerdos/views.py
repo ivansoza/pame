@@ -13,6 +13,8 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.storage import default_storage
 from django.contrib.auth import get_user_model
+import locale
+from datetime import datetime
 
 import os
 import locale
@@ -4149,21 +4151,37 @@ def guardar_notificacion_fiscalia(request, notificacion_fiscalia_id):
     
 #------ FIN DE NOTIFICACION FISCALIA
 
-
-# ----- Genera el documento PDF, de Acuerdo de nombramiento de representante legal
+# nombramiento representante
 def nombramientoRepresentante_pdf(request):
-
-
-
-
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  
     nup = request.POST.get('nup', '')
     no_proceso = get_object_or_404(NoProceso, nup=nup)
     extranjero = no_proceso.extranjero
+    delaAutoridad = request.POST.get('autoridadActuante', '')
+    numeroExpediente = request.POST.get('numeroExpediente', '')
+    testigo1 = request.POST.get('testigo1', '')
+    gradotestigo1 = request.POST.get('grado_academico_testigo1', '')
+    testigo2 = request.POST.get('testigo2', '')
+    gradotestigo2 = request.POST.get('grado_academico_testigo2', '')
 
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+    consulado = None
+    ahora = datetime.now()
+    fecha_formato_largo = ahora.strftime("%d de %B del %Y")
+    hora_actual = ahora.strftime("%H:%M:%S")
     context = {
         'nup': nup,
         'extranjero': extranjero,  # Agregando el objeto extranjero al context
-
+        'fecha_formato_largo': fecha_formato_largo,  # Agregar la fecha formateada al contexto
+        'hora_actual': hora_actual, # Agregar la fecha actual al contexto
+        'numeroExpediente':numeroExpediente,
+        'testigo1':testigo1,
+        'testigo2':testigo2,
+        'gradoTestigo1':gradotestigo1,
+        'gradoTestigo2':gradotestigo2,
+        
     }
     template = get_template('documentos/nombramientoRepresentante.html')
     html_content = template.render(context)

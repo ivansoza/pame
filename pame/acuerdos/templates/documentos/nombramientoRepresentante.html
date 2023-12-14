@@ -1,10 +1,15 @@
 {% extends "documentos/base.html" %}
 
 {% block header %}
-<br>[OFICINA O ESTACION]
+<br>{{extranjero.deLaEstacion.oficina|upper}}
 <br>
-<br>[LUGAR Y FECHA COMPLETA]
+<br>{{extranjero.deLaEstacion.estado|upper}} {{fecha_formato_largo|upper}}
+
+{% if numeroExpediente%}
+<br>{{numeroExpediente|upper}}
+{% else %}
 <br>[NUMERO DE EXPEDIENTE]
+{% endif %}
 <br>
 <br>NÚMERO DE ACUERDO: INM/----/----/----/2023
 {% endblock %}
@@ -31,8 +36,13 @@
     Esta unidad administrativa atendiendo al principio del debido proceso de aquellas personas extranjeras alojadas y presentadas ante la autoridad migratoria y de conformidad a lo señalado en la Constitución Política Mexicana y legislación en materia migratoria, así como lo publicado el día 08 de septiembre del 2023, dentro del Semanario Judicial de la Federación, por el cual la Suprema Corte de Justicia de la Nación, 1ª sala dentro de la tesis 1ª./J.113/2023 (11ª.) tipo Jurisprudencia, acordó “PROCEDIMIENTO ADMINISTRATIVO MIGRATORIO.- LAS PERSONAS MIGRANTES TIENEN DERECHO A UNA DEFENSA ADECUADA IRRENUNCIABLE COMO GARANTIA DE DERECHO AL DEBIDO PROCESO”.
     <br>
     Dentro de las actuaciones que integran el procedimiento administrativo migratorio instaurado a nombre de la persona extranjera 
-    [NOMBRE Y APELLIDO] de nacionalidad [NACIONALIDAD], con fecha de nacimiento 
-    [FECHA DE NACIMIENTO] se desprende que mediante oficio [NUMERO DE OFICIO SOLICITUD DE DEFENSOR DE OFICIO] o correo electrónico institucional, se solicitó a la Defensoría Pública Federal y Local 
+      <strong>
+                {{ extranjero.nombreExtranjero |upper}} {{ extranjero.apellidoPaternoExtranjero |upper}}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero |upper}}
+                {% endif %}
+            </strong>  de nacionalidad <strong>{{extranjero.nacionalidad.nombre|upper}}</strong>, con fecha de nacimiento 
+    <strong>{{extranjero.fechaNacimiento}}</strong> se desprende que mediante oficio [NUMERO DE OFICIO SOLICITUD DE DEFENSOR DE OFICIO] o correo electrónico institucional, se solicitó a la Defensoría Pública Federal y Local 
     [EN CASO QUE SE TENGA REPRESENTACIÓN PARTICULAR AGREGAR DATOS], su presencia en instalaciones migratorias para su formal nombramiento con número de cédula profesional y representación del extranjero en comentó dentro del presente procedimiento de conformidad a lo establecido 
     a los artículos 14 y 109 fracción V de la Ley de Migración y artículo 222 de su Reglamento.
 </p>
@@ -63,24 +73,61 @@
 </p>
 <div class="columnas">
     <div class="columna">
+    {% if autoridad_actuante%}
+        <p><strong>{{autoridad_actuante.cargo}}</strong></p>
+        <p class="firma">Lic. {{autoridad_actuante}}</p>
+    {% else %}
         <p><strong>[PUESTO O CARGO DE AC]</strong></p>
         <p class="firma">Lic. [nombre y apellido]</p>
+    {% endif %}
+
+
+
+
+    
     </div>
     <div class="columna">
         <p><strong>La persona extranjera</strong></p>
-        <p class="firma">[nombre y apellido]</p>
+        <p class="firma"> {{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}
+                {% if extranjero.apellidoMaternoExtranjero %}
+                    {{ extranjero.apellidoMaternoExtranjero }}
+                {% endif %}</p>
     </div>
 </div>
 <p class="centrado">
     <strong>TESTIGOS DE ASISTENCIA</strong>
 </p>
 <div class="columnas">
-    <div class="columna">
-        <p class="firma">Lic. [nombre y apellido]</p>
-    </div>
-    <div class="columna">
-        <p class="firma">Lic [nombre y apellido]</p>
-    </div>
+
+    {% if testigo1 %}
+        <div class="columna">
+            <p class="firma">{% if gradoTestigo1 %}
+            {{gradoTestigo1}}
+            {% else %}
+            [GRADO ACADEMICO]
+            {% endif %}. {{testigo1}}</p>
+        </div>
+    {% else %}
+        <div class="columna">
+            <p class="firma">Lic. [nombre y apellido]</p>
+        </div>
+    {% endif %}
+
+    {% if testigo2 %}
+        <div class="columna">
+            <p class="firma">{% if gradoTestigo2 %}
+            {{gradoTestigo2}}
+            {% else %}
+            [GRADO ACADEMICO]
+            {% endif %}. {{testigo2}}</p>
+        </div>
+    {% else %}
+        <div class="columna">
+            <p class="firma">Lic [nombre y apellido]</p>
+        </div>
+    {% endif %}
+
+
 </div>
 <div class="columnas">
     <div class="columna">
