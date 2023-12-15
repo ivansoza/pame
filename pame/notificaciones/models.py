@@ -226,9 +226,9 @@ class DocumentoRespuestaDefensoria(models.Model):
 
 
 GRADOS_ACADEMICOS = [
-    ('Doctorado', 'Doctorado'),
-    ('Maestría', 'Maestría'),
-    ('Licenciatura', 'Licenciatura'),
+    ('Dr', 'Doctorado'),
+    ('MSc', 'Maestría'),
+    ('Lic', 'Licenciatura'),
 
 ]
 class nombramientoRepresentante(models.Model):

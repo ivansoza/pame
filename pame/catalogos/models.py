@@ -231,7 +231,12 @@ ESTATUS_REPRESENTANTES = [
     ('Inactivo', 'Inactivo'),
     # Agrega más opciones de estatus si son necesarias
 ]
+GRADOS_ACADEMICOS_NUEVO = [
+    ('Dr', 'Doctorado'),
+    ('MSc', 'Maestría'),
+    ('Lic', 'Licenciatura'),
 
+]
 class RepresentantesLegales(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
     apellido_paterno = models.CharField(max_length=100, verbose_name='Apellido paterno')
@@ -242,6 +247,8 @@ class RepresentantesLegales(models.Model):
     cedula = models.CharField(max_length=50, verbose_name='Número de Cédula')
     estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación migratoria')
     defensoria = models.ForeignKey('notificaciones.Defensorias', on_delete=models.CASCADE)
+    grado_representante_legal=models.CharField(verbose_name='Grado Académico del Representante Legal', max_length=50, choices=GRADOS_ACADEMICOS_NUEVO)
+
     def __str__(self):
         return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno or ""}'
     
