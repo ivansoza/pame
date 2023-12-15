@@ -123,14 +123,14 @@
             <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
         </h1>
     </div>
-    <div id="notificacionConsularFormContainer">
-        <form method="post" id="notificacionConsularForm">
+    <div id="nombramientoRepresentanteFormContainer">
+        <form method="post" id="nombramientoRepresentanteForm">
             {% csrf_token %}
             <div class="card p-3">
                 <!-- Navegación por Pestañas -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="notificacion-tab" data-toggle="tab" href="#notificacion" role="tab" aria-controls="notificacion" aria-selected="true">Notificación Consular</a>
+                        <a class="nav-link active" id="notificacion-tab" data-toggle="tab" href="#notificacion" role="tab" aria-controls="notificacion" aria-selected="true">Nombramiento Representante Legal</a>
                     </li>
                     <!-- Más pestañas si son necesarias -->
                 </ul>
@@ -263,7 +263,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('previewPdfButton').addEventListener('click', function() {
-        var formData = new FormData(document.getElementById('notificacionConsularForm'));
+        var formData = new FormData(document.getElementById('nombramientoRepresentanteForm'));
         
         fetch('/acuerdos/nombramientoRepresentante', {
             method: 'POST',

@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from django.views import View
-
-# Create your views here.
+from vigilancia.models import Extranjero, NoProceso
+from salud.models import TIPO_DIETAS, CertificadoMedico
+from django.contrib.auth.mixins import LoginRequiredMixin
+from vigilancia.views import ListView
+from django.db.models import Max
+from django.db.models import Exists, OuterRef, Subquery
 
 
 def homeCocinaGeneral (request):
@@ -9,10 +13,56 @@ def homeCocinaGeneral (request):
 
 def homeCocinaResponsable (request):
     return render(request, "home/homeCocinaResponsable.html")
+class comedor(LoginRequiredMixin, ListView):
+    model = NoProceso
+    template_name='home/comedor.html'
+    context_object_name = 'extranjeros'
+    login_url = '/permisoDenegado/'
+    
+
+    def get_queryset(self):
+        estacion_usuario = self.request.user.estancia
+        tipo_dieta = self.request.GET.get('tipo_dieta', None)
+
+        # Filtrar extranjeros por estación
+        extranjeros_filtrados = Extranjero.objects.filter(deLaEstacion=estacion_usuario)
+
+        # Filtrar por el último NoProceso para cada extranjero
+        ultimo_no_proceso = NoProceso.objects.filter(
+            extranjero_id=OuterRef('pk')
+        ).order_by('-consecutivo')
+
+        extranjeros_filtrados = extranjeros_filtrados.annotate(
+            ultimo_nup_id=Subquery(ultimo_no_proceso.values('nup')[:1])
+        )
+
+        # Obtener todos los NoProceso que tengan al menos un CertificadoMedico
+        queryset = NoProceso.objects.filter(
+            nup__in=[e.ultimo_nup_id for e in extranjeros_filtrados if e.ultimo_nup_id],
+            certificados_medicos__isnull=False
+        ).distinct()
 
 
-def comedor (request):
-    return render(request, "home/comedor.html")
 
+        # Aplicar el filtro de tipo de dieta
+        
+        if tipo_dieta == 'general':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='GENERAL')
+        elif tipo_dieta == 'religiosa':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='RELIGIOSA')
+        elif tipo_dieta == 'vegetariana':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='VEGETARIANA')
+        elif tipo_dieta == 'clinica':
+            queryset = queryset.filter(certificados_medicos__tipoDieta='CLÍNICA')
 
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        context['navbar'] = 'cocina'
+        context['seccion'] = 'comedor'
+        context['nombre_estacion'] = self.request.user.estancia.nombre
+        context['tipo_dieta'] = CertificadoMedico.objects.values_list('tipoDieta', flat=True).distinct()
+
+        return context

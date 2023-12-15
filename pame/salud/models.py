@@ -106,8 +106,8 @@ OPCIONES_BOOL = [
     (False, 'No'),
 ]
 class CertificadoMedico(models.Model):
-    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, related_name='certificados_medicos')
-    nup = models.ForeignKey(NoProceso, on_delete= models.CASCADE)
+    extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE)
+    nup = models.ForeignKey(NoProceso, on_delete= models.CASCADE, related_name='certificados_medicos')
     delaEstacion = models.ForeignKey(Estacion, on_delete= models.CASCADE)
     delMedico = models.ForeignKey(PerfilMedico, on_delete=models.CASCADE)
     fechaHoraCertificado = models.DateTimeField(auto_now_add=True)
