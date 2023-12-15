@@ -25,7 +25,7 @@ import qrcode
 from weasyprint import HTML
 
 from comparecencia.models import Comparecencia, FirmaComparecencia
-from vigilancia.models import Extranjero, Firma, NoProceso
+from vigilancia.models import Extranjero, Firma, NoProceso,HuellaTemp, descripcion
 from llamadasTelefonicas.models import Notificacion, LlamadasTelefonicas
 from acuerdos.models import Documentos, ClasificaDoc, TiposDoc, Repositorio, TipoAcuerdo, Acuerdo
 from pertenencias.models import (
@@ -680,16 +680,65 @@ def presentacion_pdf(request):
     
     return response
 
+
 # ----- Genera el documento PDF, de Presentacion   
-def filiacion_pdf(request):
-    # no_proceso = NoProceso.objects.get(nup=nup_id)
-    # extranjero = no_proceso.extranjero
-    
+def filiacion_pdf(request, nup_id):
+    usuario_actual = request.user
+
+    no_proceso = NoProceso.objects.get(nup=nup_id)
+    extranjero = no_proceso.extranjero 
+
+    huellas = HuellaTemp.objects.using('huella_base').filter(dni=extranjero.id).values()
+    descri = descripcion.objects.get(delExtranjero=extranjero.id)
+    foto = extranjero.biometrico
+    foto_url = f"{settings.BASE_URL}{foto.fotografiaExtranjero.url}"
+    firma_ex = extranjero.firma
+    firmaex_url = f"{settings.BASE_URL}{firma_ex.firma_imagen.url}"
+    huella_images = [None] * 10
+
+    # Recorrer los dedos del 1 al 10
+    for dedo in range(1, 11):
+        # Obtener la huella correspondiente al dedo actual
+        huella = huellas.filter(ndedo=dedo).first()
+        
+        # Verificar si la huella existe y tiene una imagen
+        if huella and huella['imagen']:
+            # Almacenar la imagen en la lista en la posición correspondiente al dedo
+            huella_images[dedo - 1] = huella['imagen']
+
+    # Ahora, puedes acceder a las imágenes de cada dedo en la lista huella_images:
+    imagen_1_huella = huella_images[0]
+    imagen_2_huella = huella_images[1]
+    imagen_3_huella = huella_images[2]
+    imagen_4_huella = huella_images[3]
+    imagen_5_huella = huella_images[4]
+    imagen_6_huella = huella_images[5]
+    imagen_7_huella = huella_images[6]
+    imagen_8_huella = huella_images[7]
+    imagen_9_huella = huella_images[8]
+    imagen_10_huella = huella_images[9]
+
     #consultas 
     
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
+        'extranjero':extranjero,
+        'huella':huellas,
+        'foto':foto_url,
+        'firmaex':firmaex_url,
+        'huella_2':imagen_2_huella,
+        'huella_1':imagen_1_huella,
+        'huella_3':imagen_3_huella,
+        'huella_4':imagen_4_huella,
+        'huella_5':imagen_5_huella,
+        'huella_6':imagen_6_huella,
+        'huella_7':imagen_7_huella,
+        'huella_8':imagen_8_huella,
+        'huella_9':imagen_9_huella,
+        'huella_10':imagen_10_huella,
+        'descripcion':descri,
+       
     }
 
     # Obtener la plantilla HTML
@@ -698,9 +747,25 @@ def filiacion_pdf(request):
 
     # Crear un objeto HTML a partir de la plantilla HTML
     html = HTML(string=html_content)
-
-    # Generar el PDF
     pdf_bytes = html.write_pdf()
+
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Inicio")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Media Filiación", delaClasificacion=clasificacion)
+   
+    nombre_pdf = f"04_Media_filiación.pdf"
+    no_proceso = extranjero.nup
+
+    no_proceso.save()
+
+
+    repo = Repositorio(
+        nup=no_proceso.nup,
+        delTipo=tipo_doc,
+        delaEstacion=usuario_actual.estancia,
+        delResponsable=usuario_actual.get_full_name(),
+    )
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
 
     # Devolver el PDF como una respuesta HTTP
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
