@@ -2803,7 +2803,7 @@ class CrearInventarioViewGeneral(LoginRequiredMixin,CreatePermissionRequiredMixi
         if estatus == "Trasladado":
             return reverse('listarExtranjerosEstacion')
         else:
-          return reverse('listTrasladados')
+            return reverse('listPertenenciasGeneral', kwargs={'inventario_id': self.object.id})
 
 
     def form_valid(self, form):
