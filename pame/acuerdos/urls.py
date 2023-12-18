@@ -67,7 +67,7 @@ urlpatterns = [
     path('conclusion-procedimiento', conclusionProcedimiento_pdf, name='conclusionPDF'),
     path('procedimiento-administrativo', procedimientoAdministrativo_pdf, name='procedimientoPDF'),
     path('ampliacion-alojamiento', ampliacionAlojamiento_pdf, name='ampliacionPDF'),
-    path('filiacion/<str:nup_id>', filiacion_pdf, name='filiacionPDF'),
+    path('filiacion/<str:nup_id>/', filiacion_pdf, name='filiacionPDF'),
     
     
 
