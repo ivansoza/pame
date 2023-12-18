@@ -689,6 +689,8 @@ def filiacion_pdf(request, nup_id):
 
     no_proceso = NoProceso.objects.get(nup=nup_id)
     extranjero = no_proceso.extranjero 
+    ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+
 
     huellas = HuellaTemp.objects.using('huella_base').filter(dni=extranjero.id).values()
     descri = descripcion.objects.get(delExtranjero=extranjero.id)
@@ -752,16 +754,14 @@ def filiacion_pdf(request, nup_id):
     pdf_bytes = html.write_pdf()
 
     clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Inicio")
-    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="Media Filiación", delaClasificacion=clasificacion)
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="04 Media Filiación", delaClasificacion=clasificacion)
    
     nombre_pdf = f"04_Media_filiación.pdf"
-    no_proceso = extranjero.nup
 
-    no_proceso.save()
 
 
     repo = Repositorio(
-        nup=no_proceso.nup,
+        nup=ultimo_no_proceso,
         delTipo=tipo_doc,
         delaEstacion=usuario_actual.estancia,
         delResponsable=usuario_actual.get_full_name(),

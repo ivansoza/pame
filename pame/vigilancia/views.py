@@ -46,7 +46,7 @@ from llamadasTelefonicas.models import Notificacion
 from pertenencias.models import EnseresBasicos
 import sys
 import pickle
-
+from acuerdos.models import Repositorio
 from django.http import JsonResponse
 from django.views import View
 from traslados.models import Traslado, ExtranjeroTraslado
@@ -4358,6 +4358,8 @@ class afiliacion(LoginRequiredMixin,ListView):
         ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
         ultimo_no_proceso_id = ultimo_no_proceso.nup
         context['nup']= ultimo_no_proceso_id
+        documento_existente = Repositorio.objects.filter(nup=ultimo_no_proceso, delTipo__descripcion="04 Media Filiación").exists()
+        context['documento_existe']= documento_existente
         return context
 
 
