@@ -1,0 +1,190 @@
+{% extends 'seguridad/baseSeguridadGeneral.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'css/forms/style.css' %}?v1.2ggg">
+{% endblock link %}
+
+{% block dashboard %}
+
+{% endblock dashboard %}
+{% block contenido %}
+<div class="capture-container">
+    <video id="webcam" width="60%" height="100%" autoplay></video>
+    <canvas id="capturedImage" width="60%" height="70%" style="width:55%;height:100bvtr%;"></canvas>
+</div>
+<button id="capturarFoto" class="btn btn-custom1">Capturar foto</button>
+<button id="confirmarFoto" class="btn btn-custom2">Buscar Extranjero</button>
+<button id="nuevaFoto" class="btn btn-custom1">Tomar nueva foto</button>
+{% endblock contenido %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let verifiedObj = JSON.parse(localStorage.getItem('verifiedTime') || '{}');
+            let isVerified = verifiedObj.time &&
+                verifiedObj.extranjeroId === '{{ extranjero_id }}' &&
+                verifiedObj.puestaId1 === '{{ fernandoteacalco_id }}' &&
+                (new Date().getTime() - verifiedObj.time) < 300000;
+    
+            if (isVerified) {
+                // También debemos establecer un nuevo temporizador para manejar el caso en que la página no se recargue
+                setTimeout(() => {
+                    isVerified = false;
+                    localStorage.removeItem('verifiedTime'); // limpiar el valor almacenado
+                }, 300000 - (new Date().getTime() - verifiedObj.time));
+            }
+    
+            function resetCamera() {
+                let video = document.getElementById('webcam');
+                let canvas = document.getElementById('capturedImage');
+    
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+    
+                video.removeAttribute('src');
+                video.load();
+    
+                video.style.display = 'block';
+                canvas.style.display = 'none';
+    
+                document.getElementById('capturarFoto').style.display = 'inline-block';
+                document.getElementById('confirmarFoto').style.display = 'none';
+                document.getElementById('nuevaFoto').style.display = 'none';
+            }
+    
+            let video = document.getElementById('webcam');
+            let canvas = document.getElementById('capturedImage');
+    
+            // Almacena las dimensiones originales del canvas
+            let originalCanvasWidth = canvas.width;
+            let originalCanvasHeight = canvas.height;
+    
+            resetCamera();
+    
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function (error) {
+                    console.error("Error accediendo a la webcam: ", error);
+                });
+    
+            document.getElementById('capturarFoto').onclick = function (event) {
+                event.preventDefault();
+    
+                // Establecer las dimensiones del canvas para evitar cambios de tamaño al capturar
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+    
+                canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                video.style.display = 'none';
+                canvas.style.display = 'block';
+                document.getElementById("capturedImage").style.opacity = "1";
+    
+                document.getElementById('capturarFoto').style.display = 'none';
+                document.getElementById('confirmarFoto').style.display = 'inline-block';
+                document.getElementById('nuevaFoto').style.display = 'inline-block';
+                
+            };
+    
+            document.getElementById('nuevaFoto').onclick = function (event) {
+                event.preventDefault();
+                canvas.style.display = 'none';
+                video.style.display = 'block';
+    
+                document.getElementById("capturedImage").style.opacity = "0";
+    
+                document.getElementById('capturarFoto').style.display = 'inline-block';
+                document.getElementById('confirmarFoto').style.display = 'none';
+                document.getElementById('nuevaFoto').style.display = 'none';
+    
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+                navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+                    video.srcObject = stream;
+                });
+    
+                // Restaurar las dimensiones originales del canvas
+                canvas.width = originalCanvasWidth;
+                canvas.height = originalCanvasHeight;
+            };
+    
+            document.getElementById('confirmarFoto').onclick = function (event) {
+                event.preventDefault();
+                canvas.toBlob(function (blob) {
+                    let file = new File([blob], "foto_webcam.png", { type: "image/png" });
+                    const puesta_id = document.getElementById('id_deLaPuestaIMN').value;
+    
+                    let formData = new FormData();
+                    var extranjeroId = '{{ extranjero_id }}';
+    
+                    formData.append('image', file);
+                    formData.append('extranjero_id', extranjeroId);
+                    formData.append('puesta_id', puesta_id);
+    
+                    $.ajax({
+                        url: '/seguridad/manejar_imagen/',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: { 'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val() },
+                        success: function (data) {
+                            if (data.match) {
+                                isVerified = true;
+                                localStorage.setItem('verifiedTime', JSON.stringify({
+                                    time: new Date().getTime(),
+                                }));
+    
+                                setTimeout(() => {
+                                    isVerified = false;
+                                    localStorage.removeItem('verifiedTime');
+                                }, 300000);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Coincidencia Exitosa!',
+                                    text: data.similarity,
+                                    confirmButtonText: 'Aceptar',
+                                    confirmButtonColor: '#20302B',
+                                    reverseButtons: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        const redirectURL = data.redirect_url;
+                                        window.location.href = redirectURL;
+                                    }
+                                });
+                                $('#acceptButton').data('href', data.redirect_url);
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¡No hay coincidencia!',
+                                    text: data.similarity
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error al enviar la imagen:', error.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: '¡Algo salió mal!',
+                                footer: '<a href>¿La persona en la foto no coincide con los datos?</a>'
+                            });
+                        }
+                    });
+    
+                    resetCamera();
+                }, 'image/png');
+            };
+        });
+    </script>
+    
+{% endblock script %}

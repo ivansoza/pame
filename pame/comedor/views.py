@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.views import View
-from vigilancia.models import Extranjero, NoProceso
+from vigilancia.models import Extranjero, NoProceso, PuestaDisposicionINM
 from salud.models import TIPO_DIETAS, CertificadoMedico
 from django.contrib.auth.mixins import LoginRequiredMixin
-from vigilancia.views import ListView
+from vigilancia.views import CreatePermissionRequiredMixin, ListView
 from django.db.models import Max
 from django.db.models import Exists, OuterRef, Subquery
+from django.views.generic import CreateView, ListView,DetailView, TemplateView
+from .forms import validacioncomedor
+from django.urls import reverse
 
 
 def homeCocinaGeneral (request):
@@ -66,3 +69,13 @@ class comedor(LoginRequiredMixin, ListView):
         context['tipo_dieta'] = CertificadoMedico.objects.values_list('tipoDieta', flat=True).distinct()
 
         return context
+    
+    
+    
+class alimentos(LoginRequiredMixin,CreatePermissionRequiredMixin,CreateView):
+
+    model =Extranjero             
+    form_class = validacioncomedor    
+    template_name = 'home/entregaalimentos.html'
+    login_url = '/permisoDenegado/'  # Reemplaza con tu URL de inicio de sesión     
+    
