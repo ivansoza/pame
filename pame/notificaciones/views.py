@@ -1244,8 +1244,79 @@ class CrearNombramiento(View):
             'nup_id': nup_id,
             'extranjero': extranjero,
             'navbar': 'Notificaciones',
-            'seccion': 'consulado',
+            'seccion': 'defensoria',
         }
         
-        return render(request, 'defensoria/crearNotificacionDefensoria.html', context)
+        return render(request, 'defensoria/crearNombramientoInterno.html', context)
+
+
+
+class CrearNombramientoExterno(View):
+
+    def post(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        form = NotificacionConsularForm(request.POST)
+        if form.is_valid():
+            notificacionConsular = form.save(commit=False)
+            notificacionConsular.nup = no_proceso
+            notificacionConsular.save()
+
+            data = {
+                'success': True, 
+                'message': 'Notificación Consular creada con éxito.', 
+                'consulado_id': notificacionConsular.id
+            }
+            return JsonResponse(data, status=200)
+        else:
+            data = {'success': False, 'errors': form.errors}
+            return JsonResponse(data, status=400)
+        
+
+    def get(self, request, nup_id, *args, **kwargs):
+        no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+        extranjero = no_proceso.extranjero 
+        ultimo_registro = ExtranjeroDefensoria.objects.filter(nup=no_proceso).order_by('-fechaHora').first()
+        numero_oficio = ultimo_registro.oficio if ultimo_registro else None
+        defensoria = ultimo_registro.defensoria if ultimo_registro else None
+
+        initial_data = {
+            'delaEstacion': extranjero.deLaEstacion,
+            'nup':no_proceso,
+            'oficio': numero_oficio,  # Establecer el número de oficio inicial
+            'defensoria': defensoria,  # Establecer la defensoría inicial
+
+        }
+
+        form = NombramientoRepresentanteForm(initial=initial_data)
+
+        if defensoria:
+            representantes_legales = RepresentantesLegales.objects.filter(defensoria=defensoria)
+            form.fields['representanteLegal'].queryset = representantes_legales
+        else:
+            form.fields['representanteLegal'].queryset = RepresentantesLegales.objects.none()
+
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+                )
+        elif extranjero.deLaPuestaAC:
+                autoridades = AutoridadesActuantes.objects.filter(
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                    Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+                )
+        else:
+                autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form.fields['autoridadActuante'].queryset = autoridades
+
+        context = {
+            'form': form,
+            'nup_id': nup_id,
+            'extranjero': extranjero,
+            'navbar': 'Notificaciones',
+            'seccion': 'defensoria',
+        }
+        
+        return render(request, 'defensoria/crearNombramientoExterno.html', context)
 
