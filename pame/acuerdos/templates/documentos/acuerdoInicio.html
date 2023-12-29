@@ -1,6 +1,5 @@
 {% extends "documentos/base.html" %}
-
-
+{% load static %}
 
 {% block header %}
 <style>
@@ -10,7 +9,7 @@
 </style>
 
 <br><span id="textoMayusculas">{{estacion}}</span>
-<br>EXPEDIENTE NÚMERO: [NOMENCLATURA EXPEDIENTE]
+<br>EXPEDIENTE NÚMERO: {{acuerdo.numeroExpediente|upper}}
 <br><span id="textoMayusculas">{{lugar}} - {{dia}} de {{mes}} del {{anio}}</span>
 {% endblock %}
 
@@ -25,9 +24,29 @@
     <strong>ACUERDO DE INICIO</strong>
 </p>
 <p>
-    En {{lugar}} a los {{dia}} de {{mes}} del {{anio}}, el 
-    [POSTGRADO] {{nombreac}} {{apellidopac}} {{apellidomac}}, 
-    [PUESTO O CARGO] adscrito a {{estacion}} del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
+    En <strong> {{lugar}}</strong> a los <strong>{{dia}}</strong> de <strong>{{mes}}</strong> del <strong>{{anio}}</strong>, el 
+    <strong>
+    {% if acuerdo.autoridadActuante.autoridad.grado_academico == 'Doctorado' %}
+    Dr.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Maestría' %}
+    MSc.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Licenciatura' %}
+    Lic.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Bachillerato' %}
+    Bach.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Diplomado' %}
+    Dip.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Técnico' %}
+    Téc.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Secundaria' %}
+    Sec.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Primaria' %}
+    Prim.
+{% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Sin educación formal' %}
+    Sin edu.
+{% endif %}
+{{ acuerdo.autoridadActuante.autoridad.nombre }} {{ acuerdo.autoridadActuante.autoridad.apellidoPaterno }} {{ acuerdo.autoridadActuante.autoridad.apellidoMaterno }},</strong>
+    <strong>{{acuerdo.autoridadActuante.cargo}}</strong> adscrito a <strong>{{estacion}}</strong> del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente ante la presencia de dos testigos que al final firman para constancia.
 </p>
 <p class="centrado">
     <strong>HACE CONSTAR</strong>
@@ -56,28 +75,78 @@
     <strong>CÚMPLASE</strong>
 </p>
 <p>
-    Así lo acordó y firma el [POSTGRADO] {{nombreac}} {{apellidopac}} {{apellidomac}}, [PUESTO O CARGO] 
+    Así lo acordó y firma el <strong>
+        {% if acuerdo.autoridadActuante.autoridad.grado_academico == 'Doctorado' %}
+        Dr.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Maestría' %}
+        MSc.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Licenciatura' %}
+        Lic.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Bachillerato' %}
+        Bach.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Diplomado' %}
+        Dip.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Técnico' %}
+        Téc.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Secundaria' %}
+        Sec.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Primaria' %}
+        Prim.
+    {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Sin educación formal' %}
+        Sin edu.
+    {% endif %}
+    {{ acuerdo.autoridadActuante.autoridad.nombre }} {{ acuerdo.autoridadActuante.autoridad.apellidoPaterno }} {{ acuerdo.autoridadActuante.autoridad.apellidoMaterno }},</strong>
+        <strong>{{acuerdo.autoridadActuante.cargo}}</strong>
     del Instituto Nacional de Migración de la Secretaria de Gobernación, quien actúa legalmente asistido de los testigos que al final firman para constancia del presente acto.
 </p>
 <div class="columnas">
     <div class="columna">
-        <p><strong>[PUESTO O CARGO DE AC]</strong></p>
-        <p class="firma">[POSTGRADO] {{nombreac}} {{apellidomac}} {{apellidopac}} <br></p>
+        <p><strong>{{acuerdo.autoridadActuante.cargo}}</strong></p>
+        <img src="{{firmaAutoridad}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 5cm; transform: translate(-50%, -10%); object-fit: cover;">
+
+        <p class="firma">{% if acuerdo.autoridadActuante.autoridad.grado_academico == 'Doctorado' %}
+            Dr.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Maestría' %}
+            MSc.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Licenciatura' %}
+            Lic.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Bachillerato' %}
+            Bach.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Diplomado' %}
+            Dip.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Técnico' %}
+            Téc.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Secundaria' %}
+            Sec.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Primaria' %}
+            Prim.
+        {% elif acuerdo.autoridadActuante.autoridad.grado_academico == 'Sin educación formal' %}
+            Sin edu.
+        {% endif %}
+        {{ acuerdo.autoridadActuante.autoridad.nombre }} {{ acuerdo.autoridadActuante.autoridad.apellidoPaterno }} {{ acuerdo.autoridadActuante.autoridad.apellidoMaterno }}</strong> <br></p>
+
     </div>
     <div class="columna">
         <p><strong>La persona extranjera</strong></p>
+        <img src="{{firma}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 13cm; transform: translate(-50%, -10%); object-fit: cover;">
         <p class="firma">{{nombre}} {{apellidop}} {{apellidom}}</p>
     </div>
 </div>
+<br>
+<br>
 <p class="centrado">
     <strong>TESTIGOS DE ASISTENCIA</strong>
 </p>
 <div class="columnas">
     <div class="columna">
-        <p class="firma">{{acuerdo.nombreTestigoUno}} [{{acuerdo.apellidoPaternoTestigoUno}}] [SEGUNDO AP]</p>
+        <img src="{{firmaTestigo1}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 6cm; transform: translate(-50%, -10%); object-fit: cover;">
+
+        <p class="firma">{{acuerdo.nombreTestigoUno}} {{acuerdo.apellidoPaternoTestigoUno}} {{acuerdo.apellidoMaternoTestigoUno}}</p>
     </div>
     <div class="columna">
-        <p class="firma">[[NOMBRE DEL TESTIGO] [PRIMER AP] [SEGUNDO AP]</p>
+        <img src="{{firmaTestigo2}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 15cm; transform: translate(-50%, -10%); object-fit: cover;">
+
+        <p class="firma">{{acuerdo.nombreTestigoDos}} {{acuerdo.apellidoPaternoTestigoDos}} {{acuerdo.apellidoMaternoTestigoDos}}</p>
     </div>
 </div>
 

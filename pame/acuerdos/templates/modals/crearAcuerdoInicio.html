@@ -3,28 +3,111 @@
 
 
 <style>
-    .custom-header-color {
-        background-color: #8B2941;
-        color: white; /* Ajusta el color del texto según tu preferencia */
+    #myTab .nav-link {
+        pointer-events: none; /* Desactiva los eventos del ratón como el clic */
+        color: #9E8364; /* Color antes de ser seleccionado */
+        font-weight: normal;
     }
-    .custom-close-button {
-        color: white;
+    
+    #myTab .nav-link.active {
+        pointer-events: auto; /* Activa los eventos del ratón para la pestaña activa */
+        color: #000; /* Un color más fuerte cuando esté activo */
+        font-weight: bold;
     }
-
-    #qrCode img {
-        max-width: 50%;  /* Ajusta este valor según tus necesidades */
-        width: 100%;
-        display: block;
-        margin: 0 auto;  /* Centra la imagen horizontalmente */
+    input[readonly] {
+        background-color: #e9ecef;
+        color: #495057;
+        cursor: not-allowed;
+      }
+  
+  
+      .input-required {
+        border: 2px solid #d9534f; /* Rojo con un borde más grueso para mayor visibilidad */
+        border-radius: 4px; /* Opcional, para bordes redondeados */
+      }
+      
+      /* Opcional: Agrega un asterisco rojo a las etiquetas de los campos requeridos */
+      label.required::after {
+        content: " *";
+        color: red;
+      }
+      .input-required {
+        border: 2px solid #d9534f; /* Ajusta el color y el grosor del borde según necesites */
+      }
+      
+      .input-required + label::after {
+        content: " *";
+        color: red;
+      }
+  
+  
+    
+      .center-content {
+        text-align: center; /* Centra el texto y los elementos en línea */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Centra los elementos flexibles horizontalmente */
+        justify-content: center; /* Centra los elementos flexibles verticalmente */
     }
-</style>
+  
+    
+    #nextToRepresentanteLegal,
+  #nextToExtranjero,
+  #nextToTraductor,
+  #nextToTestigo1,
+  #nextToTestigo2,
+  #finalizarFirmas {
+    background-color: #902F4A;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Estilos al pasar el mouse por encima de los botones */
+  #nextToRepresentanteLegal:hover,
+  #nextToExtranjero:hover,
+  #nextToTraductor:hover,
+  #nextToTestigo1:hover,
+  #nextToTestigo2:hover,
+  #finalizarFirmas:hover {
+    background-color: #902F4A; /* Mantiene el mismo color de fondo */
+    box-shadow: none; /* Elimina la sombra para un aspecto más plano */
+    cursor: default; /* Cambia el cursor al estilo predeterminado */
+  
+  }
+  
+  .titulo-compare{
+    background-color: #777777;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: default;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    
+  
+  }
+  
+  
+  </style>
 
 
 
 <div class="modal-dialog modal-lg" role="document" id="myModal">
     <div class="modal-content">
         <div class="modal-header custom-header-color">
-            <h2 class="modal-title">Registro de los Testigos </h2>
+            <h2 class="modal-title">Registro de Autoridad y Testigos </h2>
             <button class="close custom-close-button" type="button" data-bs-dismiss="modal" aria-label="close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -35,8 +118,20 @@
 
                 <form id="acuerdoInicioForm">
                     {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_acuerdo.numeroExpediente|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_acuerdo.autoridadActuante|as_crispy_field }}
+                        </div>
+                    </div>
 
-                 <h3>Datos del Testigo Uno</h3>
+                    <div class="titulo-general-container mt-2">
+                        <h1 class="titulo-general">
+                            Datos del testigo uno
+                        </h1>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-4">
@@ -49,8 +144,11 @@
                             {{ form_acuerdo.apellidoMaternoTestigoUno|as_crispy_field }}
                         </div>
                     </div>
-                    <h3>Datos del Testigo Dos</h3>
-
+                    <div class="titulo-general-container mt-2">
+                        <h1 class="titulo-general">
+                            Datos del testigo dos
+                        </h1>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             {{ form_acuerdo.nombreTestigoDos|as_crispy_field }}
@@ -63,34 +161,33 @@
                         </div>
                     </div> 
                     <input type="hidden" name="step" value="1">
-                    <button type="button" id="nextStep">Siguiente</button>
+                    <button type="button" id="nextStep" class='btn btn-custom'>Siguiente</button>
                 </form>
             </div>
 
             <div id="qrCode" style="display:none;">
                 <div class="row">
+                    <div class="firma-section center-content" id="autoridadSection"  style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;'>
+                        <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
+                        <div>Nombre: <span style="color: #873542;" id= "nombreAutoridad"></span></div> 
+                        <img id="qrImageAutoridad" src="" alt="Código QR Testigo 1" style="height: 75%; width: 75%;">
+                        <button id="nextToTestigoDos" style="display:none;">Continuar</button>
+                    </div>
                  <!-- Firma del Testigo 1 -->
-                        <div class="col-md-12" id="testigoUnoSection">
-                            <h4>Firma del Testigo 1</h4>
-                            <h5 id="nombreTestigoUno" style="color:#873542;">Nombre del Testigo Uno</h5>
-                            <h5>Escanea el siguiente código QR para el Testigo Uno:</h5>
-                            <img id="qrImageTestigoUno" src="" alt="Código QR Testigo Uno">
-                            <div id="successMessageTestigoUno" style="display:none;">Firma capturada exitosamente</div>
-                            <img id="firmaTestigoUno" src="" alt="Firma Testigo Uno" style="max-width:100%;display:none;"> <!-- Esta es la nueva línea -->
-
+                 
+                        <div class="firma-section center-content" id="testigoUnoSection"  style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;'>
+                            <h4 class="titulo-compare">Firma del Testigo 1</h4>
+                            <div>Nombre: <span style="color: #873542;" id= "nombreTestigoUno"></span></div> 
+                            <img id="qrImageTestigoUno" src="" alt="Código QR Testigo 1" style="height: 75%; width: 75%;">
                             <button id="nextToTestigoDos" style="display:none;">Continuar</button>
                         </div>
 
                         <!-- Firma del Testigo 2 -->
                     <!-- Firma del Testigo 2 -->
-                        <div class="col-md-12" id="testigoDosSection" style="display:none;">
-                            <h4>Firma del Testigo 2</h4>
-                            <h5 id="nombreTestigoDos" style="color: #873542;">Nombre del Testigo Dos</h5>
-                            <h5>Escanea el siguiente código QR para el Testigo Dos:</h5>
-                            <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos">
-                            <div id="successMessageTestigoDos" style="display:none;">Firma capturada exitosamente</div>
-                            <img id="firmaTestigoDos" src="" alt="Firma Testigo Dos" style="max-width:100%;display:none;"> <!-- Esta es la nueva línea -->
-
+                    <div class="firma-section center-content" id="testigoDosSection"  style='display:none; margin-left: auto;margin-right: auto;width: 50%;text-align: center;'>
+                        <h4 class="titulo-compare">Firma del Testigo 2</h4>
+                        <div>Nombre: <span style="color: #873542;" id= "nombreTestigoDos"></span></div>
+                            <img id="qrImageTestigoDos" src="" alt="Código QR Testigo Dos" style="height: 75%; width: 75%;">
                             <button id="nextToPDFGeneration" style="display:none;">Continuar</button>
                         </div>
                 </div>
@@ -105,7 +202,22 @@
                         <br>
                         <br>
 
-                        <a href="#" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+                        <a href="{% url 'inicioPDF' proceso_id %}" target="_blank" id="generatePDFBtn" class="btn btn-primary">Generar oficio</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="BTNregresar" style="display:none;">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <!-- Ícono de FontAwesome para representar un PDF -->
+                        <h1>Documento generado exitosamente</h1>
+                        <i class="fa-solid fa-circle-check fa-7x" style="color: #1D1D1D;"></i>
+                        <br>
+                        <br>
+                        <br>
+                            <a href="{% url 'lisExtranjerosInicio' %}"
+                            class="btn btn-primary" >Regresar a lista de extranjeros</a>
                     </div>
                 </div>
             </div>
@@ -126,15 +238,19 @@
             });
         
             var firmasCapturadas = {
+                autoridad: false,
                 testigoUno: false,
                 testigoDos: false
             };
         
             var intervaloTestigoUno;
             var intervaloTestigoDos;
+            var intervaloAutoridad;
+            
         
             function comprobarFirmasCompletas() {
-                if (firmasCapturadas.testigoUno && firmasCapturadas.testigoDos) {
+                if (firmasCapturadas.autoridad && firmasCapturadas.testigoUno && firmasCapturadas.testigoDos) {
+                    clearInterval(intervaloAutoridad);
                     clearInterval(intervaloTestigoUno);
                     clearInterval(intervaloTestigoDos);
                     mostrarSeccionGenerarPDF();
@@ -150,7 +266,23 @@
                 console.log("Botón nextToPDFGeneration presionado.");
                 mostrarSeccionGenerarPDF();
             });
-        
+            function verificarFirmaAutoridad(acuerdoId) {
+                $.get('/acuerdos/check_firma_autoridad/' + acuerdoId + '/')
+                .done(function(data) {
+                    if (data.status == 'success') {
+                        firmasCapturadas.autoridad = true;
+                        clearInterval(intervaloAutoridad);
+                        $("#autoridadSection").hide();
+                        $("#testigoUnoSection").show();
+                        var acuerdoId = $("#qrImageAutoridad").attr("src").split("/").slice(-2, -1)[0]; // Obtenemos el acuerdoId desde la URL del QR
+                        $("#qrImageTestigoUno").attr("src", "/acuerdos/generar_qr/testigo_uno/" + acuerdoId + "/");
+                        var nombreCompletoTestigo= $("#id_nombreTestigoUno").val() + " " + $("#id_apellidoPaternoTestigoUno").val() + " " + $("#id_apellidoMaternoTestigoUno").val();
+                        $("#nombreTestigoUno").text(nombreCompletoTestigo);
+                        clearInterval(intervaloTestigoUno);
+                        intervaloTestigoUno = setInterval(function() { verificarFirmaTestigoUno(acuerdoId); }, 1000);
+                    }
+                });
+            }
         
             function verificarFirmaTestigoUno(acuerdoId) {
                 $.get('/acuerdos/check_firma_testigo_uno/' + acuerdoId + '/')
@@ -158,11 +290,14 @@
                     if (data.status == 'success') {
                         firmasCapturadas.testigoUno = true;
                         clearInterval(intervaloTestigoUno);
-                        $("#successMessageTestigoUno").show();
-                        $("#qrImageTestigoUno").hide(); // Ocultamos el QR
-
-                        $("#firmaTestigoUno").attr("src", data.image_url).show(); // Asumiendo que tienes un elemento img con id 'firmaTestigoUno'
-                        $("#nextToTestigoDos").show();
+                        $("#testigoUnoSection").hide();
+                        $("#testigoDosSection").show();
+                        var acuerdoId = $("#qrImageTestigoUno").attr("src").split("/").slice(-2, -1)[0]; // Obtenemos el acuerdoId desde la URL del QR
+                        $("#qrImageTestigoDos").attr("src", "/acuerdos/generar_qr/testigo_dos/" + acuerdoId + "/");
+                        var nombreCompletoTestigoDos = $("#id_nombreTestigoDos").val() + " " + $("#id_apellidoPaternoTestigoDos").val() + " " + $("#id_apellidoMaternoTestigoDos").val();
+                        $("#nombreTestigoDos").text(nombreCompletoTestigoDos);
+                        clearInterval(intervaloTestigoDos);
+                        intervaloTestigoDos = setInterval(function() { verificarFirmaTestigoDos(acuerdoId); }, 1000);
                     }
                 });
             }
@@ -173,16 +308,11 @@
                     if (data.status == 'success') {
                         firmasCapturadas.testigoDos = true;
                         clearInterval(intervaloTestigoDos);
-                        $("#successMessageTestigoDos").show();
-                        $("#qrImageTestigoDos").hide(); // Ocultamos el QR
-
-                        $("#firmaTestigoDos").attr("src", data.image_url).show(); // Asumiendo que tienes un elemento img con id 'firmaTestigoUno'
-
-                        $("#nextToPDFGeneration").show();
+                        $("#testigoDosSection").hide(); // Ocultamos el QR
+                        $("#generatePDFSection").show();
                     }
                 });
             }
-        
             $("#nextStep").click(function() {
                 var procesoId = "{{ proceso_id }}";
                 $.post("/acuerdos/registro_acuerdo_inicio/" + procesoId + "/", $("#acuerdoInicioForm").serialize())
@@ -190,14 +320,26 @@
                     var acuerdoId = data.acuerdo_id;
                     $("#acuerdoInicioFormDiv").hide();
                     $("#qrCode").show();
-                    $("#testigoUnoSection").show();
-                    $("#testigoDosSection").hide();
-        
-                    $("#qrImageTestigoUno").attr("src", "/acuerdos/generar_qr/testigo_uno/" + acuerdoId + "/");
-                    var nombreCompletoTestigoUno = $("#id_nombreTestigoUno").val() + " " + $("#id_apellidoPaternoTestigoUno").val() + " " + $("#id_apellidoMaternoTestigoUno").val();
-                    $("#nombreTestigoUno").text(nombreCompletoTestigoUno);
-        
-                    intervaloTestigoUno = setInterval(function() { verificarFirmaTestigoUno(acuerdoId); }, 1000);
+                    $("#autoridadSection").show();
+                    $("#testigoUnoSection").hide();
+            
+                    // Nueva parte para obtener información de la autoridad actuante
+                    var autoridadActuanteId = $("#id_autoridadActuante").val();
+                    $.get('/acuerdos/obtener_informacion_autoridad/' + autoridadActuanteId + '/')
+                        .done(function(response) {
+                            if (response.status == 'success') {
+                                var autoridad = response.autoridad;
+                                var nombreAutoridad = autoridad.nombre;
+                                var apellidoPaternoAutoridad = autoridad.apellido_paterno;
+                                var apellidoMaternoAutoridad = autoridad.apellido_materno;
+                                var nombreCompletoAutoridad = nombreAutoridad + " " + apellidoPaternoAutoridad + " " + apellidoMaternoAutoridad;
+            
+                                // Resto del código para mostrar la información
+                                $("#qrImageAutoridad").attr("src", "/acuerdos/generar_qr/autoridad/" + acuerdoId + "/");
+                                $("#nombreAutoridad").text(nombreCompletoAutoridad);
+                                intervaloTestigoUno = setInterval(function() { verificarFirmaAutoridad(acuerdoId); }, 1000);
+                            }
+                        });
                 })
                 .fail(function(xhr) {
                     if (xhr.status == 400) {
@@ -220,22 +362,11 @@
                     }
                 });
             });
-        
-            $("#nextToTestigoDos").click(function() {
-                $("#testigoUnoSection").hide();
-                $("#testigoDosSection").show();
-                var acuerdoId = $("#qrImageTestigoUno").attr("src").split("/").slice(-2, -1)[0]; // Obtenemos el acuerdoId desde la URL del QR
-                $("#qrImageTestigoDos").attr("src", "/acuerdos/generar_qr/testigo_dos/" + acuerdoId + "/");
-                var nombreCompletoTestigoDos = $("#id_nombreTestigoDos").val() + " " + $("#id_apellidoPaternoTestigoDos").val() + " " + $("#id_apellidoMaternoTestigoDos").val();
-                $("#nombreTestigoDos").text(nombreCompletoTestigoDos);
-        
-                intervaloTestigoDos = setInterval(function() { verificarFirmaTestigoDos(acuerdoId); }, 1000);
-            });
-        
             $("#generatePDFBtn").click(function() {
-                window.open(this.href, '_blank');
-                window.location.href = "{% url 'lisExtranjerosInicio' %}";
-                return false;  
+                document.getElementById('generatePDFSection').style.display = 'none';
+        
+                // Quitar el atributo "hidden" del botón regresar
+                document.getElementById('BTNregresar').style.display = 'block';
             });
         </script>
         

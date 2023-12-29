@@ -15,6 +15,7 @@ from django.core.files.storage import default_storage
 from django.contrib.auth import get_user_model
 import locale
 from datetime import datetime
+from django.db.models import Q
 
 import os
 import locale
@@ -38,7 +39,7 @@ from catalogos.models import AutoridadesActuantes, RepresentantesLegales, Traduc
 from salud.models import Consulta, CertificadoMedico, FirmaMedico, constanciaNoLesiones, CertificadoMedicoEgreso
 from notificaciones.models import NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionFiscalia, FirmaNotificacionComar, ExtranjeroDefensoria
 
-from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm
+from .forms import AcuerdoInicioForm, FirmaTestigoDosForm, FirmaTestigoUnoForm, FirmaAutoridadForm
 from .models import FirmaAcuerdo
 from notificaciones.models import firmasDefenso
 from django.conf import settings
@@ -229,18 +230,23 @@ def acuerdoInicio_pdf(request, nup_id):
     apellidop = extranjero.apellidoPaternoExtranjero
     apellidom = extranjero.apellidoMaternoExtranjero
     nacionalidad = extranjero.nacionalidad.nombre
-    nombreac = extranjero.deLaEstacion.responsable.nombre
-    apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
-    apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
     lugar = extranjero.deLaEstacion.estado
     estacion = extranjero.deLaEstacion.nombre
     dia = extranjero.fechaRegistro.day
     mes = extranjero.fechaRegistro.month
     anio = extranjero.fechaRegistro.year
+    usuario_actual = request.user
 
     dia_texto = numero_a_palabra(dia)
     mes_texto = mes_a_palabra(mes)
-
+    firma = extranjero.firma
+    firma_url = f"{settings.BASE_URL}{firma.firma_imagen.url}"
+    firmaa = FirmaAcuerdo.objects.filter(acuerdo=acuerdo).first()
+    firma_url_autoridad = f"{settings.BASE_URL}{firmaa.firmaAutoridad.url}"
+    firma1 = FirmaAcuerdo.objects.filter(acuerdo=acuerdo).first()
+    firma_url_testigo1 = f"{settings.BASE_URL}{firma1.firmaTestigoUno.url}"
+    firma2 = FirmaAcuerdo.objects.filter(acuerdo=acuerdo).first()
+    firma_url_testigo2 = f"{settings.BASE_URL}{firma2.firmaTestigoDos.url}"
     # Definir el contexto de datos para tu plantilla
     context = {
         'contexto': 'variables',
@@ -248,15 +254,16 @@ def acuerdoInicio_pdf(request, nup_id):
         'apellidop': apellidop,
         'apellidom': apellidom,
         'nacionalidad': nacionalidad,
-        'nombreac' : nombreac,
-        'apellidopac': apellidopac,
-        'apellidomac': apellidomac,
         'lugar': lugar,
         'estacion' : estacion,
         'dia': dia_texto,
         'mes': mes_texto,
         'anio': anio,
         'acuerdo': acuerdo,
+        'firma':firma_url,
+        'firmaAutoridad':firma_url_autoridad,
+        'firmaTestigo1':firma_url_testigo1,
+        'firmaTestigo2':firma_url_testigo2,
 
     }
 
@@ -269,6 +276,21 @@ def acuerdoInicio_pdf(request, nup_id):
 
     # Generar el PDF
     pdf_bytes = html.write_pdf()
+    clasificacion, _ = ClasificaDoc.objects.get_or_create(clasificacion="Inicio")
+    tipo_doc, _ = TiposDoc.objects.get_or_create(descripcion="01 Acuerdo Inicio", delaClasificacion=clasificacion)
+   
+    nombre_pdf = f"01_Acuerdo_Inicio.pdf"
+
+
+
+    repo = Repositorio(
+        nup=no_proceso,
+        delTipo=tipo_doc,
+        delaEstacion=usuario_actual.estancia,
+        delResponsable=usuario_actual.get_full_name(),
+    )
+    repo.archivo.save(nombre_pdf, ContentFile(pdf_bytes))
+    repo.save()
 
     # Devolver el PDF como una respuesta HTTP
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
@@ -2381,7 +2403,7 @@ class AcuerdoInicioCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['extranjero'] = Extranjero.objects.get(numeroExtranjero=self.kwargs['proceso_id'])
+        context['extranjero'] = "jssj"
         return context
 
     def form_valid(self, form):
@@ -2405,7 +2427,6 @@ class AcuerdoInicioCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         sign_link = "https://tu_dominio.com/firmar?token=token_unico" # Cambia tu_dominio y token_unico por lo que necesites
         
         # Crear QR
@@ -2451,13 +2472,36 @@ def registro_acuerdo_inicio(request, proceso_id):
                 return JsonResponse({'status':'ERROR', 'errors':errors}, status=400)
 
     else:
-        form_acuerdo_inicio = AcuerdoInicioForm()
+        extranjero = noproceso.extranjero
+
+        initial_data = {
+            'campo1': extranjero.deLaEstacion,  # Cambia 'campo1' por el nombre de tu campo
+            # Añade más campos y valores según sea necesario
+        }
+
+        form_acuerdo_inicio = AcuerdoInicioForm(initial=initial_data)
+        autoridades = AutoridadesActuantes.objects.none()
+        if extranjero.deLaPuestaIMN:
+            autoridades = AutoridadesActuantes.objects.filter(
+                Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+                Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+            )
+        elif extranjero.deLaPuestaAC:
+            autoridades = AutoridadesActuantes.objects.filter(
+                Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+                Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+            )
+        else:
+            autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+        form_acuerdo_inicio.fields['autoridadActuante'].queryset = autoridades
+
     return render(request, "modals/crearAcuerdoInicio.html", {'form_acuerdo': form_acuerdo_inicio, 'proceso_id': proceso_id})
 
 def generar_qr_acuerdos(request, acuerdo_id, testigo):
     base_url = settings.BASE_URL
-
-    if testigo == "testigo_uno":
+    if testigo == "autoridad":
+        url = f"{base_url}acuerdos/firma_autoridad/{acuerdo_id}/"
+    elif testigo == "testigo_uno":
         url = f"{base_url}acuerdos/firma_testigo_uno/{acuerdo_id}/"
     elif testigo == "testigo_dos":
         url = f"{base_url}acuerdos/firma_testigo_dos/{acuerdo_id}/"
@@ -2507,6 +2551,31 @@ class FirmaTestigoDosCreateView(CreateView):
         context['acuerdo_id'] = self.kwargs.get('acuerdo_id')
         return context
     
+def firma_autoridad(request, acuerdo_id):
+    acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
+    
+    if request.method == 'POST':
+        form = FirmaAutoridadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Verifica si ya existe una FirmaAcuerdo para este acuerdo
+            firma, created = FirmaAcuerdo.objects.get_or_create(acuerdo=acuerdo)
+
+            # Procesar la firma en base64
+            data_url = form.cleaned_data['firmaAutoridad']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridad_{acuerdo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridad.save(file_name, file, save=True)
+            
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadForm()
+
+    return render(request, 'firma/firma_autoridad.html', {'form': form, 'acuerdo_id': acuerdo_id})
 def firma_testigo_uno(request, acuerdo_id):
     acuerdo = get_object_or_404(Acuerdo, pk=acuerdo_id)
     
@@ -2572,6 +2641,20 @@ def check_firma_testigo_uno(request, acuerdo_id):
             })
     
     return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Uno aún no registrada'}, status=404)
+@csrf_exempt
+def check_firma_autoridad(request, acuerdo_id):
+    firmas = FirmaAcuerdo.objects.filter(acuerdo_id=acuerdo_id)
+    for firma in firmas:
+        if firma.firmaAutoridad:
+            # Obtener la URL de la imagen
+            image_url = request.build_absolute_uri(firma.firmaAutoridad.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo Uno encontrada',
+                'image_url': image_url
+            })
+    
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Uno aún no registrada'}, status=404)
 
 @csrf_exempt
 def check_firma_testigo_dos(request, acuerdo_id):
@@ -2587,6 +2670,18 @@ def check_firma_testigo_dos(request, acuerdo_id):
             })
     
     return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo Dos aún no registrada'}, status=404)
+
+def obtener_informacion_autoridad(request, autoridad_id):
+    autoridad = get_object_or_404(AutoridadesActuantes, id=autoridad_id)
+    
+    # Obtener datos relevantes de la autoridad
+    datos_autoridad = {
+        'nombre': autoridad.autoridad.nombre,
+        'apellido_paterno': autoridad.autoridad.apellidoPaterno,
+        'apellido_materno': autoridad.autoridad.apellidoMaterno,
+    }
+
+    return JsonResponse({'status': 'success', 'autoridad': datos_autoridad})
 class lisExtranjerosComparecencia(LoginRequiredMixin,ListView):
 
     model = NoProceso
@@ -3347,60 +3442,7 @@ def mes_a_palabra(mes):
     return meses[mes - 1]  # Restamos 1 porque los meses se cuentan desde 1 enero a 12 diciembre 
 
 # ----- Genera el documento PDF acuerdo de inicio y lo guarda en la ubicacion especificada 
-def acuerdoInicio_pdf(request, nup_id):
-    no_proceso = NoProceso.objects.get(nup=nup_id)
-    extranjero = no_proceso.extranjero
-    acuerdo = get_object_or_404(Acuerdo, nup=no_proceso)  # Aquí pasamos el objeto no_proceso directamente
-    nombre = extranjero.nombreExtranjero
-    apellidop = extranjero.apellidoPaternoExtranjero
-    apellidom = extranjero.apellidoMaternoExtranjero
-    nacionalidad = extranjero.nacionalidad.nombre
-    nombreac = extranjero.deLaEstacion.responsable.nombre
-    apellidopac = extranjero.deLaEstacion.responsable.apellidoPat
-    apellidomac = extranjero.deLaEstacion.responsable.apellidoMat
-    lugar = extranjero.deLaEstacion.estado
-    estacion = extranjero.deLaEstacion.nombre
-    dia = extranjero.fechaRegistro.day
-    mes = extranjero.fechaRegistro.month
-    anio = extranjero.fechaRegistro.year
 
-    dia_texto = numero_a_palabra(dia)
-    mes_texto = mes_a_palabra(mes)
-
-    # Definir el contexto de datos para tu plantilla
-    context = {
-        'contexto': 'variables',
-        'nombre': nombre,
-        'apellidop': apellidop,
-        'apellidom': apellidom,
-        'nacionalidad': nacionalidad,
-        'nombreac' : nombreac,
-        'apellidopac': apellidopac,
-        'apellidomac': apellidomac,
-        'lugar': lugar,
-        'estacion' : estacion,
-        'dia': dia_texto,
-        'mes': mes_texto,
-        'anio': anio,
-        'acuerdo': acuerdo,
-
-    }
-
-    # Obtener la plantilla HTML
-    template = get_template('documentos/acuerdoInicio.html')
-    html_content = template.render(context)
-
-    # Crear un objeto HTML a partir de la plantilla HTML
-    html = HTML(string=html_content)
-
-    # Generar el PDF
-    pdf_bytes = html.write_pdf()
-
-    # Devolver el PDF como una respuesta HTTP
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename=""'
-    
-    return response
 
 
 # ----- Genera el documento PDF de Lista de llamadas "Constancia de llamadas"

@@ -24,10 +24,10 @@ from .views import (
     resolucionRegularizacion_pdf, oficioRegularizacion_pdf, resolucionComar_pdf, 
     resolucionRetorno_pdf, documentoProvisional_pdf, razonesHumanitarias_pdf, 
     guardar_notificacion_consular, guardar_notificacion_comar, guardar_notificacion_fiscalia,
-    certificadoMedicoEgreso_pdf, filiacion_pdf
+    certificadoMedicoEgreso_pdf, filiacion_pdf, firma_autoridad, obtener_informacion_autoridad
 )
 
-from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos
+from .views import FirmaTestigoUnoCreateView, FirmaTestigoDosCreateView, check_firma_testigo_uno, check_firma_testigo_dos, check_firma_autoridad
 urlpatterns = [
     # urls prueba documentos pdf 
     path("plantilla", homeAcuerdo),
@@ -117,10 +117,13 @@ urlpatterns = [
 
     path('check_firma_testigo_uno/<int:acuerdo_id>/', check_firma_testigo_uno, name='check_firma_testigo_uno'),
     path('check_firma_testigo_dos/<int:acuerdo_id>/', check_firma_testigo_dos, name='check_firma_testigo_dos'),
+    path('check_firma_autoridad/<int:acuerdo_id>/', check_firma_autoridad, name='check_firma_autoridad'),
 
     path('firma_testigo_uno/<int:acuerdo_id>/', views.firma_testigo_uno, name='firma_testigo_uno'),
     path('firma_testigo_dos/<int:acuerdo_id>/', views.firma_testigo_dos, name='firma_testigo_dos'),
-    
+    path('firma_autoridad/<int:acuerdo_id>/', firma_autoridad, name='firma_autoridad'),
+    path('obtener_informacion_autoridad/<int:autoridad_id>/', obtener_informacion_autoridad, name='obtener_informacion_autoridad'),
+
     path('comparecencia/guardar/<int:comparecencia_id>/', guardar_comparecencia, name='guardar_comparecencia'),
     path('mostrar-comparecencia/<int:comparecencia_id>/', mostrar_comparecencia_pdf, name='guardar_comparecencia'),
     #inicio notificacion consulado 

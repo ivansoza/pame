@@ -470,8 +470,6 @@ class CrearNotificacionComar(View):
              'delaEstacion': extranjero.deLaEstacion,
              'nup':no_proceso,
              'delaComparecencia': ultima_comparecencia,  # Añadir la instancia de Comparecencia aquí
-
- 
         }
 
         form =  NotificacionComarForm(initial=initial_data)

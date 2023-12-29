@@ -1,6 +1,6 @@
 from django.db import models
 from catalogos.models import Estacion, Responsable
-from vigilancia.models import Extranjero, NoProceso
+from vigilancia.models import Extranjero, NoProceso, AutoridadesActuantes
 from django.core.exceptions import ValidationError
 import os
 from usuarios.models import Usuario
@@ -78,7 +78,8 @@ class Acuerdo(models.Model):
     declaracionExtanjero_comparecencia = models.TextField(null=True, blank=True, verbose_name="Declaración de Extranjero/Comparecencia")
     estacionDestino_traslado = models.CharField(max_length=50, null=True, blank=True, verbose_name="Estación de Destino/Traslado")
     motivo_traslado = models.TextField(null=True, blank=True, verbose_name="Motivo/Traslado")
-
+    autoridadActuante = models.ForeignKey(AutoridadesActuantes, on_delete=models.CASCADE, verbose_name='Autoridad Actuante')
+    numeroExpediente = models.CharField(max_length=60, verbose_name='Numero Expediente')
 
 class FirmaAcuerdo(models.Model):
     acuerdo = models.ForeignKey(Acuerdo, on_delete=models.CASCADE)
@@ -86,6 +87,8 @@ class FirmaAcuerdo(models.Model):
     firmaTestigoDos = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
     firmaTraductor = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
     firmaResponsable = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
+    firmaAutoridad = models.ImageField(upload_to='files/', null=True, blank=True) #Ubicacion de archivos/imagenes()
+
 
 
 class PDFGenerado(models.Model):
