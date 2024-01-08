@@ -108,95 +108,61 @@
     cursor: default;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    
-
 }
-
-
 </style>
 
 
 <div class="container mt-3">
+
     <div class="titulo-general-container ">
         <h1 class="titulo-general">
             Generar Nombramiento Interno: 
             <span class="puesta-color" ><strong>{{ extranjero.nombreExtranjero }} {{ extranjero.apellidoPaternoExtranjero }}{% if extranjero.apellidoMaternoExtranjero %} {{ extranjero.apellidoMaternoExtranjero }}{% endif %}</strong></span>
         </h1>
     </div>
+
+
     <div id="nombramientoRepresentanteFormContainer">
-        <form method="post" id="nombramientoRepresentanteForm">
+        <form method="post" id="nombramientoRepresentanteInternoForm">
             {% csrf_token %}
             <div class="card p-3">
-                <!-- Navegación por Pestañas -->
+
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="notificacion-tab" data-toggle="tab" href="#notificacion" role="tab" aria-controls="notificacion" aria-selected="true">Nombramiento Representante Legal</a>
                     </li>
-                    <!-- Más pestañas si son necesarias -->
                 </ul>
 
                 <!-- Contenido de las Pestañas -->
                 <div class="tab-content" id="myTabContent">
                     <!-- Sección de Notificación Consular -->
                     <div class="tab-pane fade show active" id="notificacion" role="tabpanel" aria-labelledby="notificacion-tab">
-
-                            <br>
-                            <input type="checkbox" id="necesitaRepresentanteExterno" name="necesitaRepresentanteExterno">
-                            <label for="necesitaRepresentanteExterno">¿Tiene Representante Externo?</label>
-
-                            <!-- Campos que se mostrarán si se selecciona 'Sí' para representante externo -->
-
-                            <div id="camposRepresentanteExterno" style="display:none;">
-                        
-                                <div class="row">
-                                    <div class="col-md-6">{{ form.representanteLegalExterno|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.grado_representante_externo|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.cedulaLegalExterno|as_crispy_field }}</div>
-                                </div>
-
-                            </div>
-
-
-                            <!-- Campo que se ocultará si se selecciona 'Sí' para representante externo -->
-                            <div id="campoRepresentanteLegal" style="display:block;">
-                                <div class="row">
-                                    <div class="col-md-6">{{ form.representanteLegal|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.oficio|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.numeroExpediente|as_crispy_field }}</div>
-                                </div>
-
-                            </div>
-                        
                         <div class="row">
-
-
-                     
-                            <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.autoridadActuante|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.defensoria|as_crispy_field }}</div>
 
-                            <div class="col-md-6">{{ form.autoridadActuante|as_crispy_field }}</div>       
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">{{ form.representanteLegal|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.oficio|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.numeroExpediente|as_crispy_field }}</div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">{{ form.testigo1|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.grado_academico_testigo1|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.testigo2|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.grado_academico_testigo2|as_crispy_field }}</div>
-
-
-
                         </div>
+
                         <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
                         <label for="necesitaTraductor">¿Necesita Traductor?</label>
-
-
-                              <div id="camposTraductor" style="display:none;">
-                        
+                              <div id="camposTraductor" style="display:none;">   
                                 <div class="row">
                                     <div class="col-md-6">{{ form.traductor|as_crispy_field }}</div>
-                               
                                 </div>
-
                             </div>
-
                     </div>
                     <!-- Más secciones de contenido según sea necesario -->
                 </div>
@@ -261,76 +227,7 @@
 <script>
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('previewPdfButton').addEventListener('click', function() {
-        var formData = new FormData(document.getElementById('nombramientoRepresentanteForm'));
-        
-        fetch('/acuerdos/nombramientoRepresentante', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
-            credentials: 'same-origin'
-        }).then(response => response.blob())
-          .then(blob => {
-              var pdfUrl = URL.createObjectURL(blob);
-              document.getElementById('pdfPreview').src = pdfUrl;
-              document.getElementById('pdfPreviewContainer').style.display = 'block';
-          })
-          .catch(error => {
-              console.error('Error al generar la vista previa del PDF:', error);
-          });
-    });
-
-    // Event listener para el botón de cerrar
-    document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
-        document.getElementById('pdfPreviewContainer').style.display = 'none';
-        document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
-    });
-});
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    var checkboxRepresentanteExterno = document.getElementById('necesitaRepresentanteExterno');
-    var camposRepresentanteExterno = document.getElementById('camposRepresentanteExterno');
-    var campoRepresentanteLegal = document.getElementById('campoRepresentanteLegal');
-
-    function actualizarCamposRepresentante() {
-        if (checkboxRepresentanteExterno.checked) {
-            camposRepresentanteExterno.style.display = 'block';
-            campoRepresentanteLegal.style.display = 'none';
-        } else {
-            camposRepresentanteExterno.style.display = 'none';
-            campoRepresentanteLegal.style.display = 'block';
-        }
-    }
-
-    checkboxRepresentanteExterno.addEventListener('change', actualizarCamposRepresentante);
-    actualizarCamposRepresentante(); // Llamarlo inicialmente para establecer el estado correcto
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    var checkboxTraductor = document.getElementById('necesitaTraductor');
-    var camposRepresentanteExterno = document.getElementById('camposTraduvtor');
-    var campoRepresentanteLegal = document.getElementById('campoTraductor');
-
-    function actualizarCamposTraductor() {
-        if (checkboxTraductor.checked) {
-            camposTraductor.style.display = 'block';
-            campoTraductor.style.display = 'none';
-        } else {
-            camposTraductor.style.display = 'none';
-            campoTraductor.style.display = 'block';
-        }
-    }
-
-    checkboxTraductor.addEventListener('change', actualizarCamposTraductor);
-    actualizarCamposTraductor(); // Llamarlo inicialmente para establecer el estado correcto
-});
-
-
+    
 </script>
 {% endblock contenido %}
 

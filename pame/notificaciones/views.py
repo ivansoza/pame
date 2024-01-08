@@ -11,8 +11,8 @@ from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView, UpdateView
 from .models import Defensorias, FirmaNombramientoExterno,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, DocumentoRespuestaDefensoria, nombramientoRepresentante
-from .forms import FirmaAutoridadActuanteNombramientoExternoForm, FirmaExtranjeroNombramientoExternoForm, FirmaRepresentanteLegalNombramientoExternoForm, FirmaTestigo1NombramientoExternoForm, FirmaTestigo2NombramientoExternoForm, FirmaTraductorNombramientoExternoForm, NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso,NombramientoRepresentanteForm,NombramientoRepresentanteExternoForm
-from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms, DocumentoRespuestaDefensoriaForm
+from .forms import FirmaAutoridadActuanteNombramientoExternoForm, FirmaExtranjeroNombramientoExternoForm, FirmaRepresentanteLegalNombramientoExternoForm, FirmaTestigo1NombramientoExternoForm, FirmaTestigo2NombramientoExternoForm, FirmaTraductorNombramientoExternoForm, NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso,NombramientoRepresentanteExternoForm
+from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms, DocumentoRespuestaDefensoriaForm,NombramientoRepresentanteInternoForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
 from django.utils import timezone
@@ -1180,20 +1180,92 @@ def obtener_datos_defensoria(request, defensoria_id):
     return JsonResponse(datos)
 
 
-class CrearNombramiento(View):
+# class CrearNombramientoInterno(View):
+
+#     def post(self, request, nup_id, *args, **kwargs):
+#         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+#         form = NotificacionConsularForm(request.POST)
+#         if form.is_valid():
+#             notificacionConsular = form.save(commit=False)
+#             notificacionConsular.nup = no_proceso
+#             notificacionConsular.save()
+
+#             data = {
+#                 'success': True, 
+#                 'message': 'Notificación Consular creada con éxito.', 
+#                 'consulado_id': notificacionConsular.id
+#             }
+#             return JsonResponse(data, status=200)
+#         else:
+#             data = {'success': False, 'errors': form.errors}
+#             return JsonResponse(data, status=400)
+        
+
+#     def get(self, request, nup_id, *args, **kwargs):
+#         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
+#         extranjero = no_proceso.extranjero 
+#         ultimo_registro = ExtranjeroDefensoria.objects.filter(nup=no_proceso).order_by('-fechaHora').first()
+#         numero_oficio = ultimo_registro.oficio if ultimo_registro else None
+#         defensoria = ultimo_registro.defensoria if ultimo_registro else None
+
+#         initial_data = {
+#             'delaEstacion': extranjero.deLaEstacion,
+#             'nup':no_proceso,
+#             'oficio': numero_oficio,  # Establecer el número de oficio inicial
+#             'defensoria': defensoria,  # Establecer la defensoría inicial
+
+#         }
+
+#         form = NombramientoRepresentanteForm(initial=initial_data)
+
+#         if defensoria:
+#             representantes_legales = RepresentantesLegales.objects.filter(defensoria=defensoria)
+#             form.fields['representanteLegal'].queryset = representantes_legales
+#         else:
+#             form.fields['representanteLegal'].queryset = RepresentantesLegales.objects.none()
+
+#         autoridades = AutoridadesActuantes.objects.none()
+#         if extranjero.deLaPuestaIMN:
+#                 autoridades = AutoridadesActuantes.objects.filter(
+#                     Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaUno_id) |
+#                     Q(id=extranjero.deLaPuestaIMN.nombreAutoridadSignaDos_id)
+#                 )
+#         elif extranjero.deLaPuestaAC:
+#                 autoridades = AutoridadesActuantes.objects.filter(
+#                     Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaUno_id) |
+#                     Q(id=extranjero.deLaPuestaAC.nombreAutoridadSignaDos_id)
+#                 )
+#         else:
+#                 autoridades = AutoridadesActuantes.objects.filter(estacion=extranjero.deLaEstacion)
+#         form.fields['autoridadActuante'].queryset = autoridades
+
+#         context = {
+#             'form': form,
+#             'nup_id': nup_id,
+#             'extranjero': extranjero,
+#             'navbar': 'Notificaciones',
+#             'seccion': 'defensoria',
+#         }
+        
+#         return render(request, 'defensoria/crearNombramientoInterno.html', context)
+
+
+class CrearNombramientoInterno(View):
 
     def post(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
-        form = NotificacionConsularForm(request.POST)
+        form = NombramientoRepresentanteExternoForm(request.POST)
         if form.is_valid():
-            notificacionConsular = form.save(commit=False)
-            notificacionConsular.nup = no_proceso
-            notificacionConsular.save()
+            nombramientoRepresentante = form.save(commit=False)
+            nombramientoRepresentante.nup = no_proceso
+            estacion_origen = no_proceso.extranjero.deLaEstacion
+            nombramientoRepresentante.delaEstacion = estacion_origen
+            nombramientoRepresentante.save()
 
             data = {
                 'success': True, 
                 'message': 'Notificación Consular creada con éxito.', 
-                'consulado_id': notificacionConsular.id
+                'nombramiento_id': nombramientoRepresentante.id
             }
             return JsonResponse(data, status=200)
         else:
@@ -1216,13 +1288,7 @@ class CrearNombramiento(View):
 
         }
 
-        form = NombramientoRepresentanteForm(initial=initial_data)
-
-        if defensoria:
-            representantes_legales = RepresentantesLegales.objects.filter(defensoria=defensoria)
-            form.fields['representanteLegal'].queryset = representantes_legales
-        else:
-            form.fields['representanteLegal'].queryset = RepresentantesLegales.objects.none()
+        form = NombramientoRepresentanteInternoForm(initial=initial_data)
 
         autoridades = AutoridadesActuantes.objects.none()
         if extranjero.deLaPuestaIMN:
@@ -1248,8 +1314,6 @@ class CrearNombramiento(View):
         }
         
         return render(request, 'defensoria/crearNombramientoInterno.html', context)
-
-
 
 class CrearNombramientoExterno(View):
 
@@ -1317,7 +1381,6 @@ class CrearNombramientoExterno(View):
         return render(request, 'defensoria/crearNombramientoExterno.html', context)
 
 
-        url = f"{base_url}notificaciones/firma_autoridad_actuante/{consulado_id}/"
 
 def generar_qr_firmas_nombramiento_Externo(request, nombramiento_externo_id, tipo_firma):
     base_url = settings.BASE_URL

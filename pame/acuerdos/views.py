@@ -4280,3 +4280,68 @@ def nombramientoRepresentante_pdf(request):
     response = HttpResponse(pdf_bytes, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename=""'
     return response
+
+def nombramientoRepresentanteInterno_pdf(request):
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  
+    nup = request.POST.get('nup', '')
+    no_proceso = get_object_or_404(NoProceso, nup=nup)
+    extranjero = no_proceso.extranjero
+    delaAutoridad = request.POST.get('autoridadActuante', '')
+    numeroExpediente = request.POST.get('numeroExpediente', '')
+    testigo1 = request.POST.get('testigo1', '')
+    gradotestigo1 = request.POST.get('grado_academico_testigo1', '')
+    testigo2 = request.POST.get('testigo2', '')
+    gradotestigo2 = request.POST.get('grado_academico_testigo2', '')
+
+    autoridad_actuante = None
+    if delaAutoridad:
+        autoridad_actuante = get_object_or_404(AutoridadesActuantes, pk=delaAutoridad)
+    consulado = None
+    ahora = datetime.now()
+    fecha_formato_largo = ahora.strftime("%d de %B del %Y")
+    fecha_actual = datetime.now().strftime("%d de %B de %Y")
+
+    hora_actual = datetime.now().strftime("%H:%M")
+
+    es_representante_externo = 'necesitaRepresentanteExterno' in request.POST
+
+    representante_legal_info = None
+    cedula_representante_legal = None
+    if es_representante_externo:
+        representante_legal_externo = request.POST.get('representanteLegalExterno', '')
+        grado_representante_externo = request.POST.get('grado_representante_externo', '')
+        cedulaLegalExterno = request.POST.get('cedulaLegalExterno', '')
+        representante_legal_info = f'{grado_representante_externo} {representante_legal_externo}'
+        cedula_representante_legal = cedulaLegalExterno
+    else:
+        representante_legal_interno_id = request.POST.get('representanteLegal', '')
+        if representante_legal_interno_id:
+            representante_legal_interno = RepresentantesLegales.objects.get(id=representante_legal_interno_id)
+            representante_legal_info = f'{representante_legal_interno.nombre} {representante_legal_interno.apellido_paterno} {representante_legal_interno.apellido_materno or ""}'
+            cedula_representante_legal = representante_legal_interno.cedula
+
+    context = {
+        'nup': nup,
+        'extranjero': extranjero,  # Agregando el objeto extranjero al context
+        'fecha_formato_largo': fecha_formato_largo,  # Agregar la fecha formateada al contexto
+        'hora_actual': hora_actual, # Agregar la fecha actual al contexto
+        'numeroExpediente':numeroExpediente,
+        'testigo1':testigo1,
+        'testigo2':testigo2,
+        'gradoTestigo1':gradotestigo1,
+        'gradoTestigo2':gradotestigo2,
+        'fecha_actual': fecha_actual,
+        'autoridad_actuante':autoridad_actuante,
+        'representante_legal_info': representante_legal_info,
+        'cedula_representante_legal': cedula_representante_legal,
+
+
+    }
+    template = get_template('documentos/nombramientoRepresentante.html')
+    html_content = template.render(context)
+    html = HTML(string=html_content)
+    pdf_bytes = html.write_pdf()
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename=""'
+    return response
+

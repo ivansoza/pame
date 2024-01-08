@@ -152,8 +152,6 @@ class NombramientoRepresentanteForm(forms.ModelForm):
 
 
 class NombramientoRepresentanteExternoForm(forms.ModelForm):
-
-
     class Meta:
         model = nombramientoRepresentante
         fields = ['nup', 'autoridadActuante', 'representanteLegalExterno', 'grado_representante_externo', 'cedulaLegalExterno', 'traductor', 'testigo1', 'grado_academico_testigo1', 'testigo2', 'grado_academico_testigo2']
@@ -162,8 +160,8 @@ class NombramientoRepresentanteExternoForm(forms.ModelForm):
         super(NombramientoRepresentanteExternoForm, self).__init__(*args, **kwargs)
         self.fields['autoridadActuante'].empty_label = "Seleccione una Autoridad Actuante"
         self.fields['grado_representante_externo'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_representante_externo'].choices)[1:]
-        self.fields['grado_academico_testigo1'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_representante_externo'].choices)[1:]
-        self.fields['grado_academico_testigo2'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_representante_externo'].choices)[1:]
+        self.fields['grado_academico_testigo1'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo1'].choices)[1:]
+        self.fields['grado_academico_testigo2'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo2'].choices)[1:]
         self.fields['traductor'].empty_label= "Seleccione un Traductor"
         self.fields['autoridadActuante'].required = True 
         self.fields['representanteLegalExterno'].required = True  
@@ -171,6 +169,23 @@ class NombramientoRepresentanteExternoForm(forms.ModelForm):
         self.fields['cedulaLegalExterno'].widget.attrs['placeholder']='Ejemplo: 323232323234'
         self.fields['testigo1'].widget.attrs['placeholder']= 'Ejemplo: Juan Manuel Lopez'
         self.fields['testigo2'].widget.attrs['placeholder']='Ejemplo: Julio Cesar Munive'
+class NombramientoRepresentanteInternoForm(forms.ModelForm):
+    class Meta:
+        model = nombramientoRepresentante
+        fields = ['nup', 'autoridadActuante', 'representanteLegal', 'traductor', 'testigo1', 'grado_academico_testigo1', 'testigo2', 'grado_academico_testigo2','defensoria','oficio','numeroExpediente']
+    
+    def __init__(self, *args, **kwargs):
+        super(NombramientoRepresentanteInternoForm, self).__init__(*args, **kwargs)
+        self.fields['autoridadActuante'].empty_label = "Seleccione una Autoridad Actuante"
+        self.fields['grado_academico_testigo1'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo1'].choices)[1:]
+        self.fields['grado_academico_testigo2'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo2'].choices)[1:]
+        self.fields['traductor'].empty_label= "Seleccione un Traductor"
+        self.fields['autoridadActuante'].required = True 
+        self.fields['testigo1'].widget.attrs['placeholder']= 'Ejemplo: Juan Manuel Lopez'
+        self.fields['testigo2'].widget.attrs['placeholder']='Ejemplo: Julio Cesar Munive'
+
+
+
 # forms para firma de externo
             
 class FirmaAutoridadActuanteNombramientoExternoForm(forms.ModelForm):
