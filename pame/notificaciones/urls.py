@@ -5,7 +5,7 @@ generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, fir
 
 from .views import notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
 from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no, selectDefensoria
-from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView, CrearNombramientoExterno,obtener_datos_nombramiento_externo,CrearNombramientoInterno
+from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView, CrearNombramientoExterno,obtener_datos_nombramiento_externo,CrearNombramientoInterno, obtener_datos_nombramiento_interno,firma_autoridad_actuante_nom, firma_representante_legal_nom, firma_traductor_nom, firma_extranjero_nom, firma_testigo1_nom, firma_testigo2_nom, generar_qr_firmas_nombramiento_Interno,verificar_firma_autoridad_actuante_nom,verificar_firma_representante_legal_nom,verificar_firma_traductor_nom,verificar_firma_extranjero_nom,verificar_firma_testigo1_nom,verificar_firma_testigo2_nom
 urlpatterns = [
     path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
     # path('defensores', views.defensores, name='defensores'),
@@ -86,6 +86,22 @@ urlpatterns = [
     path('verificar_firma_nom_ext/testigo1/<int:nombramiento_externo_id>/', verificar_firma_testigo1_nom_ext, name='verificar_firma_testigo1'),
     path('verificar_firma_nom_ext/testigo2/<int:nombramiento_externo_id>/', verificar_firma_testigo2_nom_ext, name='verificar_firma_testigo2'),
     path('datos_nombramiento_externo/<int:nombramiento_externo_id>/', obtener_datos_nombramiento_externo, name='obtener_datos_nombramiento_externo'),
+    path('datos_nombramiento_interno/<int:nombramiento_interno_id>/', obtener_datos_nombramiento_interno, name='obtener_datos_nombramiento_interno'),
 
+    #Generar nombramiento intenro
+
+    path('firma_autoridad_actuante_nombramiento/<int:nombramiento_interno_id>/', firma_autoridad_actuante_nom, name='firma_autoridad_actuante'),
+    path('firma_representante_legal_nombramiento/<int:nombramiento_interno_id>/', firma_representante_legal_nom, name='firma_representante_legal'),
+    path('firma_traductor_nombramiento/<int:nombramiento_interno_id>/', firma_traductor_nom, name='firma_traductor'),
+    path('firma_extranjero_nombramiento/<int:nombramiento_interno_id>/', firma_extranjero_nom, name='firma_extranjero'),
+    path('firma_testigo1_nombramiento/<int:nombramiento_interno_id>/', firma_testigo1_nom, name='firma_testigo1'),
+    path('firma_testigo2_nombramiento/<int:nombramiento_interno_id>/', firma_testigo2_nom, name='firma_testigo2'),
+    path('generar_qr_nomb/<str:tipo_firma>/<int:nombramiento_interno_id>/', generar_qr_firmas_nombramiento_Interno, name='generar_qr_firmas'),
+    path('verificar_firma_nom/autoridadActuante/<int:nombramiento_interno_id>/', verificar_firma_autoridad_actuante_nom, name='verificar_firma_autoridad_actuante'),
+    path('verificar_firma_nom/representanteLegal/<int:nombramiento_interno_id>/', verificar_firma_representante_legal_nom, name='verificar_firma_representante_legal'),
+    path('verificar_firma_nom/traductor/<int:nombramiento_interno_id>/', verificar_firma_traductor_nom, name='verificar_firma_traductor'),
+    path('verificar_firma_nom/extranjero/<int:nombramiento_interno_id>/', verificar_firma_extranjero_nom, name='verificar_firma_extranjero'),
+    path('verificar_firma_nom/testigo1/<int:nombramiento_interno_id>/', verificar_firma_testigo1_nom, name='verificar_firma_testigo1'),
+    path('verificar_firma_nom/testigo2/<int:nombramiento_interno_id>/', verificar_firma_testigo2_nom, name='verificar_firma_testigo2'),
 ]
 

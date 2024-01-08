@@ -330,6 +330,188 @@
         });
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        var checkboxTraductor = document.getElementById('necesitaTraductor');
+        var camposTraductor = document.getElementById('camposTraductor');
+        var campoTraductor = document.getElementById('id_traductor'); // Asegúrate de que este es el ID correcto del campo 'traductor'
+        var botonSiguienteTraductor = document.getElementById('nextToTraductor');
+        var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
+    
+        function actualizarCamposTraductor() {
+            if (checkboxTraductor.checked) {
+                camposTraductor.style.display = 'block';
+                campoTraductor.required = true;  // Hacer que 'traductor' sea obligatorio si se necesita
+
+            } else {
+                camposTraductor.style.display = 'none';
+                campoTraductor.required = false; // No es obligatorio si no se necesita
+
+            }
+        }
+    
+        checkboxTraductor.addEventListener('change', actualizarCamposTraductor);
+        actualizarCamposTraductor(); 
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('nombramientoRepresentanteInternoForm').addEventListener('submit', function(e) {
+            document.getElementById('pdfPreviewContainer').style.display = 'none';
+            e.preventDefault(); 
+            var formData = new FormData(this);
+    
+            fetch('', { 
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', 
+                },
+                credentials: 'same-origin' 
+            }).then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    obtenerDatosDeNombramientoInterno(nombramientoId)
+                    document.getElementById('nombramientoRepresentanteInternoForm').style.display = 'none';
+                    document.getElementById('qrCode').style.display = 'block';
+                    document.getElementById('autoridadActuanteSection').style.display = 'block';
+                    var nombramientoId = data.nombramiento_id; 
+                    document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr_nomb/autoridadActuante/' + nombramientoId;
+                    intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(nombramientoId); }, 1000);
+               }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    function verificarFirmaAutoridadActuante(nombramientoId) {
+        obtenerDatosDeNombramientoInterno(nombramientoId)
+
+        fetch('/notificaciones/verificar_firma_nom/autoridadActuante/' + nombramientoId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloAutoridadActuante); 
+                document.getElementById('autoridadActuanteSection').style.display = 'none';
+                var representanteLegalSection = document.getElementById('representanteLegalSection');
+                representanteLegalSection.style.display = 'flex'; 
+                representanteLegalSection.style.justifyContent = 'center';
+                representanteLegalSection.style.alignItems = 'center'; 
+                document.getElementById('qrImageRepresentanteLegal').src = '/notificaciones/generar_qr_nomb/representanteLegal/' + nombramientoId;
+        
+                var checkboxTraductor = document.getElementById('necesitaTraductor');
+                var botonSiguienteTraductor = document.getElementById('nextToTraductor');
+                var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
+        
+                if (checkboxTraductor.checked) {
+                    botonSiguienteTraductor.style.display = 'inline-block'; // Usar inline-block en lugar de block
+                    botonSiguienteExtranjero.style.display = 'none';
+                } else {
+                    botonSiguienteTraductor.style.display = 'none';
+                    botonSiguienteExtranjero.style.display = 'inline-block'; // Usar inline-block en lugar de block
+                }
+        
+                intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(nombramientoId); }, 1000); 
+            }
+        });
+    }
+    
+
+    function verificarFirmaRepresentanteLegal(nombramientoId) {
+        fetch('/notificaciones/verificar_firma_nom/representanteLegal/' + nombramientoId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloRepresentanteLegal);
+                document.getElementById('representanteLegalSection').style.display = 'none';
+                var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
+                if (necesitaTraductorCheckbox && necesitaTraductorCheckbox.checked) {
+                    document.getElementById('traductorSection').style.display = 'block';
+                    document.getElementById('qrImageTraductor').src = '/notificaciones/generar_qr_nomb/traductor/' + nombramientoId;
+                    intervaloTraductor = setInterval(function() { verificarFirmaTraductor(nombramientoId); }, 1000);
+                } else {
+                    document.getElementById('extranjeroSection').style.display = 'block';
+                    document.getElementById('qrImageExtranjero').src = '/notificaciones/generar_qr_nomb/extranjero/' + nombramientoId;
+                    intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(nombramientoId); }, 1000);
+                }
+            }
+        });
+    }
+
+    function verificarFirmaTraductor(nombramientoId) {
+        fetch('/notificaciones/verificar_firma_nom/traductor/' + nombramientoId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTraductor); // Detener el intervalo
+
+                document.getElementById('traductorSection').style.display = 'none';
+                document.getElementById('extranjeroSection').style.display = 'block';
+                document.getElementById('qrImageExtranjero').src = '/notificaciones/generar_qr_nomb/extranjero/' + nombramientoId;
+                intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(nombramientoId); }, 1000); 
+            }
+        });
+    }
+    function verificarFirmaExtranjero(nombramientoId) {
+        fetch('/notificaciones/verificar_firma_nom/extranjero/' + nombramientoId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloExtranjero); 
+                document.getElementById('extranjeroSection').style.display = 'none';
+                document.getElementById('testigo1Section').style.display = 'block';
+                document.getElementById('qrImageTestigo1').src = '/notificaciones/generar_qr_nomb/testigo1/' + nombramientoId;
+                intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(nombramientoId); }, 1000); 
+            }
+        });
+    }
+    function verificarFirmaTestigo1(nombramientoId) {
+        fetch('/notificaciones/verificar_firma_nom/testigo1/' + nombramientoId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTestigo1); // Detener el intervalo
+                document.getElementById('testigo1Section').style.display = 'none';
+                document.getElementById('testigo2Section').style.display = 'block';
+                document.getElementById('qrImageTestigo2').src = '/notificaciones/generar_qr_nomb/testigo2/' + nombramientoId;
+                intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(nombramientoId); }, 1000); // Iniciar el intervalo para la siguiente firma
+
+            }
+        });
+    }    
+
+    function verificarFirmaTestigo2(nombramientoId) {
+        fetch('/notificaciones/verificar_firma_nom/testigo2/' + nombramientoId)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                clearInterval(intervaloTestigo2); // Detener el intervalo
+                document.getElementById('testigo2Section').style.display = 'none';
+                document.getElementById('qrCode').style.display = 'none';
+    
+                // Mostrar la sección para generar el PDF
+                document.getElementById('generatePDFSection').style.display = 'block';
+                var generatePDFBtn = document.getElementById('generatePDFBtn');
+                generatePDFBtn.setAttribute('data-comparecencia-id', nombramientoId);
+            }
+        })
+    }
+    function obtenerDatosDeNombramientoInterno(nombramientoId) {
+        fetch('/notificaciones/datos_nombramiento_interno/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('nombreAutoridadActuante').textContent = data.nombreAutoridadActuante || 'No disponible';
+                document.getElementById('nombreRepresentanteLegal').textContent = data.nombreRepresentanteLegal || 'No disponible';
+                document.getElementById('nombreTraductor').textContent = data.nombreTraductor || 'No disponible';
+                document.getElementById('nombreTestigo1').textContent = data.nombreTestigo1 || 'No disponible';
+                document.getElementById('nombreTestigo2').textContent = data.nombreTestigo2 || 'No disponible';
+                document.getElementById('nombreExtranjero').textContent = data.nombreExtranjero || 'No disponible';
+            })
+            .catch(error => {
+                console.error('Error al obtener datos:', error);
+            });
+        }
+    
+
+
 </script>
 {% endblock contenido %}
 
