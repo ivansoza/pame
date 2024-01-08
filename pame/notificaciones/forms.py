@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import Defensorias, notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
+from .models import Defensorias, FirmaNombramientoExterno, FirmaNombramientoInterno,notificacionesAceptadas,Relacion,Qrfirma, NotificacionConsular, FirmaNotificacionConsular
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, firmasDefenso
 from .models import Defensorias, notificacionesAceptadas,Relacion, NotificacionConsular, FirmaNotificacionConsular, NotificacionCOMAR, NotificacionFiscalia, FirmaNotificacionComar, FirmaNotificacionFiscalia,DocumentoRespuestaDefensoria,nombramientoRepresentante
 from django.forms.widgets import HiddenInput
@@ -149,3 +149,114 @@ class NombramientoRepresentanteForm(forms.ModelForm):
             self.fields['delaEstacion'].empty_label = "Seleccione una Estación"
             self.fields['nup'].empty_label = "Seleccione un NoProceso"
             self.fields['defensoria'].empty_label = "Seleccione una Defensoría"
+
+
+class NombramientoRepresentanteExternoForm(forms.ModelForm):
+    class Meta:
+        model = nombramientoRepresentante
+        fields = ['nup', 'autoridadActuante', 'representanteLegalExterno', 'grado_representante_externo', 'cedulaLegalExterno', 'traductor', 'testigo1', 'grado_academico_testigo1', 'testigo2', 'grado_academico_testigo2']
+    
+    def __init__(self, *args, **kwargs):
+        super(NombramientoRepresentanteExternoForm, self).__init__(*args, **kwargs)
+        self.fields['autoridadActuante'].empty_label = "Seleccione una Autoridad Actuante"
+        self.fields['grado_representante_externo'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_representante_externo'].choices)[1:]
+        self.fields['grado_academico_testigo1'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo1'].choices)[1:]
+        self.fields['grado_academico_testigo2'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo2'].choices)[1:]
+        self.fields['traductor'].empty_label= "Seleccione un Traductor"
+        self.fields['autoridadActuante'].required = True 
+        self.fields['representanteLegalExterno'].required = True  
+        self.fields['representanteLegalExterno'].widget.attrs['placeholder']='Ejemplo: María Lopez'
+        self.fields['cedulaLegalExterno'].widget.attrs['placeholder']='Ejemplo: 323232323234'
+        self.fields['testigo1'].widget.attrs['placeholder']= 'Ejemplo: Juan Manuel Lopez'
+        self.fields['testigo2'].widget.attrs['placeholder']='Ejemplo: Julio Cesar Munive'
+class NombramientoRepresentanteInternoForm(forms.ModelForm):
+    class Meta:
+        model = nombramientoRepresentante
+        fields = ['nup', 'autoridadActuante', 'representanteLegal', 'traductor', 'testigo1', 'grado_academico_testigo1', 'testigo2', 'grado_academico_testigo2','defensoria','oficio','numeroExpediente']
+    
+    def __init__(self, *args, **kwargs):
+        super(NombramientoRepresentanteInternoForm, self).__init__(*args, **kwargs)
+        self.fields['autoridadActuante'].empty_label = "Seleccione una Autoridad Actuante"
+        self.fields['grado_academico_testigo1'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo1'].choices)[1:]
+        self.fields['grado_academico_testigo2'].choices = [('','Seleccione el Grado Académico')] + list(self.fields['grado_academico_testigo2'].choices)[1:]
+        self.fields['traductor'].empty_label= "Seleccione un Traductor"
+        self.fields['autoridadActuante'].required = True 
+        self.fields['testigo1'].widget.attrs['placeholder']= 'Ejemplo: Juan Manuel Lopez'
+        self.fields['testigo2'].widget.attrs['placeholder']='Ejemplo: Julio Cesar Munive'
+
+
+
+# forms para firma de externo
+            
+class FirmaAutoridadActuanteNombramientoExternoForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoExterno
+        fields = ['firmaAutoridadActuante']
+
+class FirmaRepresentanteLegalNombramientoExternoForm(forms.ModelForm):
+    firmaRepresentanteLegal = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoExterno
+        fields = ['firmaRepresentanteLegal']
+
+class FirmaTraductorNombramientoExternoForm(forms.ModelForm):
+    firmaTraductor = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoExterno
+        fields = ['firmaTraductor']
+class FirmaTestigo1NombramientoExternoForm(forms.ModelForm):
+    firmaTestigo1 = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoExterno
+        fields = ['firmaTestigo1']
+
+class FirmaTestigo2NombramientoExternoForm(forms.ModelForm):
+    firmaTestigo2 = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoExterno
+        fields = ['firmaTestigo2']
+
+class FirmaExtranjeroNombramientoExternoForm(forms.ModelForm):
+    firmaExtranjero = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoExterno
+        fields = ['firmaExtranjero']
+
+
+# forms para firma de interno 
+
+class FirmaAutoridadActuanteNombramientoInternoForm(forms.ModelForm):
+    firmaAutoridadActuante = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoInterno
+        fields = ['firmaAutoridadActuante']
+
+class FirmaRepresentanteLegalNombramientoInternoForm(forms.ModelForm):
+    firmaRepresentanteLegal = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoInterno
+        fields = ['firmaRepresentanteLegal']
+
+class FirmaTraductorNombramientoInternoForm(forms.ModelForm):
+    firmaTraductor = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoInterno
+        fields = ['firmaTraductor']
+class FirmaTestigo1NombramientoInternoForm(forms.ModelForm):
+    firmaTestigo1 = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoInterno
+        fields = ['firmaTestigo1']
+
+class FirmaTestigo2NombramientoInternoForm(forms.ModelForm):
+    firmaTestigo2 = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoInterno
+        fields = ['firmaTestigo2']
+
+class FirmaExtranjeroNombramientoInternoForm(forms.ModelForm):
+    firmaExtranjero = forms.CharField(widget=forms.HiddenInput())
+    class Meta:
+        model = FirmaNombramientoInterno
+        fields = ['firmaExtranjero']

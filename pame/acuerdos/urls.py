@@ -156,6 +156,7 @@ urlpatterns = [
 
     # nombramiento representante
     path('nombramientoRepresentante', nombramientoRepresentante_pdf, name='representantePDF'),
+    path('nombramientoRepresentanteInterno', nombramientoRepresentante_pdf, name='representantePDF'),
 
 
 
