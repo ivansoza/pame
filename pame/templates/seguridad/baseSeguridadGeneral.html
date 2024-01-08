@@ -868,6 +868,14 @@
                 </a>
               </li>
             </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url "alimentos" %}" class="nav-link {% if seccion == 'comedor' %}active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Entregar alimentos</p>
+                </a>
+              </li>
+            </ul>
           </li>
 
           {% endif %} 

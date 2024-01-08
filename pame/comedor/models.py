@@ -61,7 +61,7 @@ class BoxLunch(models.Model):
 
         
 class comidasAsignadas(models.Model):
-    tipoDieta = models.ForeignKey(TipoDieta, on_delete=models.CASCADE, verbose_name='Tipo de dieta')
+    fechaHoraComida = models.DateTimeField(auto_now_add=True, verbose_name='Fecha y hora de la entrega de comida')
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE, verbose_name='Numero de proceso')
     extranjero = models.ForeignKey(Extranjero, on_delete=models.CASCADE, verbose_name='Extranjero')
     estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='estación')
