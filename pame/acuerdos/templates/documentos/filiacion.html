@@ -1,8 +1,9 @@
 {% extends "documentos/base.html" %}
+{% load custom_filters %}
 
 {% block header %}
-<br>[Oficina]
-<br>[Estacion] 
+<br>{{extranjero.deLaEstacion.oficina|upper}}
+<br>{{extranjero.deLaEstacion.nombre|upper}}
 {% endblock %}
 
 {% block title %}
@@ -14,55 +15,86 @@
     <strong>FILIACI&Oacute;N</strong>
 </div>
 <div>
-    Nombre:
-    <br>Género:
-    <br>Fecha de nacimiento:
-    <br>Edad:
-    <br>Lugar de nacimiento:
-    <br>Residencia:
-    <br>Estado civil:
-    <br>Ocupación: Grado de estudio:
-    <br>Nombre del padre: Nombre de la Madre:
+    Nombre: {{extranjero.nombreExtranjero}} {{extranjero.apellidoPaternoExtranjero}} {% if extranjero.apellidoMaternoExtranjero %}{{extranjero.apellidoMaternoExtranjero}}{% endif %}
+    <br>Género: {% if extranjero.genero == 0 %}
+    Hombre
+    {% elif extranjero.genero == 1 %}
+    Mujer
+    {% endif %}
+
+    <br>Fecha de nacimiento: {{extranjero.fechaNacimiento}}
+    <br>Edad: {{extranjero.edad}} años
+    <br>Lugar de nacimiento: {{extranjero.nacionalidad}}
+    <br>Residencia: {{extranjero.domicilio}}
+    <br>Estado civil:{{extranjero.estado_Civil}}
+    <br>Ocupación: {{extranjero.ocupacion}} <span style='margin-left: 20%;'> Grado de estudio: {{extranjero.grado_academico}}</span>
+    <br>Nombre del padre: {{extranjero.nombreDelPadre}}   <span style='margin-left: 20%;'> Nombre de la Madre: {{extranjero.nombreDelaMadre}} </span>
 </div> <br>
+<img src="{{ foto }}" alt="Foto extranjero" style="height: 3cm; width: 2.5cm; position: absolute; z-index: -1; top: 10%; left: 80%; transform: translate(-50%, -50%); border: solid #000 1px;">
+
 <table style="width: 100%;">
     <tbody>
         <tr>
-            <td style="width: 33.3333%;">Estatura:</td>
-            <td style="width: 33.3333%;">Tipo de cabello:</td>
-            <td style="width: 33.3333%;">Frente:&nbsp;</td>
+            <td style="width: 33.3333%;">Estatura: {{descripcion.estatura}}</td>
+            <td style="width: 33.3333%;">Tipo de cabello: {{descripcion.tipoCabello}}</td>
+            <td style="width: 33.3333%;">Frente: {{descripcion.frente}}&nbsp;</td>
         </tr>
         <tr>
-            <td style="width: 33.3333%;">Cejas:</td>
-            <td style="width: 33.3333%;">Bigote:</td>
-            <td style="width: 33.3333%;">Color de ojos:</td>
+            <td style="width: 33.3333%;">Cejas: {{descripcion.cejas}}</td>
+            <td style="width: 33.3333%;">Bigote: {{descripcion.bigote}}</td>
+            <td style="width: 33.3333%;">Color de ojos: {{descripcion.colorOjos}}</td>
         </tr>
         <tr>
-            <td style="width: 33.3333%;">Nariz:</td>
-            <td style="width: 33.3333%;">Complexi&oacute;n:</td>
-            <td style="width: 33.3333%;">Boca:</td>
+            <td style="width: 33.3333%;">Nariz: {{descripcion.nariz}}</td>
+            <td style="width: 33.3333%;">Complexi&oacute;n: {{descripcion.complexion}}</td>
+            <td style="width: 33.3333%;">Boca: {{descripcion.boca}}</td>
         </tr>
         <tr>
-            <td style="width: 33.3333%;">Labios:&nbsp;</td>
-            <td style="width: 66.6667%;" colspan="2">Se&ntilde;as particulares:&nbsp;</td>
+            <td style="width: 33.3333%;">Labios:&nbsp; {{descripcion.labios}}</td>
+            <td style="width: 66.6667%;" colspan="2">Se&ntilde;as particulares:&nbsp; {{descripcion.segnasParticulares}}</td>
         </tr>
         <tr>
-            <td style="width: 100%;" colspan="3">Observaciones:&nbsp;</td>
+            <td style="width: 100%;" colspan="3">Observaciones:&nbsp; {{descripcion.observaciones}}</td>
         </tr>
     </tbody>
 </table>
 <p>
     <strong>Huelas dactilares:</strong>
 </p>
+
 <div style="text-align: center; font-weight: bold;">Mano derecha</div>
 <table style="width: 100%; border-collapse: collapse; height: 3cm; border: 1px solid rgb(0, 0, 0);">
+    
     <tbody>
         <tr>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
+            {% if not huella_1 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_1 %}"  style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if not huella_2 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_2 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if not huella_3 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_3 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if  not huella_4 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_4 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if  not huella_5 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_5 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            
         </tr>
+        
         <tr>
             <td style="width: 20%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>(1) Me&ntilde;ique</strong><br></td>
             <td style="width: 20%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>(2) Anular&nbsp;</strong><br></td>
@@ -76,11 +108,31 @@
 <table style="width: 100%; border-collapse: collapse; height: 3cm; border: 1px solid rgb(0, 0, 0);">
     <tbody>
         <tr>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
-            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><br></td>
+            {% if not huella_6 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_6 %}"  style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if not huella_7 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_7 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if not huella_8 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_8 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if  not huella_9 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_9 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
+            {% if  not huella_10 %}
+            <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><p style='text-align:center;font-size:1cm;'>X</p><br></td>
+            {% else %}
+             <td style="width: 20%; height: 3cm; border: 1px solid rgb(0, 0, 0);"><img class="imagen-huella" src="data:image/jpg;base64,{% base64_encode huella_10 %}" style="width: 3cm;"/><br></td>
+            {% endif %}
         </tr>
         <tr>
             <td style="width: 20%; text-align: center; border: 1px solid rgb(0, 0, 0);"><strong>(6) Pulgar</strong><br></td>
@@ -91,8 +143,10 @@
         </tr>
     </tbody>
 </table>
+<img src="{{firmaex}}" alt="Firma del medico" style="height: 3cm; width: 8cm; position: absolute; z-index: -1; bottom: 90; left: 9cm; transform: translate(-50%, -10%); object-fit: cover;">
+
 <p style="border-top: 1px solid #000; width: 50%; margin: 80px auto 0; padding-top: 10px; text-align: center;">
-    [Nombre Extranjero]&nbsp;[Apellido]&nbsp;[Apellido] 
-    <br> [Nacionaliad]
+    {{extranjero.nombreExtranjero}}&nbsp;{{extranjero.apellidoPaternoExtranjero}}&nbsp;{% if extranjero.apellidoMaternoExtranjero %}{{extranjero.apellidoMaternoExtranjero}}{% endif %} 
+    <br> {{extranjero.nacionalidad}}
 </p>
 {% endblock %}

@@ -25,6 +25,11 @@
 .horas-alto {
     background-color: #873542; /* Reemplaza #rojo con el código de color real para más de 24 horas */
 }
+
+.btn-externo {
+    background-color: #7D3A43; /* Color de fondo */
+    color: white; /* Color del texto */
+}
 </style>
 <div class="titulo-general-container mt-2">
     <h1 class="titulo-general">
@@ -110,9 +115,12 @@
                             </a>
 
                         {% endif %}
-                        <a class="btn btn-sm btn-icon1 tooltip-link" href="{% url 'CrearNombramiento' extranjero.nup%}" data-title="Generar Nombramiento">
-                            <i class="fa-solid fa-file-alt"></i>                   
+
+
+                        <a class="btn btn-sm btn-icon3 tooltip-link" href="#" onclick="mostrarOpcionesNombramiento('{{ extranjero.nup }}');" data-title="Elegir Tipo de Representante">
+                            <i class="fa-solid fa-user"></i> Elegir Representante
                         </a>
+                        
                         <a class="btn btn-sm btn-icon3 tooltip-link" href="#" data-title="Ver Documento">
                             <i class="fa-solid fa-eye"></i>                   
                         </a>
@@ -133,6 +141,43 @@
 
 </div>
 
+<div class="modal fade" id="miModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Elige el Tipo de Representante</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <button id="interno" class="btn btn-primary">Representante Interno</button>
+          <button id="externo" class="btn btn-secondary">Representante Externo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    function mostrarOpcionesNombramiento(nup) {
+        Swal.fire({
+            title: 'Elige el Tipo de Representante',
+            text: 'Selecciona si el representante es interno o externo',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Por Defensoría',
+            cancelButtonText: 'Por Particular',
+            cancelButtonColor: '#85364A',
+            confirmButtonColor: '#2A4B41',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "/notificaciones/crear-nombramiento/" + nup;
+            } else {
+                window.location.href = "/notificaciones/crear-nombramiento-externo/" + nup;
+            }
+        });
+    }
+    </script>
 <script>
 function showSweetAlert(fechaSubida, urlDocumento) {
     Swal.fire({

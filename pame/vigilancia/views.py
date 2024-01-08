@@ -46,7 +46,7 @@ from llamadasTelefonicas.models import Notificacion
 from pertenencias.models import EnseresBasicos
 import sys
 import pickle
-
+from acuerdos.models import Repositorio
 from django.http import JsonResponse
 from django.views import View
 from traslados.models import Traslado, ExtranjeroTraslado
@@ -54,6 +54,7 @@ from .forms import TrasladoForm, UserFaceForm
 
 from .helpers import image_to_pdf
 from PIL import Image
+from django.db.models import Max
 
 import os
 import cv2
@@ -4316,7 +4317,7 @@ class DeleteAcompananteGeneral(LoginRequiredMixin,DeleteView):
 
    
 class afiliacion(LoginRequiredMixin,ListView):
-    model = Extranjero
+    model = NoProceso
     template_name='mediafiliacion.html'
     context_object_name = 'extranjero'
     login_url = '/permisoDenegado/'  
@@ -4330,6 +4331,7 @@ class afiliacion(LoginRequiredMixin,ListView):
     # Obtén el ID del extranjero del argumento en el URL
         extranjero_id = self.kwargs.get('pk')  # Cambia 'extranjero_id' a 'pk'
     # Obtén la instancia del extranjero correspondiente al ID
+        
         huellas = HuellaTemp.objects.using('huella_base').filter(dni=extranjero_id)
         extranjero = Extranjero.objects.get(id=extranjero_id)
         nombre = extranjero.nombreExtranjero
@@ -4350,10 +4352,14 @@ class afiliacion(LoginRequiredMixin,ListView):
         context['navbar'] = 'notificaciones'
         context['seccion'] = 'defensoria'
         context['nombre_estacion'] = self.request.user.estancia.nombre
-        
         descrip = descripcion.objects.get(delExtranjero=extranjero_id)
         context['des']= descrip
         context['huella'] = huellas
+        ultimo_no_proceso = extranjero.noproceso_set.latest('consecutivo')
+        ultimo_no_proceso_id = ultimo_no_proceso.nup
+        context['nup']= ultimo_no_proceso_id
+        documento_existente = Repositorio.objects.filter(nup=ultimo_no_proceso, delTipo__descripcion="04 Media Filiación").exists()
+        context['documento_existe']= documento_existente
         return context
 
 

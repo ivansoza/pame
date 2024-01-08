@@ -1,11 +1,11 @@
 from django.urls import path, include
-from .views import editarDefensoria, crearRelacionAjax
+from .views import editarDefensoria, crearRelacionAjax, firma_autoridad_actuante_nom_ext, firma_extranjero_nom_ext, firma_representante_legal_nom_ext, firma_testigo1_nom_ext, firma_testigo2_nom_ext, firma_traductor_nom_ext, generar_qr_firmas_nombramiento_Externo, verificar_firma_autoridad_actuante_nom_ext, verificar_firma_extranjero_nom_ext, verificar_firma_representante_legal_nom_ext, verificar_firma_testigo1_nom_ext, verificar_firma_testigo2_nom_ext, verificar_firma_traductor_nom_ext
 from .views import listExtranjerosDefensoria,notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia, createDEfensoria,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante, CrearNotificacionComar, CrearNotificacionFiscalia,\
-generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, firma_autoridad_actuante_notifi_fiscalia, firma_autoridad_actuante_notifi_comar ,verificar_firma_autoridad_actuante_comar, verificar_firma_autoridad_actuante_fiscalia,CrearNombramiento
+generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, firma_autoridad_actuante_notifi_fiscalia, firma_autoridad_actuante_notifi_comar ,verificar_firma_autoridad_actuante_comar, verificar_firma_autoridad_actuante_fiscalia
 
 from .views import notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
 from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no, selectDefensoria
-from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView
+from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView, CrearNombramientoExterno,obtener_datos_nombramiento_externo,CrearNombramientoInterno
 urlpatterns = [
     path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
     # path('defensores', views.defensores, name='defensores'),
@@ -69,8 +69,23 @@ urlpatterns = [
 
 
     # Generar nombramiento
-    path('crear-nombramiento/<str:nup_id>/', CrearNombramiento.as_view(), name='CrearNombramiento'),
+    path('crear-nombramiento/<str:nup_id>/', CrearNombramientoInterno.as_view(), name='CrearNombramiento'),
+    path('crear-nombramiento-externo/<str:nup_id>/', CrearNombramientoExterno.as_view(), name='CrearNombramientoExterno'),
 
+    path('firma_autoridad_actuante_nombramiento_ext/<int:nombramiento_externo_id>/', firma_autoridad_actuante_nom_ext, name='firma_autoridad_actuante'),
+    path('firma_representante_legal_nombramiento_ext/<int:nombramiento_externo_id>/', firma_representante_legal_nom_ext, name='firma_representante_legal'),
+    path('firma_traductor_nombramiento_ext/<int:nombramiento_externo_id>/', firma_traductor_nom_ext, name='firma_traductor'),
+    path('firma_extranjero_nombramiento_ext/<int:nombramiento_externo_id>/', firma_extranjero_nom_ext, name='firma_extranjero'),
+    path('firma_testigo1_nombramiento_ext/<int:nombramiento_externo_id>/', firma_testigo1_nom_ext, name='firma_testigo1'),
+    path('firma_testigo2_nombramiento_ext/<int:nombramiento_externo_id>/', firma_testigo2_nom_ext, name='firma_testigo2'),
+    path('generar_qr_nomb_ext/<str:tipo_firma>/<int:nombramiento_externo_id>/', generar_qr_firmas_nombramiento_Externo, name='generar_qr_firmas'),
+    path('verificar_firma_nom_ext/autoridadActuante/<int:nombramiento_externo_id>/', verificar_firma_autoridad_actuante_nom_ext, name='verificar_firma_autoridad_actuante'),
+    path('verificar_firma_nom_ext/representanteLegal/<int:nombramiento_externo_id>/', verificar_firma_representante_legal_nom_ext, name='verificar_firma_representante_legal'),
+    path('verificar_firma_nom_ext/traductor/<int:nombramiento_externo_id>/', verificar_firma_traductor_nom_ext, name='verificar_firma_traductor'),
+    path('verificar_firma_nom_ext/extranjero/<int:nombramiento_externo_id>/', verificar_firma_extranjero_nom_ext, name='verificar_firma_extranjero'),
+    path('verificar_firma_nom_ext/testigo1/<int:nombramiento_externo_id>/', verificar_firma_testigo1_nom_ext, name='verificar_firma_testigo1'),
+    path('verificar_firma_nom_ext/testigo2/<int:nombramiento_externo_id>/', verificar_firma_testigo2_nom_ext, name='verificar_firma_testigo2'),
+    path('datos_nombramiento_externo/<int:nombramiento_externo_id>/', obtener_datos_nombramiento_externo, name='obtener_datos_nombramiento_externo'),
 
 ]
 

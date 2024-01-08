@@ -69,7 +69,12 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="btn btn-custom1" style="margin-left: 2%; margin-top: 2%;">Documento</a>                   
+                        {% if documento_existe %}
+                         <a href="{% url "ver_documentos" nup %}"  class="btn btn-custom2" style="margin-left: 2%; margin-top: 2%;">Repositorio</a>      
+
+                        {% else %}
+                           <a href="{% url "filiacionPDF" nup %}" target='_blank' class="btn btn-custom1" style="margin-left: 2%; margin-top: 2%;">Documento</a>      
+                        {% endif %}             
                     </div>
 
                     <!-- Card con la foto del extranjero -->
