@@ -113,6 +113,7 @@
 }
 
 
+
 </style>
 
 
@@ -124,7 +125,7 @@
         </h1>
     </div>
     <div id="nombramientoRepresentanteFormContainer">
-        <form method="post" id="nombramientoRepresentanteForm">
+        <form method="post" id="nombramientoRepresentanteExternoForm">
             {% csrf_token %}
             <div class="card p-3">
                 <!-- Navegación por Pestañas -->
@@ -139,62 +140,30 @@
                 <div class="tab-content" id="myTabContent">
                     <!-- Sección de Notificación Consular -->
                     <div class="tab-pane fade show active" id="notificacion" role="tabpanel" aria-labelledby="notificacion-tab">
-
-                            <br>
-                            <input type="checkbox" id="necesitaRepresentanteExterno" name="necesitaRepresentanteExterno">
-                            <label for="necesitaRepresentanteExterno">¿Tiene Representante Externo?</label>
-
-                            <!-- Campos que se mostrarán si se selecciona 'Sí' para representante externo -->
-
-                            <div id="camposRepresentanteExterno" style="display:none;">
-                        
-                                <div class="row">
-                                    <div class="col-md-6">{{ form.representanteLegalExterno|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.grado_representante_externo|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.cedulaLegalExterno|as_crispy_field }}</div>
-                                </div>
-
-                            </div>
-
-
-                            <!-- Campo que se ocultará si se selecciona 'Sí' para representante externo -->
-                            <div id="campoRepresentanteLegal" style="display:block;">
-                                <div class="row">
-                                    <div class="col-md-6">{{ form.representanteLegal|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.oficio|as_crispy_field }}</div>
-                                    <div class="col-md-6">{{ form.numeroExpediente|as_crispy_field }}</div>
-                                </div>
-
-                            </div>
-                        
                         <div class="row">
-
-
-                     
-                            <div class="col-md-6">{{ form.delaEstacion|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.nup|as_crispy_field }}</div>
-                            <div class="col-md-6">{{ form.defensoria|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.autoridadActuante|as_crispy_field }}</div>
+                        </div>
 
-                            <div class="col-md-6">{{ form.autoridadActuante|as_crispy_field }}</div>       
+                        <div class="row">
+                            <div class="col-md-6">{{ form.representanteLegalExterno|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.grado_representante_externo|as_crispy_field }}</div>
+                            <div class="col-md-6">{{ form.cedulaLegalExterno|as_crispy_field }}</div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">{{ form.testigo1|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.grado_academico_testigo1|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.testigo2|as_crispy_field }}</div>
                             <div class="col-md-6">{{ form.grado_academico_testigo2|as_crispy_field }}</div>
-
-
-
                         </div>
+
+
                         <input type="checkbox" id="necesitaTraductor" name="necesitaTraductor">
                         <label for="necesitaTraductor">¿Necesita Traductor?</label>
-
-
-                              <div id="camposTraductor" style="display:none;">
-                        
+                              <div id="camposTraductor" style="display:none;">   
                                 <div class="row">
                                     <div class="col-md-6">{{ form.traductor|as_crispy_field }}</div>
-                               
                                 </div>
-
                             </div>
 
                     </div>
@@ -213,15 +182,62 @@
 <!-- VENTANA PARA MOSTRAR EL QR -->
 
 <div id="qrCode" style="display:none;" class="card p-3">
+
+
     <div class="firma-section center-content" id="autoridadActuanteSection">
         <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
         <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
 
         <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaAutoridadActuante"></div>
-        <button id="nextToRepresentanteLegal">Siguiente: Finalizar Proceso</button>
-    
+        <button id="nextToRepresentanteLegal">Siguiente: Representante Legal</button>
     </div>
+
+    <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
+        <h4 class="titulo-compare">Firma del Representante Legal</h4>
+        <div>Nombre: <span id="nombreRepresentanteLegal"></span></div>
+        <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaRepresentanteLegal"></div>
+        <button id="nextToTraductor">Siguiente: Traductor</button>
+        <button id="nextToExtranjero" style="display: none;">Siguiente: Extranjero</button>
+    </div>
+
+    <div class="firma-section center-content" id="traductorSection" style="display:none;">
+        <h4 class="titulo-compare">Firma del Traductor</h4>
+        <div>Nombre: <span id="nombreTraductor"></span></div>
+
+        <img id="qrImageTraductor" src="" alt="Código QR Traductor" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaTraductor"></div>
+        <button id="nextToExtranjero">Siguiente: Extranjero</button>
+    </div>
+
+    <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
+        <h4 class="titulo-compare">Firma del Extranjero</h4>
+        <div>Nombre: <span id="nombreExtranjero"></span></div>
+
+        <img id="qrImageExtranjero" src="" alt="Código QR Extranjero" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaExtranjero"></div>
+        <button id="nextToTestigo1">Siguiente: Testigo 1</button>
+    </div>
+
+    <div class="firma-section center-content" id="testigo1Section" style="display:none;">
+        <h4 class="titulo-compare">Firma del Testigo 1</h4>
+        <div>Nombre: <span id="nombreTestigo1"></span></div>
+
+        <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaTestigo1"></div>
+        <button id="nextToTestigo2">Siguiente: Testigo 2</button>
+    </div>
+
+    <div class="firma-section center-content" id="testigo2Section" style="display:none;">
+        <h4 class="titulo-compare">Firma del Testigo 2</h4>
+        <div>Nombre: <span id="nombreTestigo2"></span></div>
+
+        <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2" style="height: 25%; width: 25%;">
+        <div id="mensajeFirmaTestigo2"></div>
+        <button id="finalizarFirmas">Finalizar Firmas</button>
+    </div>
+    
 </div>
 
 
@@ -259,78 +275,200 @@
 
 
 <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('previewPdfButton').addEventListener('click', function() {
+                var formData = new FormData(document.getElementById('nombramientoRepresentanteExternoForm'));
+                
+                fetch('/acuerdos/nombramientoRepresentante', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    credentials: 'same-origin'
+                }).then(response => response.blob())
+                .then(blob => {
+                    var pdfUrl = URL.createObjectURL(blob);
+                    document.getElementById('pdfPreview').src = pdfUrl;
+                    document.getElementById('pdfPreviewContainer').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error al generar la vista previa del PDF:', error);
+                });
+            });
+
+            // Event listener para el botón de cerrar
+            document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
+                document.getElementById('pdfPreviewContainer').style.display = 'none';
+                document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
+            });
+        });
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('previewPdfButton').addEventListener('click', function() {
-        var formData = new FormData(document.getElementById('nombramientoRepresentanteForm'));
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkboxTraductor = document.getElementById('necesitaTraductor');
+            var camposTraductor = document.getElementById('camposTraductor');
+            var campoTraductor = document.getElementById('id_traductor'); // Asegúrate de que este es el ID correcto del campo 'traductor'
+            var botonSiguienteTraductor = document.getElementById('nextToTraductor');
+            var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
         
-        fetch('/acuerdos/nombramientoRepresentante', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
-            credentials: 'same-origin'
-        }).then(response => response.blob())
-          .then(blob => {
-              var pdfUrl = URL.createObjectURL(blob);
-              document.getElementById('pdfPreview').src = pdfUrl;
-              document.getElementById('pdfPreviewContainer').style.display = 'block';
-          })
-          .catch(error => {
-              console.error('Error al generar la vista previa del PDF:', error);
-          });
-    });
+            function actualizarCamposTraductor() {
+                if (checkboxTraductor.checked) {
+                    camposTraductor.style.display = 'block';
+                    campoTraductor.required = true;  // Hacer que 'traductor' sea obligatorio si se necesita
 
-    // Event listener para el botón de cerrar
-    document.getElementById('closePdfPreviewButton').addEventListener('click', function() {
-        document.getElementById('pdfPreviewContainer').style.display = 'none';
-        document.getElementById('pdfPreview').src = ''; // Limpia el src del iframe
-    });
-});
+                } else {
+                    camposTraductor.style.display = 'none';
+                    campoTraductor.required = false; // No es obligatorio si no se necesita
 
+                }
+            }
+        
+            checkboxTraductor.addEventListener('change', actualizarCamposTraductor);
+            actualizarCamposTraductor(); // Llamarlo inicialmente para establecer el estado correcto
+        });
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    var checkboxRepresentanteExterno = document.getElementById('necesitaRepresentanteExterno');
-    var camposRepresentanteExterno = document.getElementById('camposRepresentanteExterno');
-    var campoRepresentanteLegal = document.getElementById('campoRepresentanteLegal');
-
-    function actualizarCamposRepresentante() {
-        if (checkboxRepresentanteExterno.checked) {
-            camposRepresentanteExterno.style.display = 'block';
-            campoRepresentanteLegal.style.display = 'none';
-        } else {
-            camposRepresentanteExterno.style.display = 'none';
-            campoRepresentanteLegal.style.display = 'block';
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('nombramientoRepresentanteExternoForm').addEventListener('submit', function(e) {
+                document.getElementById('pdfPreviewContainer').style.display = 'none';
+                e.preventDefault(); // Previene el envío normal del formulario
+                var formData = new FormData(this); // Recoge los datos del formulario
+        
+                fetch('', { // Enviar a la misma URL que maneja el GET y POST
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}', // Necesario para la protección contra CSRF
+                    },
+                    credentials: 'same-origin' // Necesario para incluir las cookies de CSRF
+                }).then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        //CIERRA VENTANA DEL FORM Y MUESTRA LA CAPTURA DE FIRMAS 
+                        document.getElementById('nombramientoRepresentanteExternoForm').style.display = 'none';
+                        document.getElementById('qrCode').style.display = 'block';
+                        document.getElementById('autoridadActuanteSection').style.display = 'block';
+                        //obtenemos la comparecencia.id
+                        var nombramientoId = data.nombramiento_id; // Asegúrate de que esta línea coincida con la clave enviada por el backend
+                        document.getElementById('qrImageAutoridadActuante').src = '/notificaciones/generar_qr_nomb_ext/autoridadActuante/' + nombramientoId;
+                        intervaloAutoridadActuante = setInterval(function() { verificarFirmaAutoridadActuante(nombramientoId); }, 1000);
+                   }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+        function verificarFirmaAutoridadActuante(nombramientoId) {
+            fetch('/notificaciones/verificar_firma_nom_ext/autoridadActuante/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    clearInterval(intervaloAutoridadActuante); 
+                    document.getElementById('autoridadActuanteSection').style.display = 'none';
+                    var representanteLegalSection = document.getElementById('representanteLegalSection');
+                    representanteLegalSection.style.display = 'flex'; // Asegúrate de que el contenedor sigue siendo flex
+                    representanteLegalSection.style.justifyContent = 'center'; // Centra el contenido dentro del flex container
+                    representanteLegalSection.style.alignItems = 'center'; // Centra el contenido verticalmente
+                    document.getElementById('qrImageRepresentanteLegal').src = '/notificaciones/generar_qr_nomb_ext/representanteLegal/' + nombramientoId;
+            
+                    var checkboxTraductor = document.getElementById('necesitaTraductor');
+                    var botonSiguienteTraductor = document.getElementById('nextToTraductor');
+                    var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
+            
+                    // Actualizar qué botón se muestra basado en si se necesita traductor
+                    if (checkboxTraductor.checked) {
+                        botonSiguienteTraductor.style.display = 'inline-block'; // Usar inline-block en lugar de block
+                        botonSiguienteExtranjero.style.display = 'none';
+                    } else {
+                        botonSiguienteTraductor.style.display = 'none';
+                        botonSiguienteExtranjero.style.display = 'inline-block'; // Usar inline-block en lugar de block
+                    }
+            
+                    intervaloRepresentanteLegal = setInterval(function() { verificarFirmaRepresentanteLegal(nombramientoId); }, 1000); 
+                }
+            });
         }
-    }
-
-    checkboxRepresentanteExterno.addEventListener('change', actualizarCamposRepresentante);
-    actualizarCamposRepresentante(); // Llamarlo inicialmente para establecer el estado correcto
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    var checkboxTraductor = document.getElementById('necesitaTraductor');
-    var camposRepresentanteExterno = document.getElementById('camposTraduvtor');
-    var campoRepresentanteLegal = document.getElementById('campoTraductor');
-
-    function actualizarCamposTraductor() {
-        if (checkboxTraductor.checked) {
-            camposTraductor.style.display = 'block';
-            campoTraductor.style.display = 'none';
-        } else {
-            camposTraductor.style.display = 'none';
-            campoTraductor.style.display = 'block';
+        
+        
+        function verificarFirmaRepresentanteLegal(nombramientoId) {
+            fetch('/notificaciones/verificar_firma_nom_ext/representanteLegal/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    clearInterval(intervaloRepresentanteLegal);
+                    document.getElementById('representanteLegalSection').style.display = 'none';
+                    var necesitaTraductorCheckbox = document.getElementById('necesitaTraductor');
+                    if (necesitaTraductorCheckbox && necesitaTraductorCheckbox.checked) {
+                        document.getElementById('traductorSection').style.display = 'block';
+                        document.getElementById('qrImageTraductor').src = '/notificaciones/generar_qr_nomb_ext/traductor/' + nombramientoId;
+                        intervaloTraductor = setInterval(function() { verificarFirmaTraductor(nombramientoId); }, 1000);
+                    } else {
+                        document.getElementById('extranjeroSection').style.display = 'block';
+                        document.getElementById('qrImageExtranjero').src = '/notificaciones/generar_qr_nomb_ext/extranjero/' + nombramientoId;
+                        intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(nombramientoId); }, 1000);
+                    }
+                }
+            });
         }
-    }
 
-    checkboxTraductor.addEventListener('change', actualizarCamposTraductor);
-    actualizarCamposTraductor(); // Llamarlo inicialmente para establecer el estado correcto
-});
+        function verificarFirmaTraductor(nombramientoId) {
+            fetch('/notificaciones/verificar_firma_nom_ext/traductor/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    clearInterval(intervaloTraductor); // Detener el intervalo
+    
+                    document.getElementById('traductorSection').style.display = 'none';
+                    document.getElementById('extranjeroSection').style.display = 'block';
+                    document.getElementById('qrImageExtranjero').src = '/notificaciones/generar_qr_nomb_ext/extranjero/' + nombramientoId;
+                    intervaloExtranjero = setInterval(function() { verificarFirmaExtranjero(nombramientoId); }, 1000); 
+                }
+            });
+        }
+        function verificarFirmaExtranjero(nombramientoId) {
+            fetch('/notificaciones/verificar_firma_nom_ext/extranjero/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    clearInterval(intervaloExtranjero); 
+                    document.getElementById('extranjeroSection').style.display = 'none';
+                    document.getElementById('testigo1Section').style.display = 'block';
+                    document.getElementById('qrImageTestigo1').src = '/notificaciones/generar_qr_nomb_ext/testigo1/' + nombramientoId;
+                    intervaloTestigo1 = setInterval(function() { verificarFirmaTestigo1(nombramientoId); }, 1000); 
+                }
+            });
+        }
+        function verificarFirmaTestigo1(nombramientoId) {
+            fetch('/notificaciones/verificar_firma_nom_ext/testigo1/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    clearInterval(intervaloTestigo1); // Detener el intervalo
+                    document.getElementById('testigo1Section').style.display = 'none';
+                    document.getElementById('testigo2Section').style.display = 'block';
+                    document.getElementById('qrImageTestigo2').src = '/notificaciones/generar_qr_nomb_ext/testigo2/' + nombramientoId;
+                    intervaloTestigo2 = setInterval(function() { verificarFirmaTestigo2(nombramientoId); }, 1000); // Iniciar el intervalo para la siguiente firma
+    
+                }
+            });
+        }    
 
-
+        function verificarFirmaTestigo2(nombramientoId) {
+            fetch('/notificaciones/verificar_firma_nom_ext/testigo2/' + nombramientoId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    clearInterval(intervaloTestigo2); // Detener el intervalo
+                    document.getElementById('testigo2Section').style.display = 'none';
+                    document.getElementById('qrCode').style.display = 'none';
+        
+                    // Mostrar la sección para generar el PDF
+                    document.getElementById('generatePDFSection').style.display = 'block';
+                    var generatePDFBtn = document.getElementById('generatePDFBtn');
+                    generatePDFBtn.setAttribute('data-comparecencia-id', nombramientoId);
+                }
+            })
+        }
 </script>
 {% endblock contenido %}
 

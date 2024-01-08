@@ -235,7 +235,7 @@ class nombramientoRepresentante(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
     delaEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name="Estación")
     nup = models.ForeignKey(NoProceso, on_delete=models.CASCADE)
-    defensoria = models.ForeignKey(ExtranjeroDefensoria, on_delete=models.CASCADE)
+    defensoria = models.ForeignKey(ExtranjeroDefensoria, on_delete=models.CASCADE, blank=True, null=True)
     oficio = models.CharField(max_length=100, verbose_name='Numero de oficio')
     numeroExpediente = models.CharField(max_length=50, verbose_name='Numero de expediente')
     autoridadActuante = models.ForeignKey(
@@ -264,4 +264,22 @@ class nombramientoRepresentante(models.Model):
     testigo2=models.CharField(max_length=50, verbose_name="Nombre Completo del Testigo 2")
     grado_academico_testigo2=models.CharField(verbose_name='Grado Académico del Testigo 2', max_length=50, choices=GRADOS_ACADEMICOS)
 
+
+class FirmaNombramientoExterno(models.Model):
+    nombramientoExterno = models.ForeignKey(nombramientoRepresentante, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaRepresentanteLegal = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTraductor= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaExtranjero= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo1= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo2= models.ImageField(upload_to='files/', null=True, blank=True) 
+
+class FirmaNombramientoInterno(models.Model):
+    nombramientoInterno = models.ForeignKey(nombramientoRepresentante, on_delete=models.CASCADE)
+    firmaAutoridadActuante = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaRepresentanteLegal = models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTraductor= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaExtranjero= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo1= models.ImageField(upload_to='files/', null=True, blank=True) 
+    firmaTestigo2= models.ImageField(upload_to='files/', null=True, blank=True) 
    

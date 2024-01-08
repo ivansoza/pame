@@ -10,8 +10,8 @@ from vigilancia.models import NoProceso, Extranjero, AutoridadesActuantes, Asign
 from vigilancia.views import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, View, TemplateView, UpdateView
-from .models import Defensorias,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, DocumentoRespuestaDefensoria
-from .forms import NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso,NombramientoRepresentanteForm
+from .models import Defensorias, FirmaNombramientoExterno,Relacion, NotificacionConsular, FirmaNotificacionConsular, ExtranjeroDefensoria, DocumentoRespuestaDefensoria, nombramientoRepresentante
+from .forms import FirmaAutoridadActuanteNombramientoExternoForm, FirmaExtranjeroNombramientoExternoForm, FirmaRepresentanteLegalNombramientoExternoForm, FirmaTestigo1NombramientoExternoForm, FirmaTestigo2NombramientoExternoForm, FirmaTraductorNombramientoExternoForm, NotificacionesAceptadasForm,modalnotificicacionForm,NotificacionConsularForm, FirmaAutoridadActuanteConsuladoForm, NotificacionComarForm, FirmaAutoridadActuanteComarForm, NotificacionFiscaliaForm, FirmaAutoridadActuanteFiscaliaForm, firmasDefenso,NombramientoRepresentanteForm,NombramientoRepresentanteExternoForm
 from .forms import ExtranjeroDefensoriaForm, firmasDefensoForms, DocumentoRespuestaDefensoriaForm
 from django.urls import reverse_lazy
 from vigilancia.models import Extranjero
@@ -1255,16 +1255,18 @@ class CrearNombramientoExterno(View):
 
     def post(self, request, nup_id, *args, **kwargs):
         no_proceso = get_object_or_404(NoProceso, nup=nup_id)
-        form = NotificacionConsularForm(request.POST)
+        form = NombramientoRepresentanteExternoForm(request.POST)
         if form.is_valid():
-            notificacionConsular = form.save(commit=False)
-            notificacionConsular.nup = no_proceso
-            notificacionConsular.save()
+            nombramientoRepresentante = form.save(commit=False)
+            nombramientoRepresentante.nup = no_proceso
+            estacion_origen = no_proceso.extranjero.deLaEstacion
+            nombramientoRepresentante.delaEstacion = estacion_origen
+            nombramientoRepresentante.save()
 
             data = {
                 'success': True, 
                 'message': 'Notificación Consular creada con éxito.', 
-                'consulado_id': notificacionConsular.id
+                'nombramiento_id': nombramientoRepresentante.id
             }
             return JsonResponse(data, status=200)
         else:
@@ -1287,13 +1289,7 @@ class CrearNombramientoExterno(View):
 
         }
 
-        form = NombramientoRepresentanteForm(initial=initial_data)
-
-        if defensoria:
-            representantes_legales = RepresentantesLegales.objects.filter(defensoria=defensoria)
-            form.fields['representanteLegal'].queryset = representantes_legales
-        else:
-            form.fields['representanteLegal'].queryset = RepresentantesLegales.objects.none()
+        form = NombramientoRepresentanteExternoForm(initial=initial_data)
 
         autoridades = AutoridadesActuantes.objects.none()
         if extranjero.deLaPuestaIMN:
@@ -1319,4 +1315,271 @@ class CrearNombramientoExterno(View):
         }
         
         return render(request, 'defensoria/crearNombramientoExterno.html', context)
+
+
+        url = f"{base_url}notificaciones/firma_autoridad_actuante/{consulado_id}/"
+
+def generar_qr_firmas_nombramiento_Externo(request, nombramiento_externo_id, tipo_firma):
+    base_url = settings.BASE_URL
+
+    if tipo_firma == "autoridadActuante":
+        url = f"{base_url}notificaciones/firma_autoridad_actuante_nombramiento_ext/{nombramiento_externo_id}/"
+    elif tipo_firma == "representanteLegal":
+        url = f"{base_url}notificaciones/firma_representante_legal_nombramiento_ext/{nombramiento_externo_id}/"
+    elif tipo_firma == "traductor":
+        url = f"{base_url}notificaciones/firma_traductor_nombramiento_ext/{nombramiento_externo_id}/"
+    elif tipo_firma == "extranjero":
+        url = f"{base_url}notificaciones/firma_extranjero_nombramiento_ext/{nombramiento_externo_id}/"
+    elif tipo_firma == "testigo1":
+        url = f"{base_url}notificaciones/firma_testigo1_nombramiento_ext/{nombramiento_externo_id}/"
+    elif tipo_firma == "testigo2":
+        url = f"{base_url}notificaciones/firma_testigo2_nombramiento_ext/{nombramiento_externo_id}/"
+    else:
+        return HttpResponseBadRequest("Tipo de firma no válido")
+
+    img = qrcode.make(url)
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
+
+
+def firma_autoridad_actuante_nom_ext(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    firma, created = FirmaNombramientoExterno.objects.get_or_create(nombramientoExterno=nombramiento_externo)  
+
+    if firma.firmaAutoridadActuante:
+        # Redirigir o manejar el caso de que la firma ya exista
+        return redirect('firma_existente_acuerdos')
+    if request.method == 'POST':
+        form = FirmaAutoridadActuanteNombramientoExternoForm(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaAutoridadActuante']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            
+            file_name = f"firmaAutoridadActuante_{nombramiento_externo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+
+            firma.firmaAutoridadActuante.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaAutoridadActuanteNombramientoExternoForm()
+    return render(request, 'firma/firma_autoridad_actuante.html', {'form': form, 'nombramiento_externo_id': nombramiento_externo_id})
+
+
+
+
+def firma_representante_legal_nom_ext(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    firma, created = FirmaNombramientoExterno.objects.get_or_create(nombramientoExterno=nombramiento_externo)  # Usar comparecencia aquí
+    if firma.firmaRepresentanteLegal:
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaRepresentanteLegalNombramientoExternoForm(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaRepresentanteLegal']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr)) 
+            file_name = f"firmaRepresentanteLegal_{nombramiento_externo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+            firma.firmaRepresentanteLegal.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaRepresentanteLegalNombramientoExternoForm()
+
+    return render(request, 'firma/firma_representante_legal.html', {'form': form, 'nombramiento_externo_id': nombramiento_externo_id})
+
+
+def firma_traductor_nom_ext(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    firma, created = FirmaNombramientoExterno.objects.get_or_create(nombramientoExterno=nombramiento_externo)  # Usar comparecencia aquí
+    if firma.firmaTraductor:
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaTraductorNombramientoExternoForm(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaTraductor']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            file_name = f"firmaTraductor_{nombramiento_externo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+            firma.firmaTraductor.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTraductorNombramientoExternoForm()
+
+    return render(request, 'firma/firma_traductor.html', {'form': form, 'nombramiento_externo_id': nombramiento_externo_id})
+
+def firma_extranjero_nom_ext(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    firma, created = FirmaNombramientoExterno.objects.get_or_create(nombramientoExterno=nombramiento_externo)  # Usar comparecencia aquí
+    if firma.firmaExtranjero:
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaExtranjeroNombramientoExternoForm(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaExtranjero']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            file_name = f"firmaExtranjero_{nombramiento_externo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+            firma.firmaExtranjero.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaExtranjeroNombramientoExternoForm()
+    return render(request, 'firma/firma_extranjero.html', {'form': form, 'nombramiento_externo_id': nombramiento_externo_id})
+
+
+def firma_testigo1_nom_ext(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    firma, created = FirmaNombramientoExterno.objects.get_or_create(nombramientoExterno=nombramiento_externo)  # Usar comparecencia aquí
+    if firma.firmaTestigo1:
+        return redirect('firma_existente_acuerdos')
+    
+    if request.method == 'POST':
+        form = FirmaTestigo1NombramientoExternoForm(request.POST, request.FILES)
+        if form.is_valid():
+            data_url = form.cleaned_data['firmaTestigo1']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]  # Ejemplo: "png"
+            data = ContentFile(base64.b64decode(imgstr))
+            file_name = f"firmaTestigo1_{nombramiento_externo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+            firma.firmaTestigo1.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))
+    else:
+        form = FirmaTestigo1NombramientoExternoForm()
+
+    return render(request, 'firma/firma_testigo1.html', {'form': form, 'nombramiento_externo_id': nombramiento_externo_id})
+
+def firma_testigo2_nom_ext(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    firma, created = FirmaNombramientoExterno.objects.get_or_create(nombramientoExterno=nombramiento_externo)
+
+    if firma.firmaTestigo2:
+        return redirect('firma_existente_acuerdos')  # Asumiendo que tienes una URL para este caso
+
+    if request.method == 'POST':
+        form = FirmaTestigo2NombramientoExternoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Código para procesar y guardar la firma
+            data_url = form.cleaned_data['firmaTestigo2']
+            format, imgstr = data_url.split(';base64,') 
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr))
+            file_name = f"firmaTestigo2_{nombramiento_externo_id}.{ext}"
+            file = InMemoryUploadedFile(data, None, file_name, 'image/' + ext, len(data), None)
+            firma.firmaTestigo2.save(file_name, file, save=True)
+            return redirect(reverse_lazy('firma_exitosa'))  # Asegúrate de que esta URL esté definida
+    else:
+        form = FirmaTestigo2NombramientoExternoForm()
+
+    return render(request, 'firma/firma_testigo2.html', {'form': form, 'nombramiento_externo_id': nombramiento_externo_id})
+
+class firmExistente(TemplateView):
+    template_name='firma/firma_exixtente.html'
+
+
+@csrf_exempt
+def verificar_firma_autoridad_actuante_nom_ext(request, nombramiento_externo_id):
+    try:
+        firma = FirmaNombramientoExterno.objects.get(nombramientoExterno_id=nombramiento_externo_id)
+        if firma.firmaAutoridadActuante:
+            image_url = request.build_absolute_uri(firma.firmaAutoridadActuante.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma de la Autoridad Actuante encontrada',
+                'image_url': image_url
+            })
+    except FirmaNombramientoExterno.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma de la Autoridad Actuante aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_representante_legal_nom_ext(request, nombramiento_externo_id):
+    try:
+        firma = FirmaNombramientoExterno.objects.get(nombramientoExterno_id=nombramiento_externo_id)
+        if firma.firmaRepresentanteLegal:
+            image_url = request.build_absolute_uri(firma.firmaRepresentanteLegal.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Representante Legal encontrada',
+                'image_url': image_url
+            })
+    except FirmaNombramientoExterno.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Representante Legal aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_traductor_nom_ext(request, nombramiento_externo_id):
+    try:
+        firma = FirmaNombramientoExterno.objects.get(nombramientoExterno_id=nombramiento_externo_id)
+        if firma.firmaTraductor:
+            image_url = request.build_absolute_uri(firma.firmaTraductor.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Traductor encontrada',
+                'image_url': image_url
+            })
+    except FirmaNombramientoExterno.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Traductor aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_extranjero_nom_ext(request, nombramiento_externo_id):
+    try:
+        firma = FirmaNombramientoExterno.objects.get(nombramientoExterno_id=nombramiento_externo_id)
+        if firma.firmaExtranjero:
+            image_url = request.build_absolute_uri(firma.firmaExtranjero.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Extranjero encontrada',
+                'image_url': image_url
+            })
+    except FirmaNombramientoExterno.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Extranjero aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_testigo1_nom_ext(request, nombramiento_externo_id):
+    try:
+        firma = FirmaNombramientoExterno.objects.get(nombramientoExterno_id=nombramiento_externo_id)
+        if firma.firmaTestigo1:
+            image_url = request.build_absolute_uri(firma.firmaTestigo1.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo 1 encontrada',
+                'image_url': image_url
+            })
+    except FirmaNombramientoExterno.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo 1 aún no registrada'}, status=404)
+
+@csrf_exempt
+def verificar_firma_testigo2_nom_ext(request, nombramiento_externo_id):
+    try:
+        firma = FirmaNombramientoExterno.objects.get(nombramientoExterno_id=nombramiento_externo_id)
+        if firma.firmaTestigo2:
+            image_url = request.build_absolute_uri(firma.firmaTestigo2.url)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Firma del Testigo 2 encontrada',
+                'image_url': image_url
+            })
+    except FirmaNombramientoExterno.DoesNotExist:
+        pass
+
+    return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo 2 aún no registrada'}, status=404)
 
