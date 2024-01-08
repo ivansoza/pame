@@ -174,6 +174,7 @@ class AutoridadesActuantes(models.Model):
     estacion = models.ForeignKey(Estacion, on_delete=models.CASCADE, verbose_name='Estación')
     estatus = models.CharField(choices=ESTATUS_AUTORIDAD,max_length=25, verbose_name='Estatus de la autoridad en la estación', default='Activo')
     cargo = models.CharField(choices=OPCIONES_CARGO, verbose_name='Cargo de la autoridad', max_length=50)
+    facultades = models.CharField(max_length=500, verbose_name='Facultades otorgadas a la autoridad')
     fechaInicio = models.DateField(verbose_name='Fecha de inicio de actividades', auto_now_add=True)
     fechaFin = models.DateField(verbose_name='Fceha fin de actividades', blank=True, null=True)
     def __str__(self):

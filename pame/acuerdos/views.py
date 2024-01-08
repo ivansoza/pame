@@ -705,7 +705,7 @@ def presentacion_pdf(request):
     return response
 
 
-# ----- Genera el documento PDF, de Presentacion   
+# ----- Genera el documento PDF de filiación   
 def filiacion_pdf(request, nup_id):
     usuario_actual = request.user
 
