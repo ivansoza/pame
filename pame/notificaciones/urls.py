@@ -5,7 +5,7 @@ generar_qr_firma_notificacion_comar, generar_qr_firma_notificacion_fiscalia, fir
 
 from .views import notificar,tabladefensores,SubirArchivo,modalnotificar, listExtranjerosComar, listExtranjerosConsulado, listExtranjerosFiscalia,CrearNotificacionConsulado,firma_autoridad_actuante_notifi_consul,generar_qr_firma_notificacion_consular,verificar_firma_autoridad_actuante
 from .views import generar_qr_firmas_noti,firma_autoridad_actuante_notificacion, verificar_firma_autoridad_actuante_notificacion, estado_firmas_notificacion, verificar_firmas_no, selectDefensoria
-from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView, CrearNombramientoExterno
+from . views import generar_qr_firmas_defensoria, firma_autoridad_actuante_defensoria, estado_firmas_defensoria, verificar_firmas_defensoria, obtener_datos_defensoria, verificar_firma_autoridad_actuante_defensoria, DocumentoRespuestaDefensoriaCreateView, CrearNombramientoExterno,obtener_datos_nombramiento_externo
 urlpatterns = [
     path('defensoria/', listExtranjerosDefensoria.as_view(), name="defensoria"),
     # path('defensores', views.defensores, name='defensores'),
@@ -85,6 +85,7 @@ urlpatterns = [
     path('verificar_firma_nom_ext/extranjero/<int:nombramiento_externo_id>/', verificar_firma_extranjero_nom_ext, name='verificar_firma_extranjero'),
     path('verificar_firma_nom_ext/testigo1/<int:nombramiento_externo_id>/', verificar_firma_testigo1_nom_ext, name='verificar_firma_testigo1'),
     path('verificar_firma_nom_ext/testigo2/<int:nombramiento_externo_id>/', verificar_firma_testigo2_nom_ext, name='verificar_firma_testigo2'),
+    path('datos_nombramiento_externo/<int:nombramiento_externo_id>/', obtener_datos_nombramiento_externo, name='obtener_datos_nombramiento_externo'),
 
 ]
 

@@ -1583,3 +1583,18 @@ def verificar_firma_testigo2_nom_ext(request, nombramiento_externo_id):
 
     return JsonResponse({'status': 'waiting', 'message': 'Firma del Testigo 2 aún no registrada'}, status=404)
 
+def obtener_datos_nombramiento_externo(request, nombramiento_externo_id):
+    nombramiento_externo = get_object_or_404(nombramientoRepresentante, pk=nombramiento_externo_id)
+    nup = nombramiento_externo.nup
+
+    datos = {
+        'nombreAutoridadActuante': f"{nombramiento_externo.autoridadActuante.autoridad.nombre} {nombramiento_externo.autoridadActuante.autoridad.apellidoPaterno} {nombramiento_externo.autoridadActuante.autoridad.apellidoMaterno or ''}".strip() if nombramiento_externo.autoridadActuante else '',
+        # 'nombreRepresentanteLegal': f"{nombramiento_externo.representanteLegal.nombre} {nombramiento_externo.representanteLegal.apellido_paterno} {nombramiento_externo.representanteLegal.apellido_materno or ''}".strip() if nombramiento_externo.representanteLegal else '',
+        'nombreRepresentanteLegal': nombramiento_externo.representanteLegalExterno if nombramiento_externo.representanteLegalExterno else '',
+        'nombreTraductor': f"{nombramiento_externo.traductor.nombre} {nombramiento_externo.traductor.apellido_paterno} {nombramiento_externo.traductor.apellido_materno or ''}".strip() if nombramiento_externo.traductor else '',
+        'nombreTestigo1': nombramiento_externo.testigo1,
+        'nombreTestigo2': nombramiento_externo.testigo2,
+        'nombreExtranjero': f"{nup.extranjero.nombreExtranjero} {nup.extranjero.apellidoPaternoExtranjero} {nup.extranjero.apellidoMaternoExtranjero or ''}".strip()
+    }
+
+    return JsonResponse(datos)

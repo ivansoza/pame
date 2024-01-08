@@ -186,7 +186,7 @@
 
     <div class="firma-section center-content" id="autoridadActuanteSection">
         <h4 class="titulo-compare">Firma de la Autoridad Actuante</h4>
-        <div>Nombre: <span id="nombreAutoridadActuante"></span></div>
+        <div>Nombre: <strong id="nombreAutoridadActuante"></strong></div>
 
         <img id="qrImageAutoridadActuante" src="" alt="Código QR Autoridad Actuante" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaAutoridadActuante"></div>
@@ -195,7 +195,7 @@
 
     <div class="firma-section center-content" id="representanteLegalSection" style="display:none;">
         <h4 class="titulo-compare">Firma del Representante Legal</h4>
-        <div>Nombre: <span id="nombreRepresentanteLegal"></span></div>
+        <div>Nombre: <strong id="nombreRepresentanteLegal"></strong></div>
         <img id="qrImageRepresentanteLegal" src="" alt="Código QR Representante Legal" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaRepresentanteLegal"></div>
         <button id="nextToTraductor">Siguiente: Traductor</button>
@@ -204,7 +204,7 @@
 
     <div class="firma-section center-content" id="traductorSection" style="display:none;">
         <h4 class="titulo-compare">Firma del Traductor</h4>
-        <div>Nombre: <span id="nombreTraductor"></span></div>
+        <div>Nombre: <strong id="nombreTraductor"></strong></div>
 
         <img id="qrImageTraductor" src="" alt="Código QR Traductor" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaTraductor"></div>
@@ -213,7 +213,7 @@
 
     <div class="firma-section center-content" id="extranjeroSection" style="display:none;">
         <h4 class="titulo-compare">Firma del Extranjero</h4>
-        <div>Nombre: <span id="nombreExtranjero"></span></div>
+        <div>Nombre: <strong id="nombreExtranjero"></strong></div>
 
         <img id="qrImageExtranjero" src="" alt="Código QR Extranjero" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaExtranjero"></div>
@@ -222,7 +222,7 @@
 
     <div class="firma-section center-content" id="testigo1Section" style="display:none;">
         <h4 class="titulo-compare">Firma del Testigo 1</h4>
-        <div>Nombre: <span id="nombreTestigo1"></span></div>
+        <div>Nombre: <strong id="nombreTestigo1"></strong></div>
 
         <img id="qrImageTestigo1" src="" alt="Código QR Testigo 1" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaTestigo1"></div>
@@ -231,7 +231,7 @@
 
     <div class="firma-section center-content" id="testigo2Section" style="display:none;">
         <h4 class="titulo-compare">Firma del Testigo 2</h4>
-        <div>Nombre: <span id="nombreTestigo2"></span></div>
+        <div>Nombre: <strong id="nombreTestigo2"></strong></div>
 
         <img id="qrImageTestigo2" src="" alt="Código QR Testigo 2" style="height: 25%; width: 25%;">
         <div id="mensajeFirmaTestigo2"></div>
@@ -344,7 +344,7 @@
                 }).then(response => response.json())
                 .then(data => {
                     if(data.success) {
-                        //CIERRA VENTANA DEL FORM Y MUESTRA LA CAPTURA DE FIRMAS 
+                        obtenerDatosDeNombramientoExterno(nombramientoId)
                         document.getElementById('nombramientoRepresentanteExternoForm').style.display = 'none';
                         document.getElementById('qrCode').style.display = 'block';
                         document.getElementById('autoridadActuanteSection').style.display = 'block';
@@ -359,6 +359,8 @@
             });
         });
         function verificarFirmaAutoridadActuante(nombramientoId) {
+            obtenerDatosDeNombramientoExterno(nombramientoId);
+
             fetch('/notificaciones/verificar_firma_nom_ext/autoridadActuante/' + nombramientoId)
             .then(response => response.json())
             .then(data => {
@@ -375,7 +377,6 @@
                     var botonSiguienteTraductor = document.getElementById('nextToTraductor');
                     var botonSiguienteExtranjero = document.getElementById('nextToExtranjero');
             
-                    // Actualizar qué botón se muestra basado en si se necesita traductor
                     if (checkboxTraductor.checked) {
                         botonSiguienteTraductor.style.display = 'inline-block'; // Usar inline-block en lugar de block
                         botonSiguienteExtranjero.style.display = 'none';
@@ -469,6 +470,22 @@
                 }
             })
         }
+        function obtenerDatosDeNombramientoExterno(nombramientoId) {
+            fetch('/notificaciones/datos_nombramiento_externo/' + nombramientoId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('nombreAutoridadActuante').textContent = data.nombreAutoridadActuante || 'No disponible';
+                    document.getElementById('nombreRepresentanteLegal').textContent = data.nombreRepresentanteLegal || 'No disponible';
+                    document.getElementById('nombreTraductor').textContent = data.nombreTraductor || 'No disponible';
+                    document.getElementById('nombreTestigo1').textContent = data.nombreTestigo1 || 'No disponible';
+                    document.getElementById('nombreTestigo2').textContent = data.nombreTestigo2 || 'No disponible';
+                    document.getElementById('nombreExtranjero').textContent = data.nombreExtranjero || 'No disponible';
+                })
+                .catch(error => {
+                    console.error('Error al obtener datos:', error);
+                });
+            }
+        
 </script>
 {% endblock contenido %}
 
