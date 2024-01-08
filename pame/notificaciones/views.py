@@ -1325,6 +1325,7 @@ class CrearNombramientoExterno(View):
             nombramientoRepresentante.nup = no_proceso
             estacion_origen = no_proceso.extranjero.deLaEstacion
             nombramientoRepresentante.delaEstacion = estacion_origen
+            nombramientoRepresentante.es_representante_externo = True  # Aquí se establece el campo en True
             nombramientoRepresentante.save()
 
             data = {
